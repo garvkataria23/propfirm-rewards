@@ -15,6 +15,8 @@ export interface UserProfile {
   points?: {
     available: number;
     pending: number;
+    lifetimeEarned?: number;
+    lifetimeRedeemed?: number;
   };
   activeRedemptionsCount?: number;
 }

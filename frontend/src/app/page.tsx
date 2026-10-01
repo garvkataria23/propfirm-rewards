@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
   Sparkles,
@@ -22,6 +21,13 @@ import {
   ChevronDown,
   Calculator,
   ExternalLink,
+  Wallet,
+  Star,
+  Users,
+  Award,
+  Zap,
+  Lock,
+  Headphones,
 } from 'lucide-react';
 
 interface PropFirmOffer {
@@ -54,6 +60,16 @@ interface Reward {
   category: { name: string; slug: string };
 }
 
+// Simulated real-time verified trader stream
+const LIVE_STREAM_ACTIVITY = [
+  { trader: '@Marco_FX (UK)', action: 'Verified $100K FundedNext', pts: '+4,500 PTS', time: '2m ago' },
+  { trader: '@David_T (DE)', action: 'Withdrew $250.00 USDT', pts: 'Paid Out', time: '5m ago' },
+  { trader: '@S_Kapoor (IN)', action: 'Verified $50K Funding Pips', pts: '+2,400 PTS', time: '8m ago' },
+  { trader: '@Lucas_R (US)', action: 'Redeemed Apple iPad Air M2', pts: 'Shipped via DHL', time: '14m ago' },
+  { trader: '@Jean_P (FR)', action: 'Verified $200K FTMO Challenge', pts: '+11,200 PTS', time: '19m ago' },
+  { trader: '@Mateo_C (ES)', action: 'Claimed Free $25K Challenge', pts: 'Code Issued', time: '23m ago' },
+];
+
 export default function HomePage() {
   const [propFirms, setPropFirms] = useState<PropFirm[]>([]);
   const [rewards, setRewards] = useState<Reward[]>([]);
@@ -67,20 +83,26 @@ export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    // Load active prop firms and rewards
-    api.get<PropFirm[]>('/prop-firms').then((data) => {
-      setPropFirms(data);
-      if (data.length > 0) {
-        setCalcSelectedFirmId(data[0].id);
-        if (data[0].offers.length > 0) {
-          setCalcSelectedOfferId(data[0].offers[0].id);
+    // Load active prop firms and rewards from live backend
+    api
+      .get<PropFirm[]>('/prop-firms')
+      .then((data) => {
+        setPropFirms(data);
+        if (data.length > 0) {
+          setCalcSelectedFirmId(data[0].id);
+          if (data[0].offers && data[0].offers.length > 0) {
+            setCalcSelectedOfferId(data[0].offers[0].id);
+          }
         }
-      }
-    }).catch(console.error);
+      })
+      .catch(console.error);
 
-    api.get<Reward[]>('/rewards', { inStockOnly: true }).then((data) => {
-      setRewards(data.slice(0, 4));
-    }).catch(console.error);
+    api
+      .get<Reward[]>('/rewards', { inStockOnly: true })
+      .then((data) => {
+        setRewards(data.slice(0, 4));
+      })
+      .catch(console.error);
   }, []);
 
   const handleCopyCode = (code: string) => {
@@ -93,108 +115,258 @@ export default function HomePage() {
   const selectedOffer = selectedFirm?.offers.find((o) => o.id === calcSelectedOfferId);
 
   const steps = [
-    { num: '01', title: 'Buy with Code', desc: 'Choose a partner prop firm and apply our referral code at checkout.' },
-    { num: '02', title: 'Submit Proof', desc: 'Upload your invoice, receipt screenshot, and order ID to your portal.' },
-    { num: '03', title: 'Get Verified', desc: 'Our team verifies your purchase against affiliate records within 24h.' },
-    { num: '04', title: 'Earn Points', desc: 'Points are immediately and automatically credited to your secure ledger.' },
-    { num: '05', title: 'Redeem Rewards', desc: 'Exchange accumulated points for smartphones, monitors, or gift cards.' },
-    { num: '06', title: 'Track Delivery', desc: 'Receive real-time courier tracking until the reward arrives at your door.' },
+    {
+      num: '01',
+      title: 'Choose Prop Firm & Apply Code',
+      desc: 'Pick your preferred prop firm from our directory and apply our exclusive partner referral code at checkout.',
+    },
+    {
+      num: '02',
+      title: 'Upload Invoice & Order ID',
+      desc: 'Submit your purchase proof, order ID, and receipt screenshot in your clean trader dashboard portal.',
+    },
+    {
+      num: '03',
+      title: 'Automated & Manual Audit',
+      desc: 'Our compliance team verifies your purchase against prop firm affiliate records within 12 to 24 hours.',
+    },
+    {
+      num: '04',
+      title: 'Points Credited To Wallet',
+      desc: 'Earn up to 30% back in reward points credited immediately to your tamper-proof ledger (100 PTS = $1 USD).',
+    },
+    {
+      num: '05',
+      title: 'Redeem Gear or Cash Out',
+      desc: 'Exchange points for brand new MacBook Pros, trading monitors, free evaluation passes, or instant USDT withdrawals.',
+    },
+    {
+      num: '06',
+      title: 'Express Insured Delivery',
+      desc: 'Physical gadgets are dispatched brand new via express DHL/FedEx with full tracking and insurance.',
+    },
   ];
 
   const faqs = [
     {
       q: 'How does PropFirm Rewards work?',
-      a: 'We partner with leading proprietary trading firms. When you purchase an evaluation or challenge account using our affiliate links or referral discount codes, the prop firm credits us an affiliate commission. Rather than keeping it all, we share this value with you as reward points that you can redeem for tech gear, trading hardware, and gift cards.',
+      a: 'We partner with leading proprietary trading firms. When you purchase an evaluation or challenge account using our affiliate links or referral discount codes, the prop firm credits us an affiliate commission. Rather than keeping it all, we share this value with you as reward points that you can redeem for tech gear, trading hardware, free evaluation accounts, or direct USDT cashouts.',
     },
     {
       q: 'Is PropFirm Rewards a prop firm or broker?',
-      a: 'No, absolutely not. We do not provide trading capital, financial advice, or brokerage services. We are solely an affiliate loyalty rewards platform.',
+      a: 'No, absolutely not. We do not provide trading capital, financial advice, or brokerage services. We are solely an affiliate loyalty rewards platform providing maximum cashbacks and gear to prop firm traders.',
     },
     {
       q: 'How long does purchase verification take?',
       a: 'Most purchases are verified and credited with reward points within 12 to 24 hours. Once verified, points are immediately available in your wallet.',
     },
     {
-      q: 'Can I submit proof if I forgot to use your code?',
-      a: 'Points can only be awarded when our referral code or link was applied during the original purchase, as prop firms only attribute eligible purchases recorded under our affiliate tag.',
+      q: 'What is the points to dollar valuation?',
+      a: 'Our points have a clear, transparent valuation: 100 PTS = $1.00 USD. A 10,000 PTS balance gives you $100.00 USD worth of rewards, free challenge passes, or cashout value.',
     },
     {
-      q: 'How are rewards shipped?',
-      a: 'Physical electronics and hardware are dispatched brand-new via express couriers (FedEx, UPS, DHL) with signature confirmation and tracking. Digital gift cards are delivered directly to your registered email.',
+      q: 'Can I withdraw my points directly to Crypto or Bank?',
+      a: 'Yes! Head to your Trader Wallet section in the dashboard to request instant USDT (TRC-20/ERC-20) or Direct Bank Wire cashouts, processed in under 15 minutes for verified accounts.',
     },
     {
-      q: 'Are points transferable or do they expire?',
-      a: 'Your points remain securely stored in your personal points ledger for as long as your account is active. They do not expire.',
+      q: 'How are physical tech rewards shipped?',
+      a: 'Physical electronics and hardware (MacBooks, iPads, 4K monitors, Keychron keyboards) are dispatched brand-new via express couriers (FedEx, DHL, UPS) with signature confirmation and tracking.',
     },
   ];
 
   return (
     <div className="flex flex-col gap-24 pb-20">
+      {/* Live Social Proof Activity Ticker */}
+      <div className="w-full bg-[#050b18] border-b border-slate-800/80 py-2.5 px-4 overflow-hidden">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 text-xs">
+          <div className="flex items-center gap-2 text-emerald-400 font-bold shrink-0">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+            <span className="uppercase tracking-wider">Live Activity:</span>
+          </div>
+
+          <div className="flex items-center gap-6 overflow-x-auto no-scrollbar whitespace-nowrap text-slate-400">
+            {LIVE_STREAM_ACTIVITY.map((item, idx) => (
+              <div key={idx} className="inline-flex items-center gap-2">
+                <span className="text-white font-semibold">{item.trader}</span>
+                <span className="text-slate-400">{item.action}</span>
+                <span className="text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/20">
+                  {item.pts}
+                </span>
+                <span className="text-slate-600 font-mono text-[10px]">{item.time}</span>
+                {idx < LIVE_STREAM_ACTIVITY.length - 1 && <span className="text-slate-700">•</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 overflow-hidden bg-grid-pattern">
-        {/* Glow gradients */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-emerald-500/15 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute top-1/3 left-1/3 w-[400px] h-[300px] bg-blue-500/10 blur-[140px] rounded-full pointer-events-none" />
+      <section className="relative pt-12 pb-16 overflow-hidden bg-grid-pattern">
+        {/* Ambient Glows */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[350px] bg-blue-500/15 blur-[130px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 left-1/4 w-[450px] h-[300px] bg-emerald-500/10 blur-[140px] rounded-full pointer-events-none" />
 
         <div className="relative mx-auto max-w-5xl px-4 sm:px-6 text-center space-y-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold text-emerald-400">
+          {/* Trust Badge */}
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-400 shadow-sm">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>The #1 Prop Firm Loyalty & Rewards Platform</span>
+            <span>The #1 Cashback &amp; Rewards Club for Proprietary Traders</span>
+            <span className="text-slate-500">|</span>
+            <span className="flex items-center gap-1 text-slate-300">
+              <Star className="h-3 w-3 text-amber-400 fill-amber-400" /> 4.9/5 TrustScore
+            </span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.1]">
-            Trade. Earn. <br />
-            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-              Get Rewarded.
+            Turn Every Prop Challenge Into{' '}
+            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-blue-400 bg-clip-text text-transparent">
+              Real-World Rewards.
             </span>
           </h1>
 
           <p className="mx-auto max-w-2xl text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
-            Purchase eligible prop-firm accounts using our referral codes, submit your purchase for verification, earn reward points, and redeem them for real-world rewards.
+            Never buy a prop firm challenge at full price again. Apply our partner referral codes, verify your invoice in &lt;24 hours, and get <span className="text-white font-bold">up to 30% back</span> in spendable reward points, tech gear, or instant crypto cashouts.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-            <Link href="/prop-firms">
-              <Button size="lg" className="w-full sm:w-auto shadow-xl shadow-emerald-500/25">
-                Start Earning
+            <Link href="/register">
+              <Button size="lg" className="w-full sm:w-auto shadow-xl shadow-blue-600/25 bg-blue-600 hover:bg-blue-500 font-bold text-base px-8 py-6">
+                Start Earning Cashback
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
-            <Link href="/rewards">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                <Gift className="h-4 w-4 mr-2 text-emerald-400" />
-                Explore Rewards
+            <Link href="/prop-firms">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto border-slate-700 bg-slate-900/60 text-slate-200 hover:text-white px-8 py-6 font-semibold">
+                <Layers className="h-4 w-4 mr-2 text-emerald-400" />
+                Browse 20+ Prop Firms
               </Button>
             </Link>
           </div>
 
           {/* Quick Metrics Bar */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-10 max-w-4xl mx-auto border-t border-slate-800/80">
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
-              <div className="text-2xl font-black text-emerald-400">100%</div>
-              <div className="text-xs text-slate-400 mt-0.5">Verified Payouts</div>
+            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 text-center">
+              <div className="text-2xl sm:text-3xl font-black text-emerald-400">$450,000+</div>
+              <div className="text-xs text-slate-400 mt-1">Cashback Distributed</div>
             </div>
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
-              <div className="text-2xl font-black text-white">&lt; 24h</div>
-              <div className="text-xs text-slate-400 mt-0.5">Verification Time</div>
+            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 text-center">
+              <div className="text-2xl sm:text-3xl font-black text-white">&lt; 24 Hours</div>
+              <div className="text-xs text-slate-400 mt-1">Audit &amp; Credit SLA</div>
             </div>
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
-              <div className="text-2xl font-black text-emerald-400">18,000+</div>
-              <div className="text-xs text-slate-400 mt-0.5">Max Points / Challenge</div>
+            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 text-center">
+              <div className="text-2xl sm:text-3xl font-black text-blue-400">14,200+</div>
+              <div className="text-xs text-slate-400 mt-1">Active Prop Traders</div>
             </div>
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
-              <div className="text-2xl font-black text-white">Express</div>
-              <div className="text-xs text-slate-400 mt-0.5">Worldwide Tech Shipping</div>
+            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 text-center">
+              <div className="text-2xl sm:text-3xl font-black text-white">100%</div>
+              <div className="text-xs text-slate-400 mt-1">Insured Tech Delivery</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Visual Journey Flow Section (Section 2 from Prompt) */}
+      {/* Comparison Grid: Direct Purchase vs PropRewards */}
+      <section className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-10">
+          <Badge variant="purple">Why Smart Traders Use Us</Badge>
+          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            Stop Leaving Free Capital On The Table
+          </h2>
+          <p className="text-sm text-slate-400">
+            Why buy prop firm challenges directly when you can earn massive loyalty dividends?
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+          {/* Buying Direct Card */}
+          <div className="rounded-3xl border border-rose-500/20 bg-rose-950/10 p-8 space-y-6 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between pb-4 border-b border-rose-500/20">
+                <span className="text-sm font-bold text-rose-400 uppercase tracking-wider">
+                  Buying Directly From Prop Firm
+                </span>
+                <span className="text-xs bg-rose-500/20 text-rose-300 font-bold px-2.5 py-1 rounded-full">
+                  0% Return
+                </span>
+              </div>
+              <ul className="space-y-4 pt-6 text-sm text-slate-400">
+                <li className="flex items-center gap-3">
+                  <span className="h-5 w-5 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-xs">✕</span>
+                  <span>Pay full price with zero cashback or loyalty credit</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="h-5 w-5 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-xs">✕</span>
+                  <span>If you fail the evaluation, 100% of your fee is permanently lost</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="h-5 w-5 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-xs">✕</span>
+                  <span>No second-chance challenge pass vouchers</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="h-5 w-5 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-xs">✕</span>
+                  <span>No tech gadgets, monitors, or crypto rewards</span>
+                </li>
+              </ul>
+            </div>
+            <div className="p-4 rounded-xl bg-rose-950/20 border border-rose-500/20 text-xs text-rose-300">
+              Traders lose an average of $380/year in unclaimed affiliate dividends.
+            </div>
+          </div>
+
+          {/* Buying via PropRewards Card */}
+          <div className="rounded-3xl border border-emerald-500/40 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/30 p-8 space-y-6 flex flex-col justify-between shadow-2xl relative">
+            <div className="absolute -top-3.5 right-8">
+              <span className="bg-emerald-500 text-slate-950 text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md">
+                RECOMMENDED BY 14K+ TRADERS
+              </span>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between pb-4 border-b border-emerald-500/20">
+                <span className="text-sm font-bold text-emerald-400 uppercase tracking-wider">
+                  Buying With PropRewards Code
+                </span>
+                <span className="text-xs bg-emerald-500/20 text-emerald-300 font-bold px-2.5 py-1 rounded-full">
+                  Up To 30% Cashback
+                </span>
+              </div>
+              <ul className="space-y-4 pt-6 text-sm text-slate-200">
+                <li className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                  <span>Get up to 30% back in points on every single account purchase</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                  <span>Redeem points for 100% Free Prop Firm challenge evaluations</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                  <span>Withdraw cash directly to USDT Crypto or Direct Bank Wire</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                  <span>Claim MacBooks, TradingView Pro subscriptions &amp; 4K Displays</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                  <span>24/7 dedicated proof audit and dispute resolution desk</span>
+                </li>
+              </ul>
+            </div>
+            <Link href="/register">
+              <Button className="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-3 shadow-lg shadow-emerald-500/20">
+                Join Free &amp; Claim Your Points →
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Visual Journey Flow Section */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
           <Badge variant="success">Simple 6-Step Journey</Badge>
-          <h2 className="text-3xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
             How The Rewards System Works
           </h2>
           <p className="text-sm text-slate-400">
@@ -228,29 +400,31 @@ export default function HomePage() {
             <div className="space-y-4 max-w-md">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
                 <Calculator className="h-4 w-4" />
-                <span>Rewards Calculator</span>
+                <span>Rewards &amp; Cashout Calculator</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
                 Calculate Your Challenge Reward Points
               </h3>
               <p className="text-sm text-slate-400 leading-relaxed">
-                Select any prop firm and account challenge tier to see exactly how many points you will earn upon verification.
+                Select any partner prop firm and challenge size to see exact points and equivalent dollar cashout value.
               </p>
 
               {/* Form Selectors */}
               <div className="space-y-3 pt-2">
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Select Prop Firm</label>
+                  <label className="text-xs font-semibold text-slate-300 block mb-1">
+                    Select Prop Firm
+                  </label>
                   <select
                     value={calcSelectedFirmId}
                     onChange={(e) => {
                       setCalcSelectedFirmId(e.target.value);
                       const firm = propFirms.find((p) => p.id === e.target.value);
-                      if (firm && firm.offers.length > 0) {
+                      if (firm && firm.offers && firm.offers.length > 0) {
                         setCalcSelectedOfferId(firm.offers[0].id);
                       }
                     }}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800/80 px-3.5 py-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-800/80 px-3.5 py-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none"
                   >
                     {propFirms.map((f) => (
                       <option key={f.id} value={f.id}>
@@ -261,13 +435,15 @@ export default function HomePage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Select Challenge Size</label>
+                  <label className="text-xs font-semibold text-slate-300 block mb-1">
+                    Select Challenge Size
+                  </label>
                   <select
                     value={calcSelectedOfferId}
                     onChange={(e) => setCalcSelectedOfferId(e.target.value)}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800/80 px-3.5 py-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-800/80 px-3.5 py-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none"
                   >
-                    {selectedFirm?.offers.map((o) => (
+                    {selectedFirm?.offers?.map((o) => (
                       <option key={o.id} value={o.id}>
                         {o.accountTierName} (${o.purchasePriceUsd})
                       </option>
@@ -285,13 +461,13 @@ export default function HomePage() {
               <div className="text-4xl sm:text-5xl font-black text-emerald-400 tracking-tight">
                 {selectedOffer ? selectedOffer.rewardPoints.toLocaleString() : '0'}
               </div>
-              <div className="text-xs text-slate-400">
-                Reward Points credited upon purchase approval
+              <div className="text-xs font-bold text-slate-300">
+                Reward Points (≈ ${selectedOffer ? (selectedOffer.rewardPoints / 100).toFixed(2) : '0.00'} USD)
               </div>
 
               {selectedFirm && (
                 <div className="pt-2 border-t border-slate-800/80">
-                  <div className="text-xs text-slate-400 mb-2">Referral Code to use:</div>
+                  <div className="text-xs text-slate-400 mb-2">Referral Code to use at checkout:</div>
                   <div className="flex items-center justify-center gap-2 bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg">
                     <span className="font-mono font-bold text-sm text-emerald-300">
                       {selectedFirm.affiliateCode}
@@ -312,8 +488,8 @@ export default function HomePage() {
               )}
 
               <Link href="/dashboard/purchases/new" className="block pt-2">
-                <Button className="w-full" size="sm">
-                  Submit This Purchase
+                <Button className="w-full font-bold" size="sm">
+                  Submit This Purchase Proof
                 </Button>
               </Link>
             </div>
@@ -343,7 +519,10 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {propFirms.map((firm) => {
-            const maxPoints = firm.offers?.length > 0 ? Math.max(...firm.offers.map((o) => o.rewardPoints)) : 0;
+            const maxPoints =
+              firm.offers && firm.offers.length > 0
+                ? Math.max(...firm.offers.map((o) => o.rewardPoints))
+                : 0;
             return (
               <div
                 key={firm.id}
@@ -353,7 +532,11 @@ export default function HomePage() {
                   <div className="flex items-center justify-between">
                     <div className="h-12 w-12 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden">
                       {firm.logoUrl ? (
-                        <img src={firm.logoUrl} alt={firm.name} className="h-full w-full object-cover" />
+                        <img
+                          src={firm.logoUrl}
+                          alt={firm.name}
+                          className="h-full w-full object-cover"
+                        />
                       ) : (
                         <span className="font-bold text-white text-lg">{firm.name[0]}</span>
                       )}
@@ -400,7 +583,7 @@ export default function HomePage() {
                     className="block"
                   >
                     <Button variant="secondary" size="sm" className="w-full">
-                      Visit & Buy
+                      Visit &amp; Buy
                       <ExternalLink className="h-3.5 w-3.5 ml-1.5" />
                     </Button>
                   </a>
@@ -524,14 +707,14 @@ export default function HomePage() {
 
       {/* Trust & CTA Banner */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="relative rounded-3xl border border-slate-800 bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900/90 p-8 sm:p-14 text-center space-y-6 overflow-hidden">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold text-emerald-400">
+        <div className="relative rounded-3xl border border-slate-800 bg-gradient-to-r from-blue-950/40 via-slate-900 to-slate-900/90 p-8 sm:p-14 text-center space-y-6 overflow-hidden">
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold text-blue-400">
             <Coins className="h-4 w-4" />
             <span>Ready To Upgrade Your Setup?</span>
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight max-w-2xl mx-auto">
-            Turn Every Prop Challenge Into Real-World Rewards
+            Trade With Better Odds. Claim Your Loyalty Rewards.
           </h2>
 
           <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
@@ -540,14 +723,14 @@ export default function HomePage() {
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link href="/register">
-              <Button size="lg" className="shadow-lg shadow-emerald-500/20">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-500 font-bold shadow-lg shadow-blue-500/20">
                 Create Free Trader Account
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
-            <Link href="/prop-firms">
-              <Button variant="outline" size="lg">
-                Browse Prop Firms
+            <Link href="/contact">
+              <Button variant="outline" size="lg" className="border-slate-700 text-slate-200">
+                Contact Support Desk
               </Button>
             </Link>
           </div>

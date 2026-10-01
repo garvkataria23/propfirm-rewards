@@ -1,8 +1,18 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { Coins, ShieldCheck, ExternalLink, Heart } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Coins, ShieldCheck, Mail, Headphones, LifeBuoy } from 'lucide-react';
 
 export function Footer() {
+  const pathname = usePathname();
+  const isPortal = pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin');
+
+  if (isPortal) {
+    return null;
+  }
+
   return (
     <footer className="mt-auto border-t border-slate-800/80 bg-slate-950 text-slate-400">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -18,11 +28,17 @@ export function Footer() {
               </span>
             </div>
             <p className="text-sm text-slate-400 max-w-md leading-relaxed">
-              The premier loyalty rewards ecosystem for proprietary traders. Purchase eligible challenges using our referral codes, verify your purchase, accumulate points, and redeem for world-class tech and gift cards.
+              The premier loyalty rewards and cashback ecosystem for proprietary traders. Purchase eligible challenges using our referral codes, verify your purchase, accumulate points, and redeem for free challenges, crypto payouts, and tech gear.
             </p>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <ShieldCheck className="h-4 w-4 text-emerald-400" />
-              <span>Verified Prop-Firm Affiliate Partner Network</span>
+            <div className="flex items-center gap-4 text-xs text-slate-400">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                <span>Verified Partner Network</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Headphones className="h-4 w-4 text-blue-400" />
+                <span>24/7 Priority Support</span>
+              </div>
             </div>
           </div>
 
@@ -46,6 +62,12 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/contact" className="hover:text-emerald-400 transition-colors flex items-center gap-1">
+                  <span>Contact & Support</span>
+                  <span className="text-[10px] bg-blue-500/20 text-blue-300 font-semibold px-1 rounded">24/7</span>
+                </Link>
+              </li>
+              <li>
                 <Link href="/faq" className="hover:text-emerald-400 transition-colors">
                   FAQ & Rules
                 </Link>
@@ -60,6 +82,11 @@ export function Footer() {
               <li>
                 <Link href="/dashboard" className="hover:text-emerald-400 transition-colors">
                   Trader Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/wallet" className="hover:text-emerald-400 transition-colors">
+                  Trader Wallet
                 </Link>
               </li>
               <li>

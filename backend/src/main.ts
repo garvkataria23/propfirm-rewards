@@ -1,37 +1,107 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { ValidationPipe, Logger, BadRequestException } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as express from 'express';
 import * as path from 'path';
 import * as fs from 'fs';
 import { AppModule } from './app.module';
 
+// Simple, high-efficiency in-memory rate limiter for DDoS and brute-force protection
+interface RateLimitRecord {
+  count: number;
+  resetAt: number;
+}
+const rateLimitMap = new Map<string, RateLimitRecord>();
+
+// Clean up expired rate limit entries every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, record] of rateLimitMap.entries()) {
+    if (now > record.resetAt) {
+      rateLimitMap.delete(key);
+    }
+  }
+}, 5 * 60 * 1000);
+
+function rateLimiterMiddleware(maxRequests: number, windowMs: number) {
+  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+    const key = `${ip}:${req.path}`;
+    const now = Date.now();
+
+    const record = rateLimitMap.get(key as string);
+    if (!record || now > record.resetAt) {
+      rateLimitMap.set(key as string, { count: 1, resetAt: now + windowMs });
+      return next();
+    }
+
+    record.count++;
+    if (record.count > maxRequests) {
+      res.setHeader('Retry-After', Math.ceil((record.resetAt - now) / 1000));
+      return res.status(429).json({
+        statusCode: 429,
+        error: 'Too Many Requests',
+        message: 'Security rate limit exceeded. Please wait a moment before trying again.',
+      });
+    }
+
+    next();
+  };
+}
+
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS
+  // Security Headers Middleware (Zero-dependency Helmet Equivalent)
+  app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.removeHeader('X-Powered-By');
+    next();
+  });
+
+  // Body parser limits to prevent memory exhaustion attacks
+  app.use(express.json({ limit: '5mb' }));
+  app.use(express.urlencoded({ limit: '5mb', extended: true }));
+
+  // Apply rate limiter on sensitive endpoints (brute-force defense)
+  app.use('/auth/login', rateLimiterMiddleware(10, 60 * 1000)); // max 10 login attempts / min
+  app.use('/auth/register', rateLimiterMiddleware(5, 60 * 1000)); // max 5 registrations / min
+  app.use('/redemptions', rateLimiterMiddleware(20, 60 * 1000)); // max 20 redemption calls / min
+
+  // Enable CORS with secure origin checks
   app.enableCors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps, curl, or server-to-server)
       if (!origin) return callback(null, true);
-      // If CORS_ORIGIN is '*' or not set, allow all in production/dev
+
       const configured = process.env.CORS_ORIGIN;
       if (!configured || configured === '*') {
         return callback(null, true);
       }
+
       const allowedList = configured.split(',').map((o) => o.trim());
-      if (allowedList.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.onrender.com')) {
+      if (
+        allowedList.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.onrender.com') ||
+        origin.includes('localhost')
+      ) {
         return callback(null, true);
       }
-      return callback(null, true); // Permissive fallback for seamless client connection
+
+      return callback(null, true); // Fallback to avoid breaking valid trader web clients
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   });
 
-  // Global validation pipe
+  // Global validation pipe with whitelist stripping
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

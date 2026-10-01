@@ -25,6 +25,9 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const isPortal = pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin');
+  if (isPortal) return null;
+
   const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
 
   const navLinks = [
@@ -32,6 +35,7 @@ export function Navbar() {
     { label: 'Prop Firms', href: '/prop-firms', icon: Layers },
     { label: 'Rewards Store', href: '/rewards', icon: Gift },
     { label: 'FAQ', href: '/faq', icon: ShieldCheck },
+    { label: 'Contact', href: '/contact', icon: ShieldCheck },
   ];
 
   return (

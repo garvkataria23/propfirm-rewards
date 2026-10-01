@@ -13,6 +13,7 @@ import {
   Gift,
   ShieldCheck,
   Bell,
+  Wallet,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -29,10 +30,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#070e20] flex items-center justify-center text-slate-400">
+      <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center text-slate-500">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-          <span className="text-sm font-medium">Loading PropNation portal...</span>
+          <div className="h-8 w-8 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
+          <span className="text-sm font-semibold text-slate-700">Loading Trader Portal...</span>
         </div>
       </div>
     );
@@ -41,35 +42,35 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-[#060b18] text-slate-100 flex flex-col lg:flex-row">
-      {/* Desktop Persistent Left Sidebar */}
-      <div className="hidden lg:block shrink-0 h-screen sticky top-0 z-30">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col lg:flex-row antialiased">
+      {/* Desktop Persistent Left Sidebar (High contrast sleek navy) */}
+      <div className="hidden lg:block shrink-0 h-screen sticky top-0 z-30 shadow-xl border-r border-slate-800">
         <PropNationSidebar />
       </div>
 
       {/* Mobile Top Header */}
-      <div className="lg:hidden sticky top-0 z-40 bg-[#070e20]/95 backdrop-blur-md border-b border-[#14234b]/60 px-4 py-3 flex items-center justify-between">
+      <div className="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex items-center justify-between shadow-xs">
         <button
           onClick={() => setMobileSidebarOpen(true)}
-          className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white"
+          className="p-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-200 transition-colors"
         >
           <Menu className="h-5 w-5" />
         </button>
 
         <Link href="/dashboard" className="flex items-center">
-          <span className="text-lg font-black tracking-tight text-white flex items-center">
-            <span className="text-blue-500 font-extrabold">Prop</span>
+          <span className="text-lg font-black tracking-tight text-slate-900 flex items-center">
+            <span className="text-blue-600 font-extrabold">Prop</span>
             <span>Nation</span>
           </span>
         </Link>
 
         <div className="flex items-center gap-2">
           <Link
-            href="/dashboard/points"
-            className="flex items-center gap-1.5 bg-blue-950/60 border border-blue-500/30 text-blue-300 px-2.5 py-1 rounded-full text-xs font-bold"
+            href="/dashboard/wallet"
+            className="flex items-center gap-1.5 bg-blue-50 border border-blue-200 text-blue-700 px-2.5 py-1 rounded-full text-xs font-bold"
           >
-            <Coins className="h-3.5 w-3.5 text-blue-400" />
-            <span>{(user.points?.available || 0).toLocaleString()}</span>
+            <Wallet className="h-3.5 w-3.5 text-blue-600" />
+            <span>{(user.points?.available || 0).toLocaleString()} PTS</span>
           </Link>
         </div>
       </div>
@@ -78,7 +79,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {mobileSidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
             onClick={() => setMobileSidebarOpen(false)}
           />
           <div className="relative flex-1 flex flex-col max-w-xs w-full bg-[#070e20] z-50 shadow-2xl">
@@ -94,17 +95,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
 
       {/* Main Content Pane */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Desktop Appbar */}
-        <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-[#14234b]/40 bg-[#070e20]/60 backdrop-blur-sm shrink-0">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#f8fafc]">
+        {/* Top Desktop Appbar - Clean Whitish Design */}
+        <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-slate-200/90 bg-white/90 backdrop-blur-md shrink-0 shadow-xs">
           <div className="flex items-center gap-3">
-            <span className="text-xs uppercase tracking-wider font-bold text-[#5f75a6]">
+            <span className="text-xs uppercase tracking-wider font-bold text-slate-500">
               Trader Portal
             </span>
-            <span className="text-slate-600">/</span>
-            <span className="text-xs font-semibold text-slate-300">
-              Account Status:{' '}
-              <span className="text-emerald-400 font-bold">{user.status}</span>
+            <span className="text-slate-300">/</span>
+            <span className="text-xs font-medium text-slate-600 flex items-center gap-1.5">
+              Account Status:
+              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2 py-0.5 rounded-md font-bold text-xs">
+                {user.status}
+              </span>
             </span>
           </div>
 
@@ -114,7 +117,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-purple-500/30 text-purple-300 hover:bg-purple-950/40"
+                  className="border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100"
                 >
                   <ShieldCheck className="h-3.5 w-3.5 mr-1" />
                   Admin Panel
@@ -122,28 +125,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </Link>
             )}
 
-            <Link href="/dashboard/notifications" className="relative p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/50 transition-colors">
+            <Link
+              href="/dashboard/notifications"
+              className="relative p-2 text-slate-500 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition-colors"
+            >
               <Bell className="h-4 w-4" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-blue-500" />
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-blue-600" />
+            </Link>
+
+            {/* Trader Wallet & Points Quick Pills */}
+            <Link href="/dashboard/wallet">
+              <div className="flex items-center gap-2 bg-blue-50/80 border border-blue-200/80 hover:border-blue-300 px-3.5 py-1.5 rounded-full text-xs font-bold text-blue-700 transition-all cursor-pointer shadow-xs">
+                <Wallet className="h-3.5 w-3.5 text-blue-600" />
+                <span>Wallet: ${((user.points?.available || 0) / 100).toFixed(2)}</span>
+              </div>
             </Link>
 
             <Link href="/dashboard/points">
-              <div className="flex items-center gap-2 bg-[#0c1938] border border-blue-500/20 hover:border-blue-500/40 px-3.5 py-1.5 rounded-full text-xs font-bold text-blue-300 transition-all cursor-pointer">
-                <Coins className="h-3.5 w-3.5 text-blue-400" />
-                <span>{(user.points?.available || 0).toLocaleString()} Points</span>
+              <div className="flex items-center gap-2 bg-emerald-50/80 border border-emerald-200/80 hover:border-emerald-300 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-700 transition-all cursor-pointer shadow-xs">
+                <Coins className="h-3.5 w-3.5 text-emerald-600" />
+                <span>{(user.points?.available || 0).toLocaleString()} PTS</span>
               </div>
             </Link>
 
             <Link href="/dashboard/purchases/new">
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/25">
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm font-semibold">
                 <PlusCircle className="h-3.5 w-3.5 mr-1.5" />
-                Submit Purchase
+                Submit Proof
               </Button>
             </Link>
 
             <Link href="/rewards">
-              <Button variant="outline" size="sm" className="border-slate-700 text-slate-200">
-                <Gift className="h-3.5 w-3.5 mr-1.5 text-blue-400" />
+              <Button variant="outline" size="sm" className="border-slate-300 bg-white text-slate-700 hover:bg-slate-50 shadow-xs font-medium">
+                <Gift className="h-3.5 w-3.5 mr-1.5 text-blue-600" />
                 Store
               </Button>
             </Link>
