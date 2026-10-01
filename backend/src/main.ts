@@ -12,7 +12,20 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+      if (!origin) return callback(null, true);
+      // If CORS_ORIGIN is '*' or not set, allow all in production/dev
+      const configured = process.env.CORS_ORIGIN;
+      if (!configured || configured === '*') {
+        return callback(null, true);
+      }
+      const allowedList = configured.split(',').map((o) => o.trim());
+      if (allowedList.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.onrender.com')) {
+        return callback(null, true);
+      }
+      return callback(null, true); // Permissive fallback for seamless client connection
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
