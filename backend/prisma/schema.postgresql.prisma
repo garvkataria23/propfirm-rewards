@@ -1,0 +1,287 @@
+// Prisma schema configured for PostgreSQL (Neon, Supabase, Railway, Render, Docker)
+// To use: copy this to schema.prisma or run: npx prisma db push --schema=prisma/schema.postgresql.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  phone         String?
+  country       String?
+  avatarUrl     String?
+  role          String    @default("USER") // USER, ADMIN
+  status        String    @default("ACTIVE") // ACTIVE, SUSPENDED, PENDING
+  emailVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  addresses     UserAddress[]
+  submissions   PurchaseSubmission[] @relation("UserSubmissions")
+  reviewedSubmissions PurchaseSubmission[] @relation("AdminReviewedSubmissions")
+  pointsLedger  PointsLedger[]       @relation("UserPoints")
+  createdPoints PointsLedger[]       @relation("AdminCreatedPoints")
+  redemptions   Redemption[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+
+  @@index([email])
+  @@index([role])
+  @@index([status])
+}
+
+model UserAddress {
+  id           String       @id @default(uuid())
+  userId       String
+  fullName     String
+  phone        String
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  postalCode   String
+  country      String
+  isDefault    Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  redemptions  Redemption[]
+
+  @@index([userId])
+}
+
+model PropFirm {
+  id               String               @id @default(uuid())
+  name             String
+  slug             String               @unique
+  logoUrl          String?
+  description      String
+  websiteUrl       String
+  affiliateCode    String
+  affiliateUrl     String
+  eligibilityTerms String?
+  isActive         Boolean              @default(true)
+  sortOrder        Int                  @default(0)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  offers           PropFirmOffer[]
+  submissions      PurchaseSubmission[]
+
+  @@index([slug])
+  @@index([isActive])
+}
+
+model PropFirmOffer {
+  id               String               @id @default(uuid())
+  propFirmId       String
+  accountTierName  String
+  purchasePriceUsd Float
+  rewardPoints     Int
+  description      String?
+  isActive         Boolean              @default(true)
+  sortOrder        Int                  @default(0)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  propFirm         PropFirm             @relation(fields: [propFirmId], references: [id], onDelete: Cascade)
+  submissions      PurchaseSubmission[]
+
+  @@index([propFirmId])
+  @@index([isActive])
+}
+
+model PurchaseSubmission {
+  id                   String          @id @default(uuid())
+  submissionCode       String          @unique
+  userId               String
+  propFirmId           String
+  offerId              String?
+  accountType          String
+  orderId              String
+  accountId            String?
+  purchaseDate         DateTime
+  purchaseAmountUsd    Float
+  emailUsed            String
+  referralCodeUsed     String
+  notes                String?
+  status               String          @default("PENDING")
+  fraudStatus          String          @default("NORMAL")
+  rejectionReason      String?
+  infoRequestedMessage String?
+  userResubmissionNotes String?
+  reviewedById         String?
+  reviewedAt           DateTime?
+  pointsAwarded        Int?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+
+  user                 User            @relation("UserSubmissions", fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy           User?           @relation("AdminReviewedSubmissions", fields: [reviewedById], references: [id])
+  propFirm             PropFirm        @relation(fields: [propFirmId], references: [id])
+  offer                PropFirmOffer?  @relation(fields: [offerId], references: [id])
+  proofs               PurchaseProof[]
+  pointsLedger         PointsLedger[]
+
+  @@index([userId])
+  @@index([propFirmId])
+  @@index([orderId])
+  @@index([status])
+  @@index([fraudStatus])
+}
+
+model PurchaseProof {
+  id           String             @id @default(uuid())
+  submissionId String
+  fileUrl      String
+  fileName     String
+  fileType     String
+  fileSize     Int
+  createdAt    DateTime           @default(now())
+
+  submission   PurchaseSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([submissionId])
+}
+
+model PointsLedger {
+  id           String              @id @default(uuid())
+  userId       String
+  submissionId String?
+  redemptionId String?
+  type         String
+  points       Int
+  balanceAfter Int
+  description  String
+  reason       String?
+  createdById  String?
+  createdAt    DateTime            @default(now())
+
+  user         User                @relation("UserPoints", fields: [userId], references: [id], onDelete: Cascade)
+  submission   PurchaseSubmission? @relation(fields: [submissionId], references: [id])
+  redemption   Redemption?         @relation(fields: [redemptionId], references: [id])
+  createdBy    User?               @relation("AdminCreatedPoints", fields: [createdById], references: [id])
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model RewardCategory {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  icon      String?
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+
+  rewards   Reward[]
+
+  @@index([slug])
+}
+
+model Reward {
+  id               String         @id @default(uuid())
+  categoryId       String
+  name             String
+  slug             String         @unique
+  description      String
+  specifications   String?
+  imageUrl         String
+  pointsRequired   Int
+  stock            Int            @default(0)
+  isUnlimitedStock Boolean        @default(false)
+  isActive         Boolean        @default(true)
+  sortOrder        Int            @default(0)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  category         RewardCategory @relation(fields: [categoryId], references: [id])
+  redemptions      Redemption[]
+
+  @@index([categoryId])
+  @@index([slug])
+  @@index([isActive])
+}
+
+model Redemption {
+  id                String         @id @default(uuid())
+  redemptionCode    String         @unique
+  userId            String
+  rewardId          String
+  pointsSpent       Int
+  status            String         @default("PENDING")
+  shippingAddressId String?
+  courier           String?
+  trackingNumber    String?
+  shippingNotes     String?
+  adminNotes        String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reward            Reward         @relation(fields: [rewardId], references: [id])
+  shippingAddress   UserAddress?   @relation(fields: [shippingAddressId], references: [id])
+  pointsTransactions PointsLedger[]
+
+  @@index([userId])
+  @@index([rewardId])
+  @@index([status])
+  @@index([redemptionCode])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      String   @default("SYSTEM")
+  isRead    Boolean  @default(false)
+  linkUrl   String?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  adminId       String?
+  action        String
+  entity        String
+  entityId      String
+  previousValue String?
+  newValue      String?
+  ipAddress     String?
+  userAgent     String?
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  admin         User?    @relation(fields: [adminId], references: [id])
+
+  @@index([adminId])
+  @@index([action])
+  @@index([entity])
+  @@index([createdAt])
+}
+
+model SystemSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
+}
