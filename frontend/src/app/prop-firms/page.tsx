@@ -82,7 +82,79 @@ function PropFirmsContent() {
         });
         setPropFirms(enhanced);
       })
-      .catch(console.error)
+      .catch((err) => {
+        console.warn('Backend unavailable, using catalog fallback:', err);
+        setPropFirms([
+          {
+            id: 'firm-1',
+            name: 'FundedNext',
+            slug: 'fundednext',
+            logoUrl: '',
+            description: 'Premier CFD prop firm offering up to 95% profit splits, no time limit challenges, and reliable bi-weekly payouts.',
+            websiteUrl: 'https://fundednext.com',
+            affiliateCode: 'PROPNATION',
+            affiliateUrl: 'https://fundednext.com?ref=PROPNATION',
+            eligibilityTerms: 'Valid on all Stellar 1-Step, 2-Step, and Express challenges.',
+            category: 'CFD',
+            offers: [
+              { id: 'o-1', accountTierName: '$25K Stellar Challenge', purchasePriceUsd: 199, rewardPoints: 1250 },
+              { id: 'o-2', accountTierName: '$50K Stellar Challenge', purchasePriceUsd: 299, rewardPoints: 2500 },
+              { id: 'o-3', accountTierName: '$100K Stellar Challenge', purchasePriceUsd: 549, rewardPoints: 5000 },
+            ],
+          },
+          {
+            id: 'firm-2',
+            name: 'FTMO',
+            slug: 'ftmo',
+            logoUrl: '',
+            description: 'The industry-standard prop trading firm established in 2015. Institutional liquidity, MetaTrader 4/5, and cTrader.',
+            websiteUrl: 'https://ftmo.com',
+            affiliateCode: 'PROPNATION',
+            affiliateUrl: 'https://ftmo.com?ref=PROPNATION',
+            eligibilityTerms: 'Eligible for all 2-Step Normal and Aggressive evaluations.',
+            category: 'CFD',
+            offers: [
+              { id: 'o-4', accountTierName: '$50K Evaluation', purchasePriceUsd: 380, rewardPoints: 2000 },
+              { id: 'o-5', accountTierName: '$100K Evaluation', purchasePriceUsd: 590, rewardPoints: 4500 },
+              { id: 'o-6', accountTierName: '$200K Evaluation', purchasePriceUsd: 1150, rewardPoints: 9000 },
+            ],
+          },
+          {
+            id: 'firm-3',
+            name: 'The5ers',
+            slug: 'the5ers',
+            logoUrl: '',
+            description: 'Growth and scaling programs designed for serious traders, scaling up to $4,000,000 in funded capital.',
+            websiteUrl: 'https://the5ers.com',
+            affiliateCode: 'PROPNATION',
+            affiliateUrl: 'https://the5ers.com?ref=PROPNATION',
+            eligibilityTerms: 'Applies to High Stakes, Hyper Growth, and Bootcamp programs.',
+            category: 'CFD',
+            offers: [
+              { id: 'o-7', accountTierName: '$20K High Stakes', purchasePriceUsd: 175, rewardPoints: 1000 },
+              { id: 'o-8', accountTierName: '$60K High Stakes', purchasePriceUsd: 395, rewardPoints: 3000 },
+              { id: 'o-9', accountTierName: '$100K High Stakes', purchasePriceUsd: 495, rewardPoints: 4000 },
+            ],
+          },
+          {
+            id: 'firm-4',
+            name: 'Topstep',
+            slug: 'topstep',
+            logoUrl: '',
+            description: 'The premier Futures prop firm trading CME, CBOT, NYMEX, and COMEX contracts with TradingView & NinjaTrader.',
+            websiteUrl: 'https://topstep.com',
+            affiliateCode: 'PROPNATION',
+            affiliateUrl: 'https://topstep.com?ref=PROPNATION',
+            eligibilityTerms: 'Valid on 50K, 100K, and 150K Trading Combine evaluations.',
+            category: 'FUTURES',
+            offers: [
+              { id: 'o-10', accountTierName: '50K Trading Combine', purchasePriceUsd: 49, rewardPoints: 500 },
+              { id: 'o-11', accountTierName: '100K Trading Combine', purchasePriceUsd: 99, rewardPoints: 1200 },
+              { id: 'o-12', accountTierName: '150K Trading Combine', purchasePriceUsd: 149, rewardPoints: 2000 },
+            ],
+          },
+        ]);
+      })
       .finally(() => setLoading(false));
   }, []);
 

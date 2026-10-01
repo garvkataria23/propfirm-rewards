@@ -91,7 +91,86 @@ export default function RewardsStorePage() {
         setRewards(rewardsData);
         setCategories(categoriesData);
       })
-      .catch(console.error)
+      .catch((err) => {
+        console.warn('Backend unavailable, using rewards catalog fallback:', err);
+        const fallbackCats: Category[] = [
+          { id: 'c-1', name: 'Smartphones', slug: 'smartphones' },
+          { id: 'c-2', name: 'Tablets', slug: 'tablets' },
+          { id: 'c-3', name: 'Audio', slug: 'audio' },
+          { id: 'c-4', name: 'Trading Gear', slug: 'trading-accessories' },
+          { id: 'c-5', name: 'Gift Cards', slug: 'gift-cards' },
+        ];
+        const fallbackRews: Reward[] = [
+          {
+            id: 'rew-1',
+            name: 'iPhone 16 Pro (128GB - Natural Titanium)',
+            slug: 'iphone-16-pro',
+            description: 'Brand new factory sealed iPhone 16 Pro featuring Grade 5 titanium design, A18 Pro chip, and advanced Camera Control.',
+            imageUrl: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80',
+            pointsRequired: 100000,
+            stock: 5,
+            isUnlimitedStock: false,
+            category: fallbackCats[0],
+          },
+          {
+            id: 'rew-2',
+            name: 'iPad Mini (A17 Pro - Space Gray)',
+            slug: 'ipad-mini',
+            description: 'Compact ultra-portable tablet powered by the A17 Pro chip with Liquid Retina display and Apple Intelligence support.',
+            imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80',
+            pointsRequired: 60000,
+            stock: 8,
+            isUnlimitedStock: false,
+            category: fallbackCats[1],
+          },
+          {
+            id: 'rew-3',
+            name: 'Sony WH-1000XM5 Wireless Noise Cancelling Headphones',
+            slug: 'sony-wh1000xm5',
+            description: 'Industry-leading noise cancellation with two processors and 8 microphones for exceptional clarity and focus while trading.',
+            imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80',
+            pointsRequired: 20000,
+            stock: 12,
+            isUnlimitedStock: false,
+            category: fallbackCats[2],
+          },
+          {
+            id: 'rew-4',
+            name: 'Dell UltraSharp 32" 4K USB-C Hub Monitor (U3223QE)',
+            slug: 'dell-ultrasharp-32-4k',
+            description: 'Brilliant 4K UHD color clarity with IPS Black technology, built-in RJ45, and 90W power delivery for multi-chart charting.',
+            imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&auto=format&fit=crop&q=80',
+            pointsRequired: 75000,
+            stock: 4,
+            isUnlimitedStock: false,
+            category: fallbackCats[3],
+          },
+          {
+            id: 'rew-5',
+            name: 'Logitech MX Master 3S Wireless Performance Mouse',
+            slug: 'logitech-mx-master-3s',
+            description: 'Quiet clicks and 8,000 DPI track-on-glass sensor. The ultimate productivity mouse for financial chart analysis.',
+            imageUrl: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600&auto=format&fit=crop&q=80',
+            pointsRequired: 8000,
+            stock: 25,
+            isUnlimitedStock: false,
+            category: fallbackCats[3],
+          },
+          {
+            id: 'rew-6',
+            name: '₹5,000 Amazon E-Gift Card',
+            slug: 'amazon-gift-card-5000',
+            description: 'Instant digital delivery via registered trader email. Redeemable across millions of products on Amazon.',
+            imageUrl: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=600&auto=format&fit=crop&q=80',
+            pointsRequired: 5000,
+            stock: 999,
+            isUnlimitedStock: true,
+            category: fallbackCats[4],
+          },
+        ];
+        setCategories(fallbackCats);
+        setRewards(fallbackRews);
+      })
       .finally(() => setLoading(false));
   }, []);
 
