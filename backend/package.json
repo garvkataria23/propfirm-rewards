@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "node scripts/setup-prisma.js && nest build",
+    "build": "node scripts/setup-prisma.js && npx @nestjs/cli build",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
