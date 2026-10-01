@@ -1,0 +1,14 @@
+{
+  "name": "propfirm-rewards-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PropFirm Affiliate Rewards Full-Stack Platform Monorepo",
+  "scripts": {
+    "build": "cd backend && npm install && npm run build",
+    "start": "cd backend && npm run start:prod",
+    "build:backend": "cd backend && npm install && npm run build",
+    "start:backend": "cd backend && npm run start:prod",
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "start:frontend": "cd frontend && npm run start"
+  }
+}
