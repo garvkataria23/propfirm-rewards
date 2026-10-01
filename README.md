@@ -39,12 +39,16 @@ SUBMIT PURCHASE PROOF
 
 ---
 
-## 🚀 Live Services & Ports
+## 🚀 Live Deployments & Services
 
-- **Frontend Application:** [http://localhost:3000](http://localhost:3000)
-- **Backend REST API:** [http://localhost:4000](http://localhost:4000)
-- **Swagger OpenAPI Documentation:** [http://localhost:4000/api/docs](http://localhost:4000/api/docs)
-- **Public Uploads Directory:** [http://localhost:4000/uploads](http://localhost:4000/uploads)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/garvkataria23/propfirm-rewards)
+
+- **Production Frontend (Vercel):** [https://frontend-eta-beryl-ezh34u4upe.vercel.app](https://frontend-eta-beryl-ezh34u4upe.vercel.app)
+- **1-Click Render Cloud Hosting:** [https://render.com/deploy?repo=https://github.com/garvkataria23/propfirm-rewards](https://render.com/deploy?repo=https://github.com/garvkataria23/propfirm-rewards)
+- **GitHub Repository:** [https://github.com/garvkataria23/propfirm-rewards](https://github.com/garvkataria23/propfirm-rewards)
+- **Local Frontend:** [http://localhost:3000](http://localhost:3000)
+- **Local Backend API:** [http://localhost:4000](http://localhost:4000)
+- **Swagger Documentation:** [http://localhost:4000/api/docs](http://localhost:4000/api/docs)
 
 ---
 
