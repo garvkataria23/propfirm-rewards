@@ -42,15 +42,17 @@ export function Navbar() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left: Brand Logo */}
         <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-3 group">
-          <div className="relative h-10 w-10 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-md shadow-black/10 flex items-center justify-center p-1 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
+          <div className="relative h-10 w-10 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-md shadow-black/10 flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
             <img
-              src="/logo.png"
+              src="/pn-logo-hd.png?v=3"
               alt="Prop Nation PN Logo"
-              className="h-full w-full object-contain select-none"
+              className="h-full w-full object-contain rounded-lg select-none"
             />
           </div>
-          <span className="text-lg font-[900] tracking-tight text-slate-900 dark:text-white leading-tight flex items-center">
-            PROP NATION<span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 align-super ml-0.5">®</span>
+          <span className="text-lg font-[900] tracking-tight leading-tight flex items-center">
+            <span className="text-slate-900 dark:text-white">PROP</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-300 ml-1.5">NATION</span>
+            <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 align-super ml-0.5">®</span>
           </span>
         </Link>
 

@@ -24,16 +24,18 @@ export function Footer() {
           {/* Brand Logo & Tagline */}
           <div className="space-y-3">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative h-11 w-11 shrink-0 rounded-xl bg-[#06090e] border border-slate-800 shadow-md flex items-center justify-center p-1 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
+              <div className="relative h-11 w-11 shrink-0 rounded-xl bg-[#06090e] border border-slate-800 shadow-md flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
                 <img
-                  src="/logo.png"
+                  src="/pn-logo-hd.png?v=3"
                   alt="Prop Nation PN Logo"
-                  className="h-full w-full object-contain select-none"
+                  className="h-full w-full object-contain rounded-lg select-none"
                 />
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-[900] tracking-tight text-white leading-tight">
-                  PROP NATION<span className="text-xs font-normal text-emerald-400 align-super ml-0.5">&reg;</span>
+                <span className="text-xl font-[900] tracking-tight text-white leading-tight flex items-center">
+                  <span>PROP</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 ml-1.5">NATION</span>
+                  <span className="text-xs font-normal text-emerald-400 align-super ml-0.5">&reg;</span>
                 </span>
                 <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase -mt-0.5">
                   Trade • Earn • Get Rewarded
