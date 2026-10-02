@@ -55,7 +55,7 @@ const ANNOUNCEMENTS: Announcement[] = [
     date: 'March 20, 2026',
     tag: 'PARTNER UPDATE',
     content:
-      'Futures traders rejoice! You can now use PropNation referral codes when buying Tradovate and NinjaTrader evaluation accounts on Topstep and Apex Trader Funding to earn instant verified points.',
+      'Futures traders rejoice! You can now use universal referral code NATION when buying Tradovate and NinjaTrader evaluation accounts on Topstep and Apex Trader Funding to earn instant verified points.',
     ctaText: 'Browse Futures Firms',
     ctaLink: '/prop-firms?type=futures',
   },
