@@ -85,10 +85,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
             onClick={() => setMobileSidebarOpen(false)}
           />
-          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-[#070e20] z-50 shadow-2xl">
+          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white dark:bg-[#070e20] z-50 shadow-2xl transition-colors">
             <button
               onClick={() => setMobileSidebarOpen(false)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 z-10"
+              className="absolute top-4 right-4 p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 z-10 cursor-pointer"
             >
               <X className="h-5 w-5" />
             </button>

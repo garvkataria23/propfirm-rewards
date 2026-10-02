@@ -130,7 +130,7 @@ export default function RewardDetailPage() {
       <div>
         <Link
           href="/rewards"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Rewards Marketplace</span>
@@ -139,11 +139,11 @@ export default function RewardDetailPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
         {/* Product Image */}
-        <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 overflow-hidden space-y-4">
-          <div className="aspect-square w-full rounded-2xl bg-slate-950 overflow-hidden relative">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden space-y-4 dark:border-slate-800 dark:bg-slate-900/60">
+          <div className="aspect-square w-full rounded-2xl bg-slate-100 overflow-hidden relative dark:bg-slate-950">
             <img src={reward.imageUrl} alt={reward.name} className="h-full w-full object-cover" />
             <div className="absolute top-3 left-3">
-              <Badge variant="default" className="bg-slate-950/80 backdrop-blur-md">
+              <Badge variant="default" className="bg-slate-900/80 text-white backdrop-blur-md dark:bg-slate-950/80">
                 {reward.category?.name}
               </Badge>
             </div>
@@ -154,40 +154,40 @@ export default function RewardDetailPage() {
         <div className="space-y-6">
           <div className="space-y-2">
             <Badge variant="purple">{reward.category?.name}</Badge>
-            <h1 className="text-3xl font-black text-white tracking-tight">{reward.name}</h1>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{reward.name}</h1>
           </div>
 
           {/* Points Box */}
-          <div className="rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-5 space-y-2">
-            <span className="text-xs uppercase tracking-wider font-bold text-emerald-400">
+          <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/20 p-5 space-y-2">
+            <span className="text-xs uppercase tracking-wider font-bold text-emerald-600 dark:text-emerald-400">
               Required Points
             </span>
             <div className="flex items-center gap-2">
-              <Coins className="h-7 w-7 text-emerald-400" />
-              <span className="text-3xl font-black text-white">
+              <Coins className="h-7 w-7 text-emerald-600 dark:text-emerald-400" />
+              <span className="text-3xl font-black text-slate-900 dark:text-white">
                 {reward.pointsRequired.toLocaleString()}
               </span>
-              <span className="text-sm text-slate-400">Points</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">Points</span>
             </div>
 
             {user && (
-              <div className="text-xs text-slate-300 pt-2 border-t border-slate-800/80 flex items-center justify-between">
+              <div className="text-xs text-slate-600 dark:text-slate-300 pt-2 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between">
                 <span>Your Balance:</span>
-                <span className={canAfford ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>
+                <span className={canAfford ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-rose-600 dark:text-rose-400 font-bold'}>
                   {userBalance.toLocaleString()} PTS ({canAfford ? 'Eligible' : 'Insufficient Points'})
                 </span>
               </div>
             )}
           </div>
 
-          <p className="text-sm text-slate-300 leading-relaxed">{reward.description}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{reward.description}</p>
 
           {reward.specifications && (
-            <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4 space-y-2 text-xs">
-              <strong className="text-slate-200 block uppercase tracking-wider">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-2 text-xs dark:border-slate-800 dark:bg-slate-900/40">
+              <strong className="text-slate-700 dark:text-slate-200 block uppercase tracking-wider">
                 Specifications
               </strong>
-              <p className="text-slate-400 leading-relaxed">{reward.specifications}</p>
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">{reward.specifications}</p>
             </div>
           )}
 
@@ -214,13 +214,13 @@ export default function RewardDetailPage() {
               </Link>
             )}
 
-            <div className="grid grid-cols-2 gap-3 text-xs text-slate-400 pt-2">
+            <div className="grid grid-cols-2 gap-3 text-xs text-slate-500 dark:text-slate-400 pt-2">
               <div className="flex items-center gap-2">
-                <Truck className="h-4 w-4 text-emerald-400" />
+                <Truck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 <span>Express Worldwide Courier</span>
               </div>
               <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 <span>100% Brand New Genuine</span>
               </div>
             </div>
@@ -244,10 +244,10 @@ export default function RewardDetailPage() {
               <CheckCircle2 className="h-8 w-8" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-lg font-bold text-white">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                 Order {redemptionSuccess.redemption.redemptionCode} Placed!
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Remaining points balance: {redemptionSuccess.remainingBalance.toLocaleString()} PTS
               </p>
             </div>
@@ -261,28 +261,28 @@ export default function RewardDetailPage() {
         ) : (
           <div className="space-y-4">
             {redemptionError && (
-              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs">
+              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs">
                 {redemptionError}
               </div>
             )}
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-300">Recipient Name</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Recipient Name</label>
               <input
                 type="text"
                 value={address.fullName}
                 onChange={(e) => setAddress({ ...address, fullName: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-white"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-300">Street Address</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Street Address</label>
               <input
                 type="text"
                 value={address.addressLine1}
                 onChange={(e) => setAddress({ ...address, addressLine1: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-white"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
               />
             </div>
 
@@ -292,18 +292,18 @@ export default function RewardDetailPage() {
                 placeholder="City"
                 value={address.city}
                 onChange={(e) => setAddress({ ...address, city: e.target.value })}
-                className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-white"
+                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
               />
               <input
                 type="text"
                 placeholder="Postal Code"
                 value={address.postalCode}
                 onChange={(e) => setAddress({ ...address, postalCode: e.target.value })}
-                className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-white"
+                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
               />
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
               <Button variant="ghost" size="sm" onClick={() => setIsModalOpen(false)}>
                 Cancel
               </Button>

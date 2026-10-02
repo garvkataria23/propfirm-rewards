@@ -124,19 +124,19 @@ export default function ActivityPage() {
         <div>
           <div className="flex items-center gap-2">
             <Badge variant="purple">Live Feed</Badge>
-            <span className="text-xs text-slate-400">Real-time user actions</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">Real-time user actions</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1 flex items-center gap-2.5">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-1 flex items-center gap-2.5">
             <ActivityIcon className="h-7 w-7 text-blue-500" />
             Account Activity
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Complete chronological record of your submissions, point rewards, and redemptions.
           </p>
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-2 bg-[#091126] border border-[#14234b] p-1 rounded-xl self-start sm:self-auto">
+        <div className="flex items-center gap-2 bg-slate-100 dark:bg-[#091126] border border-slate-200 dark:border-[#14234b] p-1 rounded-xl self-start sm:self-auto shadow-xs">
           {(['ALL', 'POINTS', 'PURCHASE', 'REDEMPTION'] as const).map((tab) => (
             <button
               key={tab}
@@ -144,7 +144,7 @@ export default function ActivityPage() {
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 filter === tab
                   ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
               {tab === 'ALL' ? 'All Activity' : tab}
@@ -154,63 +154,63 @@ export default function ActivityPage() {
       </div>
 
       {/* Activity Timeline List */}
-      <Card className="p-6 bg-[#070e20] border-[#14234b]/60">
+      <Card className="p-6 bg-white dark:bg-[#070e20] border-slate-200/90 dark:border-[#14234b]/60 shadow-sm">
         {loading ? (
           <div className="space-y-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-16 rounded-xl bg-slate-900/60 animate-pulse border border-slate-800" />
+              <div key={i} className="h-16 rounded-xl bg-slate-100 dark:bg-slate-900/60 animate-pulse border border-slate-200 dark:border-slate-800" />
             ))}
           </div>
         ) : filteredEvents.length === 0 ? (
           <div className="text-center py-12 space-y-3">
-            <Clock className="h-10 w-10 text-slate-600 mx-auto" />
-            <h3 className="text-base font-bold text-white">No activity found</h3>
-            <p className="text-xs text-slate-400">There are no records under the selected category.</p>
+            <Clock className="h-10 w-10 text-slate-400 dark:text-slate-600 mx-auto" />
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">No activity found</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">There are no records under the selected category.</p>
           </div>
         ) : (
-          <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-[#14234b]">
+          <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-200 dark:before:bg-[#14234b]">
             {filteredEvents.map((evt) => {
               let Icon = Coins;
-              let iconColor = 'text-blue-400 bg-blue-950/60 border-blue-500/30';
+              let iconColor = 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border-blue-200 dark:border-blue-500/30';
               if (evt.type === 'PURCHASE') {
                 Icon = Upload;
-                iconColor = 'text-amber-400 bg-amber-950/60 border-amber-500/30';
+                iconColor = 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-500/30';
               } else if (evt.type === 'REDEMPTION') {
                 Icon = Gift;
-                iconColor = 'text-purple-400 bg-purple-950/60 border-purple-500/30';
+                iconColor = 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60 border-purple-200 dark:border-purple-500/30';
               } else if (evt.type === 'SECURITY') {
                 Icon = ShieldCheck;
-                iconColor = 'text-emerald-400 bg-emerald-950/60 border-emerald-500/30';
+                iconColor = 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-500/30';
               }
 
               return (
                 <div key={evt.id} className="relative flex items-start justify-between gap-4 group">
                   {/* Indicator Icon Dot */}
                   <div
-                    className={`absolute -left-[30px] top-1 h-6 w-6 rounded-full border flex items-center justify-center shrink-0 ${iconColor} shadow-md`}
+                    className={`absolute -left-[30px] top-1 h-6 w-6 rounded-full border flex items-center justify-center shrink-0 ${iconColor} shadow-sm`}
                   >
                     <Icon className="h-3 w-3" />
                   </div>
 
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-white">{evt.title}</span>
+                      <span className="text-sm font-bold text-slate-900 dark:text-white">{evt.title}</span>
                       {evt.status && (
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             evt.status === 'APPROVED' || evt.status === 'DELIVERED'
-                              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
                               : evt.status === 'PENDING'
-                              ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                              : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                              : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
                           }`}
                         >
                           {evt.status}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-300">{evt.description}</p>
-                    <div className="text-[11px] text-slate-500">
+                    <p className="text-xs text-slate-600 dark:text-slate-300">{evt.description}</p>
+                    <div className="text-[11px] text-slate-400 dark:text-slate-500">
                       {new Date(evt.timestamp).toLocaleString(undefined, {
                         dateStyle: 'medium',
                         timeStyle: 'short',
@@ -220,7 +220,7 @@ export default function ActivityPage() {
 
                   {evt.link && (
                     <Link href={evt.link}>
-                      <Button variant="ghost" size="sm" className="text-xs text-blue-400 hover:text-blue-300">
+                      <Button variant="ghost" size="sm" className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
                         View
                         <ArrowUpRight className="h-3 w-3 ml-1" />
                       </Button>

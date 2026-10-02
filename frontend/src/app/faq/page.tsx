@@ -45,10 +45,10 @@ export default function FAQPage() {
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 space-y-12">
       <div className="text-center space-y-3">
         <Badge variant="outline">Knowledge Base & FAQ</Badge>
-        <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
           Frequently Asked Questions
         </h1>
-        <p className="text-sm text-slate-400 max-w-xl mx-auto">
+        <p className="text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
           Clear answers about affiliate verification, point allocation, and reward redemption.
         </p>
       </div>
@@ -59,21 +59,21 @@ export default function FAQPage() {
           return (
             <div
               key={idx}
-              className="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden"
+              className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 overflow-hidden shadow-xs transition-colors"
             >
               <button
                 onClick={() => setOpenIdx(isOpen ? null : idx)}
-                className="w-full px-6 py-4.5 text-left flex items-center justify-between font-semibold text-white hover:text-emerald-400 transition-colors text-sm sm:text-base"
+                className="w-full px-6 py-4.5 text-left flex items-center justify-between font-semibold text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors text-sm sm:text-base"
               >
                 <span>{faq.q}</span>
                 <ChevronDown
-                  className={`h-4 w-4 text-slate-400 transition-transform duration-200 shrink-0 ${
-                    isOpen ? 'rotate-180 text-emerald-400' : ''
+                  className={`h-4 w-4 text-slate-400 dark:text-slate-500 transition-transform duration-200 shrink-0 ${
+                    isOpen ? 'rotate-180 text-emerald-600 dark:text-emerald-400' : ''
                   }`}
                 />
               </button>
               {isOpen && (
-                <div className="px-6 pb-5 pt-1 text-sm text-slate-300 leading-relaxed border-t border-slate-800/50">
+                <div className="px-6 pb-5 pt-1 text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/50">
                   {faq.a}
                 </div>
               )}
@@ -82,10 +82,10 @@ export default function FAQPage() {
         })}
       </div>
 
-      <div className="p-8 rounded-2xl border border-slate-800 bg-slate-900/50 text-center space-y-4">
-        <h3 className="text-lg font-bold text-white">Have a question not answered here?</h3>
-        <p className="text-xs text-slate-400 max-w-md mx-auto">
-          Our support team is available around the clock. Contact us at support@propfirmrewards.com.
+      <div className="p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-center space-y-4 shadow-xs transition-colors">
+        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Have a question not answered here?</h3>
+        <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+          Our support team is available around the clock. Contact us at support@propnation.com.
         </p>
         <Link href="/prop-firms">
           <Button size="sm">

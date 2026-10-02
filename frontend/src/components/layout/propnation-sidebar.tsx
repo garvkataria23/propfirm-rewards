@@ -147,26 +147,26 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
 
   return (
     <aside
-      className={`w-64 sm:w-72 bg-[#070e20] text-slate-200 border-r border-[#14234b]/60 flex flex-col h-full select-none ${className}`}
+      className={`w-64 sm:w-72 bg-white text-slate-800 border-r border-slate-200 dark:bg-[#070e20] dark:text-slate-200 dark:border-[#14234b]/60 flex flex-col h-full select-none transition-colors ${className}`}
     >
       {/* Brand Header */}
-      <div className="h-16 flex items-center justify-between px-6 border-b border-[#14234b]/50 shrink-0">
+      <div className="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-[#14234b]/50 shrink-0">
         <Link
           href="/dashboard"
           onClick={onClose}
           className="flex items-center gap-1.5 group cursor-pointer"
         >
-          <span className="text-xl font-black tracking-tight text-white flex items-center">
-            <span className="text-blue-500 font-extrabold group-hover:text-blue-400 transition-colors">
+          <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center">
+            <span className="text-blue-600 dark:text-blue-500 font-extrabold group-hover:text-blue-500 transition-colors">
               Prop
             </span>
-            <span className="text-white">Nation</span>
+            <span>Nation</span>
           </span>
         </Link>
       </div>
 
       {/* Nav List with Collapsible Groups */}
-      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-6 scrollbar-thin scrollbar-thumb-[#172a59] scrollbar-track-transparent">
+      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-6 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-[#172a59] scrollbar-track-transparent">
         {SIDEBAR_GROUPS.map((group) => {
           const isCollapsed = collapsedGroups[group.id];
 
@@ -176,11 +176,11 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
               <button
                 type="button"
                 onClick={() => toggleGroup(group.id)}
-                className="w-full flex items-center justify-between px-2.5 py-1 text-[11px] font-bold tracking-wider text-[#5f75a6] uppercase hover:text-slate-200 transition-colors group"
+                className="w-full flex items-center justify-between px-2.5 py-1 text-[11px] font-bold tracking-wider text-slate-500 dark:text-[#5f75a6] uppercase hover:text-slate-900 dark:hover:text-slate-200 transition-colors group cursor-pointer"
               >
                 <span>{group.label}</span>
                 <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform duration-200 text-[#5f75a6] group-hover:text-slate-200 ${
+                  className={`h-3.5 w-3.5 transition-transform duration-200 text-slate-400 group-hover:text-slate-700 dark:text-[#5f75a6] dark:group-hover:text-slate-200 ${
                     isCollapsed ? '-rotate-90' : 'rotate-0'
                   }`}
                 />
@@ -200,20 +200,22 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
                         onClick={onClose}
                         className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                           active
-                            ? 'bg-[#12224d] text-blue-400 font-semibold shadow-inner'
-                            : 'text-slate-300 hover:text-white hover:bg-[#0c1938]/70'
+                            ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-200/60 shadow-xs dark:bg-[#12224d] dark:text-blue-400 dark:border-transparent dark:shadow-inner'
+                            : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-[#0c1938]/70'
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <Icon
                             className={`h-[18px] w-[18px] shrink-0 ${
-                              active ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-200'
+                              active
+                                ? 'text-blue-600 dark:text-blue-400'
+                                : 'text-slate-400 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200'
                             }`}
                           />
                           <span>{item.label}</span>
                         </div>
                         {item.badge && (
-                          <span className="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full font-bold">
+                          <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 px-2 py-0.5 rounded-full font-bold">
                             {item.badge}
                           </span>
                         )}
@@ -227,8 +229,8 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
         })}
       </div>
 
-      {/* User Profile Footer (Exactly matching the screenshot) */}
-      <div className="p-4 border-t border-[#14234b]/60 bg-[#060c1d] shrink-0">
+      {/* User Profile Footer */}
+      <div className="p-4 border-t border-slate-200 bg-slate-50/80 dark:border-[#14234b]/60 dark:bg-[#060c1d] shrink-0 transition-colors">
         <div className="flex items-center justify-between gap-3">
           <Link
             href="/dashboard/profile"
@@ -236,19 +238,19 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
             className="flex items-center gap-3 overflow-hidden flex-1 group"
           >
             {/* Avatar Circle */}
-            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 text-white font-bold flex items-center justify-center shrink-0 shadow-md shadow-blue-900/30">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 text-white font-bold flex items-center justify-center shrink-0 shadow-md shadow-blue-500/20">
               <span className="text-sm font-black">{initial}</span>
             </div>
 
             {/* Name and Verified Subtitle */}
             <div className="flex flex-col min-w-0">
-              <span className="text-sm font-bold text-white truncate group-hover:text-blue-300 transition-colors">
+              <span className="text-sm font-bold text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
                 {displayName}
               </span>
-              <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
                 <span>{displayPoints.toLocaleString()} Points</span>
-                <span className="text-slate-600">·</span>
-                <span className="text-emerald-400 font-medium inline-flex items-center gap-0.5">
+                <span className="text-slate-300 dark:text-slate-600">·</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold inline-flex items-center gap-0.5">
                   <Check className="h-3 w-3 stroke-[3]" />
                   Verified
                 </span>
@@ -261,7 +263,7 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
             <button
               onClick={() => logout()}
               title="Sign Out"
-              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800/60 transition-colors"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-slate-200/60 dark:hover:text-rose-400 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
             >
               <LogOut className="h-4 w-4" />
             </button>

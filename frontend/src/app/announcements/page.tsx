@@ -73,14 +73,14 @@ export default function AnnouncementsPage() {
   return (
     <div className="space-y-8 max-w-5xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#14234b]/60">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200 dark:border-[#14234b]/60">
         <div>
           <Badge variant="purple">Official Bulletins</Badge>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight mt-2 flex items-center gap-3">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight mt-2 flex items-center gap-3">
             <Megaphone className="h-9 w-9 text-blue-500" />
             PropNation Announcements
           </h1>
-          <p className="text-sm text-slate-400 mt-1 max-w-2xl">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
             Stay informed with the latest platform releases, promotional point multipliers, new prop firm partnerships, and reward store drops.
           </p>
         </div>
@@ -91,16 +91,16 @@ export default function AnnouncementsPage() {
         {ANNOUNCEMENTS.map((item) => (
           <Card
             key={item.id}
-            className={`p-6 sm:p-7 bg-[#070e20] transition-all space-y-4 ${
+            className={`p-6 sm:p-7 bg-white dark:bg-[#070e20] transition-all space-y-4 shadow-sm ${
               item.pinned
-                ? 'border-blue-500/40 shadow-xl shadow-blue-950/30'
-                : 'border-[#14234b]/60'
+                ? 'border-blue-500/40 shadow-blue-500/5 dark:shadow-xl dark:shadow-blue-950/30'
+                : 'border-slate-200/90 dark:border-[#14234b]/60'
             }`}
           >
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 {item.pinned && (
-                  <span className="text-[11px] font-black text-blue-400 bg-blue-950/60 border border-blue-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <span className="text-[11px] font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
                     <Pin className="h-3 w-3" />
                     Pinned
                   </span>
@@ -125,8 +125,8 @@ export default function AnnouncementsPage() {
             </div>
 
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">{item.title}</h2>
-              <p className="text-sm text-slate-300 leading-relaxed mt-2">{item.content}</p>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{item.title}</h2>
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-2">{item.content}</p>
             </div>
 
             {item.ctaText && item.ctaLink && (

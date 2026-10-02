@@ -79,10 +79,10 @@ export default function HelpCenterPage() {
       {/* Search Header Banner */}
       <div className="text-center space-y-4 py-6">
         <Badge variant="purple">Documentation & Knowledge Base</Badge>
-        <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+        <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
           How can we help you?
         </h1>
-        <p className="text-sm sm:text-base text-slate-400 max-w-xl mx-auto">
+        <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
           Explore comprehensive guides on prop firm affiliate verification, points rewards, and fast courier fulfillment.
         </p>
 
@@ -94,7 +94,7 @@ export default function HelpCenterPage() {
             placeholder="Search articles, verification rules, or shipping..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-2xl border border-slate-700 bg-[#070e20] pl-12 pr-4 py-3.5 text-sm sm:text-base text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none shadow-xl"
+            className="w-full rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#070e20] pl-12 pr-4 py-3.5 text-sm sm:text-base text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 focus:outline-none shadow-sm dark:shadow-xl"
           />
         </div>
       </div>
@@ -102,20 +102,20 @@ export default function HelpCenterPage() {
       {/* 4 Topic Categories */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { title: 'Getting Started', desc: 'Account setup & codes', icon: BookOpen, color: 'text-blue-400' },
-          { title: 'Verification', desc: 'Proof audits & rules', icon: ShieldCheck, color: 'text-emerald-400' },
-          { title: 'Points & Rewards', desc: 'Ledger & redemptions', icon: Coins, color: 'text-amber-400' },
-          { title: 'Delivery', desc: 'Courier dispatch & tracking', icon: Truck, color: 'text-purple-400' },
+          { title: 'Getting Started', desc: 'Account setup & codes', icon: BookOpen, color: 'text-blue-500 dark:text-blue-400' },
+          { title: 'Verification', desc: 'Proof audits & rules', icon: ShieldCheck, color: 'text-emerald-500 dark:text-emerald-400' },
+          { title: 'Points & Rewards', desc: 'Ledger & redemptions', icon: Coins, color: 'text-amber-500 dark:text-amber-400' },
+          { title: 'Delivery', desc: 'Courier dispatch & tracking', icon: Truck, color: 'text-purple-500 dark:text-purple-400' },
         ].map((cat, i) => {
           const Icon = cat.icon;
           return (
             <Card
               key={i}
-              className="p-5 bg-[#070e20] border-[#14234b]/60 hover:border-blue-500/40 transition-all cursor-pointer group"
+              className="p-5 bg-white dark:bg-[#070e20] border-slate-200/90 dark:border-[#14234b]/60 hover:border-blue-500/40 transition-all cursor-pointer group shadow-sm"
             >
               <Icon className={`h-7 w-7 ${cat.color} group-hover:scale-110 transition-transform`} />
-              <h3 className="text-sm font-bold text-white mt-3">{cat.title}</h3>
-              <p className="text-xs text-slate-400 mt-0.5">{cat.desc}</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white mt-3">{cat.title}</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{cat.desc}</p>
             </Card>
           );
         })}
@@ -123,29 +123,29 @@ export default function HelpCenterPage() {
 
       {/* Featured Articles List */}
       <div className="space-y-4">
-        <h2 className="text-xl font-bold text-white">Popular Help Guides</h2>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Popular Help Guides</h2>
 
         <div className="space-y-3">
           {filteredArticles.map((art) => (
             <Card
               key={art.id}
-              className="p-5 bg-[#070e20] border-[#14234b]/60 hover:border-blue-500/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer group"
+              className="p-5 bg-white dark:bg-[#070e20] border-slate-200/90 dark:border-[#14234b]/60 hover:border-blue-500/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer group shadow-sm"
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+                  <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
                     {art.category}
                   </span>
-                  <span className="text-slate-600">•</span>
-                  <span className="text-[11px] text-slate-500">{art.readTime}</span>
+                  <span className="text-slate-300 dark:text-slate-600">•</span>
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500">{art.readTime}</span>
                 </div>
-                <h3 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
                   {art.title}
                 </h3>
-                <p className="text-xs text-slate-400 max-w-2xl">{art.excerpt}</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 max-w-2xl">{art.excerpt}</p>
               </div>
 
-              <div className="shrink-0 flex items-center text-xs font-bold text-blue-400 group-hover:translate-x-1 transition-transform">
+              <div className="shrink-0 flex items-center text-xs font-bold text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform">
                 Read Guide
                 <ArrowRight className="h-3.5 w-3.5 ml-1" />
               </div>
@@ -155,10 +155,10 @@ export default function HelpCenterPage() {
       </div>
 
       {/* Still need help CTA */}
-      <div className="p-8 rounded-3xl bg-[#09122c] border border-[#14234b] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+      <div className="p-8 rounded-3xl bg-slate-50 dark:bg-[#09122c] border border-slate-200 dark:border-[#14234b] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm dark:shadow-xl">
         <div className="space-y-1 text-center sm:text-left">
-          <h3 className="text-lg font-bold text-white">Need personal assistance with an order?</h3>
-          <p className="text-xs text-slate-400 max-w-md">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white">Need personal assistance with an order?</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md">
             Our support desk is online 24/7. Reach out via Live Chat or view our Frequently Asked Questions.
           </p>
         </div>

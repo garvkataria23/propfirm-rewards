@@ -104,18 +104,18 @@ export default function LiveSupportPage() {
   return (
     <div className="space-y-8 max-w-5xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#14234b]/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-[#14234b]/60">
         <div>
           <div className="flex items-center gap-2">
             <Badge variant="purple">Desk Status: Live 24/7</Badge>
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs text-slate-400">Response time: ~2 mins</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">Response time: ~2 mins</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1 flex items-center gap-2.5">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-1 flex items-center gap-2.5">
             <MessageSquare className="h-7 w-7 text-blue-500" />
             PropNation Live Support
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Real-time chat with our dedicated verification agents and reward fulfillment managers.
           </p>
         </div>
@@ -130,19 +130,19 @@ export default function LiveSupportPage() {
       </div>
 
       {/* Chat Container */}
-      <Card className="h-[520px] bg-[#070e20] border-[#14234b]/60 flex flex-col overflow-hidden shadow-2xl">
+      <Card className="h-[520px] bg-white dark:bg-[#070e20] border-slate-200/90 dark:border-[#14234b]/60 flex flex-col overflow-hidden shadow-lg dark:shadow-2xl">
         {/* Chat Header Bar */}
-        <div className="p-4 border-b border-[#14234b]/60 bg-[#09122c] flex items-center justify-between">
+        <div className="p-4 border-b border-slate-200 dark:border-[#14234b]/60 bg-slate-50 dark:bg-[#09122c] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+            <div className="h-9 w-9 rounded-full bg-blue-50 dark:bg-blue-600/20 border border-blue-200 dark:border-blue-500/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <Headphones className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-sm font-bold text-white flex items-center gap-2">
+              <div className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <span>PropNation Support Desk</span>
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
               </div>
-              <div className="text-[11px] text-slate-400">Average reply: Instant</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400">Average reply: Instant</div>
             </div>
           </div>
         </div>
@@ -157,24 +157,24 @@ export default function LiveSupportPage() {
               }`}
             >
               <div
-                className={`max-w-[80%] sm:max-w-[70%] rounded-2xl p-3.5 text-xs sm:text-sm leading-relaxed shadow-md ${
+                className={`max-w-[80%] sm:max-w-[70%] rounded-2xl p-3.5 text-xs sm:text-sm leading-relaxed shadow-sm ${
                   m.sender === 'USER'
                     ? 'bg-blue-600 text-white rounded-br-none'
-                    : 'bg-[#0f1d42] border border-[#1a3068] text-slate-200 rounded-bl-none'
+                    : 'bg-slate-100 border border-slate-200 text-slate-800 dark:bg-[#0f1d42] dark:border-[#1a3068] dark:text-slate-200 rounded-bl-none'
                 }`}
               >
                 {m.text}
               </div>
-              <span className="text-[10px] text-slate-500 mt-1 px-1">{m.timestamp}</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 px-1">{m.timestamp}</span>
             </div>
           ))}
 
           {isTyping && (
-            <div className="flex items-center gap-2 text-xs text-slate-400 italic">
+            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 italic">
               <div className="flex gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-bounce" />
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-bounce [animation-delay:0.2s]" />
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-bounce [animation-delay:0.4s]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce" />
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:0.2s]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:0.4s]" />
               </div>
               Agent is typing...
             </div>
@@ -185,14 +185,14 @@ export default function LiveSupportPage() {
         {/* Input Bar */}
         <form
           onSubmit={handleSendMessage}
-          className="p-3 border-t border-[#14234b]/60 bg-[#060c1c] flex items-center gap-2"
+          className="p-3 border-t border-slate-200 dark:border-[#14234b]/60 bg-slate-50 dark:bg-[#060c1c] flex items-center gap-2"
         >
           <input
             type="text"
             placeholder="Type your question or order inquiry..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="flex-1 rounded-xl border border-slate-700 bg-slate-900/90 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+            className="flex-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/90 px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 focus:outline-none"
           />
           <Button type="submit" size="sm" className="bg-blue-600 hover:bg-blue-500 text-white px-4">
             <Send className="h-4 w-4" />
@@ -202,31 +202,31 @@ export default function LiveSupportPage() {
 
       {/* Ticket Modal */}
       {ticketModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="bg-[#070e20] border border-[#14234b] rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#070e20] border border-slate-200 dark:border-[#14234b] rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Ticket className="h-5 w-5 text-blue-400" />
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <Ticket className="h-5 w-5 text-blue-500" />
                 Open Official Support Ticket
               </h3>
             </div>
 
             {ticketSuccess ? (
               <div className="p-6 text-center space-y-3">
-                <CheckCircle2 className="h-12 w-12 text-emerald-400 mx-auto" />
-                <h4 className="text-base font-bold text-white">Ticket Created Successfully!</h4>
-                <p className="text-xs text-slate-300">
+                <CheckCircle2 className="h-12 w-12 text-emerald-500 dark:text-emerald-400 mx-auto" />
+                <h4 className="text-base font-bold text-slate-900 dark:text-white">Ticket Created Successfully!</h4>
+                <p className="text-xs text-slate-600 dark:text-slate-300">
                   Ticket #{Math.floor(100000 + Math.random() * 900000)} has been logged. An auditor will respond to your registered email address shortly.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleCreateTicket} className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-300">Category</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Category</label>
                   <select
                     value={ticketCategory}
                     onChange={(e) => setTicketCategory(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
                   >
                     <option value="VERIFICATION">Purchase Verification Inquiry</option>
                     <option value="POINTS">Points Ledger / Calculation</option>
@@ -236,26 +236,26 @@ export default function LiveSupportPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-300">Subject</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Subject</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Question regarding Order ID #10492"
                     value={ticketSubject}
                     onChange={(e) => setTicketSubject(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-300">Detailed Description</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Detailed Description</label>
                   <textarea
                     rows={4}
                     required
                     placeholder="Provide full details, order timestamps, and any prop firm transaction references..."
                     value={ticketDescription}
                     onChange={(e) => setTicketDescription(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 p-3 text-sm text-white resize-none"
+                    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 resize-none focus:outline-none focus:border-blue-500"
                   />
                 </div>
 

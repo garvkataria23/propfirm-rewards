@@ -127,22 +127,22 @@ export default function ProfilePage() {
   return (
     <div className="max-w-4xl space-y-8">
       <div>
-        <h2 className="text-xl font-bold text-white tracking-tight">Trader Profile & Addresses</h2>
-        <p className="text-xs text-slate-400">
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Trader Profile & Addresses</h2>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
           Manage your contact credentials and verified destination addresses for physical rewards.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         {/* Personal Profile Card */}
-        <Card className="p-6 space-y-4">
-          <div className="flex items-center gap-2 pb-3 border-b border-slate-800">
-            <User className="h-5 w-5 text-emerald-400" />
-            <h3 className="font-bold text-white text-base">Account Information</h3>
+        <Card className="p-6 space-y-4 shadow-sm">
+          <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <User className="h-5 w-5 text-emerald-500 dark:text-emerald-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-base">Account Information</h3>
           </div>
 
           {profileMsg && (
-            <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center gap-2">
+            <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4" />
               <span>{profileMsg}</span>
             </div>
@@ -150,45 +150,45 @@ export default function ProfilePage() {
 
           <form onSubmit={handleUpdateProfile} className="space-y-3.5">
             <div className="space-y-1">
-              <label className="text-xs text-slate-400">Email Address (Read-only)</label>
+              <label className="text-xs text-slate-500 dark:text-slate-400 font-medium">Email Address (Read-only)</label>
               <input
                 type="email"
                 disabled
                 value={user?.email}
-                className="w-full rounded-xl border border-slate-800 bg-slate-950/60 px-3 py-2 text-xs text-slate-400 cursor-not-allowed"
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/60 px-3 py-2 text-xs text-slate-500 dark:text-slate-400 cursor-not-allowed"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs text-slate-300 font-semibold">Full Name</label>
+              <label className="text-xs text-slate-700 dark:text-slate-300 font-semibold">Full Name</label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs text-slate-300 font-semibold">Phone Number</label>
+              <label className="text-xs text-slate-700 dark:text-slate-300 font-semibold">Phone Number</label>
               <input
                 type="text"
                 placeholder="+1 555 0192"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs text-slate-300 font-semibold">Country</label>
+              <label className="text-xs text-slate-700 dark:text-slate-300 font-semibold">Country</label>
               <input
                 type="text"
                 placeholder="United States"
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
@@ -201,15 +201,15 @@ export default function ProfilePage() {
         </Card>
 
         {/* Saved Shipping Addresses Card (Section 16) */}
-        <Card className="p-6 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+        <Card className="p-6 space-y-4 shadow-sm">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-emerald-400" />
-              <h3 className="font-bold text-white text-base">Saved Delivery Addresses</h3>
+              <MapPin className="h-5 w-5 text-emerald-500 dark:text-emerald-400" />
+              <h3 className="font-bold text-slate-900 dark:text-white text-base">Saved Delivery Addresses</h3>
             </div>
             <button
               onClick={() => setShowAddAddress(!showAddAddress)}
-              className="text-xs text-emerald-400 hover:underline flex items-center gap-1 font-semibold"
+              className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold"
             >
               <PlusCircle className="h-3.5 w-3.5" />
               <span>{showAddAddress ? 'Cancel' : 'Add New'}</span>
@@ -218,7 +218,7 @@ export default function ProfilePage() {
 
           {/* Add New Form */}
           {showAddAddress && (
-            <form onSubmit={handleAddAddress} className="space-y-3 p-4 rounded-xl border border-slate-800 bg-slate-950/60 text-xs">
+            <form onSubmit={handleAddAddress} className="space-y-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 text-xs">
               <div className="grid grid-cols-2 gap-2">
                 <input
                   type="text"
@@ -226,7 +226,7 @@ export default function ProfilePage() {
                   placeholder="Recipient Name"
                   value={newAddr.fullName}
                   onChange={(e) => setNewAddr({ ...newAddr, fullName: e.target.value })}
-                  className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white placeholder-slate-500"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
                 />
                 <input
                   type="text"
@@ -234,7 +234,7 @@ export default function ProfilePage() {
                   placeholder="Phone Number"
                   value={newAddr.phone}
                   onChange={(e) => setNewAddr({ ...newAddr, phone: e.target.value })}
-                  className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white placeholder-slate-500"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
                 />
               </div>
 
@@ -244,7 +244,7 @@ export default function ProfilePage() {
                 placeholder="Street Address Line 1"
                 value={newAddr.addressLine1}
                 onChange={(e) => setNewAddr({ ...newAddr, addressLine1: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white placeholder-slate-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
               />
 
               <div className="grid grid-cols-3 gap-2">
@@ -254,7 +254,7 @@ export default function ProfilePage() {
                   placeholder="City"
                   value={newAddr.city}
                   onChange={(e) => setNewAddr({ ...newAddr, city: e.target.value })}
-                  className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white placeholder-slate-500"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
                 />
                 <input
                   type="text"
@@ -262,7 +262,7 @@ export default function ProfilePage() {
                   placeholder="State/Prov"
                   value={newAddr.state}
                   onChange={(e) => setNewAddr({ ...newAddr, state: e.target.value })}
-                  className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white placeholder-slate-500"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
                 />
                 <input
                   type="text"
@@ -270,7 +270,7 @@ export default function ProfilePage() {
                   placeholder="Postal Code"
                   value={newAddr.postalCode}
                   onChange={(e) => setNewAddr({ ...newAddr, postalCode: e.target.value })}
-                  className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white placeholder-slate-500"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
                 />
               </div>
 
@@ -280,7 +280,7 @@ export default function ProfilePage() {
                 placeholder="Country"
                 value={newAddr.country}
                 onChange={(e) => setNewAddr({ ...newAddr, country: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white placeholder-slate-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
               />
 
               <div className="flex justify-end pt-1">
@@ -303,22 +303,22 @@ export default function ProfilePage() {
               {addresses.map((addr) => (
                 <div
                   key={addr.id}
-                  className="p-3.5 rounded-xl border border-slate-800 bg-slate-950/70 text-xs space-y-1 relative"
+                  className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/70 text-xs space-y-1 relative"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-white">{addr.fullName}</span>
+                    <span className="font-bold text-slate-900 dark:text-white">{addr.fullName}</span>
                     <div className="flex items-center gap-2">
                       {addr.isDefault && <Badge variant="success">DEFAULT</Badge>}
                       <button
                         onClick={() => handleDeleteAddress(addr.id)}
-                        className="text-slate-500 hover:text-rose-400"
+                        className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400"
                         title="Delete address"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   </div>
-                  <div className="text-slate-400">{addr.addressLine1}</div>
+                  <div className="text-slate-600 dark:text-slate-400">{addr.addressLine1}</div>
                   <div className="text-slate-500">
                     {addr.city}, {addr.state} {addr.postalCode} • {addr.country}
                   </div>

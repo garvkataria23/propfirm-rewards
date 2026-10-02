@@ -119,14 +119,14 @@ export default function ReviewsPage() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#14234b]/60">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200 dark:border-[#14234b]/60">
         <div>
           <Badge variant="purple">Verified Trader Feedback</Badge>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight mt-2 flex items-center gap-3">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight mt-2 flex items-center gap-3">
             <Star className="h-9 w-9 text-amber-400 fill-amber-400" />
             Prop Firm Reviews
           </h1>
-          <p className="text-sm text-slate-400 mt-1 max-w-2xl">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
             Real evaluations and payout experiences verified by authentic traders across leading CFD and Futures prop firms.
           </p>
         </div>
@@ -149,7 +149,7 @@ export default function ReviewsPage() {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
               selectedFirm === firm
                 ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25'
-                : 'text-slate-400 hover:text-white bg-[#070e20] border border-[#14234b]/50'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-[#070e20] border border-slate-200 dark:border-[#14234b]/50 shadow-xs'
             }`}
           >
             {firm === 'ALL' ? 'All Prop Firms' : firm}
@@ -162,12 +162,12 @@ export default function ReviewsPage() {
         {filteredReviews.map((rev) => (
           <Card
             key={rev.id}
-            className="p-6 bg-[#070e20] border-[#14234b]/60 space-y-4 hover:border-blue-500/30 transition-all"
+            className="p-6 bg-white dark:bg-[#070e20] border-slate-200/90 dark:border-[#14234b]/60 space-y-4 hover:border-blue-500/30 transition-all shadow-sm"
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <span className="font-bold text-white text-base">{rev.firmName}</span>
-                <span className="text-slate-600">/</span>
+                <span className="font-bold text-slate-900 dark:text-white text-base">{rev.firmName}</span>
+                <span className="text-slate-400 dark:text-slate-600">/</span>
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -175,7 +175,7 @@ export default function ReviewsPage() {
                       className={`h-4 w-4 ${
                         i < rev.rating
                           ? 'text-amber-400 fill-amber-400'
-                          : 'text-slate-600'
+                          : 'text-slate-300 dark:text-slate-600'
                       }`}
                     />
                   ))}
@@ -184,26 +184,26 @@ export default function ReviewsPage() {
 
               <div className="flex items-center gap-2">
                 {rev.verifiedBuyer && (
-                  <span className="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
                     <CheckCircle2 className="h-3 w-3" />
                     Verified Purchase
                   </span>
                 )}
-                <span className="text-xs text-slate-500">{rev.date}</span>
+                <span className="text-xs text-slate-400 dark:text-slate-500">{rev.date}</span>
               </div>
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-white">{rev.title}</h3>
-              <p className="text-xs text-slate-300 leading-relaxed mt-1.5">{rev.content}</p>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">{rev.title}</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mt-1.5">{rev.content}</p>
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-[#14234b]/40 text-xs text-slate-400">
-              <span className="text-slate-400">
-                Trader: <strong className="text-white">{rev.author}</strong>
+            <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-[#14234b]/40 text-xs text-slate-500 dark:text-slate-400">
+              <span className="text-slate-500 dark:text-slate-400">
+                Trader: <strong className="text-slate-900 dark:text-white">{rev.author}</strong>
               </span>
 
-              <button className="flex items-center gap-1.5 hover:text-blue-400 transition-colors">
+              <button className="flex items-center gap-1.5 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 <ThumbsUp className="h-3.5 w-3.5" />
                 <span>Helpful ({rev.likes})</span>
               </button>
@@ -214,16 +214,16 @@ export default function ReviewsPage() {
 
       {/* Write a Review Modal */}
       {writeModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="bg-[#070e20] border border-[#14234b] rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-            <h3 className="text-lg font-bold text-white">Write a Prop Firm Review</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#070e20] border border-slate-200 dark:border-[#14234b] rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Write a Prop Firm Review</h3>
             <form onSubmit={handleSubmitReview} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Prop Firm</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Prop Firm</label>
                 <select
                   value={newFirm}
                   onChange={(e) => setNewFirm(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
                 >
                   <option value="FundedNext">FundedNext</option>
                   <option value="FTMO">FTMO</option>
@@ -233,7 +233,7 @@ export default function ReviewsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Rating (1 to 5 Stars)</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Rating (1 to 5 Stars)</label>
                 <div className="flex items-center gap-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -246,7 +246,7 @@ export default function ReviewsPage() {
                         className={`h-6 w-6 ${
                           star <= newRating
                             ? 'text-amber-400 fill-amber-400'
-                            : 'text-slate-600'
+                            : 'text-slate-300 dark:text-slate-600'
                         }`}
                       />
                     </button>
@@ -255,26 +255,26 @@ export default function ReviewsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Review Title</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Review Title</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Smooth evaluation pass & fast points"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Detailed Feedback</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Detailed Feedback</label>
                 <textarea
                   rows={4}
                   required
                   placeholder="Share details on spreads, challenge rules, customer service, or verification..."
                   value={newContent}
                   onChange={(e) => setNewContent(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 p-3 text-sm text-white resize-none"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 resize-none focus:outline-none focus:border-blue-500"
                 />
               </div>
 

@@ -134,8 +134,8 @@ export default function PurchasesListPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white tracking-tight">Purchase Submissions</h2>
-          <p className="text-xs text-slate-400">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Purchase Submissions</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Track verification status, upload additional information, or review approved points.
           </p>
         </div>
@@ -157,8 +157,8 @@ export default function PurchasesListPage() {
               onClick={() => setStatusFilter(status)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 ${
                 statusFilter === status
-                  ? 'bg-slate-800 text-white border border-slate-700'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-blue-600 text-white shadow-xs dark:bg-slate-800 dark:border-slate-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               {status.replace(/_/g, ' ')}
@@ -171,14 +171,14 @@ export default function PurchasesListPage() {
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-32 rounded-2xl bg-slate-900/50 animate-pulse border border-slate-800" />
+            <div key={i} className="h-32 rounded-2xl bg-slate-100 dark:bg-slate-900/50 animate-pulse border border-slate-200 dark:border-slate-800" />
           ))}
         </div>
       ) : filteredPurchases.length === 0 ? (
-        <Card className="text-center py-16 space-y-3">
-          <ShoppingBag className="h-10 w-10 text-slate-600 mx-auto" />
-          <h3 className="text-base font-bold text-white">No purchase submissions found</h3>
-          <p className="text-xs text-slate-400">
+        <Card className="text-center py-16 space-y-3 bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 shadow-sm">
+          <ShoppingBag className="h-10 w-10 text-slate-400 dark:text-slate-600 mx-auto" />
+          <h3 className="text-base font-bold text-slate-900 dark:text-white">No purchase submissions found</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Submit your eligible prop firm challenge purchase proof to start earning points.
           </p>
           <Link href="/dashboard/purchases/new" className="inline-block pt-2">
@@ -190,25 +190,25 @@ export default function PurchasesListPage() {
           {filteredPurchases.map((purchase) => (
             <Card
               key={purchase.id}
-              className="p-5 sm:p-6 card-hover-glow space-y-4 border-slate-800/80 bg-slate-900/60"
+              className="p-5 sm:p-6 card-hover-glow space-y-4 border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 shadow-sm"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-800/80">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-100 dark:border-slate-800/80">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-slate-800 border border-slate-700 overflow-hidden flex items-center justify-center shrink-0">
+                  <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center shrink-0">
                     {purchase.propFirm.logoUrl ? (
                       <img src={purchase.propFirm.logoUrl} alt={purchase.propFirm.name} className="h-full w-full object-cover" />
                     ) : (
-                      <span className="font-bold text-white">{purchase.propFirm.name[0]}</span>
+                      <span className="font-bold text-slate-900 dark:text-white">{purchase.propFirm.name[0]}</span>
                     )}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-white text-base">{purchase.propFirm.name}</h3>
-                      <span className="font-mono text-xs text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                      <h3 className="font-bold text-slate-900 dark:text-white text-base">{purchase.propFirm.name}</h3>
+                      <span className="font-mono text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-950 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
                         {purchase.submissionCode}
                       </span>
                     </div>
-                    <div className="text-xs text-slate-400 mt-0.5">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                       {purchase.accountType} • ${purchase.purchaseAmountUsd}
                     </div>
                   </div>
@@ -216,8 +216,8 @@ export default function PurchasesListPage() {
 
                 <div className="flex items-center gap-3 self-end sm:self-auto">
                   <div className="text-right">
-                    <div className="text-xs text-slate-400">Reward Yield:</div>
-                    <div className="text-sm font-black text-emerald-400">
+                    <div className="text-xs text-slate-500 dark:text-slate-400">Reward Yield:</div>
+                    <div className="text-sm font-black text-emerald-600 dark:text-emerald-400">
                       +{purchase.pointsAwarded.toLocaleString()} PTS
                     </div>
                   </div>
@@ -229,21 +229,21 @@ export default function PurchasesListPage() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                 <div>
                   <span className="text-slate-500 block">Order ID:</span>
-                  <span className="font-mono font-semibold text-slate-200">{purchase.orderId}</span>
+                  <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">{purchase.orderId}</span>
                 </div>
                 <div>
                   <span className="text-slate-500 block">Referral Code Used:</span>
-                  <span className="font-mono font-semibold text-emerald-400">
+                  <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">
                     {purchase.referralCodeUsed}
                   </span>
                 </div>
                 <div>
                   <span className="text-slate-500 block">Purchase Date:</span>
-                  <span className="text-slate-200">{formatDate(purchase.purchaseDate)}</span>
+                  <span className="text-slate-800 dark:text-slate-200">{formatDate(purchase.purchaseDate)}</span>
                 </div>
                 <div>
                   <span className="text-slate-500 block">Submitted On:</span>
-                  <span className="text-slate-200">{formatDate(purchase.createdAt)}</span>
+                  <span className="text-slate-800 dark:text-slate-200">{formatDate(purchase.createdAt)}</span>
                 </div>
               </div>
 
@@ -324,15 +324,15 @@ export default function PurchasesListPage() {
             </div>
           )}
 
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-400 space-y-1">
-            <span className="font-bold text-purple-400">Team Request:</span>
-            <p className="italic text-slate-300">
+          <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-1">
+            <span className="font-bold text-purple-600 dark:text-purple-400">Team Request:</span>
+            <p className="italic text-slate-700 dark:text-slate-300">
               &quot;{resubmittingPurchase?.infoRequestedMessage}&quot;
             </p>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
               Your Response / Updated Details *
             </label>
             <textarea
@@ -340,12 +340,12 @@ export default function PurchasesListPage() {
               placeholder="e.g. Attached the official billing PDF downloaded from my client portal showing coupon ALPHAREWARDS."
               value={resubmitNotes}
               onChange={(e) => setResubmitNotes(e.target.value)}
-              className="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
               Upload Additional Screenshots / Invoices
             </label>
             <input
@@ -355,11 +355,11 @@ export default function PurchasesListPage() {
               onChange={(e) => {
                 if (e.target.files) setResubmitFiles(Array.from(e.target.files));
               }}
-              className="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 cursor-pointer"
+              className="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-slate-100 dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-200 hover:file:bg-slate-200 dark:hover:file:bg-slate-700 cursor-pointer"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
             <Button
               variant="ghost"
               size="sm"

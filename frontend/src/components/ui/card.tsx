@@ -5,7 +5,7 @@ export function Card({ className, children, ...props }: React.HTMLAttributes<HTM
   return (
     <div
       className={cn(
-        'rounded-xl border border-slate-800/80 bg-slate-900/60 backdrop-blur-md p-6 text-slate-100 shadow-xl',
+        'rounded-xl border border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 backdrop-blur-md p-6 text-slate-900 dark:text-slate-100 shadow-sm dark:shadow-xl transition-colors',
         className,
       )}
       {...props}
@@ -25,7 +25,7 @@ export function CardHeader({ className, children, ...props }: React.HTMLAttribut
 
 export function CardTitle({ className, children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={cn('text-lg font-bold leading-none tracking-tight text-white', className)} {...props}>
+    <h3 className={cn('text-lg font-bold leading-none tracking-tight text-slate-900 dark:text-white', className)} {...props}>
       {children}
     </h3>
   );
@@ -33,7 +33,7 @@ export function CardTitle({ className, children, ...props }: React.HTMLAttribute
 
 export function CardDescription({ className, children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn('text-sm text-slate-400', className)} {...props}>
+    <p className={cn('text-sm text-slate-600 dark:text-slate-400', className)} {...props}>
       {children}
     </p>
   );

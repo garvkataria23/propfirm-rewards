@@ -76,20 +76,20 @@ export default function HowItWorksPage() {
     <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 space-y-16">
       {/* Header */}
       <div className="text-center space-y-4 max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
+        <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-3 py-1 rounded-full">
           <Compass className="h-3.5 w-3.5" />
           <span>Simple, Transparent, Rewarding</span>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight">
+        <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
           How It Works
         </h1>
-        <p className="text-base text-slate-300 leading-relaxed">
+        <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed">
           From challenge purchase to doorstep delivery: here is how we turn your prop firm purchases into premium trading setup gear.
         </p>
       </div>
 
       {/* Steps Timeline */}
-      <div className="relative space-y-8 before:absolute before:inset-0 before:left-8 sm:before:left-1/2 before:w-0.5 before:-ml-px before:bg-slate-800 before:h-full">
+      <div className="relative space-y-8 before:absolute before:inset-0 before:left-8 sm:before:left-1/2 before:w-0.5 before:-ml-px before:bg-slate-200 dark:before:bg-slate-800 before:h-full">
         {steps.map((step, idx) => {
           const isEven = idx % 2 === 0;
           return (
@@ -100,22 +100,22 @@ export default function HowItWorksPage() {
               } gap-6 sm:gap-12`}
             >
               {/* Timeline Center Badge */}
-              <div className="absolute left-8 sm:left-1/2 -translate-x-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 border-2 border-emerald-500 text-xs font-black text-emerald-400 shadow-lg shadow-emerald-500/20 z-10">
+              <div className="absolute left-8 sm:left-1/2 -translate-x-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-white dark:bg-slate-900 border-2 border-emerald-500 text-xs font-black text-emerald-600 dark:text-emerald-400 shadow-lg shadow-emerald-500/20 z-10">
                 {step.num}
               </div>
 
               {/* Content Box */}
               <div className="ml-16 sm:ml-0 sm:w-1/2">
-                <Card className="card-hover-glow space-y-3">
-                  <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider block">
+                <Card className="card-hover-glow space-y-3 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-xs">
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">
                     Step {step.num}
                   </span>
-                  <h3 className="text-xl font-bold text-white tracking-tight">{step.title}</h3>
-                  <p className="text-sm text-slate-300 leading-relaxed">{step.description}</p>
-                  <div className="rounded-lg bg-slate-950/70 border border-slate-800/80 p-3 text-xs text-slate-400 flex items-start gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{step.title}</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{step.description}</p>
+                  <div className="rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800/80 p-3 text-xs text-slate-600 dark:text-slate-400 flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                     <span>
-                      <strong className="text-slate-300">Pro-Tip:</strong> {step.tips}
+                      <strong className="text-slate-900 dark:text-slate-200">Pro-Tip:</strong> {step.tips}
                     </span>
                   </div>
                 </Card>
@@ -127,43 +127,43 @@ export default function HowItWorksPage() {
 
       {/* Dos & Don'ts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-8">
-        <Card className="border-emerald-500/30 bg-emerald-950/10 space-y-4">
-          <div className="flex items-center gap-2 text-emerald-400 font-bold text-lg">
+        <Card className="border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/60 dark:bg-emerald-950/10 space-y-4 shadow-xs transition-colors">
+          <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold text-lg">
             <CheckCircle2 className="h-5 w-5" />
             <span>What To Do</span>
           </div>
-          <ul className="space-y-2.5 text-sm text-slate-300">
+          <ul className="space-y-2.5 text-sm text-slate-700 dark:text-slate-300">
             <li className="flex items-start gap-2">
-              <span className="text-emerald-400 font-bold">✓</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">✓</span>
               <span>Double-check that our referral code was successfully applied at checkout.</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-emerald-400 font-bold">✓</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">✓</span>
               <span>Upload clear PDF invoices or uncropped screenshots with visible Order IDs.</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-emerald-400 font-bold">✓</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">✓</span>
               <span>Submit within 14 days of original account purchase.</span>
             </li>
           </ul>
         </Card>
 
-        <Card className="border-rose-500/30 bg-rose-950/10 space-y-4">
-          <div className="flex items-center gap-2 text-rose-400 font-bold text-lg">
+        <Card className="border-rose-200 dark:border-rose-500/30 bg-rose-50/60 dark:bg-rose-950/10 space-y-4 shadow-xs transition-colors">
+          <div className="flex items-center gap-2 text-rose-700 dark:text-rose-400 font-bold text-lg">
             <AlertCircle className="h-5 w-5" />
             <span>What To Avoid</span>
           </div>
-          <ul className="space-y-2.5 text-sm text-slate-300">
+          <ul className="space-y-2.5 text-sm text-slate-700 dark:text-slate-300">
             <li className="flex items-start gap-2">
-              <span className="text-rose-400 font-bold">✕</span>
+              <span className="text-rose-600 dark:text-rose-400 font-bold">✕</span>
               <span>Do not submit accounts purchased without our referral code or link.</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-rose-400 font-bold">✕</span>
+              <span className="text-rose-600 dark:text-rose-400 font-bold">✕</span>
               <span>Do not submit the same order ID twice; duplicate detection will flag it.</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-rose-400 font-bold">✕</span>
+              <span className="text-rose-600 dark:text-rose-400 font-bold">✕</span>
               <span>Do not submit blurry or altered transaction screenshots.</span>
             </li>
           </ul>
@@ -172,7 +172,7 @@ export default function HowItWorksPage() {
 
       {/* CTA Bottom */}
       <div className="text-center pt-8 space-y-4">
-        <h3 className="text-2xl font-black text-white">Ready to start earning points?</h3>
+        <h3 className="text-2xl font-black text-slate-900 dark:text-white">Ready to start earning points?</h3>
         <div className="flex justify-center gap-4">
           <Link href="/prop-firms">
             <Button size="lg">
