@@ -1725,8 +1725,67 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
+      {/* 12. LUXURY REWARDS STORE PREVIEW (Nike, G-Shock, iPhone, Mac) */}
       {/* ======================================================== */}
-      {/* 12. "MEET TRADIN®, OUR REGULATED BROKER" (Screenshot 1) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-purple-100 dark:border-purple-950/60">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-10">
+          <div className="space-y-1 text-left">
+            <span className="text-xs font-bold text-purple-600 uppercase tracking-wider">Rewards Catalog</span>
+            <h2 className="text-3xl sm:text-4xl font-[900] tracking-tight text-[#0c1024] dark:text-white">
+              37+ Luxury Physical &amp; Cash Rewards
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+              Redeemable immediately with your verified reward points (1$ = 10 PTS).
+            </p>
+          </div>
+
+          <Link href="/rewards">
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-10 px-5 rounded-xl shadow-md shadow-purple-600/25">
+              View All 37 Rewards <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
+            </Button>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-left">
+          {rewards.slice(0, 4).map((reward) => (
+            <div
+              key={reward.id}
+              className="rounded-2xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/50 p-4 space-y-3 hover:border-purple-300 dark:hover:border-purple-700 transition-all shadow-xs group"
+            >
+              <div className="aspect-square rounded-xl bg-purple-50/40 dark:bg-slate-950 overflow-hidden border border-purple-100 dark:border-purple-900/40">
+                <img
+                  src={reward.imageUrl}
+                  alt={reward.name}
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+
+              <div>
+                <span className="text-[10px] font-bold uppercase text-purple-500">
+                  {reward.category?.name || 'Luxury Gear'}
+                </span>
+                <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-purple-600 transition-colors">
+                  {reward.name}
+                </h4>
+              </div>
+
+              <div className="flex items-center justify-between pt-2 border-t border-purple-50 dark:border-purple-900/40">
+                <span className="text-xs font-black text-purple-600 dark:text-purple-400">
+                  {reward.pointsRequired.toLocaleString()} PTS
+                </span>
+                <Link href={`/rewards/${reward.slug}`}>
+                  <span className="text-[11px] font-semibold text-slate-500 hover:text-purple-600 dark:hover:text-white">
+                    Claim &rarr;
+                  </span>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 13. "MEET TRADIN®, OUR REGULATED BROKER" (Screenshot 1 Replicated) */}
       {/* ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-purple-100 dark:border-purple-950/60">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
@@ -1735,7 +1794,7 @@ export default function HomePage() {
               Meet Tradin&reg;, our regulated broker
             </h2>
 
-            {/* Checklist with circular light blue checkmarks */}
+            {/* Checklist with circular light blue checkmarks (Screenshot 1) */}
             <div className="space-y-4 pt-2">
               <div className="flex items-start gap-3">
                 <div className="h-6 w-6 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
@@ -1903,7 +1962,7 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 13. "BUILDING TRADERS GLOBALLY SINCE 2022" (Screenshot 2) */}
+      {/* 14. "BUILDING TRADERS GLOBALLY SINCE 2022" (Screenshot 2 Replicated) */}
       {/* ======================================================== */}
       <section className="w-full bg-[#060a17] text-white py-16 sm:py-24 border-t border-slate-900 text-center space-y-10">
         <div className="space-y-1.5 max-w-xl mx-auto px-4">
@@ -1941,67 +2000,7 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 14. LUXURY REWARDS STORE PREVIEW (Nike, G-Shock, iPhone, Mac) */}
-      {/* ======================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-purple-100 dark:border-purple-950/60">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-10">
-          <div className="space-y-1 text-left">
-            <span className="text-xs font-bold text-purple-600 uppercase tracking-wider">Rewards Catalog</span>
-            <h2 className="text-3xl sm:text-4xl font-[900] tracking-tight text-[#0c1024] dark:text-white">
-              37+ Luxury Physical &amp; Cash Rewards
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Redeemable immediately with your verified reward points (1$ = 10 PTS).
-            </p>
-          </div>
-
-          <Link href="/rewards">
-            <Button className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-10 px-5 rounded-xl shadow-md shadow-purple-600/25">
-              View All 37 Rewards <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-            </Button>
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-left">
-          {rewards.slice(0, 4).map((reward) => (
-            <div
-              key={reward.id}
-              className="rounded-2xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/50 p-4 space-y-3 hover:border-purple-300 dark:hover:border-purple-700 transition-all shadow-xs group"
-            >
-              <div className="aspect-square rounded-xl bg-purple-50/40 dark:bg-slate-950 overflow-hidden border border-purple-100 dark:border-purple-900/40">
-                <img
-                  src={reward.imageUrl}
-                  alt={reward.name}
-                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-
-              <div>
-                <span className="text-[10px] font-bold uppercase text-purple-500">
-                  {reward.category?.name || 'Luxury Gear'}
-                </span>
-                <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-purple-600 transition-colors">
-                  {reward.name}
-                </h4>
-              </div>
-
-              <div className="flex items-center justify-between pt-2 border-t border-purple-50 dark:border-purple-900/40">
-                <span className="text-xs font-black text-purple-600 dark:text-purple-400">
-                  {reward.pointsRequired.toLocaleString()} PTS
-                </span>
-                <Link href={`/rewards/${reward.slug}`}>
-                  <span className="text-[11px] font-semibold text-slate-500 hover:text-purple-600 dark:hover:text-white">
-                    Claim &rarr;
-                  </span>
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* 15. DEEP NAVY FAQS: "WHAT IS PROPNATION?" (Screenshots 3 & 4) */}
+      {/* 15. DEEP NAVY FAQS: "WHAT IS PROPNATION?" (Screenshots 3 & 4 Replicated) */}
       {/* ======================================================== */}
       <section className="w-full bg-[#05091c] text-white py-20 sm:py-28 border-t border-slate-900">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-left space-y-10">
@@ -2040,16 +2039,16 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 14. FLOATING LIVE CHAT BUBBLE */}
+      {/* 16. FLOATING LIVE CHAT BUBBLE (Screenshots Blue Floating Bubble) */}
       {/* ======================================================== */}
       <div className="fixed bottom-6 right-6 z-50">
         <Link
           href="/support/live"
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-200 border-2 border-white/20 group"
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-[#113264] hover:bg-[#1a478b] text-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-200 border-2 border-white/20 group"
           title="Open Live Chat"
         >
           <MessageSquare className="h-6 w-6 text-white group-hover:scale-105 transition-transform" />
-          <span className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-purple-300 border-2 border-white animate-pulse" />
+          <span className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-sky-400 border-2 border-white animate-pulse" />
         </Link>
       </div>
     </div>
