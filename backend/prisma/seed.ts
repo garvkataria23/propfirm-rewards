@@ -137,7 +137,7 @@ async function main() {
     },
   });
 
-  // 6. Create Prop Firms & Offers (1$ = 10 Points)
+  // 6. Create Prop Firms & Offers (1$ = 10 Points, Universal Referral Code: NATION)
   const fundedSquad = await prisma.propFirm.create({
     data: {
       name: 'FundedSquad',
@@ -145,9 +145,9 @@ async function main() {
       logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
       description: 'Elite proprietary firm with instant evaluation pass options, scaling plans up to $1,000,000, and weekly payouts.',
       websiteUrl: 'https://fundedsquad.com',
-      affiliateCode: 'SQUADREWARDS',
-      affiliateUrl: 'https://fundedsquad.com/?ref=proprewards',
-      eligibilityTerms: 'Valid on all 1-Step and 2-Step evaluation challenges. 1$ purchase equals 10 Reward Points.',
+      affiliateCode: 'NATION',
+      affiliateUrl: 'https://fundedsquad.com/?ref=nation',
+      eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
       sortOrder: 1,
       isActive: true,
       offers: {
@@ -170,9 +170,9 @@ async function main() {
       logoUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=120&auto=format&fit=crop&q=80',
       description: 'Premium prop trading firm offering raw ECN spreads, high drawdown limits, and bi-weekly revenue splits up to 90%.',
       websiteUrl: 'https://pipstonecapital.com',
-      affiliateCode: 'PIPRULES',
-      affiliateUrl: 'https://pipstonecapital.com/?ref=proprewards',
-      eligibilityTerms: 'Applies to Standard and Aggressive evaluations. 1$ purchase equals 10 Reward Points.',
+      affiliateCode: 'NATION',
+      affiliateUrl: 'https://pipstonecapital.com/?ref=nation',
+      eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
       sortOrder: 2,
       isActive: true,
       offers: {
@@ -195,9 +195,9 @@ async function main() {
       logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
       description: 'The global benchmark for proprietary trading. Up to $200,000 initial balance, up to 90% profit split, and world-class trader education.',
       websiteUrl: 'https://ftmo.com',
-      affiliateCode: 'PROPREWARDS10',
-      affiliateUrl: 'https://ftmo.com/?ref=proprewards',
-      eligibilityTerms: 'Valid for new challenge purchases made via referral link. 1$ purchase equals 10 Reward Points.',
+      affiliateCode: 'NATION',
+      affiliateUrl: 'https://ftmo.com/?ref=nation',
+      eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
       sortOrder: 3,
       isActive: true,
       offers: {
@@ -220,9 +220,9 @@ async function main() {
       logoUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=120&auto=format&fit=crop&q=80',
       description: '15% profit sharing during challenge phases, up to 95% profit split, and guaranteed 24-hour payout processing.',
       websiteUrl: 'https://fundednext.com',
-      affiliateCode: 'NEXTREWARDS',
-      affiliateUrl: 'https://fundednext.com/?ref=proprewards',
-      eligibilityTerms: 'Eligible for Stellar, Evaluation, and Express models. 1$ purchase equals 10 Reward Points.',
+      affiliateCode: 'NATION',
+      affiliateUrl: 'https://fundednext.com/?ref=nation',
+      eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
       sortOrder: 4,
       isActive: true,
       offers: {
@@ -245,9 +245,9 @@ async function main() {
       logoUrl: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
       description: 'Built by traders for traders. Tight spreads, fast weekly payouts, and zero time limit evaluation phases.',
       websiteUrl: 'https://fundingpips.com',
-      affiliateCode: 'REWARDSPIP',
-      affiliateUrl: 'https://fundingpips.com/?ref=proprewards',
-      eligibilityTerms: 'Applies to 2-Step and 1-Step evaluations. 1$ purchase equals 10 Reward Points.',
+      affiliateCode: 'NATION',
+      affiliateUrl: 'https://fundingpips.com/?ref=nation',
+      eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
       sortOrder: 5,
       isActive: true,
       offers: {
@@ -263,180 +263,562 @@ async function main() {
   });
 
   // 7. Reward Categories
-  const catHardware = await prisma.rewardCategory.create({
-    data: { name: 'Trading Hardware', slug: 'trading-hardware', icon: 'monitor', sortOrder: 1 },
-  });
   const catDevices = await prisma.rewardCategory.create({
-    data: { name: 'Smartphones & Tablets', slug: 'smartphones-tablets', icon: 'smartphone', sortOrder: 2 },
+    data: { name: 'Smartphones & Tablets', slug: 'smartphones-tablets', icon: 'smartphone', sortOrder: 1 },
+  });
+  const catLaptops = await prisma.rewardCategory.create({
+    data: { name: 'Laptops & Workstations', slug: 'laptops-workstations', icon: 'laptop', sortOrder: 2 },
+  });
+  const catWatches = await prisma.rewardCategory.create({
+    data: { name: 'Luxury Watches & Wearables', slug: 'watches-wearables', icon: 'watch', sortOrder: 3 },
+  });
+  const catShoes = await prisma.rewardCategory.create({
+    data: { name: 'Sneakers & Footwear', slug: 'sneakers-footwear', icon: 'footprints', sortOrder: 4 },
+  });
+  const catHardware = await prisma.rewardCategory.create({
+    data: { name: 'Trading Displays & Hardware', slug: 'trading-hardware', icon: 'monitor', sortOrder: 5 },
   });
   const catAudio = await prisma.rewardCategory.create({
-    data: { name: 'Audio & Wearables', slug: 'audio-wearables', icon: 'headphones', sortOrder: 3 },
+    data: { name: 'Audio & Studio Sound', slug: 'audio-sound', icon: 'headphones', sortOrder: 6 },
+  });
+  const catSecurity = await prisma.rewardCategory.create({
+    data: { name: 'Crypto & Security Hardware', slug: 'crypto-security', icon: 'shield', sortOrder: 7 },
   });
   const catGiftCards = await prisma.rewardCategory.create({
-    data: { name: 'Gift Cards & Vouchers', slug: 'gift-cards', icon: 'gift', sortOrder: 4 },
+    data: { name: 'Gift Cards & Vouchers', slug: 'gift-cards', icon: 'gift', sortOrder: 8 },
   });
-  const catApparel = await prisma.rewardCategory.create({
-    data: { name: 'Apparel & Lifestyle', slug: 'apparel-lifestyle', icon: 'shirt', sortOrder: 5 },
+  const catLifestyle = await prisma.rewardCategory.create({
+    data: { name: 'Trader Ergonomics & Desk', slug: 'trader-ergonomics', icon: 'armchair', sortOrder: 9 },
   });
 
-  // 8. Rewards Catalog (1$ = 10 Points)
-  const rewardIphone = await prisma.reward.create({
+  // 8. Rewards Catalog (1$ = 10 Points - At least 30+ Items)
+  // Category 1: Smartphones & Tablets
+  await prisma.reward.create({
     data: {
       categoryId: catDevices.id,
-      name: 'Apple iPhone 16 Pro Max 256GB',
-      slug: 'apple-iphone-16-pro-max',
-      description: 'The pinnacle of mobile performance. Titanium design, A18 Pro chip, 48MP Fusion camera system, and exceptional battery life for monitoring charts on the go.',
-      specifications: 'Color: Natural Titanium | Storage: 256GB | Display: 6.9-inch Super Retina XDR with ProMotion',
-      imageUrl: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80',
-      pointsRequired: 12000,
-      stock: 6,
+      name: 'Apple iPhone 18 Pro Max (1TB - Cosmic Titanium)',
+      slug: 'apple-iphone-18-pro-max-1tb',
+      description: 'Next-generation flagship smartphone with A19 Bionic Neural Engine, 6.9-inch ProMotion Ultra-Retina XDR display, and 48MP periscope zoom. Perfect for real-time mobile trading.',
+      specifications: 'Color: Cosmic Titanium | Storage: 1TB | Display: 6.9" ProMotion 120Hz OLED | Battery: 34h talk time',
+      imageUrl: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 15990,
+      stock: 8,
       sortOrder: 1,
     },
   });
 
-  const rewardIpad = await prisma.reward.create({
+  await prisma.reward.create({
     data: {
       categoryId: catDevices.id,
-      name: 'Apple iPad Pro 11" M4 (Wi-Fi 256GB)',
-      slug: 'apple-ipad-pro-11-m4',
-      description: 'Incredibly thin and powerful. Ultra Retina XDR OLED display, M4 chip, perfect for TradingView charting and multi-screen workstation extensions.',
-      specifications: 'Space Black | 256GB | Ultra Retina XDR tandem OLED display',
-      imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80',
-      pointsRequired: 8500,
-      stock: 10,
+      name: 'Apple iPhone 18 Pro (256GB - Deep Space Black)',
+      slug: 'apple-iphone-18-pro-256gb',
+      description: 'Grade 5 forged titanium enclosure with ultra-thin bezels, Action Button, Ceramic Shield 2, and seamless multi-monitor TradingView sync.',
+      specifications: 'Color: Deep Space Black | Storage: 256GB | Chip: A19 Pro Bionic | Camera: 48MP Triple Lens',
+      imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 11990,
+      stock: 12,
       sortOrder: 2,
     },
   });
 
-  const rewardMonitor = await prisma.reward.create({
+  await prisma.reward.create({
     data: {
-      categoryId: catHardware.id,
-      name: 'Dell UltraSharp 38" Curved WQHD+ Trading Monitor',
-      slug: 'dell-ultrasharp-38-curved-monitor',
-      description: 'Massive panoramic workspace for multi-timeframe analysis. IPS Black technology with 2000:1 contrast ratio and built-in KVM switch.',
-      specifications: 'Resolution: 3840 x 1600 WQHD+ | Curved 2300R | 90W USB-C Power Delivery',
-      imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&auto=format&fit=crop&q=80',
-      pointsRequired: 9500,
-      stock: 4,
+      categoryId: catDevices.id,
+      name: 'Apple iPhone 18 (128GB - Ultramarine)',
+      slug: 'apple-iphone-18-128gb',
+      description: 'Vibrant color-infused back glass with Camera Control, Dynamic Island, and exceptional all-day battery efficiency for swift market execution.',
+      specifications: 'Color: Ultramarine | Storage: 128GB | Display: 6.1" Super Retina XDR',
+      imageUrl: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 7990,
+      stock: 15,
       sortOrder: 3,
     },
   });
 
-  const rewardMouse = await prisma.reward.create({
+  await prisma.reward.create({
     data: {
-      categoryId: catHardware.id,
-      name: 'Logitech MX Master 3S Performance Mouse',
-      slug: 'logitech-mx-master-3s',
-      description: 'The trader gold standard. Quiet clicks, 8,000 DPI track-on-glass sensor, and hyper-fast MagSpeed electromagnetic scrolling.',
-      specifications: 'Color: Graphite | Connectivity: Bluetooth & Logi Bolt | Multi-device switching up to 3 PCs',
-      imageUrl: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600&auto=format&fit=crop&q=80',
-      pointsRequired: 1000,
-      stock: 35,
+      categoryId: catDevices.id,
+      name: 'Apple iPad Pro 13" M4 Tandem OLED (256GB - Space Black)',
+      slug: 'apple-ipad-pro-13-m4',
+      description: 'Breakthrough thin design featuring tandem OLED Ultra Retina XDR screen and lightning-fast M4 silicon. The ultimate portable trading station.',
+      specifications: 'Display: 13-inch Tandem OLED | Processor: Apple M4 Chip | Storage: 256GB Wi-Fi',
+      imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 12990,
+      stock: 6,
       sortOrder: 4,
     },
   });
 
-  const rewardSony = await prisma.reward.create({
+  await prisma.reward.create({
     data: {
-      categoryId: catAudio.id,
-      name: 'Sony WH-1000XM5 Noise Cancelling Headphones',
-      slug: 'sony-wh-1000xm5-headphones',
-      description: 'Industry-leading noise cancellation engineered for high-stress trading sessions. Dual processors and 8 microphones block out all distractions.',
-      specifications: 'Color: Black | Battery: 30 hours | Fast Charging (3 min = 3 hours)',
-      imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80',
-      pointsRequired: 3200,
-      stock: 18,
+      categoryId: catDevices.id,
+      name: 'Apple iPad Air 11" M2 (128GB - Starlight)',
+      slug: 'apple-ipad-air-11-m2',
+      description: 'Versatile liquid retina display with M2 performance, Apple Pencil Pro support, and lightweight mobility for desk and travel trading.',
+      specifications: 'Display: 11-inch Liquid Retina | Chip: Apple M2 | Storage: 128GB Wi-Fi',
+      imageUrl: 'https://images.unsplash.com/photo-1561154464-82e9adf32764?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 5990,
+      stock: 10,
       sortOrder: 5,
     },
   });
 
-  const rewardAirpods = await prisma.reward.create({
+  // Category 2: Laptops & Workstations
+  await prisma.reward.create({
     data: {
-      categoryId: catAudio.id,
-      name: 'Apple AirPods Pro (2nd Generation with USB-C)',
-      slug: 'apple-airpods-pro-2-usbc',
-      description: 'Up to 2x more Active Noise Cancellation, Adaptive Audio, and Personalized Spatial Audio for seamless trading mobility.',
-      specifications: 'MagSafe Case (USB-C) with speaker and lanyard loop | IP54 dust, sweat, and water resistance',
-      imageUrl: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80',
-      pointsRequired: 2200,
-      stock: 25,
+      categoryId: catLaptops.id,
+      name: 'Apple MacBook Pro 16" M4 Max (64GB RAM, 1TB SSD - Space Black)',
+      slug: 'macbook-pro-16-m4-max',
+      description: 'Monstrous desktop-class workstation performance in a laptop. Handles dozens of high-frequency tick charts, automated algos, and multi-4K monitors without throttling.',
+      specifications: 'Processor: Apple M4 Max (16-core CPU, 40-core GPU) | Memory: 64GB Unified RAM | Storage: 1TB NVMe SSD',
+      imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 34990,
+      stock: 4,
       sortOrder: 6,
     },
   });
 
-  const rewardGift100 = await prisma.reward.create({
+  await prisma.reward.create({
     data: {
-      categoryId: catGiftCards.id,
-      name: 'Amazon $100 Digital Gift Card',
-      slug: 'amazon-100-gift-card',
-      description: 'Delivered digitally to your account email instantly upon verification. Redeemable for millions of items on Amazon.',
-      specifications: 'Digital code delivery | No expiration date | Global or regional redemption',
-      imageUrl: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=600&auto=format&fit=crop&q=80',
-      pointsRequired: 1000,
-      stock: 150,
-      isUnlimitedStock: true,
+      categoryId: catLaptops.id,
+      name: 'Apple MacBook Pro 14" M4 Pro (24GB RAM, 512GB SSD - Silver)',
+      slug: 'macbook-pro-14-m4-pro',
+      description: 'Compact powerhouse with Liquid Retina XDR display, up to 24 hours of battery life, and high-bandwidth memory for rigorous technical backtesting.',
+      specifications: 'Processor: M4 Pro 12-core | Memory: 24GB Unified | Storage: 512GB SSD | Thunderbolt 5 ports',
+      imageUrl: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 19990,
+      stock: 6,
       sortOrder: 7,
     },
   });
 
-  const rewardGift50 = await prisma.reward.create({
+  await prisma.reward.create({
     data: {
-      categoryId: catGiftCards.id,
-      name: 'Amazon $50 Digital Gift Card',
-      slug: 'amazon-50-gift-card',
-      description: 'Instant digital code delivery. Perfect for trading books, office supplies, or everyday purchases.',
-      specifications: 'Digital code delivery | Fast processing | Global Amazon redemption',
-      imageUrl: 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600&auto=format&fit=crop&q=80',
-      pointsRequired: 500,
-      stock: 200,
-      isUnlimitedStock: true,
+      categoryId: catLaptops.id,
+      name: 'Apple MacBook Air 15" M3 (16GB RAM, 512GB SSD - Midnight)',
+      slug: 'macbook-air-15-m3',
+      description: 'Strikingly thin fanless design with expansive 15.3" display, MagSafe charging, and silent operation during market hours.',
+      specifications: 'Display: 15.3-inch Liquid Retina | Chip: Apple M3 8-core CPU | RAM: 16GB | SSD: 512GB',
+      imageUrl: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 14990,
+      stock: 8,
       sortOrder: 8,
     },
   });
 
-  const catShoes = await prisma.rewardCategory.create({
-    data: { name: 'Shoes & Sneakers', slug: 'shoes-sneakers', icon: 'footprints', sortOrder: 6 },
+  await prisma.reward.create({
+    data: {
+      categoryId: catLaptops.id,
+      name: 'Apple MacBook Air 13" M3 (16GB RAM, 256GB SSD - Space Gray)',
+      slug: 'macbook-air-13-m3',
+      description: 'Super portable laptop tailored for remote traders. Exceptional 18-hour battery longevity with dual external display support.',
+      specifications: 'Chip: Apple M3 | Memory: 16GB Unified RAM | Storage: 256GB SSD | Weight: 1.24 kg',
+      imageUrl: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 10990,
+      stock: 12,
+      sortOrder: 9,
+    },
   });
 
-  const rewardJordan = await prisma.reward.create({
+  // Category 3: Luxury Watches & Wearables
+  await prisma.reward.create({
+    data: {
+      categoryId: catWatches.id,
+      name: 'Casio G-Shock Mudmaster Carbon Core Solar (GWG-2000)',
+      slug: 'casio-gshock-mudmaster-gwg2000',
+      description: 'Rugged military-grade forged carbon bezel with Triple Sensor (altimeter/barometer, compass, thermometer), Tough Solar, and Multiband 6 atomic timekeeping.',
+      specifications: 'Case: Forged Carbon & Stainless Steel | Resistance: 200M Water & Mud Resistant | Glass: Sapphire Crystal',
+      imageUrl: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 8000,
+      stock: 10,
+      sortOrder: 10,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catWatches.id,
+      name: 'Casio G-Shock Full Metal 5000 Series (GMW-B5000D-1)',
+      slug: 'casio-gshock-full-metal-gmwb5000d',
+      description: 'The iconic square silhouette reimagined in solid stainless steel. Features Bluetooth smartphone link, solar charging, and high-contrast STN display.',
+      specifications: 'Material: Full Stainless Steel Case & Band | Connection: Bluetooth Phone Link | Shock Resistant Structure',
+      imageUrl: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 5500,
+      stock: 12,
+      sortOrder: 11,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catWatches.id,
+      name: 'Casio G-Shock GA-2100 "CasiOak" All-Black Stealth',
+      slug: 'casio-gshock-ga2100-stealth',
+      description: 'Minimalist octagonal bezel with double LED illumination, Carbon Core Guard structure, and sleek matte black stealth aesthetics.',
+      specifications: 'Case: Carbon Core Guard | Water Resistance: 200M | Weight: Ultra-light 51g | Style: Matte Black',
+      imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 1300,
+      stock: 25,
+      sortOrder: 12,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catWatches.id,
+      name: 'Apple Watch Ultra 2 Titanium (Ocean Band - Black)',
+      slug: 'apple-watch-ultra-2-black',
+      description: 'Corrosion-resistant titanium case with dual-frequency GPS, 3000 nits brightness display, customizable Action button, and 72-hour battery in Low Power Mode.',
+      specifications: 'Case: 49mm Natural Titanium | Band: Black Ocean Band | Glass: Sapphire Crystal',
+      imageUrl: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 7990,
+      stock: 7,
+      sortOrder: 13,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catWatches.id,
+      name: 'Apple Watch Series 10 Jet Black Aluminum 46mm',
+      slug: 'apple-watch-series-10-jetblack',
+      description: 'Thinnest Apple Watch ever with the biggest wide-angle OLED display, fast charge to 80% in 30 minutes, and vital health sensors.',
+      specifications: 'Case: 46mm Jet Black Polished Aluminum | Strap: Sport Loop | Sensor: ECG, Heart Rate, SpO2',
+      imageUrl: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 4290,
+      stock: 14,
+      sortOrder: 14,
+    },
+  });
+
+  // Category 4: Sneakers & Footwear
+  await prisma.reward.create({
+    data: {
+      categoryId: catShoes.id,
+      name: 'Nike Air Jordan 1 Retro High OG "Chicago Lost & Found"',
+      slug: 'nike-air-jordan-1-retro-chicago',
+      description: 'The holy grail of sneaker culture. Classic Chicago colorway featuring aged vintage accents, cracked leather detailing, and original 1985 box aesthetic.',
+      specifications: 'Colorway: Varsity Red/Black/Sail | Material: Premium Full-Grain Leather | Sizes: US 7 to 13',
+      imageUrl: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 3500,
+      stock: 8,
+      sortOrder: 15,
+    },
+  });
+
+  await prisma.reward.create({
     data: {
       categoryId: catShoes.id,
       name: 'Nike Air Jordan 1 Low "Triple White"',
       slug: 'nike-air-jordan-1-low-white',
       description: 'Iconic low-top silhouette crafted with premium genuine leather upper, encapsulated Nike Air heel cushioning, and durable rubber traction.',
       specifications: 'Color: Triple White | Material: Full-Grain Leather | Sizes: US 7 to 13 available',
-      imageUrl: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=600&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80',
       pointsRequired: 1400,
       stock: 15,
-      sortOrder: 10,
+      sortOrder: 16,
     },
   });
 
-  const rewardDunk = await prisma.reward.create({
+  await prisma.reward.create({
     data: {
       categoryId: catShoes.id,
-      name: 'Nike Dunk Low Retro "Panda"',
+      name: 'Nike Dunk Low Retro "Panda" (Black/White)',
       slug: 'nike-dunk-low-panda',
       description: 'Timeless two-tone black and white leather construction, padded low-cut collar, and classic court style designed for all-day comfort.',
       specifications: 'Color: White/Black | Material: Leather | Sizes: US 7 to 13 available',
-      imageUrl: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&auto=format&fit=crop&q=80',
       pointsRequired: 1500,
-      stock: 12,
-      sortOrder: 11,
+      stock: 20,
+      sortOrder: 17,
     },
   });
 
-  const rewardOnCloud = await prisma.reward.create({
+  await prisma.reward.create({
+    data: {
+      categoryId: catShoes.id,
+      name: 'Nike Air Force 1 \'07 All-White Classic',
+      slug: 'nike-air-force-1-07-white',
+      description: 'The definition of sneaker timelessness. Crisp leather edges, stitched overlays, and legendary Nike Air cushioning for unparalleled comfort.',
+      specifications: 'Color: White/White | Upper: Real & Synthetic Leather | Sizes: US 6 to 14',
+      imageUrl: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 1150,
+      stock: 25,
+      sortOrder: 18,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catShoes.id,
+      name: 'Nike Air Max 270 React Triple Black',
+      slug: 'nike-air-max-270-react-black',
+      description: 'Nike\'s biggest heel Air unit combined with soft, resilient Nike React foam for super smooth transitions and all-day energy return.',
+      specifications: 'Color: Triple Black | Cushioning: 270 Max Air + React Foam | Sizes: US 7 to 13',
+      imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 1600,
+      stock: 14,
+      sortOrder: 19,
+    },
+  });
+
+  await prisma.reward.create({
     data: {
       categoryId: catShoes.id,
       name: 'On Cloud 5 Waterproof All-Black Running Shoes',
       slug: 'on-cloud-5-waterproof',
       description: 'Swiss-engineered CloudTec cushioning in Zero-Gravity foam with fully waterproof membrane and speed-lacing system.',
       specifications: 'Color: All-Black | Feature: 100% Wind & Waterproof | Sizes: US 7 to 13',
-      imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80',
-      pointsRequired: 1600,
+      imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 1700,
+      stock: 18,
+      sortOrder: 20,
+    },
+  });
+
+  // Category 5: Trading Displays & Hardware
+  await prisma.reward.create({
+    data: {
+      categoryId: catHardware.id,
+      name: 'Samsung Odyssey Neo G9 49" Dual QHD Curved Monitor',
+      slug: 'samsung-odyssey-neo-g9-49',
+      description: 'Super ultra-wide 32:9 curved Quantum Mini-LED monitor with 240Hz refresh rate and 1000R curvature. Equivalent to two 27" QHD screens side-by-side.',
+      specifications: 'Screen Size: 49" Curved 1000R | Resolution: 5120 x 1440 Dual QHD | Refresh Rate: 240Hz 1ms',
+      imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 17990,
+      stock: 3,
+      sortOrder: 21,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catHardware.id,
+      name: 'Dell UltraSharp 38" Curved WQHD+ Trading Monitor',
+      slug: 'dell-ultrasharp-38-curved-monitor',
+      description: 'Massive panoramic workspace for multi-timeframe analysis. IPS Black technology with 2000:1 contrast ratio and built-in KVM switch.',
+      specifications: 'Resolution: 3840 x 1600 WQHD+ | Curved 2300R | 90W USB-C Power Delivery',
+      imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 9500,
+      stock: 5,
+      sortOrder: 22,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catHardware.id,
+      name: 'LG DualUp 28" Ergonomic Multitasking Charting Monitor',
+      slug: 'lg-dualup-28-monitor',
+      description: 'Unique 16:18 aspect ratio that stacks two 21.5" 16:9 displays vertically. Frees up desk space while keeping order book and candlestick charts in one vertical scan.',
+      specifications: 'Resolution: 2560 x 2880 SDQHD | Stand: Ergo Clamp Mount | Color: 98% DCI-P3 Nano IPS',
+      imageUrl: 'https://images.unsplash.com/photo-1585792180666-f7347c490ee2?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 6000,
+      stock: 8,
+      sortOrder: 23,
+    },
+  });
+
+  const rewardMouse = await prisma.reward.create({
+    data: {
+      categoryId: catHardware.id,
+      name: 'Logitech MX Master 3S Wireless Performance Mouse',
+      slug: 'logitech-mx-master-3s',
+      description: 'The trader gold standard. Quiet clicks, 8,000 DPI track-on-glass sensor, and hyper-fast MagSpeed electromagnetic scrolling.',
+      specifications: 'Color: Graphite | Connectivity: Bluetooth & Logi Bolt | Multi-device switching up to 3 PCs',
+      imageUrl: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 1000,
+      stock: 45,
+      sortOrder: 24,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catHardware.id,
+      name: 'Keychron Q1 Pro Wireless Custom Mechanical Keyboard',
+      slug: 'keychron-q1-pro-wireless',
+      description: 'Fully customizable 75% CNC aluminum body keyboard with hot-swappable switches, double-gasket design, and wireless Bluetooth 5.1 connection.',
+      specifications: 'Layout: 75% | Frame: Full CNC Aluminum | Switches: Gateron Jupiter Red | RGB Backlit',
+      imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 2100,
+      stock: 16,
+      sortOrder: 25,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catHardware.id,
+      name: 'Elgato Stream Deck XL (32 Key Trading Dashboard Controller)',
+      slug: 'elgato-stream-deck-xl-32',
+      description: '32 customizable LCD keys to trigger trade executions, switch TradingView chart layouts, open news feeds, and mute Discord rooms with one tap.',
+      specifications: 'Keys: 32 Custom LCD Keys | Interface: USB 3.0 | Stand: Magnetic Non-Slip Stand',
+      imageUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 2500,
+      stock: 12,
+      sortOrder: 26,
+    },
+  });
+
+  // Category 6: Audio & Studio Sound
+  await prisma.reward.create({
+    data: {
+      categoryId: catAudio.id,
+      name: 'Sony WH-1000XM5 Wireless Noise-Cancelling Headphones',
+      slug: 'sony-wh-1000xm5-headphones',
+      description: 'Industry-leading noise cancellation engineered for high-stress trading sessions. Dual processors and 8 microphones block out all distractions.',
+      specifications: 'Color: Black | Battery: 30 hours | Fast Charging (3 min = 3 hours)',
+      imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 3990,
+      stock: 20,
+      sortOrder: 27,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catAudio.id,
+      name: 'Apple AirPods Max (USB-C - Space Gray)',
+      slug: 'apple-airpods-max-usbc',
+      description: 'Custom acoustic design combined with advanced software and computational audio. Breathable knit mesh canopy and anodized aluminum ear cups.',
+      specifications: 'Color: Space Gray | Connector: USB-C Charging | Active Noise Cancellation with Transparency Mode',
+      imageUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 5490,
       stock: 10,
-      sortOrder: 12,
+      sortOrder: 28,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catAudio.id,
+      name: 'Apple AirPods Pro (2nd Generation with USB-C)',
+      slug: 'apple-airpods-pro-2-usbc',
+      description: 'Up to 2x more Active Noise Cancellation, Adaptive Audio, and Personalized Spatial Audio for seamless trading mobility.',
+      specifications: 'MagSafe Case (USB-C) with speaker and lanyard loop | IP54 dust, sweat, and water resistance',
+      imageUrl: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 2490,
+      stock: 30,
+      sortOrder: 29,
+    },
+  });
+
+  // Category 7: Crypto & Security Hardware
+  await prisma.reward.create({
+    data: {
+      categoryId: catSecurity.id,
+      name: 'Ledger Stax Crypto Hardware Wallet (E-Ink Touchscreen)',
+      slug: 'ledger-stax-hardware-wallet',
+      description: 'Designed by iPod creator Tony Fadell. World\'s first curved E-Ink touchscreen crypto wallet with Bluetooth and wireless Qi charging.',
+      specifications: 'Display: 3.7" Curved E-Ink | Connection: Bluetooth 5.2 & USB-C | Security: CC EAL6+ Certified Element',
+      imageUrl: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 3990,
+      stock: 14,
+      sortOrder: 30,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catSecurity.id,
+      name: 'Ledger Nano X Crypto Hardware Wallet',
+      slug: 'ledger-nano-x',
+      description: 'Bluetooth-enabled secure element hardware wallet for safeguarding crypto trading profits, USDT, Bitcoin, and Ethereum.',
+      specifications: 'Color: Matte Black | Security: CC EAL5+ | Supports over 5,500 coins and tokens',
+      imageUrl: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 1490,
+      stock: 25,
+      sortOrder: 31,
+    },
+  });
+
+  // Category 8: Trader Ergonomics & Desk
+  await prisma.reward.create({
+    data: {
+      categoryId: catLifestyle.id,
+      name: 'Herman Miller Aeron Ergonomic Trading Chair',
+      slug: 'herman-miller-aeron-chair',
+      description: 'The quintessential Wall Street executive trading chair. Pellicle 8Z elastomeric suspension distributes weight evenly, relieving lower back pressure during long sessions.',
+      specifications: 'Size: Size B (Medium) | Finish: Mineral/Satin Aluminum | Features: PostureFit SL & Forward Tilt',
+      imageUrl: 'https://images.unsplash.com/photo-1580481077195-c3288b506090?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 16950,
+      stock: 4,
+      sortOrder: 32,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catLifestyle.id,
+      name: 'Secretlab TITAN Evo 2024 Ergonomic Desk Chair',
+      slug: 'secretlab-titan-evo-chair',
+      description: 'Proprietary NEO Hybrid Leatherette with 4-way L-ADAPT lumbar support and magnetic memory foam head pillow for peak desk comfort.',
+      specifications: 'Upholstery: Stealth Hybrid Leatherette | Size: Regular | Recline: 165-degree tilt',
+      imageUrl: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 5490,
+      stock: 8,
+      sortOrder: 33,
+    },
+  });
+
+  // Category 9: Gift Cards & Vouchers
+  await prisma.reward.create({
+    data: {
+      categoryId: catGiftCards.id,
+      name: 'Amazon $500 Digital Gift Card',
+      slug: 'amazon-500-gift-card',
+      description: 'Instant digital delivery upon redemption approval. Redeemable across millions of tech, home, and office products on Amazon.',
+      specifications: 'Value: $500.00 USD | Delivery: Email code within 1 hour | Expiry: Never',
+      imageUrl: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 5000,
+      stock: 999,
+      isUnlimitedStock: true,
+      sortOrder: 34,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catGiftCards.id,
+      name: 'Amazon $100 Digital Gift Card',
+      slug: 'amazon-100-gift-card',
+      description: 'Instant digital code delivery. Perfect for trading books, accessories, or everyday purchases on Amazon.',
+      specifications: 'Value: $100.00 USD | Delivery: Instant Digital Code | Expiry: None',
+      imageUrl: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 1000,
+      stock: 999,
+      isUnlimitedStock: true,
+      sortOrder: 35,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catGiftCards.id,
+      name: 'Apple Store $250 Digital Gift Card',
+      slug: 'apple-store-250-gift-card',
+      description: 'Use for products, accessories, apps, games, music, movies, iCloud+, and more at any Apple Store or online.',
+      specifications: 'Value: $250.00 USD | Delivery: Digital Apple Gift Card code | Expiry: None',
+      imageUrl: 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 2500,
+      stock: 500,
+      isUnlimitedStock: true,
+      sortOrder: 36,
+    },
+  });
+
+  await prisma.reward.create({
+    data: {
+      categoryId: catGiftCards.id,
+      name: 'TradingView Premium 1-Year VIP Subscription',
+      slug: 'tradingview-premium-1year',
+      description: 'Unlock maximum charting power: 8 charts per tab, 400 server-side alerts, 25 indicators per chart, second-based intervals, and volume profile.',
+      specifications: 'Duration: 12 Months VIP Access | Voucher format: Pre-paid voucher code | Value: $599.40 USD',
+      imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&auto=format&fit=crop&q=80',
+      pointsRequired: 5990,
+      stock: 100,
+      sortOrder: 37,
     },
   });
 
@@ -455,8 +837,8 @@ async function main() {
       purchaseDate: new Date('2026-09-15T14:30:00Z'),
       purchaseAmountUsd: 600,
       emailUsed: 'alex.m.trading@gmail.com',
-      referralCodeUsed: 'PROPREWARDS10',
-      notes: 'Purchased via link with code PROPREWARDS10. Invoice attached.',
+      referralCodeUsed: 'NATION',
+      notes: 'Purchased via link with universal code NATION. Invoice attached.',
       status: 'APPROVED',
       fraudStatus: 'NORMAL',
       reviewedById: admin.id,
@@ -501,8 +883,8 @@ async function main() {
       purchaseDate: new Date('2026-09-20T10:15:00Z'),
       purchaseAmountUsd: 350,
       emailUsed: 'alex.m.trading@gmail.com',
-      referralCodeUsed: 'SQUADREWARDS',
-      notes: 'Bought during autumn promotion with code SQUADREWARDS.',
+      referralCodeUsed: 'NATION',
+      notes: 'Bought during autumn promotion with referral code NATION.',
       status: 'APPROVED',
       fraudStatus: 'NORMAL',
       reviewedById: admin.id,
@@ -572,7 +954,7 @@ async function main() {
       type: 'REDEMPTION',
       points: -1000,
       balanceAfter: 9000,
-      description: 'Redeemed Logitech MX Master 3S Performance Mouse (ID: RDM-2026-1049)',
+      description: 'Redeemed Logitech MX Master 3S Wireless Performance Mouse (ID: RDM-2026-1049)',
       createdAt: new Date('2026-09-22T16:00:00Z'),
     },
   });
@@ -591,8 +973,8 @@ async function main() {
       purchaseDate: new Date('2026-09-28T18:40:00Z'),
       purchaseAmountUsd: 549,
       emailUsed: 'alex.m.trading@gmail.com',
-      referralCodeUsed: 'NEXTREWARDS',
-      notes: 'Purchased today, referral code NEXTREWARDS visible on receipt.',
+      referralCodeUsed: 'NATION',
+      notes: 'Purchased today, referral code NATION visible on receipt.',
       status: 'APPROVED',
       fraudStatus: 'NORMAL',
       reviewedById: admin.id,
@@ -637,8 +1019,8 @@ async function main() {
       purchaseDate: new Date('2026-10-01T15:20:00Z'),
       purchaseAmountUsd: 520,
       emailUsed: 'alex.m.trading@gmail.com',
-      referralCodeUsed: 'PIPRULES',
-      notes: 'Submitted today via card checkout with PIPRULES code.',
+      referralCodeUsed: 'NATION',
+      notes: 'Submitted today via card checkout with universal code NATION.',
       status: 'PENDING',
       fraudStatus: 'NORMAL',
       pointsAwarded: 5200,
@@ -655,7 +1037,6 @@ async function main() {
     },
   });
 
-
   // Purchase 5: Sarah Chen - More Info Required submission
   await prisma.purchaseSubmission.create({
     data: {
@@ -668,8 +1049,8 @@ async function main() {
       purchaseDate: new Date('2026-09-30T11:00:00Z'),
       purchaseAmountUsd: 390,
       emailUsed: 'sarah.c@gmail.com',
-      referralCodeUsed: 'PROPREWARDS10',
-      notes: 'Initial submission',
+      referralCodeUsed: 'NATION',
+      notes: 'Initial submission with universal code NATION',
       status: 'MORE_INFO_REQUIRED',
       fraudStatus: 'NORMAL',
       infoRequestedMessage: 'The uploaded screenshot did not clearly show the transaction date or the discount coupon applied. Please upload the full billing PDF receipt received by email.',
@@ -863,7 +1244,8 @@ async function main() {
     data: [
       { key: 'PLATFORM_NAME', value: 'PropFirm Rewards', description: 'Official public platform name' },
       { key: 'SUPPORT_EMAIL', value: 'support@propfirmrewards.com', description: 'Public support contact email' },
-      { key: 'MIN_REDEMPTION_POINTS', value: '5000', description: 'Minimum points threshold to unlock redemption store checkout' },
+      { key: 'DEFAULT_REFERRAL_CODE', value: 'NATION', description: 'Universal partner referral code for all prop firms' },
+      { key: 'MIN_REDEMPTION_POINTS', value: '1000', description: 'Minimum points threshold to unlock redemption store checkout' },
       { key: 'AUTO_FRAUD_CHECK_ENABLED', value: 'true', description: 'Duplicate order ID and account ID detection flag' },
     ],
   });
@@ -872,7 +1254,8 @@ async function main() {
   console.log('   👤 Admin User: admin@propfirmrewards.com (Password: Admin@123456)');
   console.log('   👤 Trader User: trader@example.com (Password: Trader@123456) [Points Balance: 13,000]');
   console.log('   🏢 Prop Firms: 5 active (FundedSquad, Pipstone Capital, FTMO, FundedNext, Funding Pips)');
-  console.log('   🎁 Rewards: 9 items across 5 categories');
+  console.log('   🏷️ Universal Referral Code: NATION (for all prop firms & checkouts)');
+  console.log('   🎁 Rewards: 37 premium items across 9 categories (Nike shoes, G-Shock watches, iPhone 18 Pro, MacBook Pro, etc.)');
   console.log('   📋 Submissions: Approved, Pending, Under Review, and More Info Required');
 }
 

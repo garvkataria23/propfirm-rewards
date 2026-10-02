@@ -305,13 +305,13 @@ export default function WhatsAppDashboardPage() {
   const getPreviewText = () => {
     switch (selectedTemplate) {
       case 'verification':
-        return `✅ *PROPREWARDS AUDIT UPDATE*\n\nHello ${user?.name || 'Trader'}! Your purchase proof for *Funding Pips $100K 2-Step* (Order #FP-98214) has been *VERIFIED & APPROVED*.\n\n🎉 *+4,500 Reward Points* have been credited to your wallet ledger.\n\nCheck balance: https://propnation.com/dashboard/wallet`;
+        return `✅ *PROPREWARDS AUDIT UPDATE*\n\nHello ${user?.name || 'Trader'}! Your purchase proof for *Funding Pips $100K 2-Step* (Order #FP-98214) has been *VERIFIED & APPROVED*.\n\n🎉 *+3,990 Reward Points* have been credited to your wallet ledger.\n\nCheck balance: https://propnation.com/dashboard/wallet`;
       case 'points':
-        return `💰 *CASHBACK LEDGER CREDITED*\n\nYour wallet balance has updated!\n• Credited: *+4,500 PTS*\n• New Balance: *15,700 PTS (≈ $157.00 USD)*\n\nYou are now eligible to redeem Apple iPad Air or request USDT cashout.\n\nRedeem now: https://propnation.com/rewards`;
+        return `💰 *CASHBACK LEDGER CREDITED*\n\nYour wallet balance has updated!\n• Credited: *+3,990 PTS*\n• New Balance: *15,700 PTS (≈ $1,570.00 USD)*\n\nYou are now eligible to redeem Apple iPhone 18 Pro, MacBook Pro, Nike sneakers, or request USDT cashout.\n\nRedeem now: https://propnation.com/rewards`;
       case 'shipment':
-        return `📦 *REWARD ORDER DISPATCHED*\n\nGreat news! Your redeemed *Apple AirPods Pro (2nd Gen)* is on its way via *DHL Express*.\n\n• Courier: DHL Express\n• Tracking #: *DHL-882941029*\n• Estimated Delivery: 2-3 Business Days\n\nTrack parcel: https://propnation.com/dashboard/redemptions`;
+        return `📦 *REWARD ORDER DISPATCHED*\n\nGreat news! Your redeemed *Casio G-Shock Watch* is on its way via *DHL Express*.\n\n• Courier: DHL Express\n• Tracking #: *DHL-882941029*\n• Estimated Delivery: 2-3 Business Days\n\nTrack parcel: https://propnation.com/dashboard/redemptions`;
       case 'deal':
-        return `⚡ *VIP PROMO ALERT: 20% OFF*\n\nExclusive weekend promo for verified traders:\nGet 20% discount on all *Funding Pips & FTMO* evaluations.\n\nCode: *PIPSREWARDS*\nClaim here: https://propnation.com/prop-firms`;
+        return `⚡ *VIP PROMO ALERT: EXCLUSIVE PARTNER OFFER*\n\nExclusive promo for verified traders:\nGet verified rewards on all *FundedSquad, Pipstone Capital, FTMO, FundedNext & Funding Pips* evaluations.\n\nUniversal Partner Code: *NATION*\nClaim here: https://propnation.com/prop-firms`;
     }
   };
 

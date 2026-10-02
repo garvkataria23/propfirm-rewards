@@ -32,7 +32,7 @@ export default function HowItWorksPage() {
       num: '02',
       title: 'Apply Our Referral Code at Checkout',
       description:
-        'Click our direct affiliate link or copy our exclusive discount/referral code (e.g., PROPREWARDS10) and enter it during checkout on the prop firm website.',
+        'Click our direct affiliate link or copy our universal partner referral code (NATION) and enter it during checkout on the prop firm website.',
       tips: 'The code must be applied so the prop firm attributes the purchase to our affiliate account.',
     },
     {

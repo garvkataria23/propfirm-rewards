@@ -371,7 +371,7 @@ export default function AdminPropFirmsPage() {
             <input
               type="text"
               required
-              placeholder="PROPREWARDS10"
+              placeholder="NATION"
               value={firmForm.affiliateCode}
               onChange={(e) => setFirmForm({ ...firmForm, affiliateCode: e.target.value })}
               className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white font-mono"

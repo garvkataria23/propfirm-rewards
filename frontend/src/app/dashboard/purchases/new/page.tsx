@@ -62,7 +62,7 @@ export default function SubmitPurchasePage() {
   const [purchaseDate, setPurchaseDate] = useState(new Date().toISOString().split('T')[0]);
   const [purchaseAmountUsd, setPurchaseAmountUsd] = useState<number | string>('');
   const [emailUsed, setEmailUsed] = useState('');
-  const [referralCodeUsed, setReferralCodeUsed] = useState('');
+  const [referralCodeUsed, setReferralCodeUsed] = useState('NATION');
   const [notes, setNotes] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -144,7 +144,7 @@ export default function SubmitPurchasePage() {
         detectedAmount: detectedPrice,
         detectedTier: activeOffer?.accountTierName || '$100K 2-Step Evaluation',
         confidence: 99.4,
-        detectedCode: matchedFirm?.affiliateCode || 'PIPSREWARDS',
+        detectedCode: matchedFirm?.affiliateCode || 'NATION',
       };
 
       setOcrSuccess(result);
@@ -493,6 +493,9 @@ export default function SubmitPurchasePage() {
                 onChange={(e) => setReferralCodeUsed(e.target.value)}
                 className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none font-mono"
               />
+              <span className="text-[10px] text-slate-500">
+                Universal partner referral code is <strong className="text-emerald-600 dark:text-emerald-400 font-bold">NATION</strong> for all prop firms.
+              </span>
             </div>
           </div>
 

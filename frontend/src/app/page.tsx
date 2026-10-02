@@ -85,11 +85,11 @@ const EVALUATION_MODELS = [
     badge: 'Popular',
     popular: true,
     sizes: [
-      { size: '$10,000', price: 60, points: 600, cash: 6.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'PIPSREWARDS' },
-      { size: '$25,000', price: 139, points: 1400, cash: 14.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'PIPSREWARDS' },
-      { size: '$50,000', price: 239, points: 2400, cash: 24.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'PIPSREWARDS' },
-      { size: '$100,000', price: 399, points: 4500, cash: 45.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'PIPSREWARDS' },
-      { size: '$200,000', price: 799, points: 9500, cash: 95.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'PIPSREWARDS' },
+      { size: '$10,000', price: 60, points: 600, cash: 60.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'NATION' },
+      { size: '$25,000', price: 139, points: 1390, cash: 139.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'NATION' },
+      { size: '$50,000', price: 239, points: 2390, cash: 239.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'NATION' },
+      { size: '$100,000', price: 399, points: 3990, cash: 399.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'NATION' },
+      { size: '$200,000', price: 799, points: 7990, cash: 799.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'NATION' },
     ],
   },
   {
@@ -98,10 +98,10 @@ const EVALUATION_MODELS = [
     badge: 'Fast',
     popular: false,
     sizes: [
-      { size: '$10,000', price: 75, points: 750, cash: 7.5, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'PIPSREWARDS' },
-      { size: '$25,000', price: 165, points: 1650, cash: 16.5, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'PIPSREWARDS' },
-      { size: '$50,000', price: 285, points: 2900, cash: 29.0, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'PIPSREWARDS' },
-      { size: '$100,000', price: 475, points: 5200, cash: 52.0, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'PIPSREWARDS' },
+      { size: '$10,000', price: 75, points: 750, cash: 75.0, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'NATION' },
+      { size: '$25,000', price: 165, points: 1650, cash: 165.0, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'NATION' },
+      { size: '$50,000', price: 285, points: 2850, cash: 285.0, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'NATION' },
+      { size: '$100,000', price: 475, points: 4750, cash: 475.0, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'NATION' },
     ],
   },
   {
@@ -110,9 +110,9 @@ const EVALUATION_MODELS = [
     badge: 'Instant',
     popular: false,
     sizes: [
-      { size: '$10,000', price: 290, points: 3000, cash: 30.0, target1: 'No Target', target2: 'None', maxDaily: '3%', maxLoss: '6%', minDays: 'Immediate', promo: 'PIPSREWARDS' },
-      { size: '$25,000', price: 650, points: 7000, cash: 70.0, target1: 'No Target', target2: 'None', maxDaily: '3%', maxLoss: '6%', minDays: 'Immediate', promo: 'PIPSREWARDS' },
-      { size: '$50,000', price: 1250, points: 14000, cash: 140.0, target1: 'No Target', target2: 'None', maxDaily: '3%', maxLoss: '6%', minDays: 'Immediate', promo: 'PIPSREWARDS' },
+      { size: '$10,000', price: 290, points: 2900, cash: 290.0, target1: 'No Target', target2: 'None', maxDaily: '3%', maxLoss: '6%', minDays: 'Immediate', promo: 'NATION' },
+      { size: '$25,000', price: 650, points: 6500, cash: 650.0, target1: 'No Target', target2: 'None', maxDaily: '3%', maxLoss: '6%', minDays: 'Immediate', promo: 'NATION' },
+      { size: '$50,000', price: 1250, points: 12500, cash: 1250.0, target1: 'No Target', target2: 'None', maxDaily: '3%', maxLoss: '6%', minDays: 'Immediate', promo: 'NATION' },
     ],
   },
   {
@@ -121,9 +121,9 @@ const EVALUATION_MODELS = [
     badge: 'CME',
     popular: false,
     sizes: [
-      { size: '$25,000', price: 125, points: 1300, cash: 13.0, target1: '$1,500', target2: 'None', maxDaily: 'None', maxLoss: '$1,500 EOD', minDays: '1 Day', promo: 'PROPNATION' },
-      { size: '$50,000', price: 165, points: 1800, cash: 18.0, target1: '$3,000', target2: 'None', maxDaily: 'None', maxLoss: '$2,000 EOD', minDays: '1 Day', promo: 'PROPNATION' },
-      { size: '$100,000', price: 320, points: 3500, cash: 35.0, target1: '$6,000', target2: 'None', maxDaily: 'None', maxLoss: '$3,000 EOD', minDays: '1 Day', promo: 'PROPNATION' },
+      { size: '$25,000', price: 125, points: 1250, cash: 125.0, target1: '$1,500', target2: 'None', maxDaily: 'None', maxLoss: '$1,500 EOD', minDays: '1 Day', promo: 'NATION' },
+      { size: '$50,000', price: 165, points: 1650, cash: 165.0, target1: '$3,000', target2: 'None', maxDaily: 'None', maxLoss: '$2,000 EOD', minDays: '1 Day', promo: 'NATION' },
+      { size: '$100,000', price: 320, points: 3200, cash: 320.0, target1: '$6,000', target2: 'None', maxDaily: 'None', maxLoss: '$3,000 EOD', minDays: '1 Day', promo: 'NATION' },
     ],
   },
 ];
@@ -602,7 +602,7 @@ export default function HomePage() {
             {
               step: 'PHASE 01',
               title: 'Select Firm & Apply Code',
-              desc: 'Choose FundedSquad, Pipstone Capital, FTMO, FundedNext, or Funding Pips and apply our verified affiliate code during checkout.',
+              desc: 'Choose FundedSquad, Pipstone Capital, FTMO, FundedNext, or Funding Pips and apply our universal referral code NATION during checkout.',
               icon: Target,
             },
             {
@@ -620,7 +620,7 @@ export default function HomePage() {
             {
               step: 'PHASE 04',
               title: 'Liquidate or Redeem',
-              desc: 'Exchange points for brand-new Apple MacBooks, iPads, 4K monitors, free challenge passes, or instant USDT withdrawals.',
+              desc: 'Exchange points for Nike sneakers, G-Shock watches, Apple iPhone 18 Pro, MacBooks, 4K monitors, or instant USDT withdrawals.',
               icon: Gift,
             },
           ].map((card, idx) => {
