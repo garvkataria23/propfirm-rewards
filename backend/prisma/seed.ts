@@ -315,17 +315,49 @@ async function main() {
     },
   });
 
-  const rewardHoodie = await prisma.reward.create({
+  const catShoes = await prisma.rewardCategory.create({
+    data: { name: 'Shoes & Sneakers', slug: 'shoes-sneakers', icon: 'footprints', sortOrder: 6 },
+  });
+
+  const rewardJordan = await prisma.reward.create({
     data: {
-      categoryId: catApparel.id,
-      name: 'PropFirm Rewards Embroidered Heavyweight Hoodie',
-      slug: 'propfirm-heavyweight-hoodie',
-      description: 'Ultra-comfortable 450GSM organic French terry cotton. Subtle minimalist monochrome embroidered trading emblem on chest.',
-      specifications: 'Color: Stealth Onyx | Fit: Modern Relaxed | Sizes: S, M, L, XL, XXL',
-      imageUrl: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600&auto=format&fit=crop&q=80',
-      pointsRequired: 7500,
-      stock: 45,
-      sortOrder: 9,
+      categoryId: catShoes.id,
+      name: 'Nike Air Jordan 1 Low "Triple White"',
+      slug: 'nike-air-jordan-1-low-white',
+      description: 'Iconic low-top silhouette crafted with premium genuine leather upper, encapsulated Nike Air heel cushioning, and durable rubber traction.',
+      specifications: 'Color: Triple White | Material: Full-Grain Leather | Sizes: US 7 to 13 available',
+      imageUrl: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=600&auto=format&fit=crop&q=80',
+      pointsRequired: 14000,
+      stock: 15,
+      sortOrder: 10,
+    },
+  });
+
+  const rewardDunk = await prisma.reward.create({
+    data: {
+      categoryId: catShoes.id,
+      name: 'Nike Dunk Low Retro "Panda"',
+      slug: 'nike-dunk-low-panda',
+      description: 'Timeless two-tone black and white leather construction, padded low-cut collar, and classic court style designed for all-day comfort.',
+      specifications: 'Color: White/Black | Material: Leather | Sizes: US 7 to 13 available',
+      imageUrl: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&auto=format&fit=crop&q=80',
+      pointsRequired: 15000,
+      stock: 12,
+      sortOrder: 11,
+    },
+  });
+
+  const rewardOnCloud = await prisma.reward.create({
+    data: {
+      categoryId: catShoes.id,
+      name: 'On Cloud 5 Waterproof All-Black Running Shoes',
+      slug: 'on-cloud-5-waterproof',
+      description: 'Swiss-engineered CloudTec cushioning in Zero-Gravity foam with fully waterproof membrane and speed-lacing system.',
+      specifications: 'Color: All-Black | Feature: 100% Wind & Waterproof | Sizes: US 7 to 13',
+      imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80',
+      pointsRequired: 16000,
+      stock: 10,
+      sortOrder: 12,
     },
   });
 
