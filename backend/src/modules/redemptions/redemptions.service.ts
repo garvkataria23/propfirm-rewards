@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
+import { WhatsAppService } from '../whatsapp/whatsapp.service';
 import { UpdateRedemptionStatusDto } from '../rewards/dto/reward.dto';
 
 @Injectable()
@@ -8,6 +9,7 @@ export class RedemptionsService {
   constructor(
     private prisma: PrismaService,
     private emailService: EmailService,
+    private whatsappService: WhatsAppService,
   ) {}
 
   async getUserRedemptions(userId: string) {
@@ -209,15 +211,35 @@ export class RedemptionsService {
     });
 
     // Send email on SHIPPED
-    if (newStatus === 'SHIPPED' && dto.courier && dto.trackingNumber) {
-      this.emailService.sendRedemptionShippedEmail(
-        redemption.user.email,
-        redemption.user.name,
-        redemption.redemptionCode,
-        redemption.reward.name,
-        dto.courier,
-        dto.trackingNumber,
-      ).catch(() => {});
+    if (newStatus === 'SHIPPED') {
+      if (dto.courier && dto.trackingNumber) {
+        this.emailService.sendRedemptionShippedEmail(
+          redemption.user.email,
+          redemption.user.name,
+          redemption.redemptionCode,
+          redemption.reward.name,
+          dto.courier,
+          dto.trackingNumber,
+        ).catch(() => {});
+      }
+
+      // Send WhatsApp alert
+      if (redemption.user.phone) {
+        const trackingUrl = dto.trackingNumber
+          ? `https://parcelsapp.com/en/tracking/${dto.trackingNumber}`
+          : undefined;
+
+        this.whatsappService.sendRedemptionDispatchedAlert(
+          redemption.user.phone,
+          redemption.user.name,
+          redemption.redemptionCode,
+          redemption.reward.name,
+          dto.courier,
+          dto.trackingNumber,
+          trackingUrl,
+          dto.adminNotes?.includes('CODE:') ? dto.adminNotes.split('CODE:')[1]?.trim() : undefined,
+        ).catch(() => {});
+      }
     }
 
     return result;

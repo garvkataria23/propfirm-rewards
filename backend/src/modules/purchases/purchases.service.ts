@@ -2,6 +2,7 @@ import { Injectable, BadRequestException, NotFoundException, ConflictException, 
 import { PrismaService } from '../../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
 import { EmailService } from '../email/email.service';
+import { WhatsAppService } from '../whatsapp/whatsapp.service';
 import { SubmitPurchaseDto, ApprovePurchaseDto, RejectPurchaseDto, RequestInfoPurchaseDto, ResubmitPurchaseDto } from './dto/purchase.dto';
 
 @Injectable()
@@ -10,6 +11,7 @@ export class PurchasesService {
     private prisma: PrismaService,
     private storageService: StorageService,
     private emailService: EmailService,
+    private whatsappService: WhatsAppService,
   ) {}
 
   async submitPurchase(
@@ -87,7 +89,7 @@ export class PurchasesService {
       },
       include: {
         propFirm: true,
-        user: { select: { id: true, name: true, email: true } },
+        user: { select: { id: true, name: true, email: true, phone: true } },
       },
     });
 
@@ -125,6 +127,18 @@ export class PurchasesService {
       submission.submissionCode,
       propFirm.name,
     ).catch(() => {});
+
+    // 8. Send WhatsApp alert
+    const recipientPhone = submission.user.phone;
+    if (recipientPhone) {
+      this.whatsappService.sendPurchaseSubmittedAlert(
+        recipientPhone,
+        submission.user.name,
+        submission.submissionCode,
+        propFirm.name,
+        submission.orderId,
+      ).catch(() => {});
+    }
 
     return this.prisma.purchaseSubmission.findUnique({
       where: { id: submission.id },
@@ -407,7 +421,165 @@ export class PurchasesService {
       result.newBalance,
     ).catch(() => {});
 
+    // Send WhatsApp notification
+    if (submission.user.phone) {
+      this.whatsappService.sendPurchaseApprovedAlert(
+        submission.user.phone,
+        submission.user.name,
+        submission.submissionCode,
+        submission.propFirm.name,
+        pointsToAward,
+        14,
+      ).catch(() => {});
+    }
+
     return result;
+  }
+
+  async reconcileBulkCsv(
+    rows: Array<{ orderId: string; amount?: number; commission?: number; status?: string; propFirmSlug?: string }>,
+    adminId: string,
+  ) {
+    if (!rows || rows.length === 0) {
+      throw new BadRequestException('No CSV rows provided for reconciliation');
+    }
+
+    const matchedItems: any[] = [];
+    const unmatchedItems: any[] = [];
+    let newlyApprovedCount = 0;
+    let alreadyApprovedCount = 0;
+
+    for (const row of rows) {
+      if (!row.orderId) continue;
+      const cleanOrderId = String(row.orderId).trim();
+
+      const submission = await this.prisma.purchaseSubmission.findFirst({
+        where: {
+          orderId: { equals: cleanOrderId, mode: 'insensitive' },
+        },
+        include: {
+          user: true,
+          propFirm: true,
+          offer: true,
+        },
+      });
+
+      if (!submission) {
+        unmatchedItems.push({
+          orderId: cleanOrderId,
+          amount: row.amount,
+          commission: row.commission,
+          reason: 'No matching user submission found in database',
+        });
+        continue;
+      }
+
+      if (submission.status === 'APPROVED') {
+        alreadyApprovedCount++;
+        matchedItems.push({
+          submissionId: submission.id,
+          submissionCode: submission.submissionCode,
+          orderId: cleanOrderId,
+          traderName: submission.user.name,
+          firmName: submission.propFirm.name,
+          pointsAwarded: submission.pointsAwarded,
+          status: 'ALREADY_APPROVED',
+        });
+        continue;
+      }
+
+      // Approve this submission atomically
+      const pointsToAward =
+        submission.pointsAwarded ||
+        submission.offer?.rewardPoints ||
+        Math.round(submission.purchaseAmountUsd * 10);
+
+      await this.prisma.$transaction(async (tx) => {
+        const lastTx = await tx.pointsLedger.findFirst({
+          where: { userId: submission.userId },
+          orderBy: { createdAt: 'desc' },
+          select: { balanceAfter: true },
+        });
+
+        const currentBalance = lastTx ? lastTx.balanceAfter : 0;
+        const newBalance = currentBalance + pointsToAward;
+
+        await tx.purchaseSubmission.update({
+          where: { id: submission.id },
+          data: {
+            status: 'APPROVED',
+            pointsAwarded: pointsToAward,
+            reviewedById: adminId,
+            reviewedAt: new Date(),
+            notes: row.commission ? `Reconciled via CSV with Commission: $${row.commission}` : 'Reconciled via CSV',
+          },
+        });
+
+        await tx.pointsLedger.create({
+          data: {
+            userId: submission.userId,
+            submissionId: submission.id,
+            type: 'PURCHASE_REWARD',
+            points: pointsToAward,
+            balanceAfter: newBalance,
+            description: `Batch CSV Reconciled: ${submission.propFirm.name} - ${submission.accountType}`,
+            createdById: adminId,
+          },
+        });
+
+        await tx.notification.create({
+          data: {
+            userId: submission.userId,
+            title: 'Purchase Approved via Partner Reconciliation! 🎉',
+            message: `Your ${submission.propFirm.name} purchase (${submission.orderId}) was matched and approved! +${pointsToAward.toLocaleString()} PTS added.`,
+            type: 'POINTS',
+            linkUrl: '/dashboard/points',
+          },
+        });
+      });
+
+      newlyApprovedCount++;
+
+      // Trigger notifications
+      if (submission.user.phone) {
+        this.whatsappService.sendPurchaseApprovedAlert(
+          submission.user.phone,
+          submission.user.name,
+          submission.submissionCode,
+          submission.propFirm.name,
+          pointsToAward,
+          14,
+        ).catch(() => {});
+      }
+
+      this.emailService.sendPurchaseApprovedEmail(
+        submission.user.email,
+        submission.user.name,
+        submission.submissionCode,
+        pointsToAward,
+        0,
+      ).catch(() => {});
+
+      matchedItems.push({
+        submissionId: submission.id,
+        submissionCode: submission.submissionCode,
+        orderId: cleanOrderId,
+        traderName: submission.user.name,
+        firmName: submission.propFirm.name,
+        pointsAwarded: pointsToAward,
+        status: 'NEWLY_APPROVED',
+      });
+    }
+
+    return {
+      totalRows: rows.length,
+      matchedCount: matchedItems.length,
+      newlyApprovedCount,
+      alreadyApprovedCount,
+      unmatchedCount: unmatchedItems.length,
+      matchedItems,
+      unmatchedItems,
+    };
   }
 
   async rejectPurchase(id: string, dto: RejectPurchaseDto, adminId: string) {

@@ -102,4 +102,14 @@ export class PurchasesController {
   ) {
     return this.purchasesService.requestMoreInfo(id, dto, adminId);
   }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Post('admin/reconcile-csv')
+  async reconcileBulkCsv(
+    @Body('rows') rows: any[],
+    @CurrentUser('id') adminId: string,
+  ) {
+    return this.purchasesService.reconcileBulkCsv(rows, adminId);
+  }
 }

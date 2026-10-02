@@ -5,6 +5,7 @@ import { AuthProvider } from '@/context/auth-context';
 import { ThemeProvider } from '@/context/theme-context';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
+import { CookieBanner } from '@/components/ui/cookie-banner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -56,6 +57,7 @@ export default function RootLayout({
             <Navbar />
             <main className="flex-1">{children}</main>
             <Footer />
+            <CookieBanner />
           </AuthProvider>
         </ThemeProvider>
       </body>

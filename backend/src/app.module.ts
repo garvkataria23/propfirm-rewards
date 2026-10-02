@@ -13,6 +13,8 @@ import { RedemptionsModule } from './modules/redemptions/redemptions.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { SupportModule } from './modules/support/support.module';
+import { WhatsAppModule } from './modules/whatsapp/whatsapp.module';
+import { WebhooksModule } from './modules/webhooks/webhooks.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -22,6 +24,8 @@ import { AppController } from './app.controller';
     PrismaModule,
     StorageModule,
     EmailModule,
+    WhatsAppModule,
+    WebhooksModule,
     AuthModule,
     UsersModule,
     PropFirmsModule,

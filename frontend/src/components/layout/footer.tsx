@@ -369,6 +369,16 @@ export function Footer() {
             </button>
           </div>
 
+          {/* Regulatory Risk Disclaimer & FTC Affiliate Disclosure */}
+          <div className="pt-6 border-t border-slate-900/80 text-[11px] leading-relaxed text-slate-500 space-y-2">
+            <p>
+              <strong>Regulatory &amp; Risk Disclaimer:</strong> PropNation is an independent loyalty rewards portal and community. PropNation is not a broker-dealer, financial advisor, investment manager, or prop firm. Trading leveraged foreign exchange, futures, commodities, and CFDs carries a high degree of financial risk and is not suitable for all investors. You may lose more than your initial investment. Any references to prop firms, evaluation rules, target percentages, or trading capital are for informational purposes based on publicly available data.
+            </p>
+            <p>
+              <strong>Affiliate Disclosure:</strong> PropNation participates in independent affiliate partner programs. When you register or purchase challenges using referral code <strong className="text-slate-400">NATION</strong> or our partner links, we may receive a commission from the respective prop firm at no additional cost to you. Reward points and redemptions are funded independently from marketing commissions earned.
+            </p>
+          </div>
+
           {/* Copyright & Built With */}
           <div className="pt-2 text-[11px] text-slate-500 space-y-1">
             <div>

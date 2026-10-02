@@ -417,39 +417,95 @@ export default function AdminRedemptionsPage() {
               </select>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-slate-300 font-semibold">Courier / Carrier</label>
-                <input
-                  type="text"
-                  placeholder="e.g. FedEx Express, DHL, UPS"
-                  value={courier}
-                  onChange={(e) => setCourier(e.target.value)}
-                  className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white"
-                />
+                <div className="flex items-center justify-between">
+                  <label className="text-slate-300 font-semibold">Courier / Carrier</label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCourier('Digital Gift Card / Voucher Delivery');
+                      if (!trackingNumber) setTrackingNumber(`VCH-${Math.random().toString(36).substring(2, 9).toUpperCase()}`);
+                      if (!adminNotes) setAdminNotes('CODE: ');
+                    }}
+                    className="text-[10px] text-purple-400 hover:text-purple-300 font-medium underline"
+                  >
+                    + Digital Code
+                  </button>
+                </div>
+                <div className="space-y-1.5">
+                  <select
+                    value={courier}
+                    onChange={(e) => setCourier(e.target.value)}
+                    className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white text-xs"
+                  >
+                    <option value="">-- Select Courier / Carrier --</option>
+                    <option value="DHL Express Worldwide">DHL Express Worldwide</option>
+                    <option value="FedEx Priority">FedEx Priority</option>
+                    <option value="UPS Worldwide Express">UPS Worldwide Express</option>
+                    <option value="USPS Priority Mail International">USPS Priority Mail International</option>
+                    <option value="Royal Mail International">Royal Mail International</option>
+                    <option value="Blue Dart Express">Blue Dart Express</option>
+                    <option value="Aramex Global">Aramex Global</option>
+                    <option value="Amazon Logistics">Amazon Logistics</option>
+                    <option value="Digital Gift Card / Voucher Delivery">Digital Gift Card / Voucher Delivery</option>
+                    <option value="Direct Electronic Fulfillment">Direct Electronic Fulfillment</option>
+                    <option value="Custom Courier">Custom Courier (type below)</option>
+                  </select>
+                  {(!['DHL Express Worldwide', 'FedEx Priority', 'UPS Worldwide Express', 'USPS Priority Mail International', 'Royal Mail International', 'Blue Dart Express', 'Aramex Global', 'Amazon Logistics', 'Digital Gift Card / Voucher Delivery', 'Direct Electronic Fulfillment'].includes(courier) || courier === 'Custom Courier') && (
+                    <input
+                      type="text"
+                      placeholder="Specify custom courier name..."
+                      value={courier === 'Custom Courier' ? '' : courier}
+                      onChange={(e) => setCourier(e.target.value)}
+                      className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-white"
+                    />
+                  )}
+                </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-slate-300 font-semibold">Tracking Number</label>
+                <label className="text-slate-300 font-semibold">Tracking Number / Voucher Key</label>
                 <input
                   type="text"
-                  placeholder="FX-982140192US"
+                  placeholder="e.g. DHL-882941029 or VCH-9921"
                   value={trackingNumber}
                   onChange={(e) => setTrackingNumber(e.target.value)}
-                  className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white font-mono"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white font-mono text-xs"
                 />
+                <p className="text-[10px] text-slate-500">Sent automatically to trader via Email & WhatsApp when status is SHIPPED.</p>
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Admin Notes / Instructions</label>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-slate-300 font-semibold">Admin Notes / Voucher Code</label>
+                <span className="text-[10px] text-slate-500">Tip: Include CODE: [key] for digital items</span>
+              </div>
               <input
                 type="text"
-                placeholder="e.g. Signed delivery requested / Gift card code dispatched"
+                placeholder="e.g. Signed delivery requested OR CODE: AMZN-9941-X9"
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white"
+                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white text-xs"
               />
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {[
+                  'Signed delivery requested',
+                  'Tracking live on courier portal',
+                  'Awaiting regional hub scan',
+                  'CODE: ',
+                ].map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setAdminNotes((prev) => (prev ? `${prev} | ${preset}` : preset))}
+                    className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px] hover:bg-slate-700"
+                  >
+                    + {preset}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {newStatus === 'CANCELLED' && (
