@@ -34,6 +34,7 @@ import {
   Trophy,
   TrendingUp,
   Sliders,
+  Star,
 } from 'lucide-react';
 
 interface PropFirmOffer {
@@ -145,55 +146,55 @@ const FALLBACK_PROP_FIRMS: PropFirm[] = [
   },
 ];
 
-// Fallback curated rewards matching the master prompt with realistic product photography
+// Fallback curated rewards matching the 3D ecosystem render with realistic product photography
 const FALLBACK_REWARDS: Reward[] = [
   {
     id: 'r-1',
-    name: 'Wireless Noise-Canceling Headphones',
-    slug: 'wireless-headphones',
-    imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80',
+    name: 'Apple AirPods Max (Silver / Titanium)',
+    slug: 'apple-airpods-max',
+    imageUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 20000,
     category: { name: 'Audio Gear', slug: 'audio' },
   },
   {
     id: 'r-2',
-    name: 'Limited Edition Streetwear Sneakers',
-    slug: 'premium-sneakers',
+    name: 'Nike Air Jordan 1 Retro High OG',
+    slug: 'nike-air-jordan-1',
     imageUrl: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 15000,
-    category: { name: 'Apparel', slug: 'apparel' },
+    category: { name: 'Streetwear', slug: 'streetwear' },
   },
   {
     id: 'r-3',
-    name: 'Pro Mechanical Gaming Accessory',
-    slug: 'gaming-accessory',
-    imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80',
+    name: 'Sony PlayStation 5 DualSense Edge',
+    slug: 'ps5-dualsense-edge',
+    imageUrl: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 10000,
-    category: { name: 'Gaming', slug: 'gaming' },
+    category: { name: 'Gaming Gear', slug: 'gaming' },
   },
   {
     id: 'r-4',
-    name: 'Flagship 5G Smartphone',
-    slug: 'flagship-smartphone',
-    imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80',
+    name: 'Apple iPhone 16 Pro Max 256GB',
+    slug: 'apple-iphone-16-pro-max',
+    imageUrl: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 100000,
-    category: { name: 'Mobile Tech', slug: 'mobile' },
+    category: { name: 'Flagship Tech', slug: 'mobile' },
   },
   {
     id: 'r-5',
-    name: 'Ultra Retina 11-inch Tablet',
-    slug: 'ultra-tablet',
-    imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80',
-    pointsRequired: 60000,
-    category: { name: 'Workstations', slug: 'workstations' },
+    name: 'Apple MacBook Pro 16" M3 Max',
+    slug: 'apple-macbook-pro-m3',
+    imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80',
+    pointsRequired: 250000,
+    category: { name: 'Trading Stations', slug: 'workstations' },
   },
   {
     id: 'r-6',
-    name: '$50 Global Digital Gift Card',
-    slug: 'digital-gift-card',
-    imageUrl: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800&auto=format&fit=crop&q=80',
-    pointsRequired: 5000,
-    category: { name: 'Vouchers', slug: 'vouchers' },
+    name: 'Ledger Stax Crypto Hardware Wallet',
+    slug: 'ledger-stax',
+    imageUrl: 'https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?w=800&auto=format&fit=crop&q=80',
+    pointsRequired: 25000,
+    category: { name: 'Crypto Security', slug: 'crypto' },
   },
 ];
 
@@ -205,7 +206,7 @@ export default function HomePage() {
   const [counterPoints, setCounterPoints] = useState<number>(10000);
   const [calcSpend, setCalcSpend] = useState<number>(499);
   const [showcaseTab, setShowcaseTab] = useState<'3d' | 'live'>('3d');
-  const [heroTab, setHeroTab] = useState<'wallet' | '3d'>('wallet');
+  const [heroTab, setHeroTab] = useState<'wallet' | '3d'>('3d');
 
   // Locale-safe number formatting to prevent hydration mismatch
   const formatPoints = (pts: number) => pts.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -371,6 +372,23 @@ export default function HomePage() {
               <p className="text-xs text-slate-500 font-medium tracking-wide pt-1">
                 Free to join • Secure verification • Real rewards
               </p>
+
+              {/* Supported evaluation partners quick logo strip */}
+              <div className="pt-3 border-t border-slate-200/60 dark:border-slate-800/60 w-full max-w-xl">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-2 text-center lg:text-left">
+                  Eligible Prop Firms &amp; Evaluation Challenges
+                </span>
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2">
+                  {['FTMO', 'FundedNext', 'Funding Pips', 'Pipstone', 'The 5ers', 'E8 Funding'].map((firm) => (
+                    <span
+                      key={firm}
+                      className="px-2.5 py-1 rounded-md text-[11px] font-bold font-mono bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-300 shadow-2xs hover:border-emerald-500/50 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all cursor-default"
+                    >
+                      {firm}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Right Column: Premium Dashboard Preview Mockup with Floating Micro-Elements */}
@@ -405,17 +423,6 @@ export default function HomePage() {
                   <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
                     <button
                       type="button"
-                      onClick={() => setHeroTab('wallet')}
-                      className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                        heroTab === 'wallet'
-                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
-                          : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                      }`}
-                    >
-                      Live Wallet
-                    </button>
-                    <button
-                      type="button"
                       onClick={() => setHeroTab('3d')}
                       className={`flex items-center gap-1 px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
                         heroTab === '3d'
@@ -424,7 +431,18 @@ export default function HomePage() {
                       }`}
                     >
                       <Sparkles className="h-3 w-3" />
-                      3D Render
+                      3D Showcase
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setHeroTab('wallet')}
+                      className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                        heroTab === 'wallet'
+                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
+                          : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                      }`}
+                    >
+                      Live Wallet
                     </button>
                   </div>
                   <a
@@ -436,29 +454,64 @@ export default function HomePage() {
                 </div>
 
                 {heroTab === '3d' ? (
-                  <div className="space-y-3">
-                    <div className="relative rounded-xl overflow-hidden border border-emerald-500/30 group/heroimg aspect-[16/10] bg-black">
+                  <div className="space-y-3.5">
+                    <div className="relative rounded-xl overflow-hidden border border-emerald-500/40 group/heroimg aspect-[16/10] bg-slate-950 shadow-lg">
                       <Image
                         src="/propfirm1.png"
                         alt="Trade Rewards 3D Platform Showcase"
                         width={600}
                         height={400}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover/heroimg:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/heroimg:scale-105"
+                        priority
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-3">
-                        <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">
-                          Ultra-HD 3D Model
-                        </span>
-                        <span className="text-xs font-bold text-white">
-                          TradeRewards Ecosystem &amp; Flagship Tech
-                        </span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent flex flex-col justify-end p-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="text-[10px] font-mono text-emerald-400 font-extrabold uppercase tracking-wider flex items-center gap-1.5">
+                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
+                              Ultra-HD 3D Render
+                            </span>
+                            <span className="text-xs font-bold text-white block mt-0.5">
+                              TradeRewards Ecosystem &amp; Luxury Tech
+                            </span>
+                          </div>
+                          <span className="text-[11px] font-mono font-bold text-emerald-300 bg-emerald-950/90 border border-emerald-500/40 px-2 py-0.5 rounded-md">
+                            12,500 PTS
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    <a href="#ecosystem" className="block">
-                      <Button className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold h-9 rounded-lg">
-                        Expand Full 3D Panorama <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-                      </Button>
-                    </a>
+
+                    {/* Quick Micro-Metrics */}
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800">
+                        <div className="text-[10px] uppercase font-bold text-slate-400">Available Balance</div>
+                        <div className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400 text-sm flex items-center gap-1 mt-0.5">
+                          <Wallet className="h-3.5 w-3.5" /> 12,500 PTS
+                        </div>
+                      </div>
+                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800">
+                        <div className="text-[10px] uppercase font-bold text-slate-400">Next Unlock Goal</div>
+                        <div className="font-bold text-slate-800 dark:text-slate-200 text-xs sm:text-sm flex items-center gap-1 mt-0.5">
+                          <Smartphone className="h-3.5 w-3.5 text-sky-500" /> iPhone 16 Pro (75%)
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <a href="#ecosystem" className="flex-1">
+                        <Button className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold h-9 rounded-lg shadow-xs cursor-pointer">
+                          Full 3D Panorama <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
+                        </Button>
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setHeroTab('wallet')}
+                        className="px-3 h-9 rounded-lg text-xs font-semibold border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
+                      >
+                        Live Wallet
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <>
@@ -626,82 +679,144 @@ export default function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-5 relative z-10">
-            {/* Step 1 */}
-            <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3 group cursor-default shadow-xs">
-              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
-                <span>STEP 01</span>
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
+              {/* Step 1 */}
+              <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3.5 group cursor-default shadow-xs flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
+                    <span>STEP 01</span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
+                  </div>
+                  <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
+                    <Search className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Choose a Prop Firm</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Browse eligible prop firms and explore available evaluation offers.
+                  </p>
+                </div>
+                {/* Visual Preview Box */}
+                <div className="h-14 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/70 dark:border-slate-800/80 p-1.5 flex items-center justify-center gap-1 overflow-hidden">
+                  <span className="px-2 py-1 rounded text-[9px] font-bold font-mono bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-2xs">FTMO</span>
+                  <span className="px-2 py-1 rounded text-[9px] font-bold font-mono bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-2xs">FundedNext</span>
+                  <span className="px-2 py-1 rounded text-[9px] font-bold font-mono bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-2xs">Pipstone</span>
+                </div>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
-                <Search className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Choose a Prop Firm</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Browse eligible prop firms and explore available evaluation offers.
-              </p>
-            </div>
 
-            {/* Step 2 */}
-            <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3 group cursor-default shadow-xs">
-              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
-                <span>STEP 02</span>
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
+              {/* Step 2 */}
+              <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3.5 group cursor-default shadow-xs flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
+                    <span>STEP 02</span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
+                  </div>
+                  <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
+                    <Tag className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Buy Using Our Code</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Purchase your eligible account using referral code <strong className="text-slate-900 dark:text-white font-mono">NATION</strong>.
+                  </p>
+                </div>
+                {/* Visual Preview Box */}
+                <div className="h-14 rounded-xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border border-emerald-500/30 px-3 py-1 flex items-center justify-between">
+                  <div>
+                    <div className="text-[9px] uppercase font-bold text-slate-500">Code Applied</div>
+                    <div className="font-mono font-black text-emerald-600 dark:text-emerald-400 text-xs">NATION</div>
+                  </div>
+                  <span className="text-[9px] font-bold bg-emerald-500 text-slate-950 px-2 py-0.5 rounded shadow-2xs uppercase">
+                    10x Points
+                  </span>
+                </div>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
-                <Tag className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Buy Using Our Code</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Purchase your eligible account using referral code <strong className="text-slate-900 dark:text-white font-mono">NATION</strong>.
-              </p>
-            </div>
 
-            {/* Step 3 */}
-            <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3 group cursor-default shadow-xs">
-              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
-                <span>STEP 03</span>
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
+              {/* Step 3 */}
+              <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3.5 group cursor-default shadow-xs flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
+                    <span>STEP 03</span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
+                  </div>
+                  <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
+                    <FileCheck2 className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Submit Your Proof</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Upload your order details and invoice receipt to your user dashboard.
+                  </p>
+                </div>
+                {/* Visual Invoice Preview Box */}
+                <div className="h-14 rounded-xl overflow-hidden relative border border-slate-200 dark:border-slate-800 bg-slate-950 group/proof">
+                  <img
+                    src="/demo-proofs/fundedsquad-invoice-sample.jpg"
+                    alt="Invoice proof sample"
+                    className="w-full h-full object-cover object-top opacity-60 group-hover/proof:opacity-90 transition-opacity duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent flex items-end p-1.5">
+                    <span className="text-[9px] font-mono text-emerald-400 font-bold bg-slate-900/90 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                      Invoice #FS-88412
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
-                <FileCheck2 className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Submit Your Proof</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Upload your order details and invoice receipt to your user dashboard.
-              </p>
-            </div>
 
-            {/* Step 4 */}
-            <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3 group cursor-default shadow-xs">
-              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
-                <span>STEP 04</span>
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
+              {/* Step 4 */}
+              <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3.5 group cursor-default shadow-xs flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
+                    <span>STEP 04</span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
+                  </div>
+                  <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs group-hover:scale-110 group-hover:text-emerald-500 transition-all duration-300">
+                    <CheckCircle className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Get Verified</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Our verification team audits and approves your order confirmation.
+                  </p>
+                </div>
+                {/* Visual Status Box */}
+                <div className="h-14 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-2 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <div>
+                      <div className="text-[9px] font-bold text-slate-700 dark:text-slate-300">Status</div>
+                      <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">VERIFIED</div>
+                    </div>
+                  </div>
+                  <span className="font-mono text-[11px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded">
+                    +2,500 PTS
+                  </span>
+                </div>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs group-hover:scale-110 group-hover:text-emerald-500 transition-all duration-300">
-                <CheckCircle className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Get Verified</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Our verification team audits and approves your order confirmation.
-              </p>
-            </div>
 
-            {/* Step 5 */}
-            <div className="card-lift rounded-2xl bg-emerald-50/90 dark:bg-emerald-500/[0.06] border border-emerald-300 dark:border-emerald-500/30 p-5 space-y-3 shadow-xs group cursor-default relative overflow-hidden">
-              <div className="absolute -right-8 -top-8 w-20 h-20 bg-emerald-400/10 rounded-full blur-xl pointer-events-none group-hover:bg-emerald-400/20 transition-colors" />
-              <div className="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-400 tracking-wider flex items-center justify-between">
-                <span>STEP 05</span>
-                <Sparkles className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 animate-pulse" />
+              {/* Step 5 */}
+              <div className="card-lift rounded-2xl bg-emerald-50/90 dark:bg-emerald-500/[0.06] border border-emerald-300 dark:border-emerald-500/30 p-5 space-y-3.5 shadow-xs group cursor-default relative overflow-hidden flex flex-col justify-between">
+                <div className="absolute -right-8 -top-8 w-20 h-20 bg-emerald-400/10 rounded-full blur-xl pointer-events-none group-hover:bg-emerald-400/20 transition-colors" />
+                <div className="space-y-3">
+                  <div className="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-400 tracking-wider flex items-center justify-between">
+                    <span>STEP 05</span>
+                    <Sparkles className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 animate-pulse" />
+                  </div>
+                  <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-2xs">
+                    <Gift className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">Earn &amp; Redeem</h3>
+                  <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                    Receive points instantly and redeem them for real-world rewards.
+                  </p>
+                </div>
+                {/* Visual Rewards Box */}
+                <div className="h-14 rounded-xl bg-white/80 dark:bg-slate-950/80 border border-emerald-500/30 p-2 flex items-center justify-between">
+                  <div className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                    <Truck className="h-3.5 w-3.5 text-emerald-600" />
+                    <span>Global Express Dispatch</span>
+                  </div>
+                  <span className="text-[9px] font-extrabold bg-emerald-500 text-slate-950 px-2 py-0.5 rounded shadow-2xs">
+                    DHL / FEDEX
+                  </span>
+                </div>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-2xs">
-                <Gift className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Earn &amp; Redeem</h3>
-              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-                Receive points instantly and redeem them for real-world rewards.
-              </p>
             </div>
-          </div>
         </div>
         </div>
       </section>
@@ -1081,11 +1196,15 @@ export default function HomePage() {
                       <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5 transition-all">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2.5">
-                            <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
-                              <Headphones className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400" />
+                            <div className="h-10 w-10 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-2xs shrink-0 bg-white dark:bg-slate-900">
+                              <img
+                                src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=200&auto=format&fit=crop&q=80"
+                                alt="Apple AirPods Max"
+                                className="h-full w-full object-cover"
+                              />
                             </div>
                             <div>
-                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Wireless Headphones</div>
+                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Apple AirPods Max (Silver)</div>
                               <div className="text-[10px] text-slate-500">20,000 Points Goal</div>
                             </div>
                           </div>
@@ -1122,11 +1241,15 @@ export default function HomePage() {
                       <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5 transition-all">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2.5">
-                            <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
-                              <Tag className="h-4.5 w-4.5 text-sky-600 dark:text-sky-400" />
+                            <div className="h-10 w-10 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-2xs shrink-0 bg-white dark:bg-slate-900">
+                              <img
+                                src="https://images.unsplash.com/photo-1552346154-21d32810aba3?w=200&auto=format&fit=crop&q=80"
+                                alt="Nike Air Jordan 1 Retro"
+                                className="h-full w-full object-cover"
+                              />
                             </div>
                             <div>
-                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Streetwear Sneakers</div>
+                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Nike Air Jordan 1 Retro</div>
                               <div className="text-[10px] text-slate-500">15,000 Points Goal</div>
                             </div>
                           </div>
@@ -1159,15 +1282,19 @@ export default function HomePage() {
                         </div>
                       </div>
 
-                      {/* Item 3: Gaming Keyboard */}
+                      {/* Item 3: Gaming Controller */}
                       <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2.5">
-                            <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
-                              <Gamepad2 className="h-4.5 w-4.5 text-purple-600 dark:text-purple-400" />
+                            <div className="h-10 w-10 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-2xs shrink-0 bg-white dark:bg-slate-900">
+                              <img
+                                src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=200&auto=format&fit=crop&q=80"
+                                alt="Sony PS5 DualSense Edge"
+                                className="h-full w-full object-cover"
+                              />
                             </div>
                             <div>
-                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Mechanical Gaming Keyboard</div>
+                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Sony PS5 DualSense Edge</div>
                               <div className="text-[10px] text-slate-500">10,000 Points Goal</div>
                             </div>
                           </div>
@@ -1417,11 +1544,243 @@ export default function HomePage() {
                     <CheckCircle2 className="h-4 w-4" /> Transit In Progress
                   </div>
                   <Link href="/register">
-                    <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs h-9 rounded-lg shadow-sm active:scale-[0.98] transition-transform">
+                    <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs h-9 rounded-lg shadow-sm active:scale-[0.98] transition-transform cursor-pointer">
                       Open Trader Portal
                     </Button>
                   </Link>
                 </div>
+              </div>
+            </div>
+
+            {/* 4-Item Breakdown Cards Linking to the 3D Render Components */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+              <div className="p-4 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2 group hover:border-emerald-500/40 transition-colors">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                    <Wallet className="h-4 w-4" />
+                  </div>
+                  <span className="text-xs font-bold text-slate-900 dark:text-white">Central Web Portal</span>
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Real-time points ledger, challenge verification history, and instant balance updates shown in 3D center.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2 group hover:border-sky-500/40 transition-colors">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold">
+                    <Smartphone className="h-4 w-4" />
+                  </div>
+                  <span className="text-xs font-bold text-slate-900 dark:text-white">Apple &amp; Sony Tech</span>
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  iPhone 16 Pro, AirPods Max, and PlayStation 5 controllers rendered in ultra-detailed physical 3D models.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2 group hover:border-teal-500/40 transition-colors">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold">
+                    <Tag className="h-4 w-4" />
+                  </div>
+                  <span className="text-xs font-bold text-slate-900 dark:text-white">Streetwear &amp; Jordans</span>
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Authentic Nike Air Jordans and premium apparel shipped in factory mint condition with verification tags.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2 group hover:border-purple-500/40 transition-colors">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
+                    <Coins className="h-4 w-4" />
+                  </div>
+                  <span className="text-xs font-bold text-slate-900 dark:text-white">USDT Crypto Cash</span>
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Zero-fee instant stablecoin payouts on TRON (TRC-20) sent straight to your non-custodial crypto wallet.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────────────────────
+          8.5 VERIFIED TRADER DELIVERIES & UNBOXING SHOWCASE
+          Real physical redemptions in the hands of traders
+      ───────────────────────────────────────────────────────────── */}
+      <section className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 text-xs">
+              <Truck className="h-3 w-3 mr-1.5 text-emerald-500" />
+              Verified Deliveries
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
+              Real Rewards in Trader Hands.
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+              See what retail traders around the world are unboxing from their accumulated challenge points.
+            </p>
+          </div>
+
+          {/* 4 Unboxing Delivery Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Card 1: iPhone 16 Pro */}
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 overflow-hidden flex flex-col justify-between group shadow-xs">
+              <div className="space-y-3.5">
+                <div className="aspect-[4/3] relative overflow-hidden bg-slate-100 dark:bg-slate-950">
+                  <img
+                    src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80"
+                    alt="Apple iPhone 16 Pro Unboxed"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-sm text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" /> DHL Express #9400
+                  </div>
+                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded shadow">
+                    Delivered
+                  </div>
+                </div>
+
+                <div className="p-4 space-y-2">
+                  <div className="flex items-center gap-1 text-amber-500 text-xs">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-500" />
+                    ))}
+                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 ml-1">5.0</span>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1">
+                    Apple iPhone 16 Pro Max
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 italic leading-relaxed">
+                    &ldquo;Used referral code NATION for my FTMO 200K and FundedNext accounts. Points were verified in under 2 hours, iPhone arrived factory sealed!&rdquo;
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 pt-0 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs mt-3">
+                <span className="font-bold text-slate-800 dark:text-slate-200">@Marco_FX</span>
+                <span className="text-slate-500 text-[11px]">Frankfurt, DE</span>
+              </div>
+            </div>
+
+            {/* Card 2: AirPods Max */}
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 overflow-hidden flex flex-col justify-between group shadow-xs">
+              <div className="space-y-3.5">
+                <div className="aspect-[4/3] relative overflow-hidden bg-slate-100 dark:bg-slate-950">
+                  <img
+                    src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80"
+                    alt="Apple AirPods Max Unboxed"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-sm text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" /> FedEx #7812
+                  </div>
+                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded shadow">
+                    Delivered
+                  </div>
+                </div>
+
+                <div className="p-4 space-y-2">
+                  <div className="flex items-center gap-1 text-amber-500 text-xs">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-500" />
+                    ))}
+                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 ml-1">5.0</span>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1">
+                    Apple AirPods Max (Silver)
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 italic leading-relaxed">
+                    &ldquo;Noise cancellation on these is next level during high-volatility news sessions. Quickest verification turnaround ever.&rdquo;
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 pt-0 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs mt-3">
+                <span className="font-bold text-slate-800 dark:text-slate-200">@Liam_PipSurfer</span>
+                <span className="text-slate-500 text-[11px]">London, UK</span>
+              </div>
+            </div>
+
+            {/* Card 3: Nike Air Jordans */}
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 overflow-hidden flex flex-col justify-between group shadow-xs">
+              <div className="space-y-3.5">
+                <div className="aspect-[4/3] relative overflow-hidden bg-slate-100 dark:bg-slate-950">
+                  <img
+                    src="https://images.unsplash.com/photo-1552346154-21d32810aba3?w=600&auto=format&fit=crop&q=80"
+                    alt="Nike Air Jordan 1 Retro Unboxed"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-sm text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" /> Aramex #ARX-9012
+                  </div>
+                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded shadow">
+                    Delivered
+                  </div>
+                </div>
+
+                <div className="p-4 space-y-2">
+                  <div className="flex items-center gap-1 text-amber-500 text-xs">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-500" />
+                    ))}
+                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 ml-1">5.0</span>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1">
+                    Nike Air Jordan 1 Retro High OG
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 italic leading-relaxed">
+                    &ldquo;100% authentic with StockX tag attached. Best trader reward program in the entire prop-firm industry by far.&rdquo;
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 pt-0 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs mt-3">
+                <span className="font-bold text-slate-800 dark:text-slate-200">@Karim_Trader</span>
+                <span className="text-slate-500 text-[11px]">Dubai, UAE</span>
+              </div>
+            </div>
+
+            {/* Card 4: USDT Crypto Payout */}
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 overflow-hidden flex flex-col justify-between group shadow-xs">
+              <div className="space-y-3.5">
+                <div className="aspect-[4/3] relative overflow-hidden bg-slate-100 dark:bg-slate-950">
+                  <img
+                    src="https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?w=600&auto=format&fit=crop&q=80"
+                    alt="USDT Crypto Wallet Payout"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-sm text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" /> TRC-20 Blockchain
+                  </div>
+                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded shadow">
+                    Confirmed
+                  </div>
+                </div>
+
+                <div className="p-4 space-y-2">
+                  <div className="flex items-center gap-1 text-amber-500 text-xs">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-500" />
+                    ))}
+                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 ml-1">5.0</span>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1">
+                    $1,500 USDT Instant Transfer
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 italic leading-relaxed">
+                    &ldquo;Opted for direct USDT crypto cash payout. Was in my private Ledger hardware wallet within 45 minutes of redemption!&rdquo;
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 pt-0 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs mt-3">
+                <span className="font-bold text-slate-800 dark:text-slate-200">@Elena_CryptoFX</span>
+                <span className="text-slate-500 text-[11px]">Singapore, SG</span>
               </div>
             </div>
           </div>
