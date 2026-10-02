@@ -319,24 +319,40 @@ export default function HomePage() {
 
   const faqs = [
     {
-      q: 'How does PropNation Rewards work with partnered prop firms?',
-      a: 'We are an official global affiliate partner with premier proprietary trading firms: FundedSquad, Pipstone Capital, FTMO, FundedNext, and Funding Pips. When you purchase an evaluation account using our referral code NATION, the firm grants an exclusive discount and credits our team with marketing yield, which we pass directly back to you as spendable reward points (1$ = 10 Reward Points) to claim tech gear, shoes, luxury watches, or cash payouts.',
+      q: 'What is PropNation?',
+      a: 'PropNation is the premier proprietary trading loyalty ecosystem and cashback partner for top-tier firms including FundedSquad, Pipstone Capital, FTMO, FundedNext, and FundingPips. When you purchase an evaluation account using universal code NATION, you receive exclusive discounts and earn 10 reward points per $1 spent to redeem for luxury physical tech, shoes, luxury watches, or instant USDT payouts.',
     },
     {
-      q: 'Does using code NATION change my prop firm trading rules?',
-      a: 'Never. Your account maintains 100% identical rules, leverage, drawdown limits, and payout schedules as buying directly from the firm. In fact, code NATION often activates a 10% to 20% discount on your evaluation purchase.',
+      q: 'Do I need to risk my own money?',
+      a: 'No. When trading prop firm accounts, you trade in a fully simulated environment with virtual demo funds. The only cost is the challenge registration fee, which yields 10 reward points per $1 spent and is frequently 100% refunded with your first simulated profit split.',
     },
     {
-      q: 'How fast is purchase verification and points crediting?',
-      a: 'Our automated AI OCR verification engine instantly scans and verifies your invoice screenshot, PDF receipt, or video screen recording. Verified points are written to your ledger immediately.',
+      q: 'What challenge models does PropNation offer?',
+      a: 'Through our official prop firm partners, you can access 1-Step (FLEX), Classic 2-Phase evaluations, and Instant (Zero-Evaluation) funding accounts ranging from $5,000 all the way to $200,000+ with scale-up capital reaching $2,000,000.',
     },
     {
-      q: 'How are physical luxury rewards (Nike, G-Shock, Apple, MacBook) delivered?',
-      a: 'All physical rewards are brand new, sealed in original manufacturer packaging, and dispatched worldwide via insured express couriers (DHL, FedEx, UPS) with live door-to-door tracking provided.',
+      q: "I'm not a trader — what exactly is a prop firm?",
+      a: 'A proprietary trading firm ("prop firm") provides qualified individuals with simulated capital to trade global financial markets. Once you demonstrate risk management and pass the evaluation objectives, you receive a funded account and keep up to 100% of generated profits.',
     },
     {
-      q: 'Can I redeem points for direct Crypto or USDT cash payouts?',
-      a: 'Yes. Head to your dashboard wallet to redeem points for USDT (TRC-20 / ERC-20) or Direct Bank Transfers, processed rapidly with zero hidden deduction fees.',
+      q: 'How much can I earn with PropNation?',
+      a: 'Traders earn in two major ways: first, up to 100% performance rewards on their funded challenge accounts; second, spendable reward points (1$ = 10 PTS) on every challenge purchase and reset, redeemable for authentic luxury products (Nike Dunks, Apple Watch Ultra, MacBook Pro) or direct crypto/wire payouts.',
+    },
+    {
+      q: 'Is PropNation legitimate?',
+      a: 'Yes. PropNation is an officially recognized partner operating directly with verified prop firms. Submissions are audited with automated AI OCR invoice verification, and physical rewards are dispatched in factory-sealed retail packaging with fully insured DHL/FedEx tracking.',
+    },
+    {
+      q: 'Can I try PropNation before paying?',
+      a: 'Yes. You can explore our interactive challenge calculators, browse the rewards catalog, inspect verification proof demos, and register a free trader account before making any evaluation purchase.',
+    },
+    {
+      q: 'When and how do I get paid?',
+      a: 'Reward points are credited within minutes of AI receipt verification. You can redeem points at any time for physical luxury goods or instant USDT (TRC-20/ERC-20) and direct bank wire cashouts.',
+    },
+    {
+      q: 'Does PropNation have a regulated broker?',
+      a: 'Our partnered firms utilize institutional liquidity providers and tier-1 regulated broker feeds (such as cTrader, DXtrade, and Tradin) ensuring ultra-raw spreads, fast execution, and zero markup.',
     },
   ];
 
@@ -957,58 +973,7 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 9. "BUILDING TRADERS GLOBALLY SINCE 2022" (Continuation Image 5) */}
-      {/* ======================================================== */}
-      <section className="w-full bg-[#060e1d] text-white py-20 sm:py-28 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-16">
-          <div className="space-y-3 max-w-xl mx-auto">
-            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-white">
-              Building Traders Globally Since 2022
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-400">
-              The gold standard for prop firm challenge cashback, live verification, and luxury rewards.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 text-center max-w-5xl mx-auto">
-            {/* Column 1 */}
-            <div className="space-y-3">
-              <div className="h-12 w-12 rounded-2xl bg-sky-500/10 text-sky-400 mx-auto flex items-center justify-center">
-                <Users className="h-6 w-6" />
-              </div>
-              <h4 className="text-xl font-[900] text-white">200+ employees</h4>
-              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
-                A global team with decades of market experience driving your trading performance.
-              </p>
-            </div>
-
-            {/* Column 2 */}
-            <div className="space-y-3">
-              <div className="h-12 w-12 rounded-2xl bg-sky-500/10 text-sky-400 mx-auto flex items-center justify-center">
-                <Globe className="h-6 w-6" />
-              </div>
-              <h4 className="text-xl font-[900] text-white">5 global offices</h4>
-              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
-                Strategically positioned to support traders across all regions around the world.
-              </p>
-            </div>
-
-            {/* Column 3 */}
-            <div className="space-y-3">
-              <div className="h-12 w-12 rounded-2xl bg-sky-500/10 text-sky-400 mx-auto flex items-center justify-center">
-                <Headphones className="h-6 w-6" />
-              </div>
-              <h4 className="text-xl font-[900] text-white">24/7 Real Human Support</h4>
-              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
-                Real support available whenever you need it via live chat and dedicated VIP desks.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* 10. LUXURY REWARDS STORE PREVIEW (Nike, G-Shock, iPhone, Mac) */}
+      {/* 9. LUXURY REWARDS STORE PREVIEW (Nike, G-Shock, iPhone, Mac) */}
       {/* ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-slate-100 dark:border-slate-800">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-10">
@@ -1068,36 +1033,92 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 11. CLEAN ACCORDION FAQS */}
+      {/* 10. "BUILDING TRADERS GLOBALLY SINCE 2022" (Continuation Image 5 & End Image 1) */}
       {/* ======================================================== */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-slate-100 dark:border-slate-800 text-left space-y-8">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Help &amp; Answers</span>
-          <h2 className="text-3xl sm:text-4xl font-[900] tracking-tight text-[#0c182a] dark:text-white">
-            Frequently Asked Questions
-          </h2>
-        </div>
+      <section className="w-full bg-[#060e1d] text-white py-20 sm:py-28 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-16">
+          <div className="space-y-3 max-w-xl mx-auto">
+            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-white">
+              Building Traders Globally Since 2022
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-400">
+              The gold standard for prop firm challenge cashback, live verification, and luxury rewards.
+            </p>
+          </div>
 
-        <div className="space-y-3">
-          {faqs.map((faq, idx) => (
-            <div
-              key={idx}
-              className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 overflow-hidden transition-colors"
-            >
-              <button
-                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-sm text-[#0c182a] dark:text-white"
-              >
-                <span>{faq.q}</span>
-                <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`} />
-              </button>
-              {openFaq === idx && (
-                <div className="px-5 pb-5 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800/80 pt-3">
-                  {faq.a}
-                </div>
-              )}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 text-center max-w-5xl mx-auto">
+            {/* Column 1 */}
+            <div className="space-y-3">
+              <div className="h-12 w-12 rounded-2xl bg-sky-500/10 text-sky-400 mx-auto flex items-center justify-center">
+                <Users className="h-6 w-6" />
+              </div>
+              <h4 className="text-xl font-[900] text-white">200+ employees</h4>
+              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
+                A global team with decades of market experience driving your trading performance.
+              </p>
             </div>
-          ))}
+
+            {/* Column 2 */}
+            <div className="space-y-3">
+              <div className="h-12 w-12 rounded-2xl bg-sky-500/10 text-sky-400 mx-auto flex items-center justify-center">
+                <Globe className="h-6 w-6" />
+              </div>
+              <h4 className="text-xl font-[900] text-white">5 global offices</h4>
+              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
+                Strategically positioned to support traders across all regions around the world.
+              </p>
+            </div>
+
+            {/* Column 3 */}
+            <div className="space-y-3">
+              <div className="h-12 w-12 rounded-2xl bg-sky-500/10 text-sky-400 mx-auto flex items-center justify-center">
+                <Headphones className="h-6 w-6" />
+              </div>
+              <h4 className="text-xl font-[900] text-white">24/7 Real Human Support</h4>
+              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
+                Real support available whenever you need it via live chat and dedicated VIP desks.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 11. DEEP NAVY FAQS: "WHAT IS PROPNATION?" (Continuation Image 2 & 3) */}
+      {/* ======================================================== */}
+      <section className="w-full bg-[#030c1f] text-white py-20 sm:py-28 border-t border-blue-950/60">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-12">
+          <div className="space-y-2">
+            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-white">
+              What is PropNation?
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-400 font-normal">
+              Learn more about PropNation
+            </p>
+          </div>
+
+          <div className="space-y-1 text-left divide-y divide-blue-900/40">
+            {faqs.map((faq, idx) => (
+              <div key={idx} className="py-4 sm:py-5">
+                <button
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="w-full flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-white hover:text-sky-300 transition-colors cursor-pointer text-left"
+                >
+                  <span>{faq.q}</span>
+                  <ChevronDown
+                    className={`h-4 w-4 text-sky-400 transition-transform duration-200 shrink-0 ${
+                      openFaq === idx ? 'rotate-180 text-white' : ''
+                    }`}
+                  />
+                </button>
+                {openFaq === idx && (
+                  <div className="pt-3 text-xs sm:text-sm text-slate-300 leading-relaxed max-w-3xl animate-in fade-in duration-200">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
