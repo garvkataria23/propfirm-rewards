@@ -21,17 +21,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Read saved theme from localStorage or system preference
+    // Strictly default to 'light' mode until explicitly changed by the user
     const saved = localStorage.getItem('propnation_theme') as Theme | null;
-    if (saved === 'dark' || saved === 'light') {
-      setThemeState(saved);
-      applyTheme(saved);
+    if (saved === 'dark') {
+      setThemeState('dark');
+      applyTheme('dark');
     } else {
-      // Default to light mode (or check system preference)
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const initial = systemPrefersDark ? 'dark' : 'light';
-      setThemeState(initial);
-      applyTheme(initial);
+      // Default to light mode (never auto-switch to dark from system preference)
+      setThemeState('light');
+      applyTheme('light');
     }
     setMounted(true);
   }, []);
