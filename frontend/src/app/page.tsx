@@ -13,36 +13,21 @@ import {
   Coins,
   Gift,
   ArrowRight,
-  TrendingUp,
   Sparkles,
   ExternalLink,
   Wallet,
-  Clock,
   ChevronDown,
-  Layers,
-  Award,
-  Zap,
-  Search,
-  CheckCircle,
   FileCheck2,
-  Package,
+  CheckCircle,
   Truck,
-  RotateCcw,
   Headphones,
   Laptop,
   Smartphone,
   Gamepad2,
   Tag,
-  ArrowUpRight,
-  Sliders,
-  DollarSign,
-  ChevronRight,
-  Star,
-  Users,
-  Building2,
+  Search,
   Activity,
-  CreditCard,
-  Percent,
+  Building2,
 } from 'lucide-react';
 
 interface PropFirmOffer {
@@ -280,43 +265,43 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="w-full min-h-screen bg-[#05070a] text-slate-100 font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
+    <div className="w-full min-h-screen bg-[#fafafc] dark:bg-[#05070a] text-slate-900 dark:text-slate-100 font-sans selection:bg-emerald-500/20 selection:text-emerald-800 dark:selection:text-emerald-200 transition-colors">
       {/* ─────────────────────────────────────────────────────────────
           1. HERO SECTION
           Full-screen premium fintech hero with interactive dashboard visual
       ───────────────────────────────────────────────────────────── */}
-      <section className="relative w-full pt-8 pb-20 sm:pt-16 sm:pb-28 overflow-hidden border-b border-slate-800/80">
-        {/* Very subtle fintech glows */}
-        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none -z-10" />
-        <div className="absolute top-1/3 left-10 w-[400px] h-[400px] bg-blue-600/[0.03] rounded-full blur-3xl pointer-events-none -z-10" />
+      <section className="relative w-full pt-8 pb-20 sm:pt-16 sm:pb-28 overflow-hidden border-b border-slate-200/80 dark:border-slate-800/80">
+        {/* Subtle glows for light/dark */}
+        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-emerald-500/[0.06] dark:bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none -z-10" />
+        <div className="absolute top-1/3 left-10 w-[400px] h-[400px] bg-blue-600/[0.05] dark:bg-blue-600/[0.03] rounded-full blur-3xl pointer-events-none -z-10" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             {/* Left Column: Core Message */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left flex flex-col items-center lg:items-start">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full bg-slate-900/90 border border-slate-700/80 px-4 py-1.5 text-xs font-semibold tracking-wider text-slate-300 shadow-inner">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="uppercase text-[11px] font-bold tracking-widest text-slate-200">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/80 px-4 py-1.5 text-xs font-semibold tracking-wider text-slate-700 dark:text-slate-300 shadow-xs">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="uppercase text-[11px] font-bold tracking-widest text-slate-800 dark:text-slate-200">
                   THE TRADER REWARDS PLATFORM
                 </span>
               </div>
 
               {/* Main Headline */}
-              <h1 className="text-4xl sm:text-6xl lg:text-[4.5rem] font-[900] tracking-tight text-white leading-[1.04]">
+              <h1 className="text-4xl sm:text-6xl lg:text-[4.5rem] font-[900] tracking-tight text-slate-900 dark:text-white leading-[1.04]">
                 TRADE.<br />
                 EARN.<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 dark:from-emerald-400 dark:via-teal-300 dark:to-sky-400">
                   GET REWARDED.
                 </span>
               </h1>
 
               {/* Sub-headline & Description */}
               <div className="space-y-2 max-w-xl">
-                <p className="text-base sm:text-xl font-semibold text-slate-200">
+                <p className="text-base sm:text-xl font-bold text-slate-800 dark:text-slate-200">
                   Turn eligible prop-firm purchases into rewards.
                 </p>
-                <p className="text-sm sm:text-base text-slate-400 leading-relaxed font-normal">
+                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
                   Purchase eligible prop-firm accounts using our referral codes, submit your purchase for verification, earn reward points, and redeem them for real-world rewards.
                 </p>
               </div>
@@ -324,7 +309,7 @@ export default function HomePage() {
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto pt-2">
                 <Link href="/register" className="w-full sm:w-auto">
-                  <Button className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/20 active:scale-[0.98]">
+                  <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md shadow-emerald-600/20 active:scale-[0.98]">
                     Start Earning
                     <ArrowRight className="h-4 w-4 ml-2 stroke-[2.5]" />
                   </Button>
@@ -332,7 +317,7 @@ export default function HomePage() {
                 <Link href="#rewards" className="w-full sm:w-auto">
                   <Button
                     variant="outline"
-                    className="w-full sm:w-auto border-slate-700 bg-slate-900/60 hover:bg-slate-800 text-slate-200 px-8 py-3.5 rounded-xl font-semibold text-sm transition-all"
+                    className="w-full sm:w-auto border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 px-8 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-xs"
                   >
                     Explore Rewards
                   </Button>
@@ -347,36 +332,36 @@ export default function HomePage() {
 
             {/* Right Column: Premium Dashboard Preview Mockup */}
             <div className="lg:col-span-5 w-full flex justify-center">
-              <div className="w-full max-w-md rounded-2xl bg-gradient-to-b from-slate-900/95 to-[#0b0f17] border border-slate-800 p-5 sm:p-6 shadow-2xl shadow-black/80 space-y-5 backdrop-blur-xl relative">
+              <div className="w-full max-w-md rounded-2xl bg-white dark:bg-gradient-to-b dark:from-slate-900/95 dark:to-[#0b0f17] border border-slate-200/90 dark:border-slate-800 p-5 sm:p-6 shadow-xl shadow-slate-200/50 dark:shadow-black/80 space-y-5 backdrop-blur-xl relative">
                 {/* Header Row: Balance */}
-                <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4">
                   <div>
-                    <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                       Available Points
                     </div>
-                    <div className="text-3xl font-[900] text-white tracking-tight font-mono flex items-baseline gap-2 mt-0.5">
+                    <div className="text-3xl font-[900] text-slate-900 dark:text-white tracking-tight font-mono flex items-baseline gap-2 mt-0.5">
                       <span>{counterPoints.toLocaleString()}</span>
-                      <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-md">
                         +2,500 Points
                       </span>
                     </div>
                   </div>
-                  <div className="h-10 w-10 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center text-emerald-400">
+                  <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                     <Wallet className="h-5 w-5" />
                   </div>
                 </div>
 
                 {/* Reward Progress Card */}
-                <div className="rounded-xl bg-slate-950/60 border border-slate-800/80 p-3.5 space-y-2.5">
+                <div className="rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/70 dark:border-slate-800/80 p-3.5 space-y-2.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-300 flex items-center gap-1.5">
-                      <Smartphone className="h-4 w-4 text-sky-400" />
+                    <span className="font-semibold text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
+                      <Smartphone className="h-4 w-4 text-sky-600 dark:text-sky-400" />
                       iPhone Flagship
                     </span>
-                    <span className="font-bold text-emerald-400 font-mono">75% unlocked</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">75% unlocked</span>
                   </div>
                   {/* Progress bar */}
-                  <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[75%]" />
                   </div>
                   <div className="flex justify-between text-[11px] text-slate-500 font-medium">
@@ -387,58 +372,58 @@ export default function HomePage() {
 
                 {/* Recent Activity List */}
                 <div className="space-y-2">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Recent Activity
                   </div>
                   <div className="space-y-2 text-xs">
-                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-900/60 border border-slate-800/60">
+                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60">
                       <div className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <div>
-                          <div className="font-semibold text-slate-200">Purchase Verified</div>
+                          <div className="font-semibold text-slate-800 dark:text-slate-200">Purchase Verified</div>
                           <div className="text-[10px] text-slate-500">Order #PS-88412 • Pipstone</div>
                         </div>
                       </div>
-                      <span className="font-mono font-bold text-emerald-400">+2,500 PTS</span>
+                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+2,500 PTS</span>
                     </div>
 
-                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-900/60 border border-slate-800/60">
+                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="h-4 w-4 text-blue-400 shrink-0" />
+                        <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
                         <div>
-                          <div className="font-semibold text-slate-200">Bonus Earned</div>
+                          <div className="font-semibold text-slate-800 dark:text-slate-200">Bonus Earned</div>
                           <div className="text-[10px] text-slate-500">First Purchase Boost</div>
                         </div>
                       </div>
-                      <span className="font-mono font-bold text-blue-400">+1,000 PTS</span>
+                      <span className="font-mono font-bold text-blue-600 dark:text-blue-400">+1,000 PTS</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Referral Code Quick Copy Box */}
                 <div className="pt-1">
-                  <div className="rounded-xl bg-slate-950 border border-slate-800 p-3 flex items-center justify-between">
+                  <div className="rounded-xl bg-slate-100/90 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-3 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                      <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block tracking-wider">
                         Universal Referral Code
                       </span>
-                      <span className="font-mono font-black text-white text-base tracking-wider">
+                      <span className="font-mono font-black text-slate-900 dark:text-white text-base tracking-wider">
                         NATION
                       </span>
                     </div>
                     <button
                       type="button"
                       onClick={() => handleCopyCode('NATION')}
-                      className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
                     >
                       {copiedCode === 'NATION' ? (
                         <>
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span className="text-emerald-400">Copied</span>
+                          <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                          <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
                         </>
                       ) : (
                         <>
-                          <Copy className="h-3.5 w-3.5 text-slate-400" />
+                          <Copy className="h-3.5 w-3.5 text-slate-500" />
                           <span>Copy</span>
                         </>
                       )}
@@ -455,27 +440,27 @@ export default function HomePage() {
           2. TRUST STRIP
           Immediately below hero with clean indicators
       ───────────────────────────────────────────────────────────── */}
-      <section className="w-full bg-[#080c14] border-b border-slate-800/80 py-5">
+      <section className="w-full bg-slate-100/70 dark:bg-[#080c14] border-b border-slate-200/80 dark:border-slate-800/80 py-5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Built for traders
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 w-full md:w-auto">
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span>Secure Platform</span>
               </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span>Verified Purchases</span>
               </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                <Coins className="h-4 w-4 text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <Coins className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span>Transparent Points</span>
               </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                <Gift className="h-4 w-4 text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <Gift className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span>Real Rewards</span>
               </div>
             </div>
@@ -487,17 +472,17 @@ export default function HomePage() {
           3. HOW IT WORKS
           From Purchase to Reward in 5 Simple Steps
       ───────────────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="w-full py-16 sm:py-24 border-b border-slate-800/80 bg-[#05070a]">
+      <section id="how-it-works" className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Section Heading */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge variant="outline" className="border-slate-800 text-slate-300 bg-slate-900/60 text-xs">
+            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 text-xs">
               Simple Workflow
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
               From Purchase to Reward in 5 Simple Steps
             </h2>
-            <p className="text-sm sm:text-base text-slate-400">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
               A straightforward process with automated tracking and transparent point accreditation.
             </p>
           </div>
@@ -505,71 +490,71 @@ export default function HomePage() {
           {/* Desktop Horizontal / Mobile Vertical 5-Step Timeline */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-5 relative">
             {/* Step 1 */}
-            <div className="rounded-2xl bg-slate-900/40 border border-slate-800/80 p-5 space-y-3 hover:border-slate-700 transition-colors">
-              <div className="text-[11px] font-mono font-bold text-emerald-400 tracking-wider">
+            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
+              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
                 STEP 01
               </div>
-              <div className="h-10 w-10 rounded-xl bg-slate-800/70 flex items-center justify-center text-slate-200">
+              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs">
                 <Search className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-white">Choose a Prop Firm</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Choose a Prop Firm</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Browse eligible prop firms and explore available evaluation offers.
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-2xl bg-slate-900/40 border border-slate-800/80 p-5 space-y-3 hover:border-slate-700 transition-colors">
-              <div className="text-[11px] font-mono font-bold text-emerald-400 tracking-wider">
+            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
+              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
                 STEP 02
               </div>
-              <div className="h-10 w-10 rounded-xl bg-slate-800/70 flex items-center justify-center text-slate-200">
+              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs">
                 <Tag className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-white">Buy Using Our Code</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Purchase your eligible account using referral code <strong className="text-white font-mono">NATION</strong>.
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Buy Using Our Code</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                Purchase your eligible account using referral code <strong className="text-slate-900 dark:text-white font-mono">NATION</strong>.
               </p>
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-2xl bg-slate-900/40 border border-slate-800/80 p-5 space-y-3 hover:border-slate-700 transition-colors">
-              <div className="text-[11px] font-mono font-bold text-emerald-400 tracking-wider">
+            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
+              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
                 STEP 03
               </div>
-              <div className="h-10 w-10 rounded-xl bg-slate-800/70 flex items-center justify-center text-slate-200">
+              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs">
                 <FileCheck2 className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-white">Submit Your Proof</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Submit Your Proof</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Upload your order details and invoice receipt to your user dashboard.
               </p>
             </div>
 
             {/* Step 4 */}
-            <div className="rounded-2xl bg-slate-900/40 border border-slate-800/80 p-5 space-y-3 hover:border-slate-700 transition-colors">
-              <div className="text-[11px] font-mono font-bold text-emerald-400 tracking-wider">
+            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
+              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
                 STEP 04
               </div>
-              <div className="h-10 w-10 rounded-xl bg-slate-800/70 flex items-center justify-center text-slate-200">
-                <CheckCircle className="h-5 w-5 text-emerald-400" />
+              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs">
+                <CheckCircle className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-white">Get Verified</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Get Verified</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Our verification team audits and approves your order confirmation.
               </p>
             </div>
 
             {/* Step 5 */}
-            <div className="rounded-2xl bg-emerald-500/[0.04] border border-emerald-500/30 p-5 space-y-3">
-              <div className="text-[11px] font-mono font-bold text-emerald-400 tracking-wider">
+            <div className="rounded-2xl bg-emerald-50/80 dark:bg-emerald-500/[0.04] border border-emerald-300 dark:border-emerald-500/30 p-5 space-y-3 shadow-2xs">
+              <div className="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-400 tracking-wider">
                 STEP 05
               </div>
-              <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center">
+              <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex items-center justify-center">
                 <Gift className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-white">Earn &amp; Redeem</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Earn &amp; Redeem</h3>
+              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                 Receive points instantly and redeem them for real-world rewards.
               </p>
             </div>
@@ -581,23 +566,23 @@ export default function HomePage() {
           4. PROP FIRMS SECTION
           Dynamic / placeholder cards with tiers and point yield
       ───────────────────────────────────────────────────────────── */}
-      <section id="prop-firms" className="w-full py-16 sm:py-24 border-b border-slate-800/80 bg-[#080c14]">
+      <section id="prop-firms" className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-800 text-slate-300 bg-slate-900/60 text-xs">
+              <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/60 text-xs">
                 Eligible Platforms
               </Badge>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
                 Choose Your Prop Firm
               </h2>
-              <p className="text-sm sm:text-base text-slate-400 max-w-xl">
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-xl">
                 Explore participating prop firms and see how many points you can earn on each evaluation tier.
               </p>
             </div>
             <Link href="/prop-firms">
-              <Button variant="outline" className="border-slate-700 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-bold">
+              <Button variant="outline" className="border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-bold shadow-2xs">
                 View All Partners <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
               </Button>
             </Link>
@@ -608,26 +593,26 @@ export default function HomePage() {
             {propFirms.slice(0, 6).map((firm) => (
               <div
                 key={firm.id}
-                className="rounded-2xl bg-slate-900/50 border border-slate-800 p-6 flex flex-col justify-between space-y-5 hover:border-slate-700 transition-all shadow-sm"
+                className="rounded-2xl bg-white dark:bg-slate-900/50 border border-slate-200/90 dark:border-slate-800 p-6 flex flex-col justify-between space-y-5 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-xs"
               >
                 <div className="space-y-4">
                   {/* Top: Logo + Name */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-white font-black text-sm">
+                      <div className="h-11 w-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-white font-black text-sm">
                         {firm.name.slice(0, 2).toUpperCase()}
                       </div>
                       <div>
-                        <h4 className="font-bold text-white text-base leading-snug">{firm.name}</h4>
+                        <h4 className="font-bold text-slate-900 dark:text-white text-base leading-snug">{firm.name}</h4>
                         <span className="text-[11px] text-slate-500 font-mono">Code: NATION</span>
                       </div>
                     </div>
-                    <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-full">
                       Verified
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">
                     {firm.description}
                   </p>
 
@@ -640,27 +625,27 @@ export default function HomePage() {
                       firm.offers.slice(0, 3).map((offer) => (
                         <div
                           key={offer.id}
-                          className="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-slate-950/50 border border-slate-800/60"
+                          className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60"
                         >
-                          <span className="text-slate-300 font-medium">{offer.accountTierName}</span>
-                          <span className="font-mono font-bold text-emerald-400">
+                          <span className="text-slate-700 dark:text-slate-300 font-medium">{offer.accountTierName}</span>
+                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
                             +{offer.rewardPoints.toLocaleString()} PTS
                           </span>
                         </div>
                       ))
                     ) : (
                       <>
-                        <div className="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-slate-950/50 border border-slate-800/60">
-                          <span className="text-slate-300 font-medium">$50 Account</span>
-                          <span className="font-mono font-bold text-emerald-400">+1,000 PTS</span>
+                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60">
+                          <span className="text-slate-700 dark:text-slate-300 font-medium">$50 Account</span>
+                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+1,000 PTS</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-slate-950/50 border border-slate-800/60">
-                          <span className="text-slate-300 font-medium">$100 Account</span>
-                          <span className="font-mono font-bold text-emerald-400">+2,500 PTS</span>
+                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60">
+                          <span className="text-slate-700 dark:text-slate-300 font-medium">$100 Account</span>
+                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+2,500 PTS</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-slate-950/50 border border-slate-800/60">
-                          <span className="text-slate-300 font-medium">$200 Account</span>
-                          <span className="font-mono font-bold text-emerald-400">+5,000 PTS</span>
+                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60">
+                          <span className="text-slate-700 dark:text-slate-300 font-medium">$200 Account</span>
+                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+5,000 PTS</span>
                         </div>
                       </>
                     )}
@@ -668,15 +653,15 @@ export default function HomePage() {
                 </div>
 
                 {/* Action CTA */}
-                <div className="pt-2 border-t border-slate-800/80">
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80">
                   <a
                     href={firm.affiliateUrl || firm.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block"
                   >
-                    <Button className="w-full bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs font-semibold h-10 rounded-xl">
-                      View Offer <ExternalLink className="h-3.5 w-3.5 ml-1.5 text-slate-400" />
+                    <Button className="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-semibold h-10 rounded-xl transition-colors">
+                      View Offer <ExternalLink className="h-3.5 w-3.5 ml-1.5 text-slate-500" />
                     </Button>
                   </a>
                 </div>
@@ -690,17 +675,17 @@ export default function HomePage() {
           5. REWARD SHOWCASE
           Your Trading. Your Rewards.
       ───────────────────────────────────────────────────────────── */}
-      <section id="rewards" className="w-full py-16 sm:py-24 border-b border-slate-800/80 bg-[#05070a]">
+      <section id="rewards" className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge variant="outline" className="border-slate-800 text-slate-300 bg-slate-900/60 text-xs">
+            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 text-xs">
               Rewards Catalog
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
               Your Trading. Your Rewards.
             </h2>
-            <p className="text-sm sm:text-base text-slate-400">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
               Turn your verified purchases into points and redeem them for rewards you actually want.
             </p>
           </div>
@@ -708,18 +693,17 @@ export default function HomePage() {
           {/* Product Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {rewards.slice(0, 6).map((item, idx) => {
-              // Icon representation based on index or category
               const icons = [Headphones, Tag, Gamepad2, Smartphone, Laptop, Gift];
               const ItemIcon = icons[idx % icons.length];
 
               return (
                 <div
                   key={item.id}
-                  className="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 flex flex-col justify-between space-y-6 hover:border-slate-700 transition-all group"
+                  className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 flex flex-col justify-between space-y-6 hover:border-slate-300 dark:hover:border-slate-700 transition-all group shadow-xs"
                 >
                   <div className="space-y-4">
                     {/* Visual box */}
-                    <div className="aspect-[16/10] rounded-xl bg-slate-950/80 border border-slate-800/80 flex items-center justify-center p-6 text-slate-500 group-hover:text-emerald-400 transition-colors">
+                    <div className="aspect-[16/10] rounded-xl bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800/80 flex items-center justify-center p-6 text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors shadow-2xs">
                       <ItemIcon className="h-12 w-12 stroke-[1.5]" />
                     </div>
 
@@ -727,21 +711,21 @@ export default function HomePage() {
                       <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                         {item.category?.name || 'Exclusive Reward'}
                       </span>
-                      <h4 className="text-base font-bold text-white mt-0.5 line-clamp-1">
+                      <h4 className="text-base font-bold text-slate-900 dark:text-white mt-0.5 line-clamp-1">
                         {item.name}
                       </h4>
                     </div>
 
                     <div className="flex items-baseline gap-1.5 pt-1">
-                      <span className="text-2xl font-[900] text-emerald-400 font-mono">
+                      <span className="text-2xl font-[900] text-emerald-600 dark:text-emerald-400 font-mono">
                         {item.pointsRequired.toLocaleString()}
                       </span>
-                      <span className="text-xs text-slate-400 font-semibold uppercase">Points</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase">Points</span>
                     </div>
                   </div>
 
                   <Link href="/rewards">
-                    <Button variant="outline" className="w-full border-slate-700 bg-slate-800/40 hover:bg-slate-800 text-slate-200 text-xs font-semibold h-10 rounded-xl">
+                    <Button variant="outline" className="w-full border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold h-10 rounded-xl shadow-2xs">
                       View Reward
                     </Button>
                   </Link>
@@ -761,122 +745,122 @@ export default function HomePage() {
           6. POINTS SYSTEM VISUAL & REWARD PROGRESS (2-Column)
           Every Eligible Purchase Gets You Closer
       ───────────────────────────────────────────────────────────── */}
-      <section className="w-full py-16 sm:py-24 border-b border-slate-800/80 bg-[#080c14]">
+      <section className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Section Heading */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge variant="outline" className="border-slate-800 text-slate-300 bg-slate-900/60 text-xs">
+            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/60 text-xs">
               Transparent Accounting
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
               Every Eligible Purchase Gets You Closer.
             </h2>
-            <p className="text-sm sm:text-base text-slate-400">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
               Clear credit allocation, instant tracking, and goal progress visualization.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left: Fintech Wallet Card */}
-            <div className="lg:col-span-6 rounded-2xl bg-slate-900/70 border border-slate-800 p-6 sm:p-8 space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 space-y-6 shadow-xs">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Wallet Ledger Preview
                 </span>
-                <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
+                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <CheckCircle2 className="h-3.5 w-3.5" /> Synchronized
                 </span>
               </div>
 
               {/* Large points balance display */}
               <div className="space-y-1">
-                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Total Points Accumulated
                 </div>
-                <div className="text-4xl sm:text-5xl font-[900] text-white tracking-tight font-mono">
-                  12,500 <span className="text-lg text-emerald-400 font-sans font-bold">POINTS</span>
+                <div className="text-4xl sm:text-5xl font-[900] text-slate-900 dark:text-white tracking-tight font-mono">
+                  12,500 <span className="text-lg text-emerald-600 dark:text-emerald-400 font-sans font-bold">POINTS</span>
                 </div>
               </div>
 
               {/* Transaction list */}
               <div className="space-y-2.5 pt-2">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
                   <div>
-                    <div className="font-semibold text-slate-200">Purchase Verified</div>
+                    <div className="font-semibold text-slate-800 dark:text-slate-200">Purchase Verified</div>
                     <div className="text-[10px] text-slate-500">FundedNext $50K Challenge</div>
                   </div>
-                  <span className="font-mono font-bold text-emerald-400 text-sm">+2,500</span>
+                  <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-sm">+2,500</span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
                   <div>
-                    <div className="font-semibold text-slate-200">Account Onboarding Bonus</div>
+                    <div className="font-semibold text-slate-800 dark:text-slate-200">Account Onboarding Bonus</div>
                     <div className="text-[10px] text-slate-500">Early Member Tier</div>
                   </div>
-                  <span className="font-mono font-bold text-blue-400 text-sm">+1,000</span>
+                  <span className="font-mono font-bold text-blue-600 dark:text-blue-400 text-sm">+1,000</span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
                   <div>
-                    <div className="font-semibold text-slate-200">Reward Redemption</div>
+                    <div className="font-semibold text-slate-800 dark:text-slate-200">Reward Redemption</div>
                     <div className="text-[10px] text-slate-500">Global Digital Gift Card</div>
                   </div>
-                  <span className="font-mono font-bold text-rose-400 text-sm">-5,000</span>
+                  <span className="font-mono font-bold text-rose-600 dark:text-rose-400 text-sm">-5,000</span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-700/80 text-xs">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-100/90 dark:bg-slate-950 border border-slate-300/80 dark:border-slate-700/80 text-xs">
                   <div>
-                    <div className="font-bold text-white">Current Available Balance</div>
-                    <div className="text-[10px] text-slate-400">Ready to redeem</div>
+                    <div className="font-bold text-slate-900 dark:text-white">Current Available Balance</div>
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400">Ready to redeem</div>
                   </div>
-                  <span className="font-mono font-bold text-white text-base">8,500</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white text-base">8,500</span>
                 </div>
               </div>
             </div>
 
             {/* Right: Reward Progress Card */}
-            <div className="lg:col-span-6 rounded-2xl bg-slate-900/70 border border-slate-800 p-6 sm:p-8 space-y-6 flex flex-col justify-between">
+            <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 space-y-6 flex flex-col justify-between shadow-xs">
               <div className="space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Goal Tracking
                   </span>
-                  <span className="text-xs font-semibold text-slate-300">Target Item</span>
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Target Item</span>
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-[900] text-white">You&apos;re getting closer.</h3>
-                  <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                  <h3 className="text-2xl font-[900] text-slate-900 dark:text-white">You&apos;re getting closer.</h3>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                     Set personal reward goals and monitor your progress across all challenge purchases.
                   </p>
                 </div>
 
                 {/* Progress Box */}
-                <div className="rounded-xl bg-slate-950/80 border border-slate-800 p-5 space-y-4">
+                <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-5 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-200">
+                      <div className="h-10 w-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs">
                         <Headphones className="h-5 w-5" />
                       </div>
                       <div>
-                        <div className="font-bold text-white text-sm">Wireless Headphones</div>
-                        <div className="text-xs text-slate-400">20,000 Points Goal</div>
+                        <div className="font-bold text-slate-900 dark:text-white text-sm">Wireless Headphones</div>
+                        <div className="text-xs text-slate-500">20,000 Points Goal</div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xs text-slate-400">Your Points</div>
-                      <div className="font-mono font-bold text-white text-sm">12,500</div>
+                      <div className="text-xs text-slate-500">Your Points</div>
+                      <div className="font-mono font-bold text-slate-900 dark:text-white text-sm">12,500</div>
                     </div>
                   </div>
 
                   {/* Progress Bar */}
                   <div className="space-y-1.5">
-                    <div className="h-3 w-full bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-3 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[62.5%]" />
                     </div>
-                    <div className="flex justify-between text-xs text-slate-400 font-medium">
+                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 font-medium">
                       <span>62.5% Completed</span>
-                      <span className="font-semibold text-emerald-400">7,500 more points to unlock</span>
+                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">7,500 more points to unlock</span>
                     </div>
                   </div>
                 </div>
@@ -884,7 +868,7 @@ export default function HomePage() {
 
               <div className="pt-4">
                 <Link href="/rewards">
-                  <Button className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm h-11 rounded-xl shadow-md shadow-emerald-500/10">
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-sm h-11 rounded-xl shadow-md shadow-emerald-600/10">
                     Explore Rewards Catalog
                   </Button>
                 </Link>
@@ -898,17 +882,17 @@ export default function HomePage() {
           7. WHY JOIN SECTION
           More Than Just a Referral Code
       ───────────────────────────────────────────────────────────── */}
-      <section className="w-full py-16 sm:py-24 border-b border-slate-800/80 bg-[#05070a]">
+      <section className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge variant="outline" className="border-slate-800 text-slate-300 bg-slate-900/60 text-xs">
+            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 text-xs">
               Platform Benefits
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
               More Than Just a Referral Code.
             </h2>
-            <p className="text-sm sm:text-base text-slate-400">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
               An ecosystem built for retail traders who want tangible value from their prop-firm journey.
             </p>
           </div>
@@ -916,45 +900,45 @@ export default function HomePage() {
           {/* 4 Feature Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Card 1 */}
-            <div className="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3 hover:border-slate-700 transition-colors">
-              <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 flex items-center justify-center">
                 <Coins className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-white">Earn Points</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Earn Points</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Get rewarded for eligible verified purchases across top-tier participating prop firms.
               </p>
             </div>
 
             {/* Card 2 */}
-            <div className="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3 hover:border-slate-700 transition-colors">
-              <div className="h-10 w-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
+            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-blue-100 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 flex items-center justify-center">
                 <ShieldCheck className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-white">Simple Verification</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Simple Verification</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Submit your purchase proof through a simple, friction-free portal in under two minutes.
               </p>
             </div>
 
             {/* Card 3 */}
-            <div className="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3 hover:border-slate-700 transition-colors">
-              <div className="h-10 w-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center">
+            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-purple-100 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 text-purple-700 dark:text-purple-400 flex items-center justify-center">
                 <Gift className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-white">Real Rewards</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Real Rewards</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Redeem accumulated points for physical luxury tech, gaming gear, or instant crypto payouts.
               </p>
             </div>
 
             {/* Card 4 */}
-            <div className="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3 hover:border-slate-700 transition-colors">
-              <div className="h-10 w-10 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center">
+            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-teal-100 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/20 text-teal-700 dark:text-teal-400 flex items-center justify-center">
                 <Activity className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-white">Track Everything</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Track Everything</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 See purchases, points and redemptions in one clean, unified trader dashboard.
               </p>
             </div>
@@ -966,32 +950,32 @@ export default function HomePage() {
           8. DASHBOARD PREVIEW & REDEMPTION PROCESS
           Realistic SaaS product mockup
       ───────────────────────────────────────────────────────────── */}
-      <section className="w-full py-16 sm:py-24 border-b border-slate-800/80 bg-[#080c14]">
+      <section className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge variant="outline" className="border-slate-800 text-slate-300 bg-slate-900/60 text-xs">
+            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/60 text-xs">
               Portal Overview
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
               Professional Trader Dashboard
             </h2>
-            <p className="text-sm sm:text-base text-slate-400">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
               Manage your challenges, point logs, and shipping timelines with full transparency.
             </p>
           </div>
 
           {/* Large Dashboard Mockup */}
-          <div className="rounded-2xl bg-slate-950 border border-slate-800 overflow-hidden shadow-2xl">
+          <div className="rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-2xl">
             {/* Browser / App Header bar */}
-            <div className="h-10 bg-slate-900/80 border-b border-slate-800 px-4 flex items-center justify-between text-xs text-slate-400">
+            <div className="h-10 bg-slate-100 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 px-4 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <div className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-slate-700" />
-                <span className="h-3 w-3 rounded-full bg-slate-700" />
-                <span className="h-3 w-3 rounded-full bg-slate-700" />
-                <span className="ml-2 font-mono text-[11px] text-slate-500">app.propfirmrewards.com/dashboard</span>
+                <span className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-700" />
+                <span className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-700" />
+                <span className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-700" />
+                <span className="ml-2 font-mono text-[11px] text-slate-600 dark:text-slate-500">app.propfirmrewards.com/dashboard</span>
               </div>
-              <div className="flex items-center gap-1.5 font-semibold text-emerald-400">
+              <div className="flex items-center gap-1.5 font-semibold text-emerald-600 dark:text-emerald-400">
                 <CheckCircle2 className="h-3.5 w-3.5" /> Connected
               </div>
             </div>
@@ -999,84 +983,84 @@ export default function HomePage() {
             {/* Dashboard Inner Layout */}
             <div className="grid grid-cols-1 md:grid-cols-12 min-h-[420px]">
               {/* Sidebar */}
-              <div className="md:col-span-3 border-r border-slate-800 p-4 space-y-4 bg-slate-950/60 hidden md:block">
+              <div className="md:col-span-3 border-r border-slate-200 dark:border-slate-800 p-4 space-y-4 bg-slate-50/70 dark:bg-slate-950/60 hidden md:block">
                 <div className="space-y-1 text-xs">
-                  <div className="px-3 py-2 rounded-lg bg-slate-900 font-bold text-white flex items-center gap-2">
-                    <Activity className="h-4 w-4 text-emerald-400" /> Dashboard
+                  <div className="px-3 py-2 rounded-lg bg-white dark:bg-slate-900 font-bold text-slate-900 dark:text-white flex items-center gap-2 border border-slate-200/80 dark:border-transparent shadow-2xs">
+                    <Activity className="h-4 w-4 text-emerald-600 dark:text-emerald-400" /> Dashboard
                   </div>
-                  <div className="px-3 py-2 rounded-lg text-slate-400 hover:text-white flex items-center gap-2">
+                  <div className="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-2">
                     <Building2 className="h-4 w-4" /> Prop Firms
                   </div>
-                  <div className="px-3 py-2 rounded-lg text-slate-400 hover:text-white flex items-center gap-2">
+                  <div className="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-2">
                     <FileCheck2 className="h-4 w-4" /> My Purchases
                   </div>
-                  <div className="px-3 py-2 rounded-lg text-slate-400 hover:text-white flex items-center gap-2">
+                  <div className="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-2">
                     <Coins className="h-4 w-4" /> Points Wallet
                   </div>
-                  <div className="px-3 py-2 rounded-lg text-slate-400 hover:text-white flex items-center gap-2">
+                  <div className="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-2">
                     <Gift className="h-4 w-4" /> Rewards Store
                   </div>
-                  <div className="px-3 py-2 rounded-lg text-slate-400 hover:text-white flex items-center gap-2">
+                  <div className="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-2">
                     <Truck className="h-4 w-4" /> Redemptions
                   </div>
                 </div>
               </div>
 
               {/* Main Content Area */}
-              <div className="md:col-span-9 p-5 sm:p-7 space-y-6">
+              <div className="md:col-span-9 p-5 sm:p-7 space-y-6 bg-white dark:bg-slate-950">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-                    <div className="text-[11px] font-semibold text-slate-400 uppercase">Available Points</div>
-                    <div className="text-2xl font-[900] text-white font-mono">12,500</div>
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                    <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Available Points</div>
+                    <div className="text-2xl font-[900] text-slate-900 dark:text-white font-mono">12,500</div>
                   </div>
-                  <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-                    <div className="text-[11px] font-semibold text-slate-400 uppercase">Verified Orders</div>
-                    <div className="text-2xl font-[900] text-emerald-400 font-mono">4 Orders</div>
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                    <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Verified Orders</div>
+                    <div className="text-2xl font-[900] text-emerald-600 dark:text-emerald-400 font-mono">4 Orders</div>
                   </div>
-                  <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-                    <div className="text-[11px] font-semibold text-slate-400 uppercase">Redeemed Value</div>
-                    <div className="text-2xl font-[900] text-blue-400 font-mono">$150.00</div>
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                    <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Redeemed Value</div>
+                    <div className="text-2xl font-[900] text-blue-600 dark:text-blue-400 font-mono">$150.00</div>
                   </div>
                 </div>
 
                 {/* Realistic Order Tracking component */}
-                <div className="rounded-xl bg-slate-900/40 border border-slate-800 p-5 space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                <div className="rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
                     <div>
-                      <span className="text-[10px] font-mono text-emerald-400 uppercase">Reward #RW-10294</span>
-                      <h4 className="text-sm font-bold text-white">Premium Wireless Headphones</h4>
+                      <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 uppercase font-bold">Reward #RW-10294</span>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">Premium Wireless Headphones</h4>
                     </div>
-                    <span className="text-xs font-mono font-bold text-slate-300">20,000 Points</span>
+                    <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">20,000 Points</span>
                   </div>
 
                   {/* Tracking 4-Step Journey */}
                   <div className="grid grid-cols-4 gap-2 text-center pt-2">
                     <div className="space-y-1.5">
-                      <div className="h-6 w-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xs">
+                      <div className="h-6 w-6 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 flex items-center justify-center mx-auto text-xs font-bold">
                         ✓
                       </div>
-                      <div className="text-[11px] font-bold text-slate-200">Confirmed</div>
+                      <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200">Confirmed</div>
                     </div>
                     <div className="space-y-1.5">
-                      <div className="h-6 w-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xs">
+                      <div className="h-6 w-6 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 flex items-center justify-center mx-auto text-xs font-bold">
                         ✓
                       </div>
-                      <div className="text-[11px] font-bold text-slate-200">Processing</div>
+                      <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200">Processing</div>
                     </div>
                     <div className="space-y-1.5">
-                      <div className="h-6 w-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xs">
+                      <div className="h-6 w-6 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 flex items-center justify-center mx-auto text-xs font-bold">
                         ✓
                       </div>
-                      <div className="text-[11px] font-bold text-slate-200">Shipped</div>
+                      <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200">Shipped</div>
                     </div>
                     <div className="space-y-1.5">
-                      <div className="h-6 w-6 rounded-full bg-slate-800 text-slate-500 flex items-center justify-center mx-auto text-xs">
+                      <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 flex items-center justify-center mx-auto text-xs font-bold">
                         ○
                       </div>
                       <div className="text-[11px] font-medium text-slate-500">Delivered</div>
                     </div>
                   </div>
-                  <div className="text-[11px] text-slate-400 text-center pt-1 font-mono">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 text-center pt-1 font-mono">
                     Tracking carrier: DHL Express • Waybill #9400 1000 8421
                   </div>
                 </div>
@@ -1090,21 +1074,21 @@ export default function HomePage() {
           9. FREQUENTLY ASKED QUESTIONS
           Full 10-Question Comprehensive Accordion
       ───────────────────────────────────────────────────────────── */}
-      <section id="faq" className="w-full py-16 sm:py-24 border-b border-slate-800/80 bg-[#05070a]">
+      <section id="faq" className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="text-center space-y-3">
-            <Badge variant="outline" className="border-slate-800 text-slate-300 bg-slate-900/60 text-xs">
+            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 text-xs">
               Got Questions?
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
               Frequently Asked Questions
             </h2>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Clear answers regarding verification, point yields, and reward delivery.
             </p>
           </div>
 
-          <div className="divide-y divide-slate-800 border-y border-slate-800">
+          <div className="divide-y divide-slate-200 dark:divide-slate-800 border-y border-slate-200 dark:border-slate-800">
             {faqs.map((faq, index) => {
               const isOpen = activeFaq === index;
               return (
@@ -1114,17 +1098,17 @@ export default function HomePage() {
                     onClick={() => setActiveFaq(isOpen ? null : index)}
                     className="w-full flex items-center justify-between text-left py-2 gap-4 cursor-pointer group"
                   >
-                    <span className="text-sm sm:text-base font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">
+                    <span className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                       {faq.q}
                     </span>
                     <ChevronDown
-                      className={`h-4 w-4 text-slate-400 transition-transform duration-200 shrink-0 ${
-                        isOpen ? 'rotate-180 text-emerald-400' : ''
+                      className={`h-4 w-4 text-slate-500 dark:text-slate-400 transition-transform duration-200 shrink-0 ${
+                        isOpen ? 'rotate-180 text-emerald-600 dark:text-emerald-400' : ''
                       }`}
                     />
                   </button>
                   {isOpen && (
-                    <div className="pt-2 pb-2 text-xs sm:text-sm text-slate-400 leading-relaxed">
+                    <div className="pt-2 pb-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                       {faq.a}
                     </div>
                   )}
@@ -1139,29 +1123,26 @@ export default function HomePage() {
           10. FINAL CTA BANNER
           Your Next Reward Starts With Your Next Trade.
       ───────────────────────────────────────────────────────────── */}
-      <section className="relative w-full py-20 sm:py-28 overflow-hidden bg-gradient-to-b from-[#080c14] to-[#05070a]">
-        {/* Subtle background glow */}
-        <div className="absolute inset-0 bg-radial-gradient from-emerald-500/[0.05] via-transparent to-transparent pointer-events-none" />
-
+      <section className="relative w-full py-20 sm:py-28 overflow-hidden bg-gradient-to-b from-slate-100 to-white dark:from-[#080c14] dark:to-[#05070a]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
-          <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-500/10 text-xs">
+          <Badge variant="outline" className="border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 text-xs">
             Start Today
           </Badge>
 
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-[900] tracking-tight text-white leading-tight">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-[900] tracking-tight text-slate-900 dark:text-white leading-tight">
             Your Next Reward Starts With{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 dark:from-emerald-400 dark:via-teal-300 dark:to-sky-400">
               Your Next Trade.
             </span>
           </h2>
 
-          <p className="text-sm sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
             Join the platform, discover eligible prop-firm offers and start earning rewards on every challenge account.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
             <Link href="/register" className="w-full sm:w-auto">
-              <Button className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/20">
+              <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md shadow-emerald-600/20">
                 Get Started Now
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
@@ -1169,7 +1150,7 @@ export default function HomePage() {
             <Link href="#rewards" className="w-full sm:w-auto">
               <Button
                 variant="outline"
-                className="w-full sm:w-auto border-slate-700 bg-slate-900/60 hover:bg-slate-800 text-slate-200 px-8 py-3.5 rounded-xl font-semibold text-sm transition-all"
+                className="w-full sm:w-auto border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 px-8 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-2xs"
               >
                 Explore Rewards
               </Button>
