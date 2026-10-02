@@ -543,8 +543,8 @@ export default function HomePage() {
             <div className="lg:col-span-5 relative flex items-center justify-center">
               <div className="relative w-full max-w-[420px] aspect-square rounded-3xl overflow-hidden border border-purple-100 dark:border-purple-900/60 shadow-2xl bg-gradient-to-b from-purple-50/50 to-white dark:from-slate-900 dark:to-slate-950 group">
                 <img
-                  src="/hero-lighting-crystal.jpg"
-                  alt="3D Sapphire Lightning Crystal"
+                  src="/propfirm.png"
+                  alt="PropFirm Loyalty Rewards"
                   className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/40 dark:from-[#070913]/60 via-transparent to-transparent pointer-events-none" />
