@@ -17,6 +17,8 @@ import {
   CheckCircle2,
   AlertCircle,
 } from 'lucide-react';
+import { CountrySelect } from '@/components/ui/country-select';
+import { AddressForm } from '@/components/ui/address-form';
 
 interface UserAddress {
   id: string;
@@ -182,13 +184,10 @@ export default function ProfilePage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs text-slate-700 dark:text-slate-300 font-semibold">Country</label>
-              <input
-                type="text"
-                placeholder="United States"
+              <CountrySelect
+                label="Country of Residence"
                 value={country}
-                onChange={(e) => setCountry(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
+                onChange={setCountry}
               />
             </div>
 
@@ -218,72 +217,14 @@ export default function ProfilePage() {
 
           {/* Add New Form */}
           {showAddAddress && (
-            <form onSubmit={handleAddAddress} className="space-y-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 text-xs">
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  type="text"
-                  required
-                  placeholder="Recipient Name"
-                  value={newAddr.fullName}
-                  onChange={(e) => setNewAddr({ ...newAddr, fullName: e.target.value })}
-                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
-                />
-                <input
-                  type="text"
-                  required
-                  placeholder="Phone Number"
-                  value={newAddr.phone}
-                  onChange={(e) => setNewAddr({ ...newAddr, phone: e.target.value })}
-                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
-                />
-              </div>
-
-              <input
-                type="text"
-                required
-                placeholder="Street Address Line 1"
-                value={newAddr.addressLine1}
-                onChange={(e) => setNewAddr({ ...newAddr, addressLine1: e.target.value })}
-                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
+            <form onSubmit={handleAddAddress} className="space-y-4 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 text-xs">
+              <AddressForm
+                value={newAddr}
+                onChange={(addr) => setNewAddr((prev) => ({ ...prev, ...addr }))}
+                showPresets={true}
               />
 
-              <div className="grid grid-cols-3 gap-2">
-                <input
-                  type="text"
-                  required
-                  placeholder="City"
-                  value={newAddr.city}
-                  onChange={(e) => setNewAddr({ ...newAddr, city: e.target.value })}
-                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
-                />
-                <input
-                  type="text"
-                  required
-                  placeholder="State/Prov"
-                  value={newAddr.state}
-                  onChange={(e) => setNewAddr({ ...newAddr, state: e.target.value })}
-                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
-                />
-                <input
-                  type="text"
-                  required
-                  placeholder="Postal Code"
-                  value={newAddr.postalCode}
-                  onChange={(e) => setNewAddr({ ...newAddr, postalCode: e.target.value })}
-                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
-                />
-              </div>
-
-              <input
-                type="text"
-                required
-                placeholder="Country"
-                value={newAddr.country}
-                onChange={(e) => setNewAddr({ ...newAddr, country: e.target.value })}
-                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
-              />
-
-              <div className="flex justify-end pt-1">
+              <div className="flex justify-end pt-1 border-t border-slate-200 dark:border-slate-800">
                 <Button type="submit" size="sm" isLoading={isAddingAddr}>
                   Save Address
                 </Button>

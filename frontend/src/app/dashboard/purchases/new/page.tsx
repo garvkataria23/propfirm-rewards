@@ -35,6 +35,7 @@ import {
   Info,
   ArrowRight,
 } from 'lucide-react';
+import { SearchableCombobox, ComboboxOption } from '@/components/ui/searchable-combobox';
 
 interface PropFirmOffer {
   id: string;
@@ -140,6 +141,9 @@ export default function SubmitPurchasePage() {
   const [emailUsed, setEmailUsed] = useState('');
   const [referralCodeUsed, setReferralCodeUsed] = useState('NATION');
   const [notes, setNotes] = useState('');
+  const [platform, setPlatform] = useState('MetaTrader 5 (MT5)');
+  const [currency, setCurrency] = useState('USD');
+  const [paymentMethod, setPaymentMethod] = useState('Credit / Debit Card');
   
   // Uploaded proofs with preview items
   const [proofItems, setProofItems] = useState<UploadedProofItem[]>([]);
@@ -219,6 +223,81 @@ export default function SubmitPurchasePage() {
     const offer = activeFirm?.offers.find((o) => o.id === offerId);
     if (offer) {
       setPurchaseAmountUsd(offer.purchasePriceUsd);
+    }
+  };
+
+  const firmOptions: ComboboxOption[] = propFirms.map((f) => ({
+    value: f.id,
+    label: f.name,
+    subtitle: `Ref Code: ${f.affiliateCode}`,
+    badge: `${f.offers?.length || 0} Tiers`,
+  }));
+
+  const offerOptions: ComboboxOption[] = (activeFirm?.offers || []).map((o) => ({
+    value: o.id,
+    label: o.accountTierName,
+    subtitle: `$${o.purchasePriceUsd}`,
+    badge: `+${o.rewardPoints.toLocaleString()} PTS`,
+  }));
+
+  const PLATFORM_OPTIONS: ComboboxOption[] = [
+    { value: 'MetaTrader 5 (MT5)', label: 'MetaTrader 5 (MT5)', badge: 'Popular' },
+    { value: 'cTrader', label: 'cTrader', badge: 'ECN / Raw' },
+    { value: 'TradeLocker', label: 'TradeLocker', badge: 'TradingView' },
+    { value: 'MatchTrader', label: 'MatchTrader' },
+    { value: 'DXtrade', label: 'DXtrade' },
+    { value: 'MetaTrader 4 (MT4)', label: 'MetaTrader 4 (MT4)' },
+  ];
+
+  const CURRENCY_OPTIONS: ComboboxOption[] = [
+    { value: 'USD', label: 'USD ($)', subtitle: 'United States Dollar' },
+    { value: 'EUR', label: 'EUR (€)', subtitle: 'Euro' },
+    { value: 'GBP', label: 'GBP (£)', subtitle: 'British Pound' },
+    { value: 'AED', label: 'AED (د.إ)', subtitle: 'UAE Dirham' },
+    { value: 'INR', label: 'INR (₹)', subtitle: 'Indian Rupee' },
+  ];
+
+  const PAYMENT_METHOD_OPTIONS: ComboboxOption[] = [
+    { value: 'Credit / Debit Card', label: 'Credit / Debit Card (Visa/Mastercard)', badge: 'Instant' },
+    { value: 'Crypto USDT (TRC20/ERC20)', label: 'Crypto USDT (Tether)', badge: 'Crypto' },
+    { value: 'Crypto Bitcoin (BTC)', label: 'Crypto Bitcoin (BTC)', badge: 'Crypto' },
+    { value: 'Apple Pay / Google Pay', label: 'Apple Pay / Google Pay', badge: 'Mobile' },
+    { value: 'Bank Wire Transfer', label: 'Bank Wire Transfer' },
+  ];
+
+  const handlePreFillDemo = () => {
+    const firm = propFirms[0] || null;
+    if (firm) {
+      setSelectedFirmId(firm.id);
+      setReferralCodeUsed(firm.affiliateCode || 'NATION');
+      if (firm.offers && firm.offers.length > 0) {
+        const offer = firm.offers[0];
+        setSelectedOfferId(offer.id);
+        setPurchaseAmountUsd(offer.purchasePriceUsd);
+      }
+    }
+    const randomOrderNum = Math.floor(100000 + Math.random() * 900000);
+    setOrderId(`FS-${randomOrderNum}`);
+    setAccountId(`MT5-${Math.floor(200000 + Math.random() * 800000)}`);
+    setEmailUsed('alex.trader@propfirm.com');
+    setPlatform('MetaTrader 5 (MT5)');
+    setCurrency('USD');
+    setPaymentMethod('Credit / Debit Card');
+    setPurchaseDate(new Date().toISOString().split('T')[0]);
+
+    if (proofItems.length === 0) {
+      const dummyBlob = new Blob(['Demo invoice receipt verification content'], { type: 'text/plain' });
+      const dummyFile = new File([dummyBlob], 'demo_purchase_invoice.png', { type: 'image/png' });
+      setProofItems([
+        {
+          file: dummyFile,
+          previewUrl: '/demo-proofs/fundedsquad-invoice-sample.jpg',
+          isImage: true,
+          isVideo: false,
+          isPdf: false,
+          formattedSize: '1.2 MB',
+        },
+      ]);
     }
   };
 
@@ -362,8 +441,9 @@ export default function SubmitPurchasePage() {
       formData.append('purchaseDate', purchaseDate);
       formData.append('purchaseAmountUsd', String(purchaseAmountUsd));
       formData.append('emailUsed', emailUsed.trim());
-      formData.append('referralCodeUsed', referralCodeUsed.trim());
-      if (notes) formData.append('notes', notes.trim());
+      const metaNotes = `[Platform: ${platform} | Currency: ${currency} | Payment: ${paymentMethod}]`;
+      const combinedNotes = notes ? `${notes}\n${metaNotes}` : metaNotes;
+      formData.append('notes', combinedNotes.trim());
 
       proofItems.forEach((item) => {
         formData.append('proofs', item.file);
@@ -562,6 +642,24 @@ export default function SubmitPurchasePage() {
           </div>
         )}
 
+        {/* 1-Tap Fast Fill Demo Banner */}
+        <div className="flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-purple-500/10 border border-purple-500/30 text-xs">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400 shrink-0" />
+            <div>
+              <span className="font-bold text-slate-900 dark:text-white">Zero-Typing Demo Testing:</span>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">Click to instantly populate all purchase fields, account tier &amp; sample invoice with one tap.</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handlePreFillDemo}
+            className="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md shadow-purple-600/20 cursor-pointer shrink-0 transition-colors"
+          >
+            ⚡ 1-Click Fast Fill
+          </button>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* ======================================================== */}
           {/* Upload Dropzone with Multi-Format Support & 10MB Limit */}
@@ -717,40 +815,74 @@ export default function SubmitPurchasePage() {
             )}
           </div>
 
-          {/* Prop Firm and Tier */}
+          {/* Prop Firm and Tier (Searchable Comboboxes) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 2. Select Prop Firm *
               </label>
-              <select
+              <SearchableCombobox
+                options={firmOptions}
                 value={selectedFirmId}
-                onChange={(e) => handleFirmChange(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
-              >
-                {propFirms.map((f) => (
-                  <option key={f.id} value={f.id}>
-                    {f.name}
-                  </option>
-                ))}
-              </select>
+                onChange={handleFirmChange}
+                placeholder="Choose or search prop firm..."
+                searchPlaceholder="Type firm name (e.g. Funding Pips, FTMO)..."
+              />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 3. Challenge Account Tier *
               </label>
-              <select
+              <SearchableCombobox
+                options={offerOptions}
                 value={selectedOfferId}
-                onChange={(e) => handleOfferChange(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
-              >
-                {activeFirm?.offers?.map((o) => (
-                  <option key={o.id} value={o.id}>
-                    {o.accountTierName} (${o.purchasePriceUsd} — +{o.rewardPoints.toLocaleString()} PTS)
-                  </option>
-                ))}
-              </select>
+                onChange={handleOfferChange}
+                placeholder="Choose challenge tier..."
+                searchPlaceholder="Type tier size (e.g. 5K, 25K, 100K)..."
+              />
+            </div>
+          </div>
+
+          {/* Platform, Currency, & Payment Method (Searchable Dropdowns) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                Trading Platform
+              </label>
+              <SearchableCombobox
+                options={PLATFORM_OPTIONS}
+                value={platform}
+                onChange={setPlatform}
+                placeholder="Platform..."
+                searchPlaceholder="Search MT5, cTrader..."
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                Account Currency
+              </label>
+              <SearchableCombobox
+                options={CURRENCY_OPTIONS}
+                value={currency}
+                onChange={setCurrency}
+                placeholder="Currency..."
+                searchPlaceholder="Search USD, EUR..."
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                Payment Method Used
+              </label>
+              <SearchableCombobox
+                options={PAYMENT_METHOD_OPTIONS}
+                value={paymentMethod}
+                onChange={setPaymentMethod}
+                placeholder="Payment method..."
+                searchPlaceholder="Search Card, USDT, BTC..."
+              />
             </div>
           </div>
 

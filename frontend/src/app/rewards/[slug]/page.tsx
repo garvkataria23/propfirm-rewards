@@ -21,6 +21,7 @@ import {
   AlertCircle,
   ArrowRight,
 } from 'lucide-react';
+import { AddressForm, AddressData } from '@/components/ui/address-form';
 
 interface Category {
   id: string;
@@ -266,40 +267,11 @@ export default function RewardDetailPage() {
               </div>
             )}
 
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Recipient Name</label>
-              <input
-                type="text"
-                value={address.fullName}
-                onChange={(e) => setAddress({ ...address, fullName: e.target.value })}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Street Address</label>
-              <input
-                type="text"
-                value={address.addressLine1}
-                onChange={(e) => setAddress({ ...address, addressLine1: e.target.value })}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <input
-                type="text"
-                placeholder="City"
-                value={address.city}
-                onChange={(e) => setAddress({ ...address, city: e.target.value })}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-              />
-              <input
-                type="text"
-                placeholder="Postal Code"
-                value={address.postalCode}
-                onChange={(e) => setAddress({ ...address, postalCode: e.target.value })}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+            <div className="max-h-[62vh] overflow-y-auto pr-1">
+              <AddressForm
+                value={address}
+                onChange={(newAddr) => setAddress(newAddr)}
+                showPresets={true}
               />
             </div>
 

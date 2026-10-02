@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
@@ -21,7 +21,7 @@ import {
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { user, login, isLoading: authLoading } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,6 +29,26 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [autoRedirecting, setAutoRedirecting] = useState(false);
+
+  // If user is already logged in / remembered, directly auto-redirect to dashboard!
+  useEffect(() => {
+    if (!authLoading && user) {
+      setAutoRedirecting(true);
+      const target = user.role === 'ADMIN' ? '/admin' : '/dashboard';
+      router.replace(target);
+    }
+  }, [user, authLoading, router]);
+
+  // Pre-fill remembered email
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedEmail = localStorage.getItem('propfirm_saved_email');
+      if (savedEmail) {
+        setEmail(savedEmail);
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,8 +56,8 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const user = await login(email, password);
-      if (user.role === 'ADMIN') {
+      const loggedUser = await login(email, password, rememberMe);
+      if (loggedUser.role === 'ADMIN') {
         router.push('/admin');
       } else {
         router.push('/dashboard');
@@ -54,6 +74,33 @@ export default function LoginPage() {
     setPassword(demoPass);
     setError(null);
   };
+
+  if (autoRedirecting || (user && !authLoading)) {
+    return (
+      <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
+        <div className="text-center space-y-4 max-w-sm p-8 rounded-3xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 shadow-xl">
+          <div className="h-14 w-14 rounded-2xl bg-purple-600/10 text-purple-600 dark:text-purple-400 mx-auto flex items-center justify-center animate-pulse">
+            <Coins className="h-7 w-7" />
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+              Welcome back, {user?.name || 'Trader'}!
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Remembered session active. Opening your Dashboard directly...
+            </p>
+          </div>
+          <div className="pt-2">
+            <Link href="/dashboard">
+              <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-10 rounded-xl">
+                Open Dashboard Now &rarr;
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
