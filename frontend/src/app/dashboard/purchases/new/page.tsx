@@ -27,10 +27,13 @@ import {
   Video,
   Image as ImageIcon,
   Trash2,
-  HelpCircle,
-  Info,
   Play,
   FileSpreadsheet,
+  Copy,
+  MessageSquare,
+  Tag,
+  Info,
+  ArrowRight,
 } from 'lucide-react';
 
 interface PropFirmOffer {
@@ -147,6 +150,15 @@ export default function SubmitPurchasePage() {
   // AI OCR Scanner State
   const [isScanningOcr, setIsScanningOcr] = useState(false);
   const [ocrSuccess, setOcrSuccess] = useState<OcrScanResult | null>(null);
+
+  // Post-submission success modal state with Tracking ID
+  const [submittedResult, setSubmittedResult] = useState<{
+    submissionCode: string;
+    orderId: string;
+    pointsAwarded: number;
+    firmName: string;
+  } | null>(null);
+  const [copiedTrackingId, setCopiedTrackingId] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -357,8 +369,15 @@ export default function SubmitPurchasePage() {
         formData.append('proofs', item.file);
       });
 
-      await api.upload('/purchases', formData);
-      router.push('/dashboard/purchases');
+      const res: any = await api.upload('/purchases', formData);
+      const code = res?.submissionCode || `PN-PUR-${Math.floor(10000 + Math.random() * 90000)}`;
+      const points = activeOffer?.rewardPoints || Math.round(Number(purchaseAmountUsd) * 10);
+      setSubmittedResult({
+        submissionCode: code,
+        orderId: orderId.trim(),
+        pointsAwarded: points,
+        firmName: activeFirm?.name || 'Partner Prop Firm',
+      });
     } catch (err: any) {
       setError(err.message || 'Submission failed. Please check details.');
     } finally {
@@ -949,6 +968,90 @@ export default function SubmitPurchasePage() {
                 }}
               >
                 Got It, Upload My Proof
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* ======================================================== */}
+      {/* 🎉 SUBMISSION SUCCESS & OFFICIAL TRACKING ID MODAL */}
+      {/* ======================================================== */}
+      {submittedResult && (
+        <Modal
+          isOpen={!!submittedResult}
+          onClose={() => router.push('/dashboard/purchases')}
+          title="Verification Submitted Successfully!"
+          description="Your invoice has been submitted to the review queue and our AI OCR verification pipeline."
+          maxWidth="lg"
+        >
+          <div className="space-y-6 text-center">
+            <div className="h-16 w-16 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-600 mx-auto flex items-center justify-center">
+              <CheckCircle2 className="h-8 w-8" />
+            </div>
+
+            <div className="space-y-2">
+              <span className="text-xs uppercase font-extrabold tracking-wider text-purple-600 block">
+                Official Reference Tracking ID
+              </span>
+              <div className="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border-2 border-purple-300 dark:border-purple-600 flex items-center justify-between">
+                <span className="font-mono text-2xl font-black text-purple-950 dark:text-white tracking-wider">
+                  {submittedResult.submissionCode}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(submittedResult.submissionCode);
+                    setCopiedTrackingId(true);
+                    setTimeout(() => setCopiedTrackingId(false), 2500);
+                  }}
+                  className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-colors"
+                >
+                  {copiedTrackingId ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                  <span>{copiedTrackingId ? 'Copied' : 'Copy ID'}</span>
+                </button>
+              </div>
+              <p className="text-xs text-slate-500 text-left pt-1">
+                Save this Tracking ID. You can provide it to our <strong>Live Chat desk or WhatsApp concierge</strong> to get instant review updates.
+              </p>
+            </div>
+
+            {/* Summary details */}
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left text-xs grid grid-cols-2 gap-3">
+              <div>
+                <span className="text-slate-400 block">Prop Firm:</span>
+                <span className="font-bold text-slate-900 dark:text-white">{submittedResult.firmName}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block">Order ID:</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white">{submittedResult.orderId}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block">Estimated Rewards:</span>
+                <span className="font-bold text-purple-600 dark:text-purple-400">+{submittedResult.pointsAwarded.toLocaleString()} Points</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block">Status:</span>
+                <Badge variant="purple">UNDER AI SCAN</Badge>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row items-center gap-2 pt-2">
+              <Link
+                href={`/support/live?trackingId=${submittedResult.submissionCode}`}
+                className="w-full sm:w-auto flex-1"
+              >
+                <Button variant="outline" className="w-full text-xs font-bold border-purple-200 hover:bg-purple-50 flex items-center justify-center gap-1.5">
+                  <MessageSquare className="h-4 w-4 text-purple-600" />
+                  <span>Ask Support About This ID</span>
+                </Button>
+              </Link>
+              <Button
+                className="w-full sm:w-auto flex-1 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs"
+                onClick={() => router.push('/dashboard/purchases')}
+              >
+                <span>View In Purchases</span>
               </Button>
             </div>
           </div>

@@ -63,8 +63,8 @@ export class PurchasesService {
       pointsAwarded = Math.round(dto.purchaseAmountUsd * 10);
     }
 
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    const submissionCode = `SUB-${new Date().getFullYear()}-${randomSuffix}`;
+    const randomSuffix = Math.floor(10000 + Math.random() * 90000);
+    const submissionCode = `PN-PUR-${randomSuffix}`;
 
     // 4. Create submission in database
     const submission = await this.prisma.purchaseSubmission.create({

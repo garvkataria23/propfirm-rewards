@@ -19,6 +19,10 @@ import {
   Coins,
   RefreshCw,
   Upload,
+  Copy,
+  Check,
+  MessageSquare,
+  Tag,
 } from 'lucide-react';
 
 interface PurchaseProof {
@@ -52,8 +56,9 @@ export default function PurchasesListPage() {
   const [purchases, setPurchases] = useState<PurchaseSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('ALL');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Resubmit Modal state (Section 10)
+  // Resubmit Modal state
   const [resubmittingPurchase, setResubmittingPurchase] = useState<PurchaseSubmission | null>(null);
   const [resubmitNotes, setResubmitNotes] = useState('');
   const [resubmitFiles, setResubmitFiles] = useState<File[]>([]);
@@ -73,10 +78,16 @@ export default function PurchasesListPage() {
     fetchPurchases();
   }, []);
 
+  const handleCopy = (code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedId(code);
+    setTimeout(() => setCopiedId(null), 2500);
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'APPROVED':
-        return <Badge variant="success">APPROVED</Badge>;
+        return <Badge variant="purple" className="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border-purple-300">APPROVED</Badge>;
       case 'PENDING':
         return <Badge variant="warning">PENDING</Badge>;
       case 'UNDER_REVIEW':
@@ -130,18 +141,18 @@ export default function PurchasesListPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-left">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Purchase Submissions</h2>
+          <h2 className="text-2xl font-[900] text-slate-900 dark:text-white tracking-tight">Purchase Submissions</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Track verification status, upload additional information, or review approved points.
+            Track verification status by Tracking ID, upload additional information, or review approved points.
           </p>
         </div>
 
         <Link href="/dashboard/purchases/new">
-          <Button size="sm">
+          <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-10 px-4 rounded-xl shadow-sm">
             <PlusCircle className="h-4 w-4 mr-1.5" />
             Submit New Purchase
           </Button>
@@ -155,15 +166,15 @@ export default function PurchasesListPage() {
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
                 statusFilter === status
-                  ? 'bg-blue-600 text-white shadow-xs dark:bg-slate-800 dark:border-slate-700'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-purple-600 text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/40'
               }`}
             >
               {status.replace(/_/g, ' ')}
             </button>
-          ),
+          )
         )}
       </div>
 
@@ -171,18 +182,18 @@ export default function PurchasesListPage() {
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-32 rounded-2xl bg-slate-100 dark:bg-slate-900/50 animate-pulse border border-slate-200 dark:border-slate-800" />
+            <div key={i} className="h-32 rounded-2xl bg-purple-50/40 dark:bg-slate-900/50 animate-pulse border border-purple-100 dark:border-purple-900/30" />
           ))}
         </div>
       ) : filteredPurchases.length === 0 ? (
-        <Card className="text-center py-16 space-y-3 bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 shadow-sm">
-          <ShoppingBag className="h-10 w-10 text-slate-400 dark:text-slate-600 mx-auto" />
+        <Card className="text-center py-16 space-y-3 bg-white dark:bg-slate-900/60 border-purple-100 dark:border-purple-900/40 rounded-3xl shadow-sm">
+          <ShoppingBag className="h-10 w-10 text-purple-400 mx-auto" />
           <h3 className="text-base font-bold text-slate-900 dark:text-white">No purchase submissions found</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400">
             Submit your eligible prop firm challenge purchase proof to start earning points.
           </p>
           <Link href="/dashboard/purchases/new" className="inline-block pt-2">
-            <Button size="sm">Submit Purchase Proof</Button>
+            <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white font-bold">Submit Purchase Proof</Button>
           </Link>
         </Card>
       ) : (
@@ -190,26 +201,35 @@ export default function PurchasesListPage() {
           {filteredPurchases.map((purchase) => (
             <Card
               key={purchase.id}
-              className="p-5 sm:p-6 card-hover-glow space-y-4 border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 shadow-sm"
+              className="p-5 sm:p-6 space-y-4 rounded-3xl border-purple-100 dark:border-purple-900/40 bg-white dark:bg-slate-900/60 shadow-xs hover:border-purple-300 transition-colors"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-100 dark:border-slate-800/80">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-purple-50 dark:border-purple-900/30">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center shrink-0">
+                  <div className="h-12 w-12 rounded-2xl bg-purple-100 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 overflow-hidden flex items-center justify-center shrink-0">
                     {purchase.propFirm.logoUrl ? (
                       <img src={purchase.propFirm.logoUrl} alt={purchase.propFirm.name} className="h-full w-full object-cover" />
                     ) : (
-                      <span className="font-bold text-slate-900 dark:text-white">{purchase.propFirm.name[0]}</span>
+                      <span className="font-black text-purple-700">{purchase.propFirm.name[0]}</span>
                     )}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-slate-900 dark:text-white text-base">{purchase.propFirm.name}</h3>
-                      <span className="font-mono text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-950 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
-                        {purchase.submissionCode}
-                      </span>
+                      <h3 className="font-[900] text-slate-900 dark:text-white text-base">{purchase.propFirm.name}</h3>
+                      {/* Tracking ID Badge with 1-click copy */}
+                      <div className="flex items-center gap-1 font-mono text-xs font-black text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/80 px-2.5 py-0.5 rounded-lg border border-purple-200 dark:border-purple-800">
+                        <Tag className="h-3 w-3 text-purple-500" />
+                        <span>{purchase.submissionCode}</span>
+                        <button
+                          onClick={() => handleCopy(purchase.submissionCode)}
+                          className="ml-1 text-slate-400 hover:text-purple-700 dark:hover:text-purple-300"
+                          title="Copy Tracking ID"
+                        >
+                          {copiedId === purchase.submissionCode ? <Check className="h-3 w-3 text-purple-600" /> : <Copy className="h-3 w-3" />}
+                        </button>
+                      </div>
                     </div>
                     <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      {purchase.accountType} • ${purchase.purchaseAmountUsd}
+                      {purchase.accountType} • ${purchase.purchaseAmountUsd} USD
                     </div>
                   </div>
                 </div>
@@ -217,7 +237,7 @@ export default function PurchasesListPage() {
                 <div className="flex items-center gap-3 self-end sm:self-auto">
                   <div className="text-right">
                     <div className="text-xs text-slate-500 dark:text-slate-400">Reward Yield:</div>
-                    <div className="text-sm font-black text-emerald-600 dark:text-emerald-400">
+                    <div className="text-sm font-black text-purple-600 dark:text-purple-400">
                       +{purchase.pointsAwarded.toLocaleString()} PTS
                     </div>
                   </div>
@@ -233,7 +253,7 @@ export default function PurchasesListPage() {
                 </div>
                 <div>
                   <span className="text-slate-500 block">Referral Code Used:</span>
-                  <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                  <span className="font-mono font-bold text-purple-600 dark:text-purple-400">
                     {purchase.referralCodeUsed}
                   </span>
                 </div>
@@ -258,7 +278,7 @@ export default function PurchasesListPage() {
                         href={proof.fileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[11px] text-emerald-400 bg-emerald-950/20 hover:bg-emerald-950/40 px-2.5 py-1 rounded-md border border-emerald-500/20 transition-colors"
+                        className="inline-flex items-center gap-1 text-[11px] text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 px-2.5 py-1 rounded-md border border-purple-200 dark:border-purple-800 transition-colors"
                       >
                         <FileText className="h-3 w-3" />
                         <span className="truncate max-w-[140px]">{proof.fileName}</span>
@@ -269,16 +289,16 @@ export default function PurchasesListPage() {
                 </div>
               )}
 
-              {/* Action Needed: More Information Required Box (Section 10) */}
+              {/* Action Needed: More Information Required Box */}
               {purchase.status === 'MORE_INFO_REQUIRED' && (
-                <div className="p-4 rounded-xl border border-purple-500/30 bg-purple-950/20 space-y-3">
+                <div className="p-4 rounded-2xl border border-purple-300 dark:border-purple-500/30 bg-purple-50/60 dark:bg-purple-950/20 space-y-3">
                   <div className="flex items-start gap-2.5">
-                    <AlertCircle className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
+                    <AlertCircle className="h-5 w-5 text-purple-600 shrink-0 mt-0.5" />
                     <div className="space-y-1">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-300">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-300">
                         Additional Information Requested by Review Team:
                       </h4>
-                      <p className="text-xs text-slate-300 leading-relaxed">
+                      <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                         &quot;{purchase.infoRequestedMessage}&quot;
                       </p>
                     </div>
@@ -287,7 +307,7 @@ export default function PurchasesListPage() {
                   <div className="flex justify-end pt-1">
                     <Button
                       size="sm"
-                      variant="primary"
+                      className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs"
                       onClick={() => handleOpenResubmitModal(purchase)}
                     >
                       Resubmit Requested Information
@@ -296,37 +316,49 @@ export default function PurchasesListPage() {
                 </div>
               )}
 
-              {/* Rejection Reason (Section 10) */}
+              {/* Rejection Reason */}
               {purchase.status === 'REJECTED' && purchase.rejectionReason && (
-                <div className="p-3.5 rounded-xl border border-rose-500/20 bg-rose-950/20 text-xs text-rose-300 flex items-start gap-2">
+                <div className="p-3.5 rounded-2xl border border-rose-500/20 bg-rose-950/20 text-xs text-rose-300 flex items-start gap-2">
                   <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-rose-400" />
                   <div>
                     <strong>Rejection Reason:</strong> {purchase.rejectionReason}
                   </div>
                 </div>
               )}
+
+              {/* Direct Support Chat Link on this ID */}
+              <div className="pt-2 flex items-center justify-between border-t border-purple-50 dark:border-purple-950/40 text-xs text-slate-500">
+                <span>Need help with this order?</span>
+                <Link
+                  href={`/support/live?trackingId=${purchase.submissionCode}`}
+                  className="font-bold text-purple-600 hover:text-purple-800 dark:text-purple-400 inline-flex items-center gap-1.5"
+                >
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  <span>Chat Live with Support on this ID</span>
+                </Link>
+              </div>
             </Card>
           ))}
         </div>
       )}
 
-      {/* Resubmission Modal (Section 10) */}
+      {/* Resubmission Modal */}
       <Modal
         isOpen={!!resubmittingPurchase}
         onClose={() => setResubmittingPurchase(null)}
         title="Resubmit Purchase Information"
         description={`Provide requested information for ${resubmittingPurchase?.propFirm.name} (${resubmittingPurchase?.submissionCode})`}
       >
-        <div className="space-y-4">
+        <div className="space-y-4 text-left">
           {resubmitError && (
             <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs">
               {resubmitError}
             </div>
           )}
 
-          <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-1">
-            <span className="font-bold text-purple-600 dark:text-purple-400">Team Request:</span>
-            <p className="italic text-slate-700 dark:text-slate-300">
+          <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800 text-xs text-slate-700 dark:text-slate-300 space-y-1">
+            <span className="font-bold text-purple-700 dark:text-purple-400">Team Request:</span>
+            <p className="italic">
               &quot;{resubmittingPurchase?.infoRequestedMessage}&quot;
             </p>
           </div>
@@ -337,10 +369,10 @@ export default function PurchasesListPage() {
             </label>
             <textarea
               rows={3}
-              placeholder="e.g. Attached the official billing PDF downloaded from my client portal showing coupon ALPHAREWARDS."
+              placeholder="e.g. Attached the official billing invoice showing coupon NATION."
               value={resubmitNotes}
               onChange={(e) => setResubmitNotes(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-purple-500 focus:outline-none"
             />
           </div>
 
@@ -351,30 +383,31 @@ export default function PurchasesListPage() {
             <input
               type="file"
               multiple
-              accept="image/*,application/pdf"
+              accept="image/*,application/pdf,video/*"
               onChange={(e) => {
-                if (e.target.files) setResubmitFiles(Array.from(e.target.files));
+                if (e.target.files) {
+                  setResubmitFiles(Array.from(e.target.files));
+                }
               }}
-              className="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-slate-100 dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-200 hover:file:bg-slate-200 dark:hover:file:bg-slate-700 cursor-pointer"
+              className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex justify-end gap-2 pt-2">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={() => setResubmittingPurchase(null)}
-              disabled={isSubmittingResubmit}
             >
               Cancel
             </Button>
             <Button
-              variant="primary"
               size="sm"
-              isLoading={isSubmittingResubmit}
+              disabled={isSubmittingResubmit}
               onClick={handleResubmit}
+              className="bg-purple-600 hover:bg-purple-700 text-white font-bold"
             >
-              Submit Updated Information
+              {isSubmittingResubmit ? 'Uploading...' : 'Submit Updated Proof'}
             </Button>
           </div>
         </div>
