@@ -142,14 +142,14 @@ export default function TraderWalletPage() {
       {/* Page Title & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-100/80 text-blue-800 text-xs font-bold uppercase tracking-wider mb-1.5">
-            <ShieldCheck className="h-3.5 w-3.5 text-blue-600" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-100/80 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-1.5">
+            <ShieldCheck className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
             <span>Regulated Cashback Escrow</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            Trader Wallet & Payout Center
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            Trader Wallet &amp; Payout Center
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Real-time balance, escrow maturation timeline, and instant cashout gateway.
           </p>
         </div>
@@ -159,9 +159,9 @@ export default function TraderWalletPage() {
             variant="outline"
             size="sm"
             onClick={handleExportStatement}
-            className="border-slate-300 bg-white text-slate-700 hover:bg-slate-50 shadow-xs"
+            className="border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 shadow-xs"
           >
-            <Download className="h-3.5 w-3.5 mr-1.5 text-slate-500" />
+            <Download className="h-3.5 w-3.5 mr-1.5 text-slate-500 dark:text-slate-400" />
             Export Statement
           </Button>
 
@@ -247,100 +247,100 @@ export default function TraderWalletPage() {
         {/* 3 Secondary Wallet Stat Cards (7 cols) */}
         <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Spendable Cash Balance */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-3 flex flex-col justify-between">
+          <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xs space-y-3 flex flex-col justify-between transition-colors">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Spendable Balance
               </span>
-              <div className="h-8 w-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                 <Coins className="h-4 w-4" />
               </div>
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                 ${availableUsd} <span className="text-xs font-bold text-slate-400">USD</span>
               </div>
-              <p className="text-xs text-emerald-600 font-semibold mt-1">
+              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
                 {availablePoints.toLocaleString()} PTS ready to withdraw or redeem
               </p>
             </div>
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
               <span className="text-slate-400">Instant Cashout SLA:</span>
-              <span className="font-bold text-slate-700">&lt; 15 mins (Crypto)</span>
+              <span className="font-bold text-slate-700 dark:text-slate-300">&lt; 15 mins (Crypto)</span>
             </div>
           </div>
 
           {/* Escrow Clearance Pool */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-3 flex flex-col justify-between">
+          <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xs space-y-3 flex flex-col justify-between transition-colors">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Escrow / Pending Pool
               </span>
-              <div className="h-8 w-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                 <Clock className="h-4 w-4" />
               </div>
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                 ${pendingUsd} <span className="text-xs font-bold text-slate-400">USD</span>
               </div>
-              <p className="text-xs text-amber-700 font-semibold mt-1">
+              <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold mt-1">
                 {pendingPoints.toLocaleString()} PTS in 7-14 day clearance
               </p>
             </div>
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
               <span className="text-slate-400">Protection:</span>
-              <span className="font-bold text-slate-700">Prop Firm Refund Window</span>
+              <span className="font-bold text-slate-700 dark:text-slate-300">Prop Firm Refund Window</span>
             </div>
           </div>
 
           {/* Lifetime Cashback Earned */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-3 flex flex-col justify-between">
+          <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xs space-y-3 flex flex-col justify-between transition-colors">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Lifetime Points Earned
               </span>
-              <div className="h-8 w-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                 <ArrowDownLeft className="h-4 w-4" />
               </div>
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                 ${lifetimeUsd} <span className="text-xs font-bold text-slate-400">USD</span>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 {lifetimeEarned.toLocaleString()} PTS total accumulated
               </p>
             </div>
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
               <span className="text-slate-400">Verified Proofs:</span>
-              <span className="font-bold text-slate-700">
+              <span className="font-bold text-slate-700 dark:text-slate-300">
                 {summary?.totalVerifiedPurchases ?? 0} Challenges
               </span>
             </div>
           </div>
 
           {/* Lifetime Redeemed & Liquidated */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-3 flex flex-col justify-between">
+          <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xs space-y-3 flex flex-col justify-between transition-colors">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Redeemed & Paid Out
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Redeemed &amp; Paid Out
               </span>
-              <div className="h-8 w-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-lg bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
                 <Gift className="h-4 w-4" />
               </div>
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                 ${redeemedUsd} <span className="text-xs font-bold text-slate-400">USD</span>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
-                {lifetimeRedeemed.toLocaleString()} PTS claimed in gear & cash
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                {lifetimeRedeemed.toLocaleString()} PTS claimed in gear &amp; cash
               </p>
             </div>
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
               <span className="text-slate-400">Redemptions:</span>
-              <Link href="/dashboard/redemptions" className="font-bold text-blue-600 hover:underline">
+              <Link href="/dashboard/redemptions" className="font-bold text-blue-600 dark:text-blue-400 hover:underline">
                 View History →
               </Link>
             </div>
@@ -349,46 +349,46 @@ export default function TraderWalletPage() {
       </div>
 
       {/* Escrow Information Banner */}
-      <div className="p-4 sm:p-5 rounded-2xl border border-blue-200/80 bg-blue-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-2xl border border-blue-200/80 dark:border-blue-900/40 bg-blue-50/60 dark:bg-blue-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors">
         <div className="flex items-start sm:items-center gap-3">
           <div className="h-9 w-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
             <Lock className="h-4 w-4" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-blue-950">How the Prop Firm Escrow Protocol Works</h4>
-            <p className="text-xs text-blue-800/80 leading-relaxed">
+            <h4 className="text-sm font-bold text-blue-950 dark:text-blue-200">How the Prop Firm Escrow Protocol Works</h4>
+            <p className="text-xs text-blue-800/80 dark:text-blue-300/80 leading-relaxed">
               When your challenge purchase is verified, points enter a standard escrow cooling period (matching the prop firm&apos;s refund policy). Once matured, points automatically unlock into your spendable balance.
             </p>
           </div>
         </div>
         <Link href="/faq">
-          <span className="text-xs font-bold text-blue-700 hover:text-blue-900 hover:underline shrink-0">
+          <span className="text-xs font-bold text-blue-700 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 hover:underline shrink-0">
             Escrow FAQs →
           </span>
         </Link>
       </div>
 
       {/* Interactive Ledger Activity Table */}
-      <div className="rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden space-y-4 p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs overflow-hidden space-y-4 p-6 transition-colors">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
           <div>
-            <h3 className="text-lg font-black text-slate-900 tracking-tight">
+            <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
               Wallet Transaction Ledger
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Complete auditable record of all credits, releases, withdrawals, and store purchases.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Filter Pills */}
-            <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-bold">
+            <div className="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700 text-xs font-bold">
               <button
                 onClick={() => setFilterType('ALL')}
                 className={`px-3 py-1 rounded-lg transition-colors ${
                   filterType === 'ALL'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 All
@@ -397,8 +397,8 @@ export default function TraderWalletPage() {
                 onClick={() => setFilterType('EARNED')}
                 className={`px-3 py-1 rounded-lg transition-colors ${
                   filterType === 'EARNED'
-                    ? 'bg-white text-emerald-700 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-700 text-emerald-700 dark:text-emerald-400 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 Earned (+)
@@ -407,8 +407,8 @@ export default function TraderWalletPage() {
                 onClick={() => setFilterType('REDEEMED')}
                 className={`px-3 py-1 rounded-lg transition-colors ${
                   filterType === 'REDEEMED'
-                    ? 'bg-white text-rose-700 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-700 text-rose-700 dark:text-rose-400 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 Redeemed (-)
@@ -423,7 +423,7 @@ export default function TraderWalletPage() {
                 placeholder="Search ledger..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 w-44"
+                className="pl-9 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 w-44"
               />
             </div>
           </div>
@@ -432,11 +432,11 @@ export default function TraderWalletPage() {
         {/* Transactions Table */}
         {filteredTransactions.length === 0 ? (
           <div className="text-center py-12 space-y-3">
-            <div className="h-12 w-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
+            <div className="h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 mx-auto flex items-center justify-center">
               <Coins className="h-6 w-6" />
             </div>
-            <p className="text-sm font-semibold text-slate-700">No transactions found</p>
-            <p className="text-xs text-slate-400">
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No transactions found</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">
               When you purchase an eligible prop firm challenge or redeem points, transactions will appear here.
             </p>
             <Link href="/prop-firms" className="inline-block pt-2">
@@ -447,7 +447,7 @@ export default function TraderWalletPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/70 text-slate-500 uppercase tracking-wider font-semibold">
+                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">
                   <th className="py-3 px-4">Transaction Details</th>
                   <th className="py-3 px-4">Type</th>
                   <th className="py-3 px-4">Date</th>
@@ -456,29 +456,29 @@ export default function TraderWalletPage() {
                   <th className="py-3 px-4 text-right">Balance After</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {filteredTransactions.map((tx) => (
-                  <tr key={tx.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-3.5 px-4 font-semibold text-slate-900 max-w-xs truncate">
+                  <tr key={tx.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+                    <td className="py-3.5 px-4 font-semibold text-slate-900 dark:text-white max-w-xs truncate">
                       {tx.description}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200">
+                      <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                         {tx.type}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-slate-500">{formatDate(tx.createdAt)}</td>
+                    <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400">{formatDate(tx.createdAt)}</td>
                     <td
                       className={`py-3.5 px-4 text-right font-black ${
-                        tx.points > 0 ? 'text-emerald-600' : 'text-rose-600'
+                        tx.points > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                       }`}
                     >
                       {tx.points > 0 ? `+${tx.points.toLocaleString()}` : tx.points.toLocaleString()} PTS
                     </td>
-                    <td className="py-3.5 px-4 text-right font-semibold text-slate-700">
+                    <td className="py-3.5 px-4 text-right font-semibold text-slate-700 dark:text-slate-300">
                       {tx.points > 0 ? `+$${(tx.points / 100).toFixed(2)}` : `-$${Math.abs(tx.points / 100).toFixed(2)}`}
                     </td>
-                    <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-800">
+                    <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-800 dark:text-slate-200">
                       {tx.balanceAfter.toLocaleString()} PTS
                     </td>
                   </tr>
@@ -492,17 +492,17 @@ export default function TraderWalletPage() {
       {/* Request Payout / Cashout Modal */}
       {payoutModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-          <div className="relative w-full max-w-lg rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 shadow-2xl space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-2xl space-y-6 transition-colors">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div>
-                <h3 className="text-xl font-black text-slate-900 tracking-tight">Request Cashout</h3>
-                <p className="text-xs text-slate-500">
+                <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">Request Cashout</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Convert your available PTS into Crypto USDT/USDC or Direct Wire
                 </p>
               </div>
               <button
                 onClick={() => setPayoutModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 rounded-lg p-1.5"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg p-1.5"
               >
                 ✕
               </button>
@@ -510,13 +510,13 @@ export default function TraderWalletPage() {
 
             {payoutSuccess ? (
               <div className="text-center py-6 space-y-4">
-                <div className="h-14 w-14 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center">
+                <div className="h-14 w-14 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mx-auto flex items-center justify-center">
                   <CheckCircle2 className="h-8 w-8" />
                 </div>
-                <h4 className="text-xl font-bold text-slate-900">Payout Request Submitted!</h4>
-                <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                <h4 className="text-xl font-bold text-slate-900 dark:text-white">Payout Request Submitted!</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
                   Your withdrawal of{' '}
-                  <span className="font-bold text-slate-900">
+                  <span className="font-bold text-slate-900 dark:text-white">
                     ${(payoutAmountPts / 100).toFixed(2)} USD ({payoutAmountPts.toLocaleString()} PTS)
                   </span>{' '}
                   has been placed in the payout queue. Crypto payouts are dispatched in &lt;15 minutes.
@@ -531,15 +531,15 @@ export default function TraderWalletPage() {
               <form onSubmit={handleRequestPayout} className="space-y-4">
                 {/* Method selector */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700">Payout Rail *</label>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Payout Rail *</label>
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       type="button"
                       onClick={() => setPayoutMethod('crypto')}
                       className={`p-3 rounded-xl border text-xs font-bold text-center transition-all ${
                         payoutMethod === 'crypto'
-                          ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-xs'
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 shadow-xs'
+                          : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                       }`}
                     >
                       USDT / USDC
@@ -549,8 +549,8 @@ export default function TraderWalletPage() {
                       onClick={() => setPayoutMethod('bank')}
                       className={`p-3 rounded-xl border text-xs font-bold text-center transition-all ${
                         payoutMethod === 'bank'
-                          ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-xs'
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 shadow-xs'
+                          : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                       }`}
                     >
                       Bank Wire
@@ -560,8 +560,8 @@ export default function TraderWalletPage() {
                       onClick={() => setPayoutMethod('voucher')}
                       className={`p-3 rounded-xl border text-xs font-bold text-center transition-all ${
                         payoutMethod === 'voucher'
-                          ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-xs'
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 shadow-xs'
+                          : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                       }`}
                     >
                       Prop Voucher
@@ -572,7 +572,7 @@ export default function TraderWalletPage() {
                 {/* Amount input */}
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
-                    <label className="font-bold text-slate-700">Withdrawal Amount (PTS) *</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300">Withdrawal Amount (PTS) *</label>
                     <span className="text-slate-400">
                       Available: {availablePoints.toLocaleString()} PTS (${availableUsd})
                     </span>
@@ -584,11 +584,11 @@ export default function TraderWalletPage() {
                     step="500"
                     value={payoutAmountPts}
                     onChange={(e) => setPayoutAmountPts(Number(e.target.value))}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
                   />
                   <div className="flex items-center justify-between text-xs pt-0.5">
-                    <span className="text-slate-500">Gross Payout Value:</span>
-                    <span className="font-black text-emerald-600">
+                    <span className="text-slate-500 dark:text-slate-400">Gross Payout Value:</span>
+                    <span className="font-black text-emerald-600 dark:text-emerald-400">
                       ${(payoutAmountPts / 100).toFixed(2)} USD
                     </span>
                   </div>
@@ -598,13 +598,13 @@ export default function TraderWalletPage() {
                 {payoutMethod === 'crypto' && (
                   <>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-700">Crypto Network</label>
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Crypto Network</label>
                       <select
                         value={cryptoNetwork}
                         onChange={(e) => setCryptoNetwork(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-900 focus:outline-none focus:border-blue-500"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
                       >
-                        <option value="TRC20">USDT (TRON - TRC20) [Fastest & Zero Fee]</option>
+                        <option value="TRC20">USDT (TRON - TRC20) [Fastest &amp; Zero Fee]</option>
                         <option value="ERC20">USDT / USDC (Ethereum - ERC20)</option>
                         <option value="BEP20">USDT (BNB Chain - BEP20)</option>
                         <option value="SOL">USDC (Solana - SPL)</option>
@@ -612,7 +612,7 @@ export default function TraderWalletPage() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-700">
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Recipient Destination Wallet Address *
                       </label>
                       <input
@@ -621,7 +621,7 @@ export default function TraderWalletPage() {
                         placeholder="e.g. Txyz... or 0x..."
                         value={cryptoAddress}
                         onChange={(e) => setCryptoAddress(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-900 focus:outline-none focus:border-blue-500"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
                       />
                     </div>
                   </>
@@ -630,19 +630,19 @@ export default function TraderWalletPage() {
                 {/* Bank rail details */}
                 {payoutMethod === 'bank' && (
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-700">IBAN / Bank Account Details *</label>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">IBAN / Bank Account Details *</label>
                     <input
                       type="text"
                       required
                       placeholder="Account holder, IBAN/SWIFT or Routing/Account #"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
                     />
                   </div>
                 )}
 
                 {/* Security PIN warning */}
-                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-start gap-2">
-                  <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-500/30 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2">
+                  <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                   <span>
                     Withdrawal requests are processed securely with anti-fraud duplicate checks. Please double check your destination address.
                   </span>

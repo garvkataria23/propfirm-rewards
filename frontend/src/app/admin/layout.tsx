@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading, logout } = useAuth();
@@ -50,7 +51,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (isLoading) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center text-slate-400">
+      <div className="min-h-[80vh] flex items-center justify-center text-slate-500 dark:text-slate-400">
         Authenticating admin credentials...
       </div>
     );
@@ -61,8 +62,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="min-h-[80vh] flex items-center justify-center text-center p-4">
         <div className="max-w-md space-y-4">
           <AlertTriangle className="h-12 w-12 text-rose-500 mx-auto" />
-          <h2 className="text-xl font-bold text-white">Access Denied</h2>
-          <p className="text-xs text-slate-400">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Access Denied</h2>
+          <p className="text-xs text-slate-600 dark:text-slate-400">
             Administrative privileges required. Please sign in with an authorized admin account.
           </p>
           <Link href="/login">
@@ -90,62 +91,67 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="min-h-screen bg-[#070a12] text-slate-100 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#070a12] dark:text-slate-100 flex flex-col md:flex-row transition-colors">
       {/* Admin Sidebar */}
-      <aside className="w-full md:w-64 border-r border-slate-800/80 bg-slate-950 p-4 space-y-6 shrink-0">
-        <div className="flex items-center gap-2.5 px-2 py-1">
-          <div className="h-9 w-9 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
-            <ShieldCheck className="h-5 w-5" />
+      <aside className="w-full md:w-64 border-r border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 p-4 space-y-6 shrink-0 flex flex-col justify-between">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between px-2 py-1">
+            <div className="flex items-center gap-2.5">
+              <div className="h-9 w-9 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-sm font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5">
+                  Admin Portal
+                </h2>
+                <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
+                  Superadmin Control
+                </p>
+              </div>
+            </div>
+            <ThemeToggle />
           </div>
-          <div>
-            <h2 className="text-sm font-black text-white tracking-tight flex items-center gap-1.5">
-              Admin Portal
-            </h2>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
-              Superadmin Control
-            </p>
-          </div>
+
+          {/* Navigation list */}
+          <nav className="space-y-1">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              const isActive = pathname === link.href;
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                    isActive
+                      ? 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20 shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Icon className="h-4 w-4" />
+                    <span>{link.label}</span>
+                  </div>
+                  {link.badge && (
+                    <span className="text-[10px] font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded-full border border-amber-500/30">
+                      {link.badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
         </div>
 
-        {/* Navigation list */}
-        <nav className="space-y-1">
-          {navLinks.map((link) => {
-            const Icon = link.icon;
-            const isActive = pathname === link.href;
-
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-                  isActive
-                    ? 'bg-purple-500/10 text-purple-300 border border-purple-500/20 shadow-sm'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-900'
-                }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <Icon className="h-4 w-4" />
-                  <span>{link.label}</span>
-                </div>
-                {link.badge && (
-                  <span className="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded-full border border-amber-500/30">
-                    {link.badge}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
         {/* Admin User info footer */}
-        <div className="pt-4 border-t border-slate-800/80 px-2 space-y-2">
-          <div className="text-xs text-slate-400 truncate">
+        <div className="pt-4 border-t border-slate-200 dark:border-slate-800/80 px-2 space-y-2">
+          <div className="text-xs text-slate-600 dark:text-slate-400 truncate">
             <span className="text-[10px] text-slate-500 block">Logged in as:</span>
-            <strong className="text-white">{user.name}</strong>
+            <strong className="text-slate-900 dark:text-white">{user.name}</strong>
           </div>
           <button
             onClick={logout}
-            className="flex items-center gap-2 text-xs text-rose-400 hover:text-rose-300 transition-colors pt-1"
+            className="flex items-center gap-2 text-xs text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors pt-1 cursor-pointer"
           >
             <LogOut className="h-3.5 w-3.5" />
             <span>Sign Out</span>

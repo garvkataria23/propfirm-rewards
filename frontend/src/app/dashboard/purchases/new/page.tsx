@@ -163,7 +163,7 @@ export default function SubmitPurchasePage() {
       <div>
         <Link
           href="/dashboard/purchases"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Purchases</span>
@@ -172,17 +172,17 @@ export default function SubmitPurchasePage() {
 
       <div className="space-y-2">
         <Badge variant="purple">Proof of Purchase Verification</Badge>
-        <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
           Submit Prop-Firm Purchase
         </h1>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-600 dark:text-slate-400">
           Provide your challenge transaction details and upload your billing invoice or screenshot. Points will be automatically credited upon verification.
         </p>
       </div>
 
-      <Card className="p-6 sm:p-8 space-y-6">
+      <Card className="p-6 sm:p-8 space-y-6 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xs">
         {error && (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-center gap-2">
+          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs flex items-center gap-2">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -192,13 +192,13 @@ export default function SubmitPurchasePage() {
           {/* Prop Firm and Tier */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 1. Select Prop Firm *
               </label>
               <select
                 value={selectedFirmId}
                 onChange={(e) => handleFirmChange(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               >
                 {propFirms.map((f) => (
                   <option key={f.id} value={f.id}>
@@ -209,13 +209,13 @@ export default function SubmitPurchasePage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 2. Challenge Account Tier *
               </label>
               <select
                 value={selectedOfferId}
                 onChange={(e) => handleOfferChange(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               >
                 {activeFirm?.offers?.map((o) => (
                   <option key={o.id} value={o.id}>
@@ -228,14 +228,14 @@ export default function SubmitPurchasePage() {
 
           {/* Reward Points Estimate Banner */}
           {activeOffer && (
-            <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-4 flex items-center justify-between">
+            <div className="rounded-xl border border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/20 p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <div className="h-9 w-9 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                   <Coins className="h-5 w-5" />
                 </div>
                 <div>
-                  <span className="text-xs text-slate-400">Verified Reward Yield:</span>
-                  <div className="text-base font-bold text-white">
+                  <span className="text-xs text-slate-500 dark:text-slate-400">Verified Reward Yield:</span>
+                  <div className="text-base font-bold text-slate-900 dark:text-white">
                     +{activeOffer.rewardPoints.toLocaleString()} Reward Points
                   </div>
                 </div>
@@ -247,7 +247,7 @@ export default function SubmitPurchasePage() {
           {/* Order ID & Account ID */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 3. Order ID / Transaction Number *
               </label>
               <input
@@ -256,7 +256,7 @@ export default function SubmitPurchasePage() {
                 placeholder="e.g. FTMO-ORD-98214"
                 value={orderId}
                 onChange={(e) => setOrderId(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
               />
               <span className="text-[10px] text-slate-500">
                 Found on your confirmation email or invoice.
@@ -264,7 +264,7 @@ export default function SubmitPurchasePage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 Account ID / Login (Optional)
               </label>
               <input
@@ -272,7 +272,7 @@ export default function SubmitPurchasePage() {
                 placeholder="e.g. MT5 Login 440192"
                 value={accountId}
                 onChange={(e) => setAccountId(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
               />
               <span className="text-[10px] text-slate-500">
                 Helps fast-track verification.
@@ -283,7 +283,7 @@ export default function SubmitPurchasePage() {
           {/* Date & Amount */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 4. Purchase Date *
               </label>
               <input
@@ -291,12 +291,12 @@ export default function SubmitPurchasePage() {
                 required
                 value={purchaseDate}
                 onChange={(e) => setPurchaseDate(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 5. Amount Paid ($ USD) *
               </label>
               <input
@@ -306,7 +306,7 @@ export default function SubmitPurchasePage() {
                 placeholder="549.00"
                 value={purchaseAmountUsd}
                 onChange={(e) => setPurchaseAmountUsd(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </div>
@@ -314,7 +314,7 @@ export default function SubmitPurchasePage() {
           {/* Email used & Referral code used */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 6. Email Used For Purchase *
               </label>
               <input
@@ -323,12 +323,12 @@ export default function SubmitPurchasePage() {
                 placeholder="your.email@example.com"
                 value={emailUsed}
                 onChange={(e) => setEmailUsed(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 7. Referral / Affiliate Code Applied *
               </label>
               <input
@@ -336,19 +336,19 @@ export default function SubmitPurchasePage() {
                 required
                 value={referralCodeUsed}
                 onChange={(e) => setReferralCodeUsed(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none font-mono"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none font-mono"
               />
             </div>
           </div>
 
           {/* Proof Upload (Section 10) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
               8. Screenshot / Invoice / Receipt Proof *
             </label>
-            <div className="relative rounded-2xl border-2 border-dashed border-slate-700 hover:border-emerald-500/60 bg-slate-950/60 p-6 text-center transition-colors">
-              <Upload className="h-8 w-8 text-slate-500 mx-auto mb-2" />
-              <div className="text-xs text-slate-300 font-medium">
+            <div className="relative rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-emerald-500/60 bg-slate-50 dark:bg-slate-950/60 p-6 text-center transition-colors">
+              <Upload className="h-8 w-8 text-slate-400 dark:text-slate-500 mx-auto mb-2" />
+              <div className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                 Click to browse or drag and drop files
               </div>
               <p className="text-[11px] text-slate-500 mt-1">
@@ -365,14 +365,14 @@ export default function SubmitPurchasePage() {
 
             {selectedFiles.length > 0 && (
               <div className="space-y-1 pt-2">
-                <span className="text-[11px] text-slate-400 font-semibold">
+                <span className="text-[11px] text-slate-600 dark:text-slate-400 font-semibold">
                   Selected Files ({selectedFiles.length}):
                 </span>
                 <div className="space-y-1">
                   {selectedFiles.map((f, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-950/20 p-2 rounded-lg border border-emerald-500/20"
+                      className="flex items-center gap-2 text-xs text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 p-2 rounded-lg border border-emerald-200 dark:border-emerald-500/20"
                     >
                       <FileText className="h-4 w-4" />
                       <span className="truncate">{f.name}</span>
@@ -388,7 +388,7 @@ export default function SubmitPurchasePage() {
 
           {/* Optional Notes */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
               Optional Notes / Additional Details
             </label>
             <textarea
@@ -396,7 +396,7 @@ export default function SubmitPurchasePage() {
               placeholder="Any details about discounts, payment method (crypto/card), or challenge rules."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
             />
           </div>
 
