@@ -49,9 +49,9 @@ export function Navbar() {
             <Coins className="h-5 w-5 font-bold" />
           </div>
           <div>
-            <span className="text-lg font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+            <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
               PROP<span className="text-emerald-600 dark:text-emerald-400">REWARDS</span>
-              <span className="text-[10px] uppercase font-semibold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20 tracking-wider">
+              <span className="hidden sm:inline-block text-[10px] uppercase font-semibold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20 tracking-wider">
                 Affiliate
               </span>
             </span>
