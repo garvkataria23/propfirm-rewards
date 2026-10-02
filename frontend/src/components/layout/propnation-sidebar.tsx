@@ -68,7 +68,7 @@ const SIDEBAR_GROUPS: SidebarGroup[] = [
     id: 'rewards',
     label: 'REWARDS',
     items: [
-      { label: 'Rewards Store', href: '/rewards', icon: Gift },
+      { label: 'Rewards Store', href: '/dashboard/rewards', icon: Gift },
       { label: 'My Rewards', href: '/dashboard/my-rewards', icon: Box },
       { label: 'Redemption History', href: '/dashboard/redemptions', icon: History },
       { label: 'My Points', href: '/dashboard/points', icon: Coins },
@@ -78,26 +78,26 @@ const SIDEBAR_GROUPS: SidebarGroup[] = [
     id: 'propfirms',
     label: 'PROPFIRMS',
     items: [
-      { label: 'CFD', href: '/prop-firms?type=cfd', icon: Landmark },
-      { label: 'FUTURE', href: '/prop-firms?type=futures', icon: TrendingUp },
+      { label: 'CFD', href: '/dashboard/prop-firms?type=cfd', icon: Landmark },
+      { label: 'FUTURE', href: '/dashboard/prop-firms?type=futures', icon: TrendingUp },
     ],
   },
   {
     id: 'community',
     label: 'COMMUNITY',
     items: [
-      { label: 'Community', href: '/community', icon: Users },
-      { label: 'Reviews', href: '/reviews', icon: Star },
-      { label: 'Announcements', href: '/announcements', icon: Megaphone },
+      { label: 'Community', href: '/dashboard/community', icon: Users },
+      { label: 'Reviews', href: '/dashboard/reviews', icon: Star },
+      { label: 'Announcements', href: '/dashboard/announcements', icon: Megaphone },
     ],
   },
   {
     id: 'support',
     label: 'SUPPORT',
     items: [
-      { label: 'Live Support', href: '/support/live', icon: MessageSquare },
-      { label: 'Help Center', href: '/help-center', icon: LifeBuoy },
-      { label: 'FAQ', href: '/faq', icon: HelpCircle },
+      { label: 'Live Support', href: '/dashboard/support', icon: MessageSquare },
+      { label: 'Help Center', href: '/dashboard/help-center', icon: LifeBuoy },
+      { label: 'FAQ', href: '/dashboard/faq', icon: HelpCircle },
     ],
   },
   {
@@ -130,16 +130,44 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
     }));
   };
 
-  // Determine active item
+  // Determine active item without multi-highlight collisions
   const isItemActive = (href: string) => {
+    if (!pathname) return false;
+    const [baseHref, query] = href.split('?');
+
+    // Dashboard root
     if (href === '/dashboard') {
       return pathname === '/dashboard';
     }
-    if (href.includes('?')) {
-      const [baseHref, query] = href.split('?');
-      return pathname === baseHref && (typeof window !== 'undefined' ? window.location.search.includes(query) : false);
+
+    // Query-specific matches (e.g. ?type=cfd)
+    if (query) {
+      if (pathname !== baseHref) return false;
+      if (typeof window !== 'undefined') {
+        return window.location.search.includes(query);
+      }
+      return false;
     }
-    return pathname === href || pathname?.startsWith(`${href}/`);
+
+    // Exact match
+    if (pathname === baseHref) {
+      return true;
+    }
+
+    // If pathname is a subpath of baseHref (e.g. /dashboard/purchases/123)
+    if (pathname.startsWith(`${baseHref}/`)) {
+      // Prevent parent highlight if a more specific sidebar item exists (e.g. /dashboard/purchases/new)
+      const allItemHrefs = SIDEBAR_GROUPS.flatMap((g) => g.items.map((i) => i.href.split('?')[0]));
+      const hasMoreSpecificItem = allItemHrefs.some(
+        (otherHref) =>
+          otherHref !== baseHref &&
+          otherHref.startsWith(`${baseHref}/`) &&
+          (pathname === otherHref || pathname.startsWith(`${otherHref}/`))
+      );
+      return !hasMoreSpecificItem;
+    }
+
+    return false;
   };
 
   // User details fallback for display

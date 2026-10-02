@@ -5,6 +5,7 @@ import { useAuth } from '@/context/auth-context';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { GoogleTranslate } from '@/components/ui/google-translate';
 import {
   Settings,
   Lock,
@@ -195,6 +196,34 @@ export default function SettingsPage() {
               className="h-4 w-4 rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-blue-600 focus:ring-blue-500"
             />
           </label>
+        </div>
+      </Card>
+
+      {/* Language & Regional Localization */}
+      <Card className="p-6 bg-white dark:bg-[#070e20] border-slate-200/90 dark:border-[#14234b]/60 space-y-4 shadow-sm">
+        <div className="flex items-center gap-3 pb-4 border-b border-slate-100 dark:border-[#14234b]/60">
+          <div className="h-10 w-10 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-500/30 flex items-center justify-center shrink-0">
+            <Globe className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">Language &amp; Regional Preferences</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Select your platform display language. Supports 100+ global languages with instant real-time translation.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200/70 dark:border-purple-800/60">
+          <div className="space-y-0.5">
+            <span className="text-xs font-bold text-slate-900 dark:text-white">Active Display Language</span>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              Type in the search box to find your native language (e.g. Hindi, Spanish, French, German, Arabic, Japanese).
+            </p>
+          </div>
+
+          <div className="shrink-0">
+            <GoogleTranslate id="google_translate_settings" />
+          </div>
         </div>
       </Card>
     </div>

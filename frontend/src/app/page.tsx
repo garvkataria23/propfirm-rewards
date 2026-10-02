@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { GoogleTranslate } from '@/components/ui/google-translate';
 import {
   Sparkles,
   ArrowRight,
@@ -516,6 +517,12 @@ export default function HomePage() {
                     Explore Rewards
                   </Button>
                 </Link>
+              </div>
+
+              {/* Landing Page Language Selector (100+ Languages with Search) */}
+              <div className="flex items-center gap-2 pt-1">
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Language:</span>
+                <GoogleTranslate id="google_translate_landing" />
               </div>
             </div>
 
