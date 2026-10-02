@@ -24,11 +24,11 @@ export function Footer() {
           {/* Brand Logo & Tagline */}
           <div className="space-y-3">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative h-10 w-11 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <div className="relative h-11 w-11 shrink-0 rounded-xl bg-[#06090e] border border-slate-800 shadow-md flex items-center justify-center p-1 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
                 <img
                   src="/logo.png"
-                  alt="Prop Nation"
-                  className="h-full w-auto object-contain drop-shadow-md select-none"
+                  alt="Prop Nation PN Logo"
+                  className="h-full w-full object-contain select-none"
                 />
               </div>
               <div className="flex flex-col">

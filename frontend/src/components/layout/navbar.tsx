@@ -41,12 +41,12 @@ export function Navbar() {
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left: Brand Logo */}
-        <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-2.5 group">
-          <div className="relative h-9 w-10 flex items-center justify-center group-hover:scale-105 transition-transform">
+        <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-3 group">
+          <div className="relative h-10 w-10 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-md shadow-black/10 flex items-center justify-center p-1 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
             <img
               src="/logo.png"
-              alt="Prop Nation"
-              className="h-full w-auto object-contain drop-shadow-xs select-none"
+              alt="Prop Nation PN Logo"
+              className="h-full w-full object-contain select-none"
             />
           </div>
           <span className="text-lg font-[900] tracking-tight text-slate-900 dark:text-white leading-tight flex items-center">

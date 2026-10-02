@@ -213,11 +213,11 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
           className="flex items-center gap-2.5 group cursor-pointer overflow-hidden"
           title="Prop Nation Trader Portal"
         >
-          <div className="relative h-9 w-9 shrink-0 flex items-center justify-center group-hover:scale-105 transition-transform">
+          <div className="relative h-10 w-10 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-md flex items-center justify-center p-1 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
             <img
               src="/logo.png"
-              alt="Prop Nation"
-              className="h-full w-auto object-contain select-none"
+              alt="Prop Nation PN Logo"
+              className="h-full w-full object-contain select-none"
             />
           </div>
           {isExpanded && (
