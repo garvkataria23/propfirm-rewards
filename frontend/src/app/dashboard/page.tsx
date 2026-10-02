@@ -24,6 +24,9 @@ import {
   Wallet,
   ArrowUpRight,
   ShieldCheck,
+  Crown,
+  Zap,
+  Flame,
 } from 'lucide-react';
 
 interface PointsSummary {
@@ -176,17 +179,38 @@ export default function DashboardOverviewPage() {
   const pendingPoints = summary?.pendingPoints ?? user?.points?.pending ?? 0;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Live Community Activity Ribbon */}
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-3.5 rounded-xl bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
+        <span className="flex items-center gap-1 font-bold text-emerald-600 dark:text-emerald-400 shrink-0">
+          <Flame className="h-3.5 w-3.5 fill-emerald-500 text-emerald-500 animate-pulse" />
+          Live Community Feed:
+        </span>
+        <div className="flex items-center gap-4 shrink-0 font-medium">
+          <span>🎉 <strong>@Marco_FX</strong> verified Funding Pips $100K (+4,500 PTS)</span>
+          <span className="text-slate-300 dark:text-slate-700">•</span>
+          <span>⚡ <strong>@Lucas_R</strong> redeemed Apple AirPods Pro 2</span>
+          <span className="text-slate-300 dark:text-slate-700">•</span>
+          <span>💰 <strong>@Vikram_T</strong> withdrew $250.00 USDT</span>
+          <span className="text-slate-300 dark:text-slate-700">•</span>
+          <span>🚀 <strong>14 challenges</strong> verified in past 24 hrs</span>
+        </div>
+      </div>
+
       {/* Welcome & Fast Overview Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs transition-colors">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               Welcome back, {user?.name || 'Trader'} 👋
             </h1>
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30">
               PRO TRADER
             </span>
+            <Link href="/dashboard/wallet" className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-500/30 hover:scale-105 transition-transform">
+              <Crown className="h-3 w-3 text-amber-500" />
+              <span>Silver Tier (1.2x PTS)</span>
+            </Link>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
             Track your verified prop firm challenges, points maturation, and redeem gear.
