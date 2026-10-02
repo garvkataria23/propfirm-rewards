@@ -1,12 +1,12 @@
-// Prisma schema for PropFirm Affiliate Rewards Web Application
-// Compatible with both SQLite (local development/tests) and PostgreSQL (Neon/Supabase/Railway)
+// Prisma schema configured for PostgreSQL (Neon, Supabase, Railway, Render, Docker)
+// To use: copy this to schema.prisma or run: npx prisma db push --schema=prisma/schema.postgresql.prisma
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -84,9 +84,9 @@ model PropFirm {
 model PropFirmOffer {
   id               String               @id @default(uuid())
   propFirmId       String
-  accountTierName  String               // e.g. "$50K Evaluation Challenge"
+  accountTierName  String
   purchasePriceUsd Float
-  rewardPoints     Int                  // e.g. 2500
+  rewardPoints     Int
   description      String?
   isActive         Boolean              @default(true)
   sortOrder        Int                  @default(0)
@@ -102,20 +102,20 @@ model PropFirmOffer {
 
 model PurchaseSubmission {
   id                   String          @id @default(uuid())
-  submissionCode       String          @unique // e.g. SUB-2026-XXXX
+  submissionCode       String          @unique
   userId               String
   propFirmId           String
   offerId              String?
-  accountType          String          // Challenge size/type name
-  orderId              String          // Unique prop firm purchase order ID
-  accountId            String?         // Prop firm trading account login ID
+  accountType          String
+  orderId              String
+  accountId            String?
   purchaseDate         DateTime
   purchaseAmountUsd    Float
   emailUsed            String
   referralCodeUsed     String
   notes                String?
-  status               String          @default("PENDING") // PENDING, UNDER_REVIEW, APPROVED, REJECTED, MORE_INFO_REQUIRED
-  fraudStatus          String          @default("NORMAL")  // NORMAL, FLAGGED, UNDER_REVIEW
+  status               String          @default("PENDING")
+  fraudStatus          String          @default("NORMAL")
   rejectionReason      String?
   infoRequestedMessage String?
   userResubmissionNotes String?
@@ -158,11 +158,11 @@ model PointsLedger {
   userId       String
   submissionId String?
   redemptionId String?
-  type         String              // PURCHASE_REWARD, REDEMPTION, ADMIN_CREDIT, ADMIN_DEDUCTION, BONUS, ADJUSTMENT, REFUND_REVERSAL, EXPIRY
-  points       Int                 // Positive for credit (+2500), Negative for debit (-5000)
+  type         String
+  points       Int
   balanceAfter Int
   description  String
-  reason       String?             // Required for admin adjustments
+  reason       String?
   createdById  String?
   createdAt    DateTime            @default(now())
 
@@ -195,7 +195,7 @@ model Reward {
   name             String
   slug             String         @unique
   description      String
-  specifications   String?        // JSON or bullet points string
+  specifications   String?
   imageUrl         String
   pointsRequired   Int
   stock            Int            @default(0)
@@ -215,11 +215,11 @@ model Reward {
 
 model Redemption {
   id                String         @id @default(uuid())
-  redemptionCode    String         @unique // e.g. RDM-2026-XXXX
+  redemptionCode    String         @unique
   userId            String
   rewardId          String
   pointsSpent       Int
-  status            String         @default("PENDING") // PENDING, CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED, REJECTED, RETURNED
+  status            String         @default("PENDING")
   shippingAddressId String?
   courier           String?
   trackingNumber    String?
@@ -244,7 +244,7 @@ model Notification {
   userId    String
   title     String
   message   String
-  type      String   @default("SYSTEM") // PURCHASE, POINTS, REDEMPTION, SYSTEM
+  type      String   @default("SYSTEM")
   isRead    Boolean  @default(false)
   linkUrl   String?
   createdAt DateTime @default(now())
@@ -258,11 +258,11 @@ model Notification {
 model AuditLog {
   id            String   @id @default(uuid())
   adminId       String?
-  action        String   // e.g. "APPROVE_PURCHASE", "ADJUST_POINTS", "UPDATE_PROP_FIRM", "UPDATE_REDEMPTION_STATUS"
-  entity        String   // e.g. "PurchaseSubmission", "User", "Reward", "PropFirm"
+  action        String
+  entity        String
   entityId      String
-  previousValue String?  // JSON formatted or string
-  newValue      String?  // JSON formatted or string
+  previousValue String?
+  newValue      String?
   ipAddress     String?
   userAgent     String?
   notes         String?
