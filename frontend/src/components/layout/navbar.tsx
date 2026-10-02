@@ -43,17 +43,14 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/90 dark:border-slate-800/80 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 text-white shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform">
-            <Coins className="h-5 w-5 font-bold" />
+        {/* Brand Logo - FundingPips Classy Style */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0c182a] text-white shadow-xs group-hover:scale-105 transition-transform">
+            <span className="font-black text-sm tracking-tighter text-sky-400">P<span className="text-white">N</span></span>
           </div>
-          <div>
-            <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
-              PROP<span className="text-emerald-600 dark:text-emerald-400">REWARDS</span>
-              <span className="hidden sm:inline-block text-[10px] uppercase font-semibold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20 tracking-wider">
-                Affiliate
-              </span>
+          <div className="flex items-center">
+            <span className="text-lg font-black tracking-tight text-[#0c182a] dark:text-white">
+              PropNation<span className="text-xs font-normal text-slate-400 align-super ml-0.5">®</span>
             </span>
           </div>
         </Link>
@@ -129,9 +126,9 @@ export function Navbar() {
                   Sign In
                 </Button>
               </Link>
-              <Link href="/register">
-                <Button variant="primary" size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xs">
-                  Start Earning
+              <Link href="/prop-firms">
+                <Button className="bg-[#0c182a] hover:bg-[#162742] text-white font-bold px-4 py-2 rounded-xl text-xs shadow-xs tracking-tight">
+                  Buy Challenge
                 </Button>
               </Link>
             </div>
