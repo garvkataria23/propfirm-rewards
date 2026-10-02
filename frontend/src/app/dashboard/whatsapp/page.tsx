@@ -521,7 +521,7 @@ export default function WhatsAppDashboardPage() {
       {/* GRAPH & ANALYTICS REPORT SECTION */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         {/* Left (8 Cols): Interactive Daily Delivery Volume Bar Graph */}
-        <div className="lg:col-span-8 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-6 transition-colors flex flex-col justify-between">
+        <div className="lg:col-span-8 min-w-0 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-6 transition-colors flex flex-col justify-between overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-100 dark:border-slate-800">
             <div>
               <div className="flex items-center gap-2">
@@ -560,7 +560,7 @@ export default function WhatsAppDashboardPage() {
               <button
                 onClick={handleRefresh}
                 title="Refresh metrics"
-                className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
               >
                 <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin text-emerald-500' : ''}`} />
               </button>
@@ -594,8 +594,16 @@ export default function WhatsAppDashboardPage() {
           )}
 
           {/* Responsive Bar Graph Visual */}
-          <div className="pt-4 pb-2">
-            <div className="h-56 flex items-end gap-2 sm:gap-4 justify-between border-b border-slate-200 dark:border-slate-800 px-2">
+          <div className="pt-6 pb-2 w-full min-w-0">
+            <div
+              className={`h-56 flex items-end justify-between border-b border-slate-200 dark:border-slate-800 px-1 sm:px-2 w-full ${
+                analyticsRange === '14d'
+                  ? 'gap-1 sm:gap-1.5 md:gap-2'
+                  : analyticsRange === '30d'
+                  ? 'gap-4 sm:gap-8'
+                  : 'gap-2 sm:gap-4 md:gap-6'
+              }`}
+            >
               {currentChartData.map((d, index) => {
                 const heightPercent = Math.max((d.sent / maxVolume) * 100, 12);
                 const deliveredHeightPercent = Math.max((d.delivered / d.sent) * 100, 10);
@@ -605,13 +613,13 @@ export default function WhatsAppDashboardPage() {
                 return (
                   <div
                     key={`${d.day}-${index}`}
-                    className="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer"
+                    className="flex-1 min-w-0 flex flex-col items-center h-full justify-end group cursor-pointer relative"
                     onMouseEnter={() => setHoveredBarIndex(index)}
                     onClick={() => setHoveredBarIndex(index)}
                   >
-                    {/* Hover count pill */}
+                    {/* Hover count pill - positioned absolutely so it never stretches column width */}
                     <div
-                      className={`text-[10px] font-bold py-0.5 px-1.5 rounded mb-1 transition-all pointer-events-none whitespace-nowrap ${
+                      className={`absolute -top-7 z-30 text-[10px] font-mono font-bold py-0.5 px-1.5 rounded transition-all pointer-events-none whitespace-nowrap shadow-sm ${
                         isSelected
                           ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 opacity-100 scale-105'
                           : 'opacity-0 group-hover:opacity-100 bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900'
@@ -622,7 +630,7 @@ export default function WhatsAppDashboardPage() {
 
                     {/* Bar container */}
                     <div
-                      className={`w-full max-w-[42px] rounded-t-lg transition-all flex flex-col justify-end overflow-hidden ${
+                      className={`w-full max-w-[26px] sm:max-w-[32px] md:max-w-[40px] rounded-t-md sm:rounded-t-lg transition-all flex flex-col justify-end overflow-hidden ${
                         isSelected
                           ? 'ring-2 ring-emerald-500 shadow-md scale-[1.03]'
                           : 'opacity-85 hover:opacity-100'
@@ -645,15 +653,23 @@ export default function WhatsAppDashboardPage() {
                       </div>
                     </div>
 
-                    {/* Day label */}
+                    {/* Day label with responsive truncation */}
                     <span
-                      className={`text-[11px] mt-2.5 truncate font-medium transition-colors ${
+                      className={`text-[9px] sm:text-[10px] md:text-[11px] mt-2.5 truncate font-medium transition-colors max-w-full text-center block ${
                         isSelected
                           ? 'font-bold text-emerald-600 dark:text-emerald-400'
                           : 'text-slate-500 dark:text-slate-400'
                       }`}
+                      title={`${d.day} (${d.date})`}
                     >
-                      {d.day}
+                      {analyticsRange === '14d' ? (
+                        <>
+                          <span className="sm:hidden">{d.day.split(' ')[0]}</span>
+                          <span className="hidden sm:inline">{d.day}</span>
+                        </>
+                      ) : (
+                        d.day
+                      )}
                     </span>
                   </div>
                 );
