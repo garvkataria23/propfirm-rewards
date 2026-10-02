@@ -314,7 +314,7 @@ export default function CommunityPage() {
             { trader: 'Liam O.', prize: 'Sony WH-1000XM5 Headphones', points: '20,000 PTS', date: '2 days ago' },
             { trader: 'Alex Thorne', prize: 'iPhone 16 Pro (Natural Ti)', points: '100,000 PTS', date: '3 days ago' },
             { trader: 'Sophie Lin', prize: 'Logitech MX Master 3S', points: '8,000 PTS', date: '5 days ago' },
-            { trader: 'Elena R.', prize: '₹5,000 Amazon Voucher', points: '5,000 PTS', date: '6 days ago' },
+            { trader: 'Elena R.', prize: '$50 Amazon Voucher', points: '5,000 PTS', date: '6 days ago' },
             { trader: 'David M.', prize: 'Dell UltraSharp 32" 4K', points: '75,000 PTS', date: '1 week ago' },
           ].map((win, idx) => (
             <Card key={idx} className="p-5 bg-white dark:bg-[#070e20] border-slate-200/90 dark:border-[#14234b]/60 space-y-3 shadow-sm">

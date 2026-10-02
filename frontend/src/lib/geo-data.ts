@@ -18,7 +18,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'IN',
     dialCode: '+91',
     flag: '🇮🇳',
-    currency: 'INR',
+    currency: 'USD',
     states: [
       {
         name: 'Maharashtra',
@@ -126,7 +126,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'AE',
     dialCode: '+971',
     flag: '🇦🇪',
-    currency: 'AED',
+    currency: 'USD',
     states: [
       {
         name: 'Dubai',
@@ -155,7 +155,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'GB',
     dialCode: '+44',
     flag: '🇬🇧',
-    currency: 'GBP',
+    currency: 'USD',
     states: [
       {
         name: 'Greater London',
@@ -194,7 +194,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'DE',
     dialCode: '+49',
     flag: '🇩🇪',
-    currency: 'EUR',
+    currency: 'USD',
     states: [
       {
         name: 'Bavaria (Bayern)',
@@ -228,7 +228,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'CA',
     dialCode: '+1',
     flag: '🇨🇦',
-    currency: 'CAD',
+    currency: 'USD',
     states: [
       {
         name: 'Ontario',
@@ -257,7 +257,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'AU',
     dialCode: '+61',
     flag: '🇦🇺',
-    currency: 'AUD',
+    currency: 'USD',
     states: [
       {
         name: 'New South Wales',
@@ -286,7 +286,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'SG',
     dialCode: '+65',
     flag: '🇸🇬',
-    currency: 'SGD',
+    currency: 'USD',
     states: [
       {
         name: 'Central Region',
@@ -305,7 +305,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'FR',
     dialCode: '+33',
     flag: '🇫🇷',
-    currency: 'EUR',
+    currency: 'USD',
     states: [
       {
         name: 'Île-de-France',
@@ -329,7 +329,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'NL',
     dialCode: '+31',
     flag: '🇳🇱',
-    currency: 'EUR',
+    currency: 'USD',
     states: [
       {
         name: 'North Holland',
@@ -353,7 +353,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'CH',
     dialCode: '+41',
     flag: '🇨🇭',
-    currency: 'CHF',
+    currency: 'USD',
     states: [
       {
         name: 'Zurich & Geneva',
@@ -367,7 +367,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'ES',
     dialCode: '+34',
     flag: '🇪🇸',
-    currency: 'EUR',
+    currency: 'USD',
     states: [
       {
         name: 'Madrid',
@@ -391,7 +391,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'IT',
     dialCode: '+39',
     flag: '🇮🇹',
-    currency: 'EUR',
+    currency: 'USD',
     states: [
       {
         name: 'Lombardy',
@@ -415,7 +415,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'JP',
     dialCode: '+81',
     flag: '🇯🇵',
-    currency: 'JPY',
+    currency: 'USD',
     states: [
       {
         name: 'Kanto (Tokyo)',
@@ -434,7 +434,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'CY',
     dialCode: '+357',
     flag: '🇨🇾',
-    currency: 'EUR',
+    currency: 'USD',
     states: [
       {
         name: 'Nicosia & Limassol',
@@ -448,7 +448,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'ZA',
     dialCode: '+27',
     flag: '🇿🇦',
-    currency: 'ZAR',
+    currency: 'USD',
     states: [
       {
         name: 'Gauteng & Western Cape',
@@ -462,7 +462,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'BR',
     dialCode: '+55',
     flag: '🇧🇷',
-    currency: 'BRL',
+    currency: 'USD',
     states: [
       {
         name: 'São Paulo & Rio',
@@ -476,7 +476,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'TR',
     dialCode: '+90',
     flag: '🇹🇷',
-    currency: 'TRY',
+    currency: 'USD',
     states: [
       {
         name: 'Istanbul & Ankara',
@@ -490,7 +490,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'SA',
     dialCode: '+966',
     flag: '🇸🇦',
-    currency: 'SAR',
+    currency: 'USD',
     states: [
       {
         name: 'Riyadh & Makkah',
@@ -504,7 +504,7 @@ export const COUNTRIES_DATA: CountryData[] = [
     code: 'MY',
     dialCode: '+60',
     flag: '🇲🇾',
-    currency: 'MYR',
+    currency: 'USD',
     states: [
       {
         name: 'Kuala Lumpur & Selangor',

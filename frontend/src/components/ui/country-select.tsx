@@ -23,7 +23,7 @@ export function CountrySelect({
     value: c.name,
     label: c.name,
     flag: c.flag,
-    subtitle: `${c.dialCode} • ${c.currency}`,
+    subtitle: `${c.dialCode} • (${c.code})`,
   }));
 
   const handleChange = (selectedCountryName: string) => {

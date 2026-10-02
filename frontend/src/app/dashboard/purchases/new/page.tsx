@@ -250,11 +250,7 @@ export default function SubmitPurchasePage() {
   ];
 
   const CURRENCY_OPTIONS: ComboboxOption[] = [
-    { value: 'USD', label: 'USD ($)', subtitle: 'United States Dollar' },
-    { value: 'EUR', label: 'EUR (€)', subtitle: 'Euro' },
-    { value: 'GBP', label: 'GBP (£)', subtitle: 'British Pound' },
-    { value: 'AED', label: 'AED (د.إ)', subtitle: 'UAE Dirham' },
-    { value: 'INR', label: 'INR (₹)', subtitle: 'Indian Rupee' },
+    { value: 'USD', label: 'USD ($)', subtitle: 'United States Dollar (Only Supported Currency)', badge: 'USD ($)' },
   ];
 
   const PAYMENT_METHOD_OPTIONS: ComboboxOption[] = [
@@ -867,8 +863,8 @@ export default function SubmitPurchasePage() {
                 options={CURRENCY_OPTIONS}
                 value={currency}
                 onChange={setCurrency}
-                placeholder="Currency..."
-                searchPlaceholder="Search USD, EUR..."
+                placeholder="USD ($)"
+                searchPlaceholder="Search USD ($)..."
               />
             </div>
 
