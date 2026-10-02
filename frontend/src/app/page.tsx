@@ -35,6 +35,7 @@ import {
   TrendingUp,
   Sliders,
   Star,
+  Clock,
 } from 'lucide-react';
 
 interface PropFirmOffer {
@@ -197,6 +198,249 @@ const FALLBACK_REWARDS: Reward[] = [
     category: { name: 'Crypto Security', slug: 'crypto' },
   },
 ];
+
+// 100% Vector-Sharp Native Live Dashboard Mockup for the Ecosystem Showcase
+function TraderDashboardLiveMockup() {
+  return (
+    <div className="w-full bg-[#f8fafc] dark:bg-[#070b14] text-slate-900 dark:text-slate-100 select-none overflow-hidden text-xs font-sans border-b border-slate-200/80 dark:border-slate-800">
+      {/* Top Community Live Marquee Feed */}
+      <div className="bg-emerald-500/[0.08] dark:bg-emerald-500/[0.06] border-b border-emerald-500/20 px-4 py-2 flex items-center justify-between text-[11px] text-emerald-800 dark:text-emerald-300 font-medium">
+        <div className="flex items-center gap-2 overflow-hidden">
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+          </span>
+          <span className="font-extrabold uppercase tracking-wider text-[10px] bg-emerald-500/20 px-1.5 py-0.5 rounded text-emerald-800 dark:text-emerald-300 shrink-0">
+            Live Feed
+          </span>
+          <span className="truncate">
+            ⚡ @Marco_FX verified Funding Pips $100K (+4,500 PTS) &bull; @Lucas_R redeemed Apple AirPods Pro &bull; @Vikram_T withdrew $250.00 USDT &bull; 14 challenges verified today
+          </span>
+        </div>
+        <span className="text-[10px] font-mono shrink-0 hidden md:inline text-slate-500 dark:text-slate-400">
+          Sync: Realtime Active
+        </span>
+      </div>
+
+      <div className="flex">
+        {/* Mock Sidebar (Desktop) */}
+        <div className="hidden lg:flex w-52 border-r border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#090d18] flex-col justify-between p-4 space-y-6 shrink-0">
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Dashboard</span>
+              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold border border-emerald-500/20">
+                <Activity className="h-3.5 w-3.5" />
+                <span>Overview</span>
+              </div>
+              <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <span className="flex items-center gap-2">
+                  <Wallet className="h-3.5 w-3.5" /> Trader Wallet
+                </span>
+                <span className="text-[9px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-1 py-0.5 rounded">USD</span>
+              </div>
+              <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <span className="flex items-center gap-2">
+                  <Zap className="h-3.5 w-3.5 text-emerald-500" /> WhatsApp
+                </span>
+                <span className="text-[9px] font-mono bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-1 py-0.5 rounded font-extrabold">AUTO</span>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Purchases</span>
+              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
+                <FileCheck2 className="h-3.5 w-3.5" /> Submit Purchase
+              </div>
+              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
+                <CheckCircle2 className="h-3.5 w-3.5" /> My Purchases
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Rewards</span>
+              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
+                <Gift className="h-3.5 w-3.5" /> Rewards Store
+              </div>
+              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
+                <Coins className="h-3.5 w-3.5" /> Points History
+              </div>
+            </div>
+          </div>
+
+          {/* User profile card in sidebar */}
+          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-emerald-600 text-white font-black flex items-center justify-center text-xs shadow-xs">
+              GK
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="font-bold text-slate-900 dark:text-white truncate text-[11px]">Garv Gautam Kataria</div>
+              <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-bold flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> 16,700 PTS
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mock Main Dashboard View */}
+        <div className="flex-1 p-4 sm:p-6 space-y-5 bg-[#fafbfc] dark:bg-[#070b14] overflow-hidden">
+          {/* Welcome Banner */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/70 dark:border-slate-800/70">
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                  Welcome back, Garv Gautam Kataria 👋
+                </h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30">
+                  PRO TRADER
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                <span className="text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1">
+                  ⭐ Silver Tier (1.2x Multiplier)
+                </span>
+                <span>&bull;</span>
+                <span className="hidden sm:inline">Track verified challenge orders, point clearance, and gear shipments.</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-xs shadow-xs flex items-center gap-1.5">
+                <FileCheck2 className="h-3.5 w-3.5" /> Submit Proof
+              </span>
+              <span className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs shadow-2xs">
+                Trader Wallet
+              </span>
+            </div>
+          </div>
+
+          {/* 4 Crisp Key Metric Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-1">
+              <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                <span>Available Points</span>
+                <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400">
+                16,700
+              </div>
+              <div className="text-[10px] text-slate-500 font-medium">≈ $167.00 USD Cash Value</div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-1">
+              <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                <span>In Clearance</span>
+                <Clock className="h-3.5 w-3.5 text-amber-500" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black font-mono text-amber-600 dark:text-amber-400">
+                2,800
+              </div>
+              <div className="text-[10px] text-slate-500 font-medium">≈ $28.00 Pending Audit</div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-1">
+              <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                <span>Lifetime Earned</span>
+                <TrendingUp className="h-3.5 w-3.5 text-sky-500" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black font-mono text-sky-600 dark:text-sky-400">
+                38,700
+              </div>
+              <div className="text-[10px] text-slate-500 font-medium">≈ $387.00 Lifetime Points</div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-1">
+              <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                <span>Redeemed &amp; Paid</span>
+                <Gift className="h-3.5 w-3.5 text-purple-500" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black font-mono text-purple-600 dark:text-purple-400">
+                22,000
+              </div>
+              <div className="text-[10px] text-slate-500 font-medium">≈ $220.00 Gear &amp; Crypto</div>
+            </div>
+          </div>
+
+          {/* Lower 2-Column Split: Submissions & Ledger Activity */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Left: Recent Submissions */}
+            <div className="p-4 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                  <FileCheck2 className="h-3.5 w-3.5 text-emerald-500" /> Recent Purchase Submissions
+                </span>
+                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline">View All</span>
+              </div>
+              <div className="space-y-2">
+                <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between">
+                  <div>
+                    <div className="font-bold text-slate-900 dark:text-white text-xs">Funding Pips $100K 2-Step</div>
+                    <div className="text-[10px] text-slate-500">Order #FP-98214 &bull; $399 USD</div>
+                  </div>
+                  <div className="text-right">
+                    <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400">
+                      APPROVED
+                    </span>
+                    <div className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs mt-0.5">+4,500 PTS</div>
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between">
+                  <div>
+                    <div className="font-bold text-slate-900 dark:text-white text-xs">FundedSquad $50K Direct</div>
+                    <div className="text-[10px] text-slate-500">Order #FS-51656 &bull; $249 USD</div>
+                  </div>
+                  <div className="text-right">
+                    <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400">
+                      UNDER REVIEW
+                    </span>
+                    <div className="font-mono font-bold text-amber-600 dark:text-amber-400 text-xs mt-0.5">~2,800 PTS</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Points Ledger & Reward Redemption Activity */}
+            <div className="p-4 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                  <Coins className="h-3.5 w-3.5 text-sky-500" /> Points Ledger &amp; Redemptions
+                </span>
+                <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 hover:underline">Full Ledger</span>
+              </div>
+              <div className="space-y-2">
+                <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between">
+                  <div>
+                    <div className="font-bold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
+                      <Gift className="h-3.5 w-3.5 text-purple-500" /> Apple AirPods Max (Silver)
+                    </div>
+                    <div className="text-[10px] text-slate-500">Shipped via DHL Express &bull; #9400-8812</div>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-mono font-bold text-rose-600 dark:text-rose-400 text-xs">-20,000 PTS</span>
+                    <div className="text-[9px] text-emerald-600 dark:text-emerald-400 font-semibold">Delivered</div>
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between">
+                  <div>
+                    <div className="font-bold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
+                      <Zap className="h-3.5 w-3.5 text-amber-500" /> First Purchase Bonus
+                    </div>
+                    <div className="text-[10px] text-slate-500">Welcome tier promotion credited</div>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs">+1,000 PTS</span>
+                    <div className="text-[9px] text-slate-400 font-medium">Cleared</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function HomePage() {
   const [propFirms, setPropFirms] = useState<PropFirm[]>(FALLBACK_PROP_FIRMS);
@@ -461,6 +705,8 @@ export default function HomePage() {
                         alt="Trade Rewards 3D Platform Showcase"
                         width={600}
                         height={400}
+                        quality={100}
+                        unoptimized={true}
                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/heroimg:scale-105"
                         priority
                       />
@@ -1482,7 +1728,7 @@ export default function HomePage() {
               </div>
 
               {/* Showcase Image Display Container */}
-              <div className="relative w-full bg-black overflow-hidden flex items-center justify-center">
+              <div className="relative w-full bg-slate-950 overflow-hidden flex items-center justify-center">
                 {showcaseTab === '3d' ? (
                   <div className="relative w-full group/canvas">
                     <Image
@@ -1490,6 +1736,8 @@ export default function HomePage() {
                       alt="Trade Rewards 3D Platform Showcase featuring TradeRewards Dashboard, iPhone 16 Pro, AirPods Max, MacBook, PS5, Nike Sneakers and Prop Firm partners"
                       width={1536}
                       height={1024}
+                      quality={100}
+                      unoptimized={true}
                       className="w-full h-auto object-cover select-none transition-transform duration-700 ease-out group-hover/canvas:scale-[1.012]"
                       priority
                     />
@@ -1497,7 +1745,7 @@ export default function HomePage() {
                     <div className="absolute bottom-4 left-4 right-4 hidden sm:flex items-center justify-between pointer-events-none">
                       <div className="bg-slate-900/90 backdrop-blur-md border border-emerald-500/30 text-white px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 shadow-lg">
                         <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-                        <span>Interactive 3D Ecosystem • High-Res Visual</span>
+                        <span>Interactive 3D Ecosystem • Ultra-HD 4K Visual</span>
                       </div>
                       <div className="bg-slate-900/90 backdrop-blur-md border border-slate-700 text-slate-300 px-3.5 py-1.5 rounded-full text-xs font-mono shadow-lg">
                         Available Points: 12,500 • FTMO, The 5ers, E8, FundedNext
@@ -1505,14 +1753,9 @@ export default function HomePage() {
                     </div>
                   </div>
                 ) : (
-                  <Image
-                    src="/dashboard-preview.png"
-                    alt="Prop Nation Trader Portal Dashboard"
-                    width={1024}
-                    height={576}
-                    className="w-full h-auto object-cover object-top select-none transition-transform duration-500 group-hover:scale-[1.008]"
-                    priority
-                  />
+                  <div className="w-full">
+                    <TraderDashboardLiveMockup />
+                  </div>
                 )}
               </div>
 
