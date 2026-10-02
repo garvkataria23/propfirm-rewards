@@ -60,12 +60,13 @@ interface Reward {
   category?: { name: string; slug: string };
 }
 
-// Fallback Prop Firms with tier details
+// Fallback Prop Firms with tier details and branded logos
 const FALLBACK_PROP_FIRMS: PropFirm[] = [
   {
     id: 'firm-1',
     name: 'FundedSquad',
     slug: 'fundedsquad',
+    logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
     description: 'Premier proprietary firm with zero-time limit evaluations, raw spreads, and fast reward verification.',
     websiteUrl: 'https://fundedsquad.com',
     affiliateCode: 'NATION',
@@ -80,6 +81,7 @@ const FALLBACK_PROP_FIRMS: PropFirm[] = [
     id: 'firm-2',
     name: 'Pipstone Capital',
     slug: 'pipstone-capital',
+    logoUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=120&auto=format&fit=crop&q=80',
     description: 'Institutional-grade simulated funding with high drawdown flexibility and weekly payouts up to 90%.',
     websiteUrl: 'https://pipstonecapital.com',
     affiliateCode: 'NATION',
@@ -94,6 +96,7 @@ const FALLBACK_PROP_FIRMS: PropFirm[] = [
     id: 'firm-3',
     name: 'FTMO',
     slug: 'ftmo',
+    logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
     description: 'The global benchmark for prop trading evaluations. Industry standard rules and world-class trader education.',
     websiteUrl: 'https://ftmo.com',
     affiliateCode: 'NATION',
@@ -108,6 +111,7 @@ const FALLBACK_PROP_FIRMS: PropFirm[] = [
     id: 'firm-4',
     name: 'Funding Pips',
     slug: 'funding-pips',
+    logoUrl: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
     description: 'Built by traders for traders with competitive challenge pricing, 1-step and 2-step evaluations.',
     websiteUrl: 'https://fundingpips.com',
     affiliateCode: 'NATION',
@@ -122,6 +126,7 @@ const FALLBACK_PROP_FIRMS: PropFirm[] = [
     id: 'firm-5',
     name: 'FundedNext',
     slug: 'fundednext',
+    logoUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=120&auto=format&fit=crop&q=80',
     description: 'Guaranteed 24h payout processing with profit split options up to 95% and scale-up plans.',
     websiteUrl: 'https://fundednext.com',
     affiliateCode: 'NATION',
@@ -198,7 +203,11 @@ export default function HomePage() {
       .get<PropFirm[]>('/prop-firms')
       .then((data) => {
         if (data && Array.isArray(data) && data.length > 0) {
-          setPropFirms(data);
+          const merged = data.slice(0, 6).map((firm, idx) => ({
+            ...firm,
+            logoUrl: firm.logoUrl || FALLBACK_PROP_FIRMS[idx % FALLBACK_PROP_FIRMS.length].logoUrl,
+          }));
+          setPropFirms(merged);
         }
       })
       .catch(() => {});
@@ -609,8 +618,16 @@ export default function HomePage() {
                   {/* Top: Logo + Name */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-white font-black text-sm">
-                        {firm.name.slice(0, 2).toUpperCase()}
+                      <div className="h-11 w-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center text-slate-900 dark:text-white font-black text-sm shrink-0 shadow-2xs">
+                        {firm.logoUrl ? (
+                          <img
+                            src={firm.logoUrl}
+                            alt={`${firm.name} logo`}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <span>{firm.name.slice(0, 2).toUpperCase()}</span>
+                        )}
                       </div>
                       <div>
                         <h4 className="font-bold text-slate-900 dark:text-white text-base leading-snug">{firm.name}</h4>
