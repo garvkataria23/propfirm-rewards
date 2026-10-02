@@ -19,6 +19,7 @@ import {
   FileText,
   AlertCircle,
   Eye,
+  Video,
 } from 'lucide-react';
 
 interface PurchaseProof {
@@ -534,8 +535,16 @@ export default function AdminPurchasesPage() {
                         </a>
                       </div>
 
-                      {/* Image preview */}
-                      {proof.fileType?.startsWith('image/') || proof.fileUrl.match(/\.(jpg|jpeg|png|webp)/i) ? (
+                      {/* Video preview */}
+                      {proof.fileType?.startsWith('video/') || proof.fileUrl.match(/\.(mp4|mov|webm)/i) ? (
+                        <div className="rounded-lg overflow-hidden bg-slate-900 border border-slate-800">
+                          <video
+                            src={proof.fileUrl}
+                            controls
+                            className="w-full max-h-48 object-contain bg-black"
+                          />
+                        </div>
+                      ) : proof.fileType?.startsWith('image/') || proof.fileUrl.match(/\.(jpg|jpeg|png|webp)/i) ? (
                         <div className="aspect-video rounded-lg overflow-hidden bg-slate-900 border border-slate-800">
                           <img
                             src={proof.fileUrl}
