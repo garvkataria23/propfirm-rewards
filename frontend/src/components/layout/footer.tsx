@@ -4,12 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Coins,
-  ShieldCheck,
-  Mail,
-  Headphones,
-  LifeBuoy,
-  MessageSquare,
+  Globe,
+  ChevronDown,
 } from 'lucide-react';
 
 export function Footer() {
@@ -21,21 +17,22 @@ export function Footer() {
   }
 
   return (
-    <footer className="w-full bg-[#020614] text-slate-400 border-t border-blue-950/60 font-sans transition-colors">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 pb-12 border-b border-blue-950/60 text-left">
-          {/* Brand Info (Left Column) */}
-          <div className="lg:col-span-4 space-y-5">
+    <footer className="w-full bg-[#050816] text-slate-400 border-t border-slate-900 font-sans transition-colors">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 space-y-12">
+        {/* Top 4-Column Navigation & Brand Info (Screenshots 5) */}
+        <div className="space-y-8 text-left">
+          {/* Brand Info */}
+          <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2 group">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0c182a] text-white shadow-xs group-hover:scale-105 transition-transform border border-sky-500/20">
                 <span className="font-black text-sm tracking-tighter text-sky-400">P<span className="text-white">N</span></span>
               </div>
               <span className="text-xl font-black tracking-tight text-white">
-                PropNation<span className="text-xs font-normal text-slate-400 align-super ml-0.5">®</span>
+                PropNation<span className="text-xs font-normal text-slate-400 align-super ml-0.5">&reg;</span>
               </span>
             </Link>
 
-            <p className="text-xs sm:text-sm text-slate-400 max-w-sm leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-400 max-w-md leading-relaxed">
               Trade with a clear path to capital, rewards, scaling, and community.
             </p>
 
@@ -77,24 +74,15 @@ export function Footer() {
               >
                 <YouTubeIcon className="h-4 w-4" />
               </a>
-              <a
-                href="https://discord.gg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="h-8 w-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:text-white hover:border-slate-700 transition-colors"
-                title="Discord"
-              >
-                <MessageSquare className="h-4 w-4" />
-              </a>
             </div>
           </div>
 
-          {/* 4 Link Columns (FundingPips Exact Layout) */}
-          <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8 text-xs">
+          {/* 4 Link Columns (Screenshot 5 Exact Layout) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-xs pt-4">
             {/* Column 1: Products */}
             <div className="space-y-3">
               <h4 className="font-bold text-white tracking-wide">Products</h4>
-              <ul className="space-y-2.5 text-slate-400">
+              <ul className="space-y-2 text-slate-400">
                 <li>
                   <Link href="/prop-firms" className="hover:text-white transition-colors">
                     2 Step Standard
@@ -131,7 +119,7 @@ export function Footer() {
             {/* Column 2: Platform */}
             <div className="space-y-3">
               <h4 className="font-bold text-white tracking-wide">Platform</h4>
-              <ul className="space-y-2.5 text-slate-400">
+              <ul className="space-y-2 text-slate-400">
                 <li>
                   <Link href="/how-it-works" className="hover:text-white transition-colors">
                     PRIME
@@ -158,7 +146,7 @@ export function Footer() {
             {/* Column 3: Community */}
             <div className="space-y-3">
               <h4 className="font-bold text-white tracking-wide">Community</h4>
-              <ul className="space-y-2.5 text-slate-400">
+              <ul className="space-y-2 text-slate-400">
                 <li>
                   <Link href="/announcements" className="hover:text-white transition-colors">
                     Blog
@@ -174,18 +162,13 @@ export function Footer() {
                     FAQs
                   </Link>
                 </li>
-                <li>
-                  <Link href="/support/live" className="hover:text-white transition-colors">
-                    Live Chat
-                  </Link>
-                </li>
               </ul>
             </div>
 
             {/* Column 4: Legal */}
             <div className="space-y-3">
               <h4 className="font-bold text-white tracking-wide">Legal</h4>
-              <ul className="space-y-2.5 text-slate-400">
+              <ul className="space-y-2 text-slate-400">
                 <li>
                   <Link href="/faq" className="hover:text-white transition-colors">
                     Terms &amp; Conditions
@@ -206,15 +189,140 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom copyright notice */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div>
-            © {new Date().getFullYear()} PropNation Rewards Ltd. All rights reserved.
+        {/* ======================================================== */}
+        {/* Important Information & Disclaimer (Screenshots 6, 7 & 8) */}
+        {/* ======================================================== */}
+        <div className="pt-8 border-t border-slate-900 space-y-6 text-left text-[11px] sm:text-xs text-slate-400 leading-relaxed">
+          <h3 className="text-sm font-bold text-slate-200">
+            Important Information &amp; Disclaimer
+          </h3>
+
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-bold text-slate-300">Simulated Trading Environment</h4>
+              <p className="mt-1 text-slate-400">
+                All accounts provided by PropNation are demo accounts operating exclusively in a simulated trading environment. No actual trades are executed on live financial markets. The services we offer are designed for educational and evaluation purposes only.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-bold text-slate-300">No Investment Services</h4>
+              <p className="mt-1 text-slate-400">
+                The simulated trading services are provided by PropNation Corp. All content published and distributed by PropNation and its related entities (collectively, the &quot;Company&quot;) is for general informational purposes only.
+              </p>
+              <ul className="list-disc pl-5 mt-2 space-y-1 text-slate-400">
+                <li>The Company does not provide investment advice.</li>
+                <li>The Company does not solicit or recommend the purchase or sale of any financial instruments, securities, or funds.</li>
+                <li>The Company does not act as a broker, custodian, or financial intermediary.</li>
+              </ul>
+              <p className="mt-2 text-slate-400">
+                Participation in any of our programs is entirely voluntary, and all fees paid to the Company are strictly service fees. Program fees are not deposits, do not represent client funds, and should not be considered investments under any circumstances. These fees are non-refundable once paid, except where required by applicable law, and they do not earn interest, returns, or profit sharing of any kind.
+              </p>
+              <p className="mt-2 text-slate-400">
+                Instead, all program fees are applied toward the Company&apos;s operational and administrative expenses, including, but not limited to, staffing, technology infrastructure, platform development and maintenance, software licensing, risk management systems, customer support, and other business-related costs. Payment of program fees does not create any fiduciary duty, custodial relationship, or investment arrangement between participants and the Company. Participants should understand that such fees provide access only to simulated trading evaluations and related services in a demo environment.
+              </p>
+              <p className="mt-2 text-slate-400">
+                Nothing on this website or in our programs constitutes an offer to buy or sell futures, options, CFDs, forex, stocks, or any other financial instruments. All results displayed are based on simulated trading performance. Past simulated performance is not necessarily indicative of future results.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-bold text-slate-300">General Risk Warning</h4>
+              <p className="mt-1 text-slate-400">
+                Trading in financial markets involves a substantial risk of loss. Even in a simulated environment, strategies tested under leveraged conditions may produce results that do not reflect real-world execution. You should carefully consider your objectives, level of experience, and risk tolerance before participating.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-bold text-slate-300">Corporate &amp; Related Entities</h4>
+              <p className="mt-1 text-slate-400">
+                PropNation Corp is a limited liability company incorporated under international commercial guidelines. Services are not offered to residents of certain jurisdictions, including countries on the FATF and EU/UN sanctions lists, Vietnam, and UAE.
+              </p>
+              <p className="mt-2 text-slate-300 font-medium">
+                Registered Address of PropNation:
+              </p>
+              <p className="text-slate-400">
+                Premises NO. 19948-001, IFZA Business Park, DDP Dubai, UAE
+              </p>
+              <p className="mt-2 text-slate-300 font-medium">
+                Related Entities (non-operational support and administrative offices):
+              </p>
+              <p className="text-slate-400">
+                PropNation Services Ltd - Cyprus (HE 450941), 15 Dimitriou Karatasou Street, Anastasio Building, 6th Floor, Office 601, 2024 Strovolos, Nicosia, Cyprus.
+              </p>
+              <p className="text-slate-400">
+                Bay View Tower, Business Bay, Dubai, UAE.
+              </p>
+            </div>
           </div>
-          <div className="flex items-center gap-4 text-slate-500">
-            <span>Universal Partner Code: <strong className="text-sky-400 font-mono">NATION</strong></span>
+        </div>
+
+        {/* ======================================================== */}
+        {/* Payment Methods Row (Screenshot 6 & 7) */}
+        {/* ======================================================== */}
+        <div className="pt-8 border-t border-slate-900">
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 opacity-75 grayscale hover:grayscale-0 transition-all py-3">
+            <span className="font-black text-sm tracking-wider text-slate-300">Skrill</span>
+            <span className="font-bold text-sm tracking-tight text-slate-300 italic">PayPal</span>
+            <div className="flex items-center -space-x-1.5">
+              <div className="h-4 w-4 rounded-full bg-slate-400/80" />
+              <div className="h-4 w-4 rounded-full bg-slate-500/80" />
+            </div>
+            <span className="font-black text-sm tracking-widest text-slate-300">VISA</span>
+            <span className="font-black text-sm text-slate-300 flex items-center gap-1 font-mono">
+              <span className="text-base">&#8383;</span> Bitcoin
+            </span>
+            <span className="font-semibold text-xs tracking-tight text-slate-300 flex items-center gap-1">
+              <span></span> Pay
+            </span>
+            <span className="font-bold text-xs tracking-tight text-slate-300 flex items-center gap-1">
+              <span>G</span> Pay
+            </span>
+            <span className="font-black text-xs tracking-widest text-slate-300">NETELLER</span>
+            <span className="font-bold text-xs tracking-tight text-slate-300">AstroPay</span>
+          </div>
+        </div>
+
+        {/* ======================================================== */}
+        {/* Bottom Language, Legal Links & Copyright (Screenshots 6, 7) */}
+        {/* ======================================================== */}
+        <div className="pt-6 border-t border-slate-900 space-y-4 text-xs text-slate-500">
+          {/* Language Selector */}
+          <div className="flex items-center justify-start">
+            <button className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800">
+              <Globe className="h-3.5 w-3.5" />
+              <span>English (English)</span>
+              <ChevronDown className="h-3.5 w-3.5 ml-1 text-slate-500" />
+            </button>
+          </div>
+
+          {/* Legal Links Row */}
+          <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-slate-400 text-[11px] sm:text-xs">
+            <Link href="/faq" className="hover:text-white transition-colors">
+              Terms &amp; Conditions
+            </Link>
             <span>•</span>
-            <span className="text-emerald-400 font-semibold">1$ = 10 Reward Points</span>
+            <Link href="/faq" className="hover:text-white transition-colors">
+              Terms &amp; Conditions - PRIME
+            </Link>
+            <span>•</span>
+            <Link href="/faq" className="hover:text-white transition-colors">
+              Privacy Policy
+            </Link>
+            <span>•</span>
+            <button className="hover:text-white transition-colors">
+              Cookie preferences
+            </button>
+          </div>
+
+          {/* Copyright & Built With */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-2 text-[11px] text-slate-500">
+            <div>
+              &copy; 2026 PropNation. All rights reserved.
+            </div>
+            <div>
+              Built with <span className="text-red-500">&hearts;</span> by Traders for Traders
+            </div>
           </div>
         </div>
       </div>

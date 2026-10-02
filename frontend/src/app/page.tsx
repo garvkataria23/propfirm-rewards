@@ -361,6 +361,10 @@ export default function HomePage() {
   const [howItWorksStep, setHowItWorksStep] = useState<'account' | 'pass' | 'paid'>('account');
   const [fannedCard, setFannedCard] = useState<'zero' | '1step' | '2step'>('1step');
 
+  // Trade on your terms interactive state
+  const [selectedMarket, setSelectedMarket] = useState<'FX' | 'MET' | 'ENG' | 'CRYPTO' | 'IND'>('MET');
+  const [selectedPayoutFreq, setSelectedPayoutFreq] = useState<'Weekly' | 'Bi-Weekly' | 'Monthly'>('Bi-Weekly');
+
   // Pricing Matrix Selection & View Mode
   const [selectedType, setSelectedType] = useState<string>('2step');
   const [selectedSize, setSelectedSize] = useState<string>('5k');
@@ -1255,7 +1259,8 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 8. "TRADE ON YOUR TERMS" 3 CARDS */}
+      {/* ======================================================== */}
+      {/* 8. "TRADE ON YOUR TERMS" (Screenshots 1, 2, 3) */}
       {/* ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-12">
         <div className="space-y-3 max-w-xl mx-auto">
@@ -1268,18 +1273,79 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 text-left">
-          {/* Card 1: 5 Markets */}
-          <div className="rounded-3xl bg-purple-50/30 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
+          {/* Card 1: 5 Markets (Screenshot 1) */}
+          <div className="rounded-3xl bg-slate-50/70 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-6 sm:p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
             <div className="space-y-6">
-              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-purple-100 dark:border-purple-900/60 flex items-center justify-center p-4 relative overflow-hidden">
-                <div className="flex items-center justify-center gap-3">
-                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">FX</div>
-                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">MET</div>
-                  <div className="h-12 w-12 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold shadow-md">
-                    <CandlestickChart className="h-6 w-6 text-white" />
+              {/* Radar Graphic */}
+              <div className="h-44 rounded-2xl bg-gradient-to-b from-purple-50/40 to-white dark:from-slate-950 dark:to-slate-900 border border-purple-100 dark:border-purple-900/60 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+                {/* Subtle blueprint grid overlay */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_14px]" />
+
+                {/* Radar circular rings & connecting lines */}
+                <div className="relative flex items-center justify-center w-full">
+                  <div className="absolute w-28 h-28 rounded-full border border-purple-200/60 dark:border-purple-800/40 pointer-events-none animate-pulse" />
+                  <div className="absolute w-36 h-36 rounded-full border border-purple-100/40 dark:border-purple-900/20 pointer-events-none" />
+
+                  {/* Peripheral market icons */}
+                  <div className="flex items-center justify-center gap-3 sm:gap-4 z-10">
+                    <button
+                      onClick={() => setSelectedMarket('FX')}
+                      className={`h-8 w-8 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all ${
+                        selectedMarket === 'FX'
+                          ? 'bg-purple-600 text-white shadow-md scale-105'
+                          : 'bg-white dark:bg-slate-800 text-slate-500 border border-purple-100 dark:border-purple-900/60'
+                      }`}
+                    >
+                      FX
+                    </button>
+                    <button
+                      onClick={() => setSelectedMarket('MET')}
+                      className={`h-8 w-8 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all ${
+                        selectedMarket === 'MET'
+                          ? 'bg-purple-600 text-white shadow-md scale-105'
+                          : 'bg-white dark:bg-slate-800 text-slate-500 border border-purple-100 dark:border-purple-900/60'
+                      }`}
+                    >
+                      MET
+                    </button>
+
+                    {/* Center Active Navy Square with Chart */}
+                    <div className="h-14 w-14 rounded-2xl bg-[#0c1024] dark:bg-purple-600 text-white flex items-center justify-center font-bold shadow-xl border-2 border-purple-400/40 relative z-20">
+                      <CandlestickChart className="h-7 w-7 text-purple-300" />
+                    </div>
+
+                    <button
+                      onClick={() => setSelectedMarket('CRYPTO')}
+                      className={`h-8 w-8 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all ${
+                        selectedMarket === 'CRYPTO'
+                          ? 'bg-purple-600 text-white shadow-md scale-105'
+                          : 'bg-white dark:bg-slate-800 text-slate-500 border border-purple-100 dark:border-purple-900/60'
+                      }`}
+                    >
+                      BTC
+                    </button>
+                    <button
+                      onClick={() => setSelectedMarket('IND')}
+                      className={`h-8 w-8 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all ${
+                        selectedMarket === 'IND'
+                          ? 'bg-purple-600 text-white shadow-md scale-105'
+                          : 'bg-white dark:bg-slate-800 text-slate-500 border border-purple-100 dark:border-purple-900/60'
+                      }`}
+                    >
+                      US30
+                    </button>
                   </div>
-                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">ENG</div>
-                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">BTC</div>
+                </div>
+
+                {/* Market Name Pill below radar */}
+                <div className="mt-3 z-10">
+                  <span className="px-3 py-0.5 rounded-full bg-white dark:bg-slate-800 text-purple-700 dark:text-purple-300 text-[11px] font-bold border border-purple-200 dark:border-purple-800 shadow-2xs">
+                    {selectedMarket === 'MET' && 'Metals'}
+                    {selectedMarket === 'FX' && 'Forex Currencies'}
+                    {selectedMarket === 'ENG' && 'Energies & Oil'}
+                    {selectedMarket === 'CRYPTO' && 'Crypto & Bitcoin'}
+                    {selectedMarket === 'IND' && 'Global Indices'}
+                  </span>
                 </div>
               </div>
 
@@ -1292,48 +1358,101 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Card 2: 5 Partner Prop Firms */}
-          <div className="rounded-3xl bg-purple-50/30 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
+          {/* Card 2: 3 Platforms (Screenshot 3) */}
+          <div className="rounded-3xl bg-slate-50/70 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-6 sm:p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
             <div className="space-y-6">
-              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-purple-100 dark:border-purple-900/60 flex items-center justify-center p-4 gap-2">
-                <div className="h-10 px-3 rounded-xl bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-                  FundedSquad
-                </div>
-                <div className="h-11 px-3.5 rounded-xl bg-purple-600 text-white flex items-center justify-center text-xs font-bold shadow-md">
-                  FundingPips
-                </div>
-                <div className="h-10 px-3 rounded-xl bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-                  FTMO
+              {/* 3 Platform Logos */}
+              <div className="h-44 rounded-2xl bg-gradient-to-b from-purple-50/40 to-white dark:from-slate-950 dark:to-slate-900 border border-purple-100 dark:border-purple-900/60 flex items-center justify-center p-4 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_14px]" />
+
+                <div className="flex items-center justify-center gap-3 sm:gap-4 z-10">
+                  {/* MetaTrader 5 */}
+                  <div className="h-14 w-14 rounded-2xl bg-white dark:bg-slate-800 border border-purple-100 dark:border-purple-800/60 flex flex-col items-center justify-center p-1.5 shadow-md hover:scale-105 transition-transform">
+                    <div className="flex items-center gap-0.5 mb-0.5">
+                      <span className="h-2 w-2 rounded-full bg-purple-600" />
+                      <span className="h-2 w-2 rounded-full bg-indigo-500" />
+                      <span className="h-2 w-2 rounded-full bg-violet-600" />
+                    </div>
+                    <span className="text-[10px] font-black text-slate-800 dark:text-white">MT5</span>
+                  </div>
+
+                  {/* cTrader */}
+                  <div className="h-16 w-16 rounded-2xl bg-[#0c1024] text-white border-2 border-purple-400/50 flex flex-col items-center justify-center p-2 shadow-xl scale-105">
+                    <div className="h-6 w-6 rounded-full border-2 border-purple-300 border-t-transparent animate-spin-slow flex items-center justify-center mb-0.5">
+                      <span className="text-[10px] font-black text-white">c</span>
+                    </div>
+                    <span className="text-[9px] font-bold tracking-tight text-purple-200">cTrader</span>
+                  </div>
+
+                  {/* DXtrade / Tradin */}
+                  <div className="h-14 w-14 rounded-2xl bg-white dark:bg-slate-800 border border-purple-100 dark:border-purple-800/60 flex flex-col items-center justify-center p-1.5 shadow-md hover:scale-105 transition-transform">
+                    <Sparkles className="h-4 w-4 text-purple-600 mb-0.5" />
+                    <span className="text-[9px] font-black text-slate-800 dark:text-white">Tradin</span>
+                  </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-lg font-[900] text-[#0c1024] dark:text-white">5 Partner Prop Firms.</h3>
+                <h3 className="text-lg font-[900] text-[#0c1024] dark:text-white">3 Platforms.</h3>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
-                  Supported across FundedSquad, Pipstone, FTMO, FundedNext, and FundingPips with universal code NATION.
+                  Used by retail brokers, proprietary trading firms, and individual investors.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Card 3: Get Paid Your Way */}
-          <div className="rounded-3xl bg-purple-50/30 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
+          {/* Card 3: Get Paid Your Way (Screenshot 2) */}
+          <div className="rounded-3xl bg-slate-50/70 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-6 sm:p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
             <div className="space-y-6">
-              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-purple-100 dark:border-purple-900/60 flex flex-col items-center justify-center p-4 space-y-2">
-                <div className="h-10 w-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-md">
-                  <Wallet className="h-5 w-5 text-white" />
+              {/* Circuit & Payout Pills Graphic */}
+              <div className="h-44 rounded-2xl bg-gradient-to-b from-purple-50/40 to-white dark:from-slate-950 dark:to-slate-900 border border-purple-100 dark:border-purple-900/60 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_14px]" />
+
+                {/* Circuit line leading to dark navy vault/wallet */}
+                <div className="h-6 w-0.5 bg-gradient-to-b from-transparent to-purple-400 mb-1" />
+                <div className="h-12 w-12 rounded-2xl bg-[#0c1024] text-white flex items-center justify-center shadow-lg border border-purple-500/40 z-10 mb-3">
+                  <Wallet className="h-5 w-5 text-purple-300" />
                 </div>
-                <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400">
-                  <span className="px-2 py-0.5 rounded">Weekly</span>
-                  <span className="bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded-full font-bold border border-purple-300">Bi-Weekly</span>
-                  <span className="px-2 py-0.5 rounded">Monthly</span>
+
+                {/* Payout Options: Weekly, Bi-Weekly, Monthly */}
+                <div className="flex items-center gap-1.5 z-10">
+                  <button
+                    onClick={() => setSelectedPayoutFreq('Weekly')}
+                    className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all ${
+                      selectedPayoutFreq === 'Weekly'
+                        ? 'bg-purple-600 text-white shadow-xs'
+                        : 'bg-white dark:bg-slate-800 text-slate-500 border border-purple-100 dark:border-purple-900/60'
+                    }`}
+                  >
+                    Weekly
+                  </button>
+                  <button
+                    onClick={() => setSelectedPayoutFreq('Bi-Weekly')}
+                    className={`px-3.5 py-1 rounded-full text-[11px] font-bold transition-all ${
+                      selectedPayoutFreq === 'Bi-Weekly'
+                        ? 'bg-purple-600 text-white shadow-md ring-2 ring-purple-300 dark:ring-purple-700'
+                        : 'bg-white dark:bg-slate-800 text-slate-500 border border-purple-100 dark:border-purple-900/60'
+                    }`}
+                  >
+                    Bi-Weekly
+                  </button>
+                  <button
+                    onClick={() => setSelectedPayoutFreq('Monthly')}
+                    className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all ${
+                      selectedPayoutFreq === 'Monthly'
+                        ? 'bg-purple-600 text-white shadow-xs'
+                        : 'bg-white dark:bg-slate-800 text-slate-500 border border-purple-100 dark:border-purple-900/60'
+                    }`}
+                  >
+                    Monthly
+                  </button>
                 </div>
               </div>
 
               <div>
                 <h3 className="text-lg font-[900] text-[#0c1024] dark:text-white">Get Paid your way.</h3>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
-                  Balancing quick access to capital with overall account growth and real luxury physical rewards.
+                  Balancing quick access to capital with overall account growth strategy.
                 </p>
               </div>
             </div>
@@ -1342,9 +1461,9 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 9. "YOUR SKILL IS OUR CAPITAL" 3-STAGE PATHWAY */}
+      {/* 9. "YOUR SKILL IS OUR CAPITAL" (Screenshot 2) */}
       {/* ======================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-12">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-12 border-t border-purple-100 dark:border-purple-950/60">
         <div className="space-y-3 max-w-xl mx-auto">
           <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c1024] dark:text-white">
             Your skill is our capital
@@ -1354,48 +1473,63 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left relative max-w-5xl mx-auto">
-          {/* Stage 1 */}
-          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/40 p-6 sm:p-8 space-y-3 shadow-md hover:-translate-y-1 transition-transform">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400 bg-purple-50 dark:bg-purple-950/60 px-3 py-1 rounded-full">
-              <Target className="h-3.5 w-3.5 text-purple-600" />
-              Stage 1
+        {/* 01, 02, 03 Numbered Cards (Screenshot 2) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-left max-w-5xl mx-auto">
+          {/* Card 01 */}
+          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/40 p-6 sm:p-7 space-y-3 shadow-md hover:border-purple-300 transition-all flex items-start gap-4">
+            <span className="text-3xl sm:text-4xl font-[900] text-purple-600 dark:text-purple-400 font-mono shrink-0">
+              01
             </span>
-            <h4 className="text-xl font-[900] text-[#0c1024] dark:text-white">Prove your edge</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              On Sim &amp; grow with PRIME. Complete challenge objectives with zero hidden drawdown tricks.
-            </p>
+            <div className="space-y-1">
+              <h4 className="text-base sm:text-lg font-[900] text-[#0c1024] dark:text-white">Prove your edge</h4>
+              <p className="text-xs font-semibold text-purple-700 dark:text-purple-300">
+                On Sim &amp; grow with PRIME
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 pt-1">
+                Complete evaluation objectives with zero hidden drawdown tricks.
+              </p>
+            </div>
           </div>
 
-          {/* Stage 2 */}
-          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/40 p-6 sm:p-8 space-y-3 shadow-md hover:-translate-y-1 transition-transform">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400 bg-purple-50 dark:bg-purple-950/60 px-3 py-1 rounded-full">
-              <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
-              Stage 2
+          {/* Card 02 */}
+          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/40 p-6 sm:p-7 space-y-3 shadow-md hover:border-purple-300 transition-all flex items-start gap-4">
+            <span className="text-3xl sm:text-4xl font-[900] text-purple-600 dark:text-purple-400 font-mono shrink-0">
+              02
             </span>
-            <h4 className="text-xl font-[900] text-[#0c1024] dark:text-white">Scale PRIME capital</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Scale all the way to $2M allocation with compounding rewards and higher profit splits.
-            </p>
+            <div className="space-y-1">
+              <h4 className="text-base sm:text-lg font-[900] text-[#0c1024] dark:text-white">Scale PRIME capital</h4>
+              <p className="text-xs font-semibold text-purple-700 dark:text-purple-300">
+                Scale all the way to $2M allocation
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 pt-1">
+                Compounding simulated rewards and higher profit splits up to 95%.
+              </p>
+            </div>
           </div>
 
-          {/* Stage 3: Midnight Card with Crown */}
-          <div className="rounded-3xl bg-[#0c1024] text-white p-6 sm:p-8 space-y-3 shadow-2xl border border-purple-500/40 hover:-translate-y-1 transition-transform relative overflow-hidden">
-            <div className="absolute top-2 right-2 text-2xl">👑</div>
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-purple-950 px-3 py-1 rounded-full border border-purple-500/40">
-              <Crown className="h-3.5 w-3.5 text-amber-400" />
-              Stage 3
+          {/* Card 03 */}
+          <div className="rounded-3xl bg-gradient-to-br from-[#120a2e] to-[#0c0920] text-white border-2 border-purple-500/50 p-6 sm:p-7 space-y-3 shadow-xl flex items-start gap-4">
+            <span className="text-3xl sm:text-4xl font-[900] text-purple-300 font-mono shrink-0">
+              03
             </span>
-            <h4 className="text-xl font-[900] text-white">Become a fund manager</h4>
-            <p className="text-xs text-slate-300">
-              Earn directly from investor capital with lifetime VIP reward perks and instant cashouts.
-            </p>
+            <div className="space-y-1">
+              <h4 className="text-base sm:text-lg font-[900] text-white flex items-center gap-1.5">
+                <span>Become a fund manager</span>
+                <Crown className="h-4 w-4 text-amber-400" />
+              </h4>
+              <p className="text-xs font-semibold text-purple-300">
+                Earn performance fees with VIP perks
+              </p>
+              <p className="text-xs text-slate-300 pt-1">
+                Earn directly from investor capital with lifetime VIP rewards.
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Feature Pills & Buttons */}
-        <div className="space-y-6 pt-4">
-          <div className="flex flex-wrap items-center justify-center gap-3">
+        <div className="space-y-6 pt-2">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
             <div className="flex items-center gap-1.5 bg-purple-50 dark:bg-purple-950/60 px-4 py-2 rounded-full text-xs font-bold text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
               <Calendar className="h-4 w-4 text-purple-600" />
               <span>80% Daily Rewards</span>
@@ -1412,7 +1546,7 @@ export default function HomePage() {
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link href="/prop-firms">
-              <Button className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-11 px-7 rounded-full shadow-md shadow-purple-600/25">
+              <Button className="bg-[#0c1024] hover:bg-[#15253e] dark:bg-purple-600 dark:hover:bg-purple-700 text-white font-bold text-xs h-11 px-7 rounded-full shadow-md">
                 Get Started
               </Button>
             </Link>
@@ -1426,228 +1560,388 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 8. MASTERCLASS HUB */}
+      {/* 10. "BUILT BY TRADERS FOR TRADERS" (Screenshot 5) */}
       {/* ======================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-10 border-t border-purple-100 dark:border-purple-950/60">
         <div className="space-y-3 max-w-2xl mx-auto">
           <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c1024] dark:text-white">
-            Built by traders, for traders. Your growth is our mission
+            Built by traders for traders
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            At PropNation we don&apos;t just reward traders. We build them.
+            At PropNation we don&apos;t just elevate traders. We build them.
           </p>
         </div>
 
-        <div className="max-w-5xl mx-auto rounded-3xl overflow-hidden border border-purple-100 dark:border-purple-900/60 bg-[#0c1024] text-white shadow-2xl relative">
-          <div className="aspect-[16/9] sm:aspect-[21/9] w-full relative flex items-center justify-center overflow-hidden">
+        {/* 2-Stat Row: Active Traders 3M+ | Paid Out $314M+ (Screenshot 5) */}
+        <div className="grid grid-cols-2 gap-4 max-w-md mx-auto text-center py-2">
+          <div>
+            <div className="text-xs text-slate-400 font-medium">Active traders</div>
+            <div className="text-3xl sm:text-4xl font-[900] text-[#0c1024] dark:text-white mt-1">3M+</div>
+          </div>
+          <div className="border-l border-purple-200 dark:border-purple-800">
+            <div className="text-xs text-slate-400 font-medium">Paid out</div>
+            <div className="text-3xl sm:text-4xl font-[900] text-[#0c1024] dark:text-white mt-1">$314M+</div>
+          </div>
+        </div>
+
+        {/* 3 Content Cards Grid (Screenshot 5: TradinTV Top, 2 Bottom) */}
+        <div className="max-w-5xl mx-auto space-y-4 text-left">
+          {/* Top Full-Width Card: TradinTV */}
+          <div className="relative rounded-3xl overflow-hidden aspect-[16/9] sm:aspect-[21/9] border border-purple-100 dark:border-purple-900/60 shadow-xl group cursor-pointer bg-slate-900">
             <img
               src="/fundingpips-masterclass.jpg"
-              alt="Trading Masterclass"
-              className="w-full h-full object-cover opacity-60"
+              alt="TradinTV"
+              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-80"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0c1024] via-[#0c1024]/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#09071c] via-[#09071c]/40 to-transparent pointer-events-none" />
 
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center space-y-4 z-10">
-              <span className="text-xs font-bold text-purple-300 uppercase tracking-widest bg-purple-950/80 px-3 py-1 rounded-full border border-purple-500/30">
-                {activeMasterclass.title}
-              </span>
-              <h3 className="text-2xl sm:text-4xl font-[900] text-white tracking-tight max-w-2xl">
-                {activeMasterclass.subtitle}
+            {/* Bottom-left text overlay */}
+            <div className="absolute bottom-5 left-5 sm:bottom-8 sm:left-8 z-10 space-y-1">
+              <h3 className="text-2xl sm:text-4xl font-[900] text-white tracking-tight">
+                TradinTV
               </h3>
-              <p className="text-xs sm:text-sm text-slate-300 max-w-xl hidden sm:block">
-                {activeMasterclass.description}
+              <p className="text-xs sm:text-sm text-slate-300 font-medium">
+                Watch real traders execute live
               </p>
-              <button className="bg-white hover:bg-slate-100 text-[#0c1024] font-bold text-xs px-6 py-3 rounded-full flex items-center gap-2 shadow-lg transition-transform hover:scale-105">
-                <Play className="h-3.5 w-3.5 fill-[#0c1024]" />
-                <span>Watch last episode</span>
-              </button>
+            </div>
+
+            {/* Top right play icon */}
+            <div className="absolute top-5 right-5 sm:top-8 sm:right-8 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 text-white shadow-lg group-hover:scale-110 transition-transform">
+              <Play className="h-4 w-4 sm:h-5 sm:w-5 fill-white text-white ml-0.5" />
             </div>
           </div>
 
-          <div className="p-4 sm:p-6 bg-[#09071c] grid grid-cols-1 sm:grid-cols-3 gap-3 border-t border-purple-950">
-            {MASTERCLASS_TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveMasterclassTab(tab.id)}
-                className={`p-4 rounded-2xl text-left transition-all space-y-1 ${
-                  activeMasterclassTab === tab.id
-                    ? 'bg-[#150d36] border-2 border-purple-400 shadow-md'
-                    : 'bg-[#0e0924] hover:bg-[#150d36] border border-purple-900/50'
-                }`}
-              >
-                <div className="text-xs font-bold text-white flex items-center justify-between">
-                  <span>{tab.title}</span>
-                  {activeMasterclassTab === tab.id && <span className="h-2 w-2 rounded-full bg-purple-400" />}
-                </div>
-                <p className="text-[11px] text-slate-400 line-clamp-1">
-                  {tab.subtitle}
+          {/* Bottom 2 Cards (Side-by-side on mobile & desktop) */}
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            {/* Left: Trading Psychology */}
+            <div className="relative rounded-3xl overflow-hidden aspect-[4/5] sm:aspect-[16/10] border border-purple-100 dark:border-purple-900/60 shadow-lg group cursor-pointer bg-slate-900">
+              <img
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&auto=format&fit=crop&q=80"
+                alt="Trading Psychology Coach Paulina"
+                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 opacity-80"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#09071c] via-[#09071c]/50 to-transparent pointer-events-none" />
+
+              <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-10 space-y-0.5">
+                <h4 className="text-sm sm:text-lg font-[900] text-white">
+                  Trading Psychology
+                </h4>
+                <p className="text-[10px] sm:text-xs text-slate-300 font-medium line-clamp-2">
+                  Master the habits &amp; mindset behind performance
                 </p>
-              </button>
-            ))}
+              </div>
+            </div>
+
+            {/* Right: Beyond the Charts */}
+            <div className="relative rounded-3xl overflow-hidden aspect-[4/5] sm:aspect-[16/10] border border-purple-100 dark:border-purple-900/60 shadow-lg group cursor-pointer bg-slate-900">
+              <img
+                src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=600&auto=format&fit=crop&q=80"
+                alt="Beyond the Charts"
+                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 opacity-80"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#09071c] via-[#09071c]/50 to-transparent pointer-events-none" />
+
+              <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-10 space-y-0.5">
+                <h4 className="text-sm sm:text-lg font-[900] text-white">
+                  Beyond the Charts
+                </h4>
+                <p className="text-[10px] sm:text-xs text-slate-300 font-medium line-clamp-2">
+                  Understand what truly moves the market
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* 9. DISCORD COMMUNITY & LIVE UPDATES */}
+      {/* 11. DISCORD COMMUNITY & LIVE FEED (Screenshot 4) */}
       {/* ======================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <div className="lg:col-span-5 space-y-6 text-left">
-            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c1024] dark:text-white leading-[1.12]">
-              Learn, grow and connect with traders worldwide
-            </h2>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-purple-100 dark:border-purple-950/60 text-center space-y-8">
+        <div className="space-y-3 max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-4xl font-[900] tracking-tight text-[#0c1024] dark:text-white leading-[1.14]">
+            Learn, grow and connect with traders worldwide, traders from 195 countries trust our platform
+          </h2>
+        </div>
 
-            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Traders from 195 countries trust our platform and celebrate daily cashback payouts in our active community.
-            </p>
-
-            <div className="flex items-center gap-8 pt-2">
+        {/* Discord Tablet Mockup (Screenshot 4) */}
+        <div className="max-w-2xl mx-auto rounded-3xl border-4 border-slate-200 dark:border-purple-900/60 bg-[#0e0924] text-white p-4 sm:p-6 shadow-2xl space-y-4 text-left relative overflow-hidden">
+          <div className="flex items-center justify-between pb-3 border-b border-purple-900/60">
+            <div className="flex items-center gap-2.5">
+              <div className="h-9 w-9 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold text-xs shadow-md">
+                PN
+              </div>
               <div>
-                <span className="text-xs text-slate-400 block">Traders</span>
-                <span className="text-2xl font-[900] text-[#0c1024] dark:text-white">3 million+</span>
-              </div>
-              <div className="border-l border-purple-100 dark:border-purple-900/50 pl-8">
-                <span className="text-xs text-slate-400 block">Rewards Distributed</span>
-                <span className="text-2xl font-[900] text-[#0c1024] dark:text-white">$314M+</span>
+                <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <span>PropNation Community</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
+                </div>
+                <span className="text-[10px] text-slate-400 font-mono">
+                  8,435 Online • 220,057 Members
+                </span>
               </div>
             </div>
-
-            <div className="pt-2">
-              <a
-                href="https://discord.gg"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-12 px-7 rounded-full shadow-md shadow-purple-600/25">
-                  Join Discord Community
-                </Button>
-              </a>
-            </div>
+            <Badge variant="purple" className="text-[10px]">#rewards-live-updates</Badge>
           </div>
 
-          <div className="lg:col-span-7">
-            <div className="rounded-3xl border border-purple-100 dark:border-purple-900/50 bg-[#0c1024] text-white p-5 sm:p-7 shadow-2xl space-y-4 text-left">
-              <div className="flex items-center justify-between pb-3 border-b border-purple-950">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-2xl bg-purple-600 text-white flex items-center justify-center font-bold text-sm shadow-md">
-                    PN
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                      <span>PropNation Community</span>
-                      <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
-                    </div>
-                    <span className="text-[10px] text-slate-400 font-mono">
-                      8,435 Online • 220,057 Members
-                    </span>
-                  </div>
-                </div>
-                <Badge variant="purple">#rewards-live-updates</Badge>
-              </div>
-
-              <div className="space-y-2.5 font-mono text-xs text-slate-300 pt-2">
-                <div className="p-3 rounded-xl bg-purple-950/40 border border-purple-900/50 flex items-center gap-2">
-                  <span className="text-purple-300 font-bold shrink-0">🤖 Bot:</span>
-                  <span className="truncate">An FP Trader from NL just secured a <strong className="text-purple-300 font-bold">$965.20 reward</strong>! 🔥</span>
-                </div>
-                <div className="p-3 rounded-xl bg-purple-950/40 border border-purple-900/50 flex items-center gap-2">
-                  <span className="text-purple-300 font-bold shrink-0">🤖 Bot:</span>
-                  <span className="truncate">An FS Trader from DE just claimed an <strong className="text-purple-300 font-bold">Apple Watch Ultra</strong>! 🔥</span>
-                </div>
-                <div className="p-3 rounded-xl bg-purple-950/40 border border-purple-900/50 flex items-center gap-2">
-                  <span className="text-purple-300 font-bold shrink-0">🤖 Bot:</span>
-                  <span className="truncate">A Pipstone Trader from US just secured a <strong className="text-purple-300 font-bold">$1,250.00 reward</strong>! 🔥</span>
-                </div>
-                <div className="p-3 rounded-xl bg-purple-950/40 border border-purple-900/50 flex items-center gap-2">
-                  <span className="text-purple-300 font-bold shrink-0">🤖 Bot:</span>
-                  <span className="truncate">An FTMO Trader from UK just claimed a <strong className="text-purple-300 font-bold">MacBook Pro M3</strong>! 🔥</span>
-                </div>
-              </div>
+          {/* Live Rewards Bot Feed */}
+          <div className="space-y-2 font-mono text-[11px] sm:text-xs text-slate-300">
+            <div className="p-2.5 rounded-xl bg-purple-950/40 border border-purple-900/50 flex items-center gap-2">
+              <span className="text-purple-300 font-bold shrink-0">🤖 Bot:</span>
+              <span className="truncate">An FP Trader from NL just secured a <strong className="text-purple-300 font-bold">$965.20 reward</strong>! 🔥</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-purple-950/40 border border-purple-900/50 flex items-center gap-2">
+              <span className="text-purple-300 font-bold shrink-0">🤖 Bot:</span>
+              <span className="truncate">An FS Trader from DE just claimed an <strong className="text-purple-300 font-bold">Apple Watch Ultra</strong>! 🔥</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-purple-950/40 border border-purple-900/50 flex items-center gap-2">
+              <span className="text-purple-300 font-bold shrink-0">🤖 Bot:</span>
+              <span className="truncate">A Pipstone Trader from US just secured a <strong className="text-purple-300 font-bold">$1,250.00 reward</strong>! 🔥</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-purple-950/40 border border-purple-900/50 flex items-center gap-2">
+              <span className="text-purple-300 font-bold shrink-0">🤖 Bot:</span>
+              <span className="truncate">An FTMO Trader from UK just claimed a <strong className="text-purple-300 font-bold">MacBook Pro M3</strong>! 🔥</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-purple-950/40 border border-purple-900/50 flex items-center gap-2">
+              <span className="text-purple-300 font-bold shrink-0">🤖 Bot:</span>
+              <span className="truncate">An FP Trader from IN just secured a <strong className="text-purple-300 font-bold">$540.00 reward</strong>! 🔥</span>
             </div>
           </div>
+        </div>
+
+        {/* Join Discord Full-Width Button (Screenshot 4) */}
+        <div className="max-w-md mx-auto pt-2">
+          <a
+            href="https://discord.gg"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <Button className="w-full bg-[#0c1024] hover:bg-[#15253e] dark:bg-purple-600 dark:hover:bg-purple-700 text-white font-bold text-sm h-12 rounded-xl shadow-lg">
+              Join Discord
+            </Button>
+          </a>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* 10. ECOSYSTEM ADVANTAGE */}
+      {/* ======================================================== */}
+      {/* 12. "MEET TRADIN®, OUR REGULATED BROKER" (Screenshot 1) */}
       {/* ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-purple-100 dark:border-purple-950/60">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-6 space-y-6 text-left">
             <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c1024] dark:text-white leading-[1.12]">
-              Ecosystem advantage &amp; regulated execution
+              Meet Tradin&reg;, our regulated broker
             </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Built for traders by traders. The trader-first experience you trust, now available with seamless cashback and automated payouts across all 5 firms.
-            </p>
 
-            <div className="space-y-3 pt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-purple-600 shrink-0" />
-                <span>Multiple tier-1 regulatory licenses</span>
+            {/* Checklist with circular light blue checkmarks */}
+            <div className="space-y-4 pt-2">
+              <div className="flex items-start gap-3">
+                <div className="h-6 w-6 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <Check className="h-3.5 w-3.5 stroke-[3]" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-[#0c1024] dark:text-white">Swap-Free</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Trade without overnight fees or interest.</p>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-purple-600 shrink-0" />
-                <span>Up to 1:2000 leverage across all 5 firms</span>
+
+              <div className="flex items-start gap-3">
+                <div className="h-6 w-6 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <Check className="h-3.5 w-3.5 stroke-[3]" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-[#0c1024] dark:text-white">Raw Account</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Trading account with raw spreads.</p>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-purple-600 shrink-0" />
-                <span>24/5 dedicated human support</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-purple-600 shrink-0" />
-                <span>Universal referral code: NATION (1$ = 10 PTS)</span>
+
+              <div className="flex items-start gap-3">
+                <div className="h-6 w-6 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <Check className="h-3.5 w-3.5 stroke-[3]" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-[#0c1024] dark:text-white">Standard Account</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">For traders starting with standard conditions.</p>
+                </div>
               </div>
             </div>
 
-            <div className="pt-2">
+            {/* Desktop feature pills */}
+            <div className="hidden sm:grid grid-cols-2 gap-3 text-left pt-2">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <Shield className="h-4 w-4 text-blue-500 shrink-0" />
+                <span>Multiple regulatory licences</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <TrendingUp className="h-4 w-4 text-blue-500 shrink-0" />
+                <span>Tight spreads</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <MessageSquare className="h-4 w-4 text-blue-500 shrink-0" />
+                <span>24/5 human support</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <Scale className="h-4 w-4 text-blue-500 shrink-0" />
+                <span>Up to 1:2000 leverage</span>
+              </div>
+            </div>
+
+            <div className="hidden sm:block pt-2">
               <Link href="/prop-firms">
-                <Button className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-11 px-7 rounded-full shadow-md shadow-purple-600/25">
-                  Start Trading
+                <Button className="bg-[#0c1024] hover:bg-[#182346] text-white font-bold text-xs h-11 px-7 rounded-xl shadow-md">
+                  Explore Tradin&reg;
                 </Button>
               </Link>
             </div>
           </div>
 
-          <div className="lg:col-span-6 flex justify-center">
-            <div className="w-full max-w-sm rounded-[2.5rem] bg-[#0c1024] text-white p-6 border-4 border-purple-200 dark:border-purple-900/60 shadow-2xl space-y-5 text-left relative overflow-hidden">
-              <div className="flex items-center justify-between pb-3 border-b border-purple-950">
-                <div>
-                  <span className="text-[10px] text-slate-400 block font-mono">ACCOUNT BALANCE</span>
-                  <div className="text-2xl font-[900] text-white">$21,079.65</div>
+          {/* Smartphone Frame (Screenshot 1 Exact Replicating) */}
+          <div className="lg:col-span-6 flex flex-col items-center">
+            <div className="w-full max-w-[340px] rounded-[2.8rem] bg-gradient-to-b from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 p-2.5 shadow-2xl border-4 border-slate-300 dark:border-slate-700">
+              <div className="rounded-[2.2rem] bg-[#0c1024] text-white p-5 pt-3 overflow-hidden relative shadow-inner">
+                {/* Dynamic Island / Status Bar */}
+                <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 pb-2">
+                  <span>16:50</span>
+                  <div className="h-3.5 w-16 rounded-full bg-black mx-auto" />
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px]">5G</span>
+                    <div className="h-2.5 w-5 border border-slate-400 rounded-xs p-0.5 flex items-center">
+                      <div className="h-full w-full bg-slate-300 rounded-2xs" />
+                    </div>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-purple-300 block font-mono">TOTAL PROFIT</span>
-                  <div className="text-base font-bold text-purple-300">+$10,931.70</div>
+
+                {/* App Header */}
+                <div className="flex items-center justify-between pt-2 pb-4 text-xs">
+                  <div className="flex items-center gap-1 text-slate-300 font-semibold">
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <span>Standard</span>
+                    <span className="text-[10px] text-slate-500 font-mono">#20010831</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">
+                      Live
+                    </span>
+                    <span className="text-slate-400 font-bold">+</span>
+                    <span className="h-3.5 w-3.5 rounded-full border border-slate-500 text-[9px] flex items-center justify-center text-slate-400">
+                      i
+                    </span>
+                  </div>
+                </div>
+
+                {/* Balance & Performance */}
+                <div className="space-y-0.5 text-left">
+                  <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400">BALANCE</span>
+                  <div className="text-3xl font-[900] text-white tracking-tight">$14,920.00</div>
+                  <span className="text-xs font-bold text-emerald-400 block">+49.20% all time</span>
+                </div>
+
+                {/* Smooth Chart Line Wave */}
+                <div className="h-28 mt-4 relative flex items-end">
+                  <svg className="w-full h-full overflow-visible" viewBox="0 0 300 100" fill="none">
+                    <defs>
+                      <linearGradient id="phoneChartGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.35" />
+                        <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.0" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d="M0,85 Q60,80 120,65 T240,30 T300,10"
+                      stroke="#38bdf8"
+                      strokeWidth="3"
+                      fill="none"
+                    />
+                    <path
+                      d="M0,85 Q60,80 120,65 T240,30 T300,10 L300,100 L0,100 Z"
+                      fill="url(#phoneChartGradient)"
+                    />
+                    <circle cx="120" cy="65" r="3.5" fill="#38bdf8" />
+                  </svg>
+                </div>
+
+                {/* Tradin Logo at bottom */}
+                <div className="pt-3 pb-1 flex items-center justify-center gap-1.5 text-center">
+                  <span className="font-serif text-lg font-black italic text-sky-400">T</span>
+                  <span className="text-sm font-black tracking-tight text-white">
+                    Tradin<span className="text-[9px] font-normal align-super ml-0.5">&reg;</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile-only feature badges below phone (Screenshot 1) */}
+            <div className="sm:hidden w-full max-w-[340px] pt-5 space-y-4">
+              <div className="grid grid-cols-2 gap-2 text-left">
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                  <Shield className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  <span>Multiple regulatory licences</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                  <TrendingUp className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  <span>Tight spreads</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                  <MessageSquare className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  <span>24/5 human support</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                  <Scale className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  <span>Up to 1:2000 leverage</span>
                 </div>
               </div>
 
-              <div className="h-24 bg-gradient-to-b from-purple-500/10 to-transparent rounded-xl border-b border-purple-400/40 relative flex items-end">
-                <div className="w-full h-1 bg-purple-400 shadow-glow" />
-              </div>
-
-              <div className="grid grid-cols-3 gap-2 text-center text-xs pt-1">
-                <div className="bg-purple-950/40 p-2 rounded-xl border border-purple-900/50">
-                  <span className="text-[9px] text-slate-400 block">Win Rate</span>
-                  <span className="font-bold text-white">67.0%</span>
-                </div>
-                <div className="bg-purple-950/40 p-2 rounded-xl border border-purple-900/50">
-                  <span className="text-[9px] text-slate-400 block">Avg Win</span>
-                  <span className="font-bold text-white">$287.47</span>
-                </div>
-                <div className="bg-purple-950/40 p-2 rounded-xl border border-purple-900/50">
-                  <span className="text-[9px] text-slate-400 block">Volume</span>
-                  <span className="font-bold text-white">138.4</span>
-                </div>
-              </div>
+              <Link href="/prop-firms" className="block">
+                <Button className="w-full bg-[#0c1024] hover:bg-[#182346] text-white font-bold text-xs h-11 rounded-xl shadow-md">
+                  Explore Tradin&reg;
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* 11. LUXURY REWARDS STORE PREVIEW (Nike, G-Shock, iPhone, Mac) */}
+      {/* 13. "BUILDING TRADERS GLOBALLY SINCE 2022" (Screenshot 2) */}
+      {/* ======================================================== */}
+      <section className="w-full bg-[#060a17] text-white py-16 sm:py-24 border-t border-slate-900 text-center space-y-10">
+        <div className="space-y-1.5 max-w-xl mx-auto px-4">
+          <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-white">
+            Building Traders Globally
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-400 font-semibold tracking-wider">
+            Since 2022
+          </p>
+        </div>
+
+        {/* 3 Stats with Dividers: 200+ Employees | 5 Global Offices | 24/7 Human Support */}
+        <div className="grid grid-cols-3 divide-x divide-slate-800 max-w-lg mx-auto text-center px-4">
+          <div className="px-2">
+            <div className="text-2xl sm:text-4xl font-[900] text-white">200+</div>
+            <div className="text-[11px] sm:text-xs text-slate-400 mt-1">Employees</div>
+          </div>
+          <div className="px-2">
+            <div className="text-2xl sm:text-4xl font-[900] text-white">5</div>
+            <div className="text-[11px] sm:text-xs text-slate-400 mt-1">Global Offices</div>
+          </div>
+          <div className="px-2">
+            <div className="text-2xl sm:text-4xl font-[900] text-white">24/7</div>
+            <div className="text-[11px] sm:text-xs text-slate-400 mt-1">Human Support</div>
+          </div>
+        </div>
+
+        <div className="pt-2">
+          <Link href="/announcements">
+            <Button className="bg-white hover:bg-slate-100 text-[#0c1024] font-bold text-xs h-11 px-8 rounded-xl shadow-md">
+              Our stories
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 14. LUXURY REWARDS STORE PREVIEW (Nike, G-Shock, iPhone, Mac) */}
       {/* ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-purple-100 dark:border-purple-950/60">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-10">
@@ -1697,7 +1991,7 @@ export default function HomePage() {
                 </span>
                 <Link href={`/rewards/${reward.slug}`}>
                   <span className="text-[11px] font-semibold text-slate-500 hover:text-purple-600 dark:hover:text-white">
-                    Claim →
+                    Claim &rarr;
                   </span>
                 </Link>
               </div>
@@ -1707,59 +2001,11 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 12. "BUILDING TRADERS GLOBALLY SINCE 2022" */}
+      {/* 15. DEEP NAVY FAQS: "WHAT IS PROPNATION?" (Screenshots 3 & 4) */}
       {/* ======================================================== */}
-      <section className="w-full bg-[#080517] text-white py-20 sm:py-28 border-t border-purple-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-16">
-          <div className="space-y-3 max-w-xl mx-auto">
-            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-white">
-              Building Traders Globally Since 2022
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-400">
-              The gold standard for prop firm challenge cashback, live verification, and luxury rewards.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 text-center max-w-5xl mx-auto">
-            <div className="space-y-3">
-              <div className="h-12 w-12 rounded-2xl bg-purple-500/10 text-purple-400 mx-auto flex items-center justify-center">
-                <Users className="h-6 w-6" />
-              </div>
-              <h4 className="text-xl font-[900] text-white">200+ employees</h4>
-              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
-                A global team with decades of market experience driving your trading performance.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="h-12 w-12 rounded-2xl bg-purple-500/10 text-purple-400 mx-auto flex items-center justify-center">
-                <Globe className="h-6 w-6" />
-              </div>
-              <h4 className="text-xl font-[900] text-white">5 global offices</h4>
-              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
-                Strategically positioned to support traders across all regions around the world.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="h-12 w-12 rounded-2xl bg-purple-500/10 text-purple-400 mx-auto flex items-center justify-center">
-                <Headphones className="h-6 w-6" />
-              </div>
-              <h4 className="text-xl font-[900] text-white">24/7 Real Human Support</h4>
-              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
-                Real support available whenever you need it via live chat and dedicated VIP desks.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* 13. DEEP NAVY/PURPLE FAQS: "WHAT IS PROPNATION?" */}
-      {/* ======================================================== */}
-      <section className="w-full bg-[#050310] text-white py-20 sm:py-28 border-t border-purple-950/60">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-12">
-          <div className="space-y-2">
+      <section className="w-full bg-[#05091c] text-white py-20 sm:py-28 border-t border-slate-900">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-left space-y-10">
+          <div className="space-y-1.5">
             <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-white">
               What is PropNation?
             </h2>
@@ -1768,22 +2014,22 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="space-y-1 text-left divide-y divide-purple-900/40">
+          <div className="space-y-0 text-left divide-y divide-slate-800">
             {faqs.map((faq, idx) => (
               <div key={idx} className="py-4 sm:py-5">
                 <button
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-white hover:text-purple-300 transition-colors cursor-pointer text-left"
+                  className="w-full flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-white hover:text-sky-300 transition-colors cursor-pointer text-left"
                 >
-                  <span>{faq.q}</span>
+                  <span className="pr-2">{faq.q}</span>
                   <ChevronDown
-                    className={`h-4 w-4 text-purple-400 transition-transform duration-200 shrink-0 ${
+                    className={`h-4 w-4 text-slate-400 transition-transform duration-200 shrink-0 ${
                       openFaq === idx ? 'rotate-180 text-white' : ''
                     }`}
                   />
                 </button>
                 {openFaq === idx && (
-                  <div className="pt-3 text-xs sm:text-sm text-slate-300 leading-relaxed max-w-3xl animate-in fade-in duration-200">
+                  <div className="pt-3 text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl animate-in fade-in duration-200">
                     {faq.a}
                   </div>
                 )}
