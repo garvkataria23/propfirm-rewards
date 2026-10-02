@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Check, ChevronDown, Globe2, Search, Sparkles } from 'lucide-react';
+import { Check, ChevronDown, Globe2, Search, Sparkles, X } from 'lucide-react';
 
 declare global {
   interface Window {
@@ -187,10 +187,12 @@ export function GoogleTranslate({
   id = 'google_translate_widget',
   className = '',
   compact = false,
+  pill = false,
 }: {
   id?: string;
   className?: string;
   compact?: boolean;
+  pill?: boolean;
 }) {
   const [currentLang, setCurrentLang] = useState('en');
   const [ready, setReady] = useState(false);
@@ -198,6 +200,7 @@ export function GoogleTranslate({
   const [query, setQuery] = useState('');
   const rootRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchRef = useRef<HTMLInputElement>(null);
 
   // Active language details
   const selectedLang = useMemo(() => {
@@ -296,11 +299,19 @@ export function GoogleTranslate({
   // Handle outside click & escape key
   useEffect(() => {
     if (!open) return;
+
+    // Prevent background scrolling while mobile bottom sheet is active
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      document.body.style.overflow = 'hidden';
+    }
+
     const handlePointerDown = (e: PointerEvent) => {
-      if (!rootRef.current?.contains(e.target as Node)) {
+      // For desktop popover, close when clicking outside rootRef
+      if (window.innerWidth >= 640 && !rootRef.current?.contains(e.target as Node)) {
         setOpen(false);
       }
     };
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setOpen(false);
@@ -311,9 +322,18 @@ export function GoogleTranslate({
     document.addEventListener('keydown', handleKeyDown);
 
     // Auto-focus search input when opened
-    const t = window.setTimeout(() => searchInputRef.current?.focus(), 50);
+    const t = window.setTimeout(() => {
+      if (window.innerWidth < 640) {
+        mobileSearchRef.current?.focus();
+      } else {
+        searchInputRef.current?.focus();
+      }
+    }, 60);
 
     return () => {
+      if (typeof window !== 'undefined') {
+        document.body.style.overflow = '';
+      }
       document.removeEventListener('pointerdown', handlePointerDown);
       document.removeEventListener('keydown', handleKeyDown);
       window.clearTimeout(t);
@@ -333,7 +353,6 @@ export function GoogleTranslate({
       combo.value = langCode;
       combo.dispatchEvent(new Event('change', { bubbles: true }));
     } else {
-      // If combo not yet attached, cookie is saved and page reloads seamlessly
       window.location.reload();
     }
   };
@@ -348,16 +367,18 @@ export function GoogleTranslate({
         aria-expanded={open}
         aria-label="Select Language (100+ Available)"
         title="Select Language (100+ Available)"
-        className={`group flex items-center justify-between gap-1.5 rounded-xl border transition-all cursor-pointer font-semibold text-xs select-none ${
-          compact
-            ? 'h-9 px-2.5 bg-white/90 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-purple-400'
-            : 'h-9.5 px-3 bg-white/95 dark:bg-slate-900/90 border-slate-200/90 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-purple-400 hover:shadow-xs'
+        className={`group flex items-center justify-between gap-1 rounded-xl border transition-all cursor-pointer font-bold select-none ${
+          pill
+            ? 'h-9 px-2.5 bg-white/95 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-purple-400 text-xs shadow-2xs'
+            : compact
+            ? 'h-9 px-2.5 bg-white/90 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-purple-400 text-xs'
+            : 'h-9.5 px-3 bg-white/95 dark:bg-slate-900/90 border-slate-200/90 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-purple-400 hover:shadow-xs text-xs'
         }`}
       >
         <span className="flex items-center gap-1.5 truncate">
           <Globe2 className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400 shrink-0 group-hover:rotate-45 transition-transform duration-300" />
-          <span className="truncate max-w-[85px] sm:max-w-[110px] font-bold">
-            {selectedLang.nativeName || selectedLang.label}
+          <span className="truncate max-w-[85px] sm:max-w-[110px] font-bold text-xs uppercase tracking-tight">
+            {pill ? selectedLang.code.toUpperCase() : (selectedLang.nativeName || selectedLang.label)}
           </span>
         </span>
         <ChevronDown
@@ -367,73 +388,187 @@ export function GoogleTranslate({
         />
       </button>
 
-      {/* 100+ Languages Searchable Dropdown */}
+      {/* 100+ Languages Searchable Selector */}
       {open && (
-        <div className="absolute right-0 rtl:right-auto rtl:left-0 top-full mt-2 w-[min(22rem,calc(100vw-2rem))] z-[9999] rounded-2xl border border-purple-100 dark:border-purple-900/50 bg-white dark:bg-slate-950 p-2.5 shadow-2xl backdrop-blur-xl animate-in fade-in-0 zoom-in-95 duration-150">
-          {/* Header & Instant Search Box */}
-          <div className="space-y-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-            <div className="flex items-center justify-between px-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 flex items-center gap-1">
-                <Globe2 className="h-3 w-3" />
-                <span>100+ Languages</span>
-              </span>
-              <span className="text-[10px] text-slate-400 font-medium">Instant AI Translation</span>
-            </div>
-
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search language (e.g. Hindi, Spanish, Arabic)..."
-                className="h-9 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 pl-8.5 pr-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-purple-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
-              />
-            </div>
-          </div>
-
-          {/* Languages Scrollable List */}
+        <>
+          {/* ======================================================== */}
+          {/* 1. Mobile Bottom Sheet Modal (Screens < 640px) */}
+          {/* ======================================================== */}
           <div
-            className="max-h-72 overflow-y-auto pt-1 space-y-0.5 overscroll-contain scrollbar-thin"
-            role="listbox"
+            className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-xs sm:hidden flex items-end justify-center animate-in fade-in-0 duration-200"
+            onClick={() => setOpen(false)}
           >
-            {filteredLanguages.length === 0 ? (
-              <div className="p-4 text-center text-xs text-slate-400">
-                No language found matching &ldquo;{query}&rdquo;
-              </div>
-            ) : (
-              filteredLanguages.map((item) => {
-                const isActive = item.code === currentLang;
-                return (
-                  <button
-                    key={item.code}
-                    type="button"
-                    role="option"
-                    aria-selected={isActive}
-                    onClick={() => handleSelectLanguage(item.code)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-colors cursor-pointer text-xs ${
-                      isActive
-                        ? 'bg-purple-100/80 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200 font-bold border border-purple-200 dark:border-purple-800'
-                        : 'text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900 hover:text-purple-700 dark:hover:text-purple-300'
-                    }`}
-                  >
-                    <div className="flex flex-col min-w-0">
-                      <span className="font-bold truncate text-[13px]">{item.nativeName}</span>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
-                        {item.label} ({item.code})
+            <div
+              className="w-full max-h-[85vh] bg-white dark:bg-slate-950 rounded-t-3xl border-t border-purple-200 dark:border-purple-900/60 p-4 pb-6 shadow-2xl flex flex-col animate-in slide-in-from-bottom duration-250"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Grab Drag Bar */}
+              <div className="w-12 h-1 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mb-3 shrink-0" />
+
+              {/* Sheet Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8.5 w-8.5 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
+                    <Globe2 className="h-4.5 w-4.5" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-black text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <span>Select Language</span>
+                      <span className="text-[10px] font-bold text-purple-600 bg-purple-50 dark:bg-purple-950/60 dark:text-purple-300 px-1.5 py-0.5 rounded-full border border-purple-200 dark:border-purple-800">
+                        100+ AI
                       </span>
                     </div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Instant translation across entire platform
+                    </div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
 
-                    {isActive && (
-                      <Check className="h-4 w-4 text-purple-600 dark:text-purple-400 shrink-0" />
-                    )}
-                  </button>
-                );
-              })
-            )}
+              {/* Mobile Search Input */}
+              <div className="py-3 shrink-0">
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    ref={mobileSearchRef}
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search language (Hindi, Spanish, Arabic, Russian)..."
+                    className="h-10 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 pl-9 pr-8 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-purple-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
+                  />
+                  {query && (
+                    <button
+                      type="button"
+                      onClick={() => setQuery('')}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Mobile Scrollable Language List */}
+              <div
+                className="overflow-y-auto flex-1 divide-y divide-slate-100 dark:divide-slate-800/60 overscroll-contain pr-1"
+                role="listbox"
+              >
+                {filteredLanguages.length === 0 ? (
+                  <div className="p-8 text-center text-xs text-slate-400">
+                    No language found matching &ldquo;{query}&rdquo;
+                  </div>
+                ) : (
+                  filteredLanguages.map((item) => {
+                    const isActive = item.code === currentLang;
+                    return (
+                      <button
+                        key={item.code}
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
+                        onClick={() => handleSelectLanguage(item.code)}
+                        className={`w-full flex items-center justify-between py-3 px-3 rounded-xl text-left transition-colors text-xs ${
+                          isActive
+                            ? 'bg-purple-100/80 dark:bg-purple-950/70 text-purple-900 dark:text-purple-200 font-bold border border-purple-200 dark:border-purple-800'
+                            : 'text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900'
+                        }`}
+                      >
+                        <div className="flex flex-col min-w-0">
+                          <span className="font-bold text-sm text-slate-900 dark:text-white">{item.nativeName}</span>
+                          <span className="text-[11px] text-slate-400 dark:text-slate-500">
+                            {item.label} • {item.code.toUpperCase()}
+                          </span>
+                        </div>
+                        {isActive && (
+                          <div className="h-6 w-6 rounded-full bg-purple-600 text-white flex items-center justify-center shrink-0">
+                            <Check className="h-3.5 w-3.5" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </div>
           </div>
-        </div>
+
+          {/* ======================================================== */}
+          {/* 2. Desktop Floating Dropdown (Screens >= 640px) */}
+          {/* ======================================================== */}
+          <div className="hidden sm:block absolute right-0 rtl:right-auto rtl:left-0 top-full mt-2 w-80 z-[9999] rounded-2xl border border-purple-100 dark:border-purple-900/50 bg-white dark:bg-slate-950 p-2.5 shadow-2xl backdrop-blur-xl animate-in fade-in-0 zoom-in-95 duration-150">
+            {/* Header & Instant Search Box */}
+            <div className="space-y-2 pb-2 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 flex items-center gap-1">
+                  <Globe2 className="h-3 w-3" />
+                  <span>100+ Languages</span>
+                </span>
+                <span className="text-[10px] text-slate-400 font-medium">Instant AI Translation</span>
+              </div>
+
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search language (e.g. Hindi, Spanish, Arabic)..."
+                  className="h-9 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 pl-8.5 pr-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-purple-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* Languages Scrollable List */}
+            <div
+              className="max-h-72 overflow-y-auto pt-1 space-y-0.5 overscroll-contain scrollbar-thin"
+              role="listbox"
+            >
+              {filteredLanguages.length === 0 ? (
+                <div className="p-4 text-center text-xs text-slate-400">
+                  No language found matching &ldquo;{query}&rdquo;
+                </div>
+              ) : (
+                filteredLanguages.map((item) => {
+                  const isActive = item.code === currentLang;
+                  return (
+                    <button
+                      key={item.code}
+                      type="button"
+                      role="option"
+                      aria-selected={isActive}
+                      onClick={() => handleSelectLanguage(item.code)}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-colors cursor-pointer text-xs ${
+                        isActive
+                          ? 'bg-purple-100/80 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200 font-bold border border-purple-200 dark:border-purple-800'
+                          : 'text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900 hover:text-purple-700 dark:hover:text-purple-300'
+                      }`}
+                    >
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-bold truncate text-[13px]">{item.nativeName}</span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
+                          {item.label} ({item.code})
+                        </span>
+                      </div>
+
+                      {isActive && (
+                        <Check className="h-4 w-4 text-purple-600 dark:text-purple-400 shrink-0" />
+                      )}
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

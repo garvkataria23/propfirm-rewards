@@ -449,20 +449,33 @@ export default function HomePage() {
       {/* ======================================================== */}
       {/* 1. TOP ANNOUNCEMENT NOTICE RIBBON (Purple Clean Light Theme) */}
       {/* ======================================================== */}
-      <div className="w-full bg-[#0d0920] text-white py-2 sm:py-2.5 px-4 text-center text-xs sm:text-[13px] font-medium tracking-tight flex items-center justify-center gap-2 border-b border-purple-950">
-        <span>
-          Use Universal Code <strong className="font-mono font-bold text-purple-300 bg-purple-950/80 px-2 py-0.5 rounded border border-purple-500/30">NATION</strong>: 10% OFF New Users | 5% OFF Existing Users
-        </span>
-        <span className="hidden md:inline text-purple-400/50">•</span>
-        <span className="hidden md:inline font-bold text-purple-300">
-          1$ = 10 Reward Points Across All 5 Prop Firms
-        </span>
+      <div className="w-full bg-[#0d0920] text-white py-2 sm:py-2.5 px-3 sm:px-4 text-center text-xs sm:text-[13px] font-medium tracking-tight border-b border-purple-950">
+        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 flex-wrap sm:flex-nowrap">
+          <span className="flex items-center gap-1.5 flex-wrap justify-center text-slate-200">
+            <span>Use Code</span>
+            <button
+              type="button"
+              onClick={() => handleCopyCode('NATION')}
+              className="font-mono font-bold text-purple-300 bg-purple-950/90 hover:bg-purple-900 px-2 py-0.5 rounded border border-purple-500/40 cursor-pointer flex items-center gap-1 active:scale-95 transition-all text-xs"
+              title="Click to copy NATION"
+            >
+              <span>NATION</span>
+              {copiedCode === 'NATION' ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3 text-purple-400" />}
+            </button>
+            <span className="text-purple-200 font-semibold">: 10% OFF New</span>
+            <span className="hidden sm:inline text-purple-300 font-semibold">| 5% OFF Existing</span>
+          </span>
+          <span className="hidden md:inline text-purple-400/50">•</span>
+          <span className="hidden md:inline font-bold text-purple-300">
+            1$ = 10 Reward Points Across All 5 Prop Firms
+          </span>
+        </div>
       </div>
 
       {/* ======================================================== */}
       {/* 2. HERO SECTION (Matching Mobile Reference Screenshot 5) */}
       {/* ======================================================== */}
-      <section className="relative w-full pt-8 pb-14 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28 overflow-hidden bg-white dark:bg-[#070913]">
+      <section className="relative w-full pt-6 pb-12 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28 overflow-hidden bg-white dark:bg-[#070913]">
         {/* Soft Ethereal Atmospheric Glows (Light Purple & Violet) */}
         <div className="absolute top-0 right-0 w-[55vw] h-[55vw] max-w-[800px] max-h-[800px] bg-gradient-to-bl from-purple-200/40 via-violet-100/30 to-transparent dark:from-purple-900/20 dark:via-violet-950/10 rounded-full blur-3xl pointer-events-none -z-10" />
         <div className="absolute top-1/4 left-0 w-[35vw] h-[35vw] max-w-[500px] max-h-[500px] bg-gradient-to-tr from-violet-100/40 via-purple-100/20 to-transparent dark:from-purple-950/15 rounded-full blur-3xl pointer-events-none -z-10" />
@@ -470,26 +483,26 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left / Main Content */}
-            <div className="lg:col-span-7 space-y-5 sm:space-y-7 z-10 text-center lg:text-left flex flex-col items-center lg:items-start">
-              {/* Trustpilot & Google Review Pill (Exact match of Screenshot 5) */}
-              <div className="inline-flex items-center gap-2 rounded-full bg-purple-50 dark:bg-purple-950/60 px-3.5 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 border border-purple-200 dark:border-purple-800 shadow-xs">
-                <div className="flex items-center gap-0.5 text-purple-600 font-bold">
+            <div className="lg:col-span-7 space-y-4 sm:space-y-7 z-10 text-center lg:text-left flex flex-col items-center lg:items-start">
+              {/* Trustpilot & Google Review Pill */}
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-purple-50 dark:bg-purple-950/60 px-3 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs font-semibold text-slate-800 dark:text-slate-200 border border-purple-200 dark:border-purple-800 shadow-xs max-w-full">
+                <div className="flex items-center gap-0.5 text-purple-600 font-bold shrink-0">
                   {'★★★★★'.split('').map((_, i) => (
                     <span key={i} className="text-xs leading-none">★</span>
                   ))}
                 </div>
-                <span className="font-bold text-[11px] text-slate-900 dark:text-slate-100">69,611 reviews Trustpilot</span>
-                <span className="text-purple-400 font-bold">•</span>
-                <span className="font-bold text-[11px] text-amber-500">4.8 rated Google</span>
+                <span className="font-bold text-[10px] sm:text-[11px] text-slate-900 dark:text-slate-100 truncate">69,611 reviews Trustpilot</span>
+                <span className="text-purple-400 font-bold shrink-0">•</span>
+                <span className="font-bold text-[10px] sm:text-[11px] text-amber-500 shrink-0">4.8 Google</span>
               </div>
 
               {/* Headline */}
-              <h1 className="text-3xl sm:text-5xl lg:text-[4.25rem] font-[900] tracking-[-0.035em] text-[#0c1024] dark:text-white leading-[1.08]">
+              <h1 className="text-2xl sm:text-5xl lg:text-[4.25rem] font-[900] tracking-tight text-[#0c1024] dark:text-white leading-[1.12]">
                 Turn your trading skills into luxury rewards
               </h1>
 
               {/* Subtitle */}
-              <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl font-normal">
+              <p className="text-xs sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl font-normal">
                 Join over 3,000,000 traders in the world&apos;s leading prop firm reward ecosystem. Trade simulated accounts with <strong>FundedSquad, Pipstone, FTMO, FundedNext &amp; FundingPips</strong> and earn 10 reward points per $1 spent.
               </p>
 
@@ -503,26 +516,26 @@ export default function HomePage() {
               </div>
 
               {/* Dual Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-center gap-3 w-full pt-1">
+              <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 w-full pt-1">
                 <Link href="/prop-firms" className="w-full sm:w-auto">
-                  <Button className="w-full sm:w-auto bg-[#0c1024] hover:bg-[#15253e] text-white px-7 py-3.5 rounded-full font-bold text-sm tracking-tight shadow-lg shadow-purple-950/20 transition-all h-12">
+                  <Button className="w-full sm:w-auto bg-[#0c1024] hover:bg-[#15253e] text-white px-7 py-3 rounded-full font-bold text-xs sm:text-sm tracking-tight shadow-lg shadow-purple-950/20 transition-all h-11 sm:h-12">
                     Buy Evaluation
                   </Button>
                 </Link>
                 <Link href="/rewards" className="w-full sm:w-auto">
                   <Button
                     variant="outline"
-                    className="w-full sm:w-auto border-purple-200 dark:border-purple-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-purple-950/40 px-7 py-3.5 rounded-full font-semibold text-sm tracking-tight transition-all h-12 shadow-xs"
+                    className="w-full sm:w-auto border-purple-200 dark:border-purple-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-purple-950/40 px-7 py-3 rounded-full font-semibold text-xs sm:text-sm tracking-tight transition-all h-11 sm:h-12 shadow-xs"
                   >
                     Explore Rewards
                   </Button>
                 </Link>
               </div>
 
-              {/* Landing Page Language Selector (100+ Languages with Search) */}
+              {/* Landing Page Language Selector */}
               <div className="flex items-center gap-2 pt-1">
                 <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Language:</span>
-                <GoogleTranslate id="google_translate_landing" />
+                <GoogleTranslate id="google_translate_landing" compact />
               </div>
             </div>
 
