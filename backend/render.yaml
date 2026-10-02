@@ -18,6 +18,8 @@ services:
         value: https://icqkfaurtrkqeqlcegvu.supabase.co
       - key: SUPABASE_KEY
         value: REDACTED_SUPABASE_KEY
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: REDACTED_SERVICE_ROLE_KEY
       - key: JWT_SECRET
         value: REDACTED_JWT_SECRET
       - key: JWT_EXPIRES_IN
