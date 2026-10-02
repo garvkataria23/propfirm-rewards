@@ -186,11 +186,11 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
           onClick={onClose}
           className="flex items-center gap-2.5 group cursor-pointer"
         >
-          <div className="relative h-9 w-9 rounded-lg overflow-hidden shadow-xs group-hover:scale-105 transition-transform bg-black flex items-center justify-center border border-slate-700/40">
+          <div className="relative h-9 w-10 flex items-center justify-center group-hover:scale-105 transition-transform">
             <img
               src="/logo.png"
-              alt="PropNation Logo"
-              className="h-full w-full object-cover"
+              alt="Prop Nation"
+              className="h-full w-auto object-contain select-none"
             />
           </div>
           <span className="text-base font-black tracking-tight text-slate-900 dark:text-white flex items-center">

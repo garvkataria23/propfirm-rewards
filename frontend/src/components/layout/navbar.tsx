@@ -44,18 +44,18 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/90 dark:border-slate-800/80 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Brand Logo - Official PropNation Logo */}
-        <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-3 group">
-          <div className="relative h-10 w-10 rounded-xl overflow-hidden shadow-sm group-hover:scale-105 transition-transform bg-black flex items-center justify-center border border-slate-700/40">
+        {/* Brand Logo - Official PropNation PN Emblem */}
+        <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-2.5 group">
+          <div className="relative h-9 w-10 sm:h-10 sm:w-11 flex items-center justify-center group-hover:scale-105 transition-transform">
             <img
               src="/logo.png"
-              alt="PropNation Logo"
-              className="h-full w-full object-cover"
+              alt="Prop Nation"
+              className="h-full w-auto object-contain drop-shadow-xs select-none"
             />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-black tracking-tight text-[#0c1024] dark:text-white leading-tight">
-              PROP NATION<span className="text-xs font-normal text-emerald-500 dark:text-emerald-400 align-super ml-0.5">®</span>
+            <span className="text-lg font-[900] tracking-tight text-slate-900 dark:text-white leading-tight flex items-center">
+              PROP NATION<span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 align-super ml-0.5">®</span>
             </span>
             <span className="text-[9px] font-bold tracking-widest text-slate-500 uppercase -mt-0.5">
               Trade • Earn • Get Rewarded

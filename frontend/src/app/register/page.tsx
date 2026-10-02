@@ -141,11 +141,11 @@ export default function RegisterPage() {
         {/* Header */}
         <div className="text-center space-y-2">
           <Link href="/" className="inline-block">
-            <div className="h-16 w-16 mx-auto rounded-2xl overflow-hidden shadow-md bg-black border border-slate-700/50 flex items-center justify-center mb-2 hover:scale-105 transition-transform">
+            <div className="h-16 w-20 mx-auto flex items-center justify-center mb-2 hover:scale-105 transition-transform">
               <img
                 src="/logo.png"
-                alt="PropNation Logo"
-                className="h-full w-full object-cover"
+                alt="Prop Nation"
+                className="h-full w-auto object-contain drop-shadow-md select-none"
               />
             </div>
           </Link>

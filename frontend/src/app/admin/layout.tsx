@@ -108,11 +108,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="space-y-6">
           <div className="flex items-center justify-between px-2 py-1">
             <Link href="/admin" className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-xl overflow-hidden shadow-xs bg-black border border-slate-700/50 flex items-center justify-center">
+              <div className="relative h-9 w-10 flex items-center justify-center">
                 <img
                   src="/logo.png"
-                  alt="PropNation Logo"
-                  className="h-full w-full object-cover"
+                  alt="Prop Nation"
+                  className="h-full w-auto object-contain drop-shadow-xs select-none"
                 />
               </div>
               <div>
