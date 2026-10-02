@@ -9,6 +9,7 @@
     "build:backend": "cd backend && npm install && npm run build",
     "start:backend": "cd backend && npm run start:prod",
     "build:frontend": "cd frontend && npm install && npm run build",
-    "start:frontend": "cd frontend && npm run start"
+    "start:frontend": "cd frontend && npm run start",
+    "keepalive": "node scripts/keepalive-daemon.js"
   }
 }

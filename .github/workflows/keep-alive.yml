@@ -1,0 +1,32 @@
+name: 24-7 Keep-Alive Heartbeat
+
+on:
+  schedule:
+    # Runs every 10 minutes to prevent Render 15-minute spin-down and Supabase inactivity pauses
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Frontend & Supabase Heartbeat
+        run: |
+          echo "Sending automated 24/7 keep-alive ping..."
+          FRONTEND_URL="https://frontend-eta-beryl-ezh34u4upe.vercel.app"
+          
+          # 1. Trigger Supabase query via Vercel Edge Cron route
+          curl -s -o /dev/null -w "Supabase Keep-Alive HTTP Status: %{http_code}\n" "${FRONTEND_URL}/api/cron/keep-alive" || true
+          
+          # 2. Ping Frontend Health
+          curl -s -o /dev/null -w "Frontend Health HTTP Status: %{http_code}\n" "${FRONTEND_URL}/api/health" || true
+
+      - name: Ping Render Backend (Prevent 15-min Cold Start)
+        run: |
+          BACKEND_URL="${{ secrets.BACKEND_URL }}"
+          if [ -z "$BACKEND_URL" ]; then
+            BACKEND_URL="https://propfirm-backend.onrender.com"
+          fi
+          echo "Pinging Backend at: ${BACKEND_URL}/health"
+          curl -s -o /dev/null -w "Backend Health HTTP Status: %{http_code}\n" "${BACKEND_URL}/health" || true
+          echo "24/7 Keep-alive check completed successfully at $(date -u)"
