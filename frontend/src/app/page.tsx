@@ -30,6 +30,10 @@ import {
   Activity,
   Building2,
   Lock,
+  Zap,
+  Trophy,
+  TrendingUp,
+  Sliders,
 } from 'lucide-react';
 
 interface PropFirmOffer {
@@ -199,6 +203,7 @@ export default function HomePage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [counterPoints, setCounterPoints] = useState<number>(10000);
+  const [calcSpend, setCalcSpend] = useState<number>(499);
 
   useEffect(() => {
     api
@@ -330,9 +335,12 @@ export default function HomePage() {
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto pt-2">
                 <Link href="/register" className="w-full sm:w-auto">
-                  <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md shadow-emerald-600/20 active:scale-[0.98]">
-                    Start Earning
-                    <ArrowRight className="h-4 w-4 ml-2 stroke-[2.5]" />
+                  <Button className="relative overflow-hidden w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md shadow-emerald-600/20 active:scale-[0.98] group">
+                    <span className="relative z-10 flex items-center justify-center">
+                      Start Earning
+                      <ArrowRight className="h-4 w-4 ml-2 stroke-[2.5] transition-transform duration-300 group-hover:translate-x-1" />
+                    </span>
+                    <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
                   </Button>
                 </Link>
                 <Link href="#rewards" className="w-full sm:w-auto">
@@ -351,9 +359,33 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Right Column: Premium Dashboard Preview Mockup */}
-            <div className="lg:col-span-5 w-full flex justify-center">
-              <div className="w-full max-w-md rounded-2xl bg-white dark:bg-gradient-to-b dark:from-slate-900/95 dark:to-[#0b0f17] border border-slate-200/90 dark:border-slate-800 p-5 sm:p-6 shadow-xl shadow-slate-200/50 dark:shadow-black/80 space-y-5 backdrop-blur-xl relative">
+            {/* Right Column: Premium Dashboard Preview Mockup with Floating Micro-Elements */}
+            <div className="lg:col-span-5 w-full flex justify-center relative">
+              {/* Soft ambient back-glow */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-sky-500/10 rounded-3xl blur-2xl animate-pulse-glow pointer-events-none -z-10" />
+
+              {/* Floating Pill: Live Order Verified */}
+              <div className="animate-float-reverse absolute -top-4 -left-2 sm:-left-6 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-emerald-500/30 px-3.5 py-1.5 rounded-full shadow-lg shadow-emerald-950/5 flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200 select-none">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span className="text-[11px] font-bold">Order #PS-88412</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold text-[11px] bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded">+2,500 PTS</span>
+              </div>
+
+              {/* Floating Pill: VIP Tier Badge */}
+              <div className="animate-float-slow absolute -bottom-3 -right-2 sm:-right-4 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-purple-500/30 px-3.5 py-1.5 rounded-xl shadow-lg shadow-purple-950/5 flex items-center gap-2 text-xs select-none">
+                <div className="h-6 w-6 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
+                  <Trophy className="h-3.5 w-3.5" />
+                </div>
+                <div>
+                  <div className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Tier Status</div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white">Gold Trader VIP</div>
+                </div>
+              </div>
+
+              <div className="w-full max-w-md rounded-2xl bg-white dark:bg-gradient-to-b dark:from-slate-900/95 dark:to-[#0b0f17] border border-slate-200/90 dark:border-slate-800 p-5 sm:p-6 shadow-xl shadow-slate-200/50 dark:shadow-black/80 space-y-5 backdrop-blur-xl relative transition-all duration-300 hover:shadow-2xl">
                 {/* Header Row: Balance */}
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4">
                   <div>
@@ -361,13 +393,13 @@ export default function HomePage() {
                       Available Points
                     </div>
                     <div className="text-3xl font-[900] text-slate-900 dark:text-white tracking-tight font-mono flex items-baseline gap-2 mt-0.5">
-                      <span>{counterPoints.toLocaleString()}</span>
-                      <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-md">
+                      <span className="transition-all duration-300">{counterPoints.toLocaleString()}</span>
+                      <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-md animate-pulse">
                         +2,500 Points
                       </span>
                     </div>
                   </div>
-                  <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                  <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs">
                     <Wallet className="h-5 w-5" />
                   </div>
                 </div>
@@ -383,7 +415,7 @@ export default function HomePage() {
                   </div>
                   {/* Progress bar */}
                   <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[75%]" />
+                    <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[75%] transition-all duration-500" />
                   </div>
                   <div className="flex justify-between text-[11px] text-slate-500 font-medium">
                     <span>12,500 PTS</span>
@@ -397,7 +429,7 @@ export default function HomePage() {
                     Recent Activity
                   </div>
                   <div className="space-y-2 text-xs">
-                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60">
+                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors">
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <div>
@@ -408,7 +440,7 @@ export default function HomePage() {
                       <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+2,500 PTS</span>
                     </div>
 
-                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60">
+                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors">
                       <div className="flex items-center gap-2">
                         <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
                         <div>
@@ -508,70 +540,82 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Desktop Horizontal / Mobile Vertical 5-Step Timeline */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-5 relative">
+          {/* Desktop Horizontal / Mobile Vertical 5-Step Timeline with Animated Connecting Beam */}
+          <div className="relative">
+            {/* Animated glowing connecting beam line (desktop only) */}
+            <div className="hidden md:block absolute top-9 left-12 right-12 h-[2px] bg-slate-200 dark:bg-slate-800 -z-0 overflow-hidden rounded-full">
+              <div className="h-full w-40 bg-gradient-to-r from-transparent via-emerald-500 to-transparent animate-beam-slide" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-5 relative z-10">
             {/* Step 1 */}
-            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
-              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
-                STEP 01
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 group cursor-default shadow-2xs">
+              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
+                <span>STEP 01</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
               </div>
-              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
                 <Search className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Choose a Prop Firm</h3>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Choose a Prop Firm</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Browse eligible prop firms and explore available evaluation offers.
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
-              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
-                STEP 02
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 group cursor-default shadow-2xs">
+              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
+                <span>STEP 02</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
               </div>
-              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
                 <Tag className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Buy Using Our Code</h3>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Buy Using Our Code</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Purchase your eligible account using referral code <strong className="text-slate-900 dark:text-white font-mono">NATION</strong>.
               </p>
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
-              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
-                STEP 03
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 group cursor-default shadow-2xs">
+              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
+                <span>STEP 03</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
               </div>
-              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
                 <FileCheck2 className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Submit Your Proof</h3>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Submit Your Proof</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Upload your order details and invoice receipt to your user dashboard.
               </p>
             </div>
 
             {/* Step 4 */}
-            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
-              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
-                STEP 04
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 group cursor-default shadow-2xs">
+              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
+                <span>STEP 04</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
               </div>
-              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs group-hover:scale-110 group-hover:text-emerald-500 transition-all duration-300">
                 <CheckCircle className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Get Verified</h3>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Get Verified</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Our verification team audits and approves your order confirmation.
               </p>
             </div>
 
             {/* Step 5 */}
-            <div className="rounded-2xl bg-emerald-50/80 dark:bg-emerald-500/[0.04] border border-emerald-300 dark:border-emerald-500/30 p-5 space-y-3 shadow-2xs">
-              <div className="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-400 tracking-wider">
-                STEP 05
+            <div className="card-lift rounded-2xl bg-emerald-50/90 dark:bg-emerald-500/[0.06] border border-emerald-300 dark:border-emerald-500/30 p-5 space-y-3 shadow-2xs group cursor-default relative overflow-hidden">
+              <div className="absolute -right-8 -top-8 w-20 h-20 bg-emerald-400/10 rounded-full blur-xl pointer-events-none group-hover:bg-emerald-400/20 transition-colors" />
+              <div className="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-400 tracking-wider flex items-center justify-between">
+                <span>STEP 05</span>
+                <Sparkles className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 animate-pulse" />
               </div>
-              <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex items-center justify-center">
+              <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-2xs">
                 <Gift className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white">Earn &amp; Redeem</h3>
@@ -580,6 +624,7 @@ export default function HomePage() {
               </p>
             </div>
           </div>
+        </div>
         </div>
       </section>
 
@@ -614,13 +659,13 @@ export default function HomePage() {
             {propFirms.slice(0, 6).map((firm) => (
               <div
                 key={firm.id}
-                className="rounded-2xl bg-white dark:bg-slate-900/50 border border-slate-200/90 dark:border-slate-800 p-6 flex flex-col justify-between space-y-5 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-xs"
+                className="card-lift rounded-2xl bg-white dark:bg-slate-900/50 border border-slate-200/90 dark:border-slate-800 p-6 flex flex-col justify-between space-y-5 group shadow-xs"
               >
                 <div className="space-y-4">
                   {/* Top: Logo + Name */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center text-slate-900 dark:text-white font-black text-sm shrink-0 shadow-2xs">
+                      <div className="h-11 w-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center text-slate-900 dark:text-white font-black text-sm shrink-0 shadow-2xs group-hover:scale-105 transition-transform duration-300">
                         {firm.logoUrl ? (
                           <img
                             src={firm.logoUrl}
@@ -632,11 +677,12 @@ export default function HomePage() {
                         )}
                       </div>
                       <div>
-                        <h4 className="font-bold text-slate-900 dark:text-white text-base leading-snug">{firm.name}</h4>
+                        <h4 className="font-bold text-slate-900 dark:text-white text-base leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{firm.name}</h4>
                         <span className="text-[11px] text-slate-500 font-mono">Code: NATION</span>
                       </div>
                     </div>
-                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                       Verified
                     </span>
                   </div>
@@ -654,7 +700,7 @@ export default function HomePage() {
                       firm.offers.slice(0, 3).map((offer) => (
                         <div
                           key={offer.id}
-                          className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60"
+                          className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60 hover:bg-slate-100/70 dark:hover:bg-slate-900/60 transition-colors"
                         >
                           <span className="text-slate-700 dark:text-slate-300 font-medium">{offer.accountTierName}</span>
                           <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
@@ -664,15 +710,15 @@ export default function HomePage() {
                       ))
                     ) : (
                       <>
-                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60">
+                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60 hover:bg-slate-100/70 dark:hover:bg-slate-900/60 transition-colors">
                           <span className="text-slate-700 dark:text-slate-300 font-medium">$50 Account</span>
                           <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+1,000 PTS</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60">
+                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60 hover:bg-slate-100/70 dark:hover:bg-slate-900/60 transition-colors">
                           <span className="text-slate-700 dark:text-slate-300 font-medium">$100 Account</span>
                           <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+2,500 PTS</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60">
+                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60 hover:bg-slate-100/70 dark:hover:bg-slate-900/60 transition-colors">
                           <span className="text-slate-700 dark:text-slate-300 font-medium">$200 Account</span>
                           <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+5,000 PTS</span>
                         </div>
@@ -689,8 +735,8 @@ export default function HomePage() {
                     rel="noopener noreferrer"
                     className="block"
                   >
-                    <Button className="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-semibold h-10 rounded-xl transition-colors">
-                      View Offer <ExternalLink className="h-3.5 w-3.5 ml-1.5 text-slate-500" />
+                    <Button className="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-semibold h-10 rounded-xl transition-all group-hover:border-emerald-500/40">
+                      View Offer <ExternalLink className="h-3.5 w-3.5 ml-1.5 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </Button>
                   </a>
                 </div>
@@ -728,7 +774,7 @@ export default function HomePage() {
               return (
                 <div
                   key={item.id}
-                  className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 flex flex-col justify-between space-y-6 hover:border-slate-300 dark:hover:border-slate-700 transition-all group shadow-xs"
+                  className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 flex flex-col justify-between space-y-6 group shadow-xs cursor-default"
                 >
                   <div className="space-y-4">
                     {/* Visual image box */}
@@ -737,7 +783,7 @@ export default function HomePage() {
                         <img
                           src={item.imageUrl}
                           alt={item.name}
-                          className="h-full w-full object-cover rounded-lg group-hover/img:scale-105 transition-transform duration-300"
+                          className="h-full w-full object-cover rounded-lg group-hover/img:scale-108 transition-transform duration-500 ease-out"
                         />
                       ) : (
                         <ItemIcon className="h-12 w-12 stroke-[1.5] text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors" />
@@ -748,13 +794,13 @@ export default function HomePage() {
                       <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                         {item.category?.name || 'Exclusive Reward'}
                       </span>
-                      <h4 className="text-base font-bold text-slate-900 dark:text-white mt-0.5 line-clamp-1">
+                      <h4 className="text-base font-bold text-slate-900 dark:text-white mt-0.5 line-clamp-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                         {item.name}
                       </h4>
                     </div>
 
                     <div className="flex items-baseline gap-1.5 pt-1">
-                      <span className="text-2xl font-[900] text-emerald-600 dark:text-emerald-400 font-mono">
+                      <span className="text-2xl font-[900] text-emerald-600 dark:text-emerald-400 font-mono group-hover:scale-105 transition-transform origin-left">
                         {item.pointsRequired.toLocaleString()}
                       </span>
                       <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase">Points</span>
@@ -762,7 +808,7 @@ export default function HomePage() {
                   </div>
 
                   <Link href="/rewards">
-                    <Button variant="outline" className="w-full border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold h-10 rounded-xl shadow-2xs">
+                    <Button variant="outline" className="w-full border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold h-10 rounded-xl shadow-2xs group-hover:border-emerald-500/50 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all">
                       View Reward
                     </Button>
                   </Link>
@@ -798,181 +844,275 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Left: Fintech Wallet Card */}
+            {/* Left: Interactive Points Calculator & Fintech Wallet */}
             <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 space-y-6 shadow-xs flex flex-col justify-between h-full">
               <div className="space-y-6">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                    Wallet Ledger Preview
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <Sliders className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                    Interactive Point Calculator
                   </span>
                   <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5" /> Synchronized
+                    <Zap className="h-3.5 w-3.5 animate-pulse" /> 10x Points Rate
                   </span>
                 </div>
 
-                {/* Large points balance display */}
-                <div className="space-y-1">
-                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    Total Points Accumulated
+                {/* Calculator Slider Box */}
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800/80 space-y-3.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                      Challenge Purchase Price
+                    </span>
+                    <span className="text-base font-black text-slate-900 dark:text-white font-mono">
+                      ${calcSpend} USD
+                    </span>
                   </div>
-                  <div className="text-4xl sm:text-5xl font-[900] text-slate-900 dark:text-white tracking-tight font-mono">
-                    12,500 <span className="text-lg text-emerald-600 dark:text-emerald-400 font-sans font-bold">POINTS</span>
+
+                  {/* Range Slider */}
+                  <input
+                    type="range"
+                    min="50"
+                    max="1200"
+                    step="10"
+                    value={calcSpend}
+                    onChange={(e) => setCalcSpend(Number(e.target.value))}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-600 dark:accent-emerald-500"
+                  />
+
+                  {/* Quick Preset Buttons */}
+                  <div className="grid grid-cols-4 gap-1.5 pt-1">
+                    {[
+                      { label: '$25K', price: 189 },
+                      { label: '$50K', price: 299 },
+                      { label: '$100K', price: 499 },
+                      { label: '$200K', price: 979 },
+                    ].map((tier) => (
+                      <button
+                        key={tier.label}
+                        type="button"
+                        onClick={() => setCalcSpend(tier.price)}
+                        className={`text-[11px] font-semibold py-1 px-2 rounded-lg border transition-all cursor-pointer ${
+                          calcSpend === tier.price
+                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
+                            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-emerald-400'
+                        }`}
+                      >
+                        {tier.label} (${tier.price})
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Calculated Yield Highlight Banner */}
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-200/60 dark:border-slate-800/60 text-xs">
+                    <span className="text-slate-500 font-medium">Points Earned This Challenge:</span>
+                    <span className="font-mono font-black text-emerald-600 dark:text-emerald-400 text-sm">
+                      +{(calcSpend * 10).toLocaleString()} PTS
+                    </span>
                   </div>
                 </div>
 
-                {/* Transaction list */}
-                <div className="space-y-2.5 pt-1">
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
-                    <div>
-                      <div className="font-semibold text-slate-800 dark:text-slate-200">Purchase Verified</div>
-                      <div className="text-[10px] text-slate-500">FundedNext $50K Challenge</div>
-                    </div>
-                    <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-sm">+2,500</span>
+                {/* Ledger preview with dynamic projected total */}
+                <div className="space-y-2 pt-1">
+                  <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <span>Recent Ledger Activity</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-mono">
+                      Projected: {(12500 + calcSpend * 10).toLocaleString()} PTS
+                    </span>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
-                    <div>
-                      <div className="font-semibold text-slate-800 dark:text-slate-200">Account Onboarding Bonus</div>
-                      <div className="text-[10px] text-slate-500">Early Member Tier</div>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40">
+                      <div>
+                        <div className="font-semibold text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
+                          <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                          Projected Next Purchase (${calcSpend})
+                        </div>
+                        <div className="text-[10px] text-emerald-700/80 dark:text-emerald-400/80">Pending Order Confirmation</div>
+                      </div>
+                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+{(calcSpend * 10).toLocaleString()}</span>
                     </div>
-                    <span className="font-mono font-bold text-blue-600 dark:text-blue-400 text-sm">+1,000</span>
-                  </div>
 
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
-                    <div>
-                      <div className="font-semibold text-slate-800 dark:text-slate-200">Reward Redemption</div>
-                      <div className="text-[10px] text-slate-500">Global Digital Gift Card</div>
+                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80">
+                      <div>
+                        <div className="font-semibold text-slate-800 dark:text-slate-200">Purchase Verified</div>
+                        <div className="text-[10px] text-slate-500">FundedNext $50K Challenge</div>
+                      </div>
+                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+2,500</span>
                     </div>
-                    <span className="font-mono font-bold text-rose-600 dark:text-rose-400 text-sm">-5,000</span>
-                  </div>
 
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
-                    <div>
-                      <div className="font-semibold text-slate-800 dark:text-slate-200">Affiliate Referral Yield</div>
-                      <div className="text-[10px] text-slate-500">Tier 2 Verification Bonus</div>
+                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80">
+                      <div>
+                        <div className="font-semibold text-slate-800 dark:text-slate-200">Account Onboarding Bonus</div>
+                        <div className="text-[10px] text-slate-500">Early Member Tier</div>
+                      </div>
+                      <span className="font-mono font-bold text-blue-600 dark:text-blue-400">+1,000</span>
                     </div>
-                    <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-sm">+1,500</span>
                   </div>
                 </div>
               </div>
 
               {/* Bottom aligned balance bar */}
-              <div className="pt-2">
+              <div className="pt-3">
                 <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-100/90 dark:bg-slate-950 border border-slate-300/80 dark:border-slate-700/80 text-xs">
                   <div>
                     <div className="font-bold text-slate-900 dark:text-white">Current Available Balance</div>
                     <div className="text-[10px] text-slate-500 dark:text-slate-400">Ready to redeem</div>
                   </div>
-                  <span className="font-mono font-bold text-slate-900 dark:text-white text-base">8,500</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white text-base">8,500 PTS</span>
                 </div>
               </div>
             </div>
 
-            {/* Right: Reward Progress Card */}
+            {/* Right: Dynamic Reward Goal Progress Card */}
             <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 space-y-6 flex flex-col justify-between h-full shadow-xs">
               <div className="space-y-6">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                    Goal Tracking
+                    Live Goal Tracking
                   </span>
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Target Item</span>
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                    <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
+                    Dynamic Simulation
+                  </span>
                 </div>
 
                 <div className="space-y-1.5">
                   <h3 className="text-2xl sm:text-3xl font-[900] text-slate-900 dark:text-white">You&apos;re getting closer.</h3>
                   <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Set personal reward goals and monitor your progress across all challenge purchases.
+                    Slide the purchase price on the left to see how fast your reward progress bars unlock!
                   </p>
                 </div>
 
-                {/* 3 Tracked Goals Stack */}
-                <div className="space-y-3">
-                  {/* Item 1: Headphones */}
-                  <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
-                          <Headphones className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400" />
-                        </div>
-                        <div>
-                          <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Wireless Headphones</div>
-                          <div className="text-[10px] text-slate-500">20,000 Points Goal</div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-[10px] text-slate-500">Your Points</div>
-                        <div className="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm">12,500</div>
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[62.5%]" />
-                      </div>
-                      <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                        <span>62.5% Completed</span>
-                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">7,500 more to unlock</span>
-                      </div>
-                    </div>
-                  </div>
+                {/* 3 Tracked Goals with Dynamic Reactive Progress */}
+                {(() => {
+                  const projectedTotal = 12500 + calcSpend * 10;
+                  const headphonesGoal = 20000;
+                  const headphonesPct = Math.min(100, Math.round((projectedTotal / headphonesGoal) * 100));
+                  const headphonesLeft = Math.max(0, headphonesGoal - projectedTotal);
 
-                  {/* Item 2: Sneakers */}
-                  <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
-                          <Tag className="h-4.5 w-4.5 text-sky-600 dark:text-sky-400" />
-                        </div>
-                        <div>
-                          <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Streetwear Sneakers</div>
-                          <div className="text-[10px] text-slate-500">15,000 Points Goal</div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-[10px] text-slate-500">Your Points</div>
-                        <div className="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm">12,500</div>
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-sky-500 to-blue-500 rounded-full w-[83.3%]" />
-                      </div>
-                      <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                        <span>83.3% Completed</span>
-                        <span className="font-semibold text-sky-600 dark:text-sky-400">2,500 more to unlock</span>
-                      </div>
-                    </div>
-                  </div>
+                  const sneakersGoal = 15000;
+                  const sneakersPct = Math.min(100, Math.round((projectedTotal / sneakersGoal) * 100));
+                  const sneakersLeft = Math.max(0, sneakersGoal - projectedTotal);
 
-                  {/* Item 3: Gaming Controller / Accessory */}
-                  <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
-                          <Gamepad2 className="h-4.5 w-4.5 text-purple-600 dark:text-purple-400" />
+                  const keyboardGoal = 10000;
+                  const keyboardPct = Math.min(100, Math.round((projectedTotal / keyboardGoal) * 100));
+
+                  return (
+                    <div className="space-y-3">
+                      {/* Item 1: Headphones */}
+                      <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5 transition-all">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2.5">
+                            <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
+                              <Headphones className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400" />
+                            </div>
+                            <div>
+                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Wireless Headphones</div>
+                              <div className="text-[10px] text-slate-500">20,000 Points Goal</div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-[10px] text-slate-500">Projected Points</div>
+                            <div className="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
+                              {projectedTotal.toLocaleString()}
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Mechanical Gaming Keyboard</div>
-                          <div className="text-[10px] text-slate-500">10,000 Points Goal</div>
+                        <div className="space-y-1">
+                          <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500 ease-out"
+                              style={{ width: `${headphonesPct}%` }}
+                            />
+                          </div>
+                          <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                            <span>{headphonesPct}% Completed</span>
+                            {headphonesLeft === 0 ? (
+                              <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                <CheckCircle className="h-3 w-3" /> Unlocked with this purchase!
+                              </span>
+                            ) : (
+                              <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                                {headphonesLeft.toLocaleString()} more to unlock
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-[10px] text-slate-500">Status</div>
-                        <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                          Unlocked
-                        </span>
+
+                      {/* Item 2: Sneakers */}
+                      <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5 transition-all">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2.5">
+                            <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
+                              <Tag className="h-4.5 w-4.5 text-sky-600 dark:text-sky-400" />
+                            </div>
+                            <div>
+                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Streetwear Sneakers</div>
+                              <div className="text-[10px] text-slate-500">15,000 Points Goal</div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-[10px] text-slate-500">Projected Points</div>
+                            <div className="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
+                              {projectedTotal.toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-sky-500 to-blue-500 rounded-full transition-all duration-500 ease-out"
+                              style={{ width: `${sneakersPct}%` }}
+                            />
+                          </div>
+                          <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                            <span>{sneakersPct}% Completed</span>
+                            {sneakersLeft === 0 ? (
+                              <span className="font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1">
+                                <CheckCircle className="h-3 w-3" /> Unlocked with this purchase!
+                              </span>
+                            ) : (
+                              <span className="font-semibold text-sky-600 dark:text-sky-400">
+                                {sneakersLeft.toLocaleString()} more to unlock
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Item 3: Gaming Keyboard */}
+                      <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2.5">
+                            <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
+                              <Gamepad2 className="h-4.5 w-4.5 text-purple-600 dark:text-purple-400" />
+                            </div>
+                            <div>
+                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Mechanical Gaming Keyboard</div>
+                              <div className="text-[10px] text-slate-500">10,000 Points Goal</div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-[10px] text-slate-500">Status</div>
+                            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                              Unlocked
+                            </span>
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[100%]" />
+                          </div>
+                          <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                            <span>100% Completed</span>
+                            <span className="font-semibold text-emerald-600 dark:text-emerald-400">Ready to Claim!</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="space-y-1">
-                      <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[100%]" />
-                      </div>
-                      <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                        <span>100% Completed</span>
-                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">Ready to Claim!</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  );
+                })()}
               </div>
 
               {/* Bottom aligned CTA button */}
@@ -1010,44 +1150,44 @@ export default function HomePage() {
           {/* 4 Feature Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Card 1 */}
-            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
-              <div className="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 flex items-center justify-center">
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 group cursor-default shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
                 <Coins className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Earn Points</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Earn Points</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Get rewarded for eligible verified purchases across top-tier participating prop firms.
               </p>
             </div>
 
             {/* Card 2 */}
-            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
-              <div className="h-10 w-10 rounded-xl bg-blue-100 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 flex items-center justify-center">
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 group cursor-default shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-blue-100 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
                 <ShieldCheck className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Simple Verification</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Simple Verification</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Submit your purchase proof through a simple, friction-free portal in under two minutes.
               </p>
             </div>
 
             {/* Card 3 */}
-            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
-              <div className="h-10 w-10 rounded-xl bg-purple-100 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 text-purple-700 dark:text-purple-400 flex items-center justify-center">
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 group cursor-default shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-purple-100 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 text-purple-700 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
                 <Gift className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Real Rewards</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">Real Rewards</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Redeem accumulated points for physical luxury tech, gaming gear, or instant crypto payouts.
               </p>
             </div>
 
             {/* Card 4 */}
-            <div className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs">
-              <div className="h-10 w-10 rounded-xl bg-teal-100 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/20 text-teal-700 dark:text-teal-400 flex items-center justify-center">
+            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 group cursor-default shadow-2xs">
+              <div className="h-10 w-10 rounded-xl bg-teal-100 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/20 text-teal-700 dark:text-teal-400 flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
                 <Activity className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Track Everything</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">Track Everything</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 See purchases, points and redemptions in one clean, unified trader dashboard.
               </p>
@@ -1075,65 +1215,74 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Large Dashboard Mockup */}
-          <div className="rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-2xl shadow-slate-200/60 dark:shadow-black/60 group">
-            {/* Browser / App Header bar */}
-            <div className="h-11 bg-slate-100/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 backdrop-blur-sm">
-              <div className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-rose-400/90" />
-                <span className="h-3 w-3 rounded-full bg-amber-400/90" />
-                <span className="h-3 w-3 rounded-full bg-emerald-400/90" />
-                <div className="ml-3 hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-mono text-[11px] shadow-2xs">
-                  <Lock className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
-                  <span>app.propnation.com/dashboard</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-[11px] font-mono text-slate-500 hidden md:inline">TRADER PORTAL • ACTIVE</span>
-                <div className="flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400 text-xs bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-200/60 dark:border-emerald-500/20">
-                  <CheckCircle2 className="h-3.5 w-3.5" /> Live &amp; Connected
-                </div>
-              </div>
-            </div>
+          {/* Large Dashboard Mockup with Ambient Glow & Live Tracking */}
+          <div className="relative group">
+            {/* Soft ambient back-glow */}
+            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-indigo-500/10 rounded-3xl blur-2xl animate-pulse-glow pointer-events-none -z-10" />
 
-            {/* Actual Dashboard Screenshot Container */}
-            <div className="relative w-full bg-slate-950 overflow-hidden">
-              <Image
-                src="/dashboard-preview.png"
-                alt="Prop Nation Trader Portal Dashboard"
-                width={1024}
-                height={576}
-                className="w-full h-auto object-cover object-top select-none transition-transform duration-500 group-hover:scale-[1.008]"
-                priority
-              />
-            </div>
-
-            {/* Quick Live Tracking Sub-Bar */}
-            <div className="p-4 sm:p-5 bg-white dark:bg-slate-950 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3 w-full md:w-auto">
-                <div className="h-10 w-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                  <Truck className="h-5 w-5" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-900 dark:text-white">Active Dispatch Tracking</span>
-                    <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">#RW-10294</span>
+            <div className="rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-2xl shadow-slate-200/60 dark:shadow-black/60 transition-all duration-300">
+              {/* Browser / App Header bar */}
+              <div className="h-11 bg-slate-100/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 backdrop-blur-sm">
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full bg-rose-400/90" />
+                  <span className="h-3 w-3 rounded-full bg-amber-400/90" />
+                  <span className="h-3 w-3 rounded-full bg-emerald-400/90" />
+                  <div className="ml-3 hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-mono text-[11px] shadow-2xs">
+                    <Lock className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
+                    <span>app.propnation.com/dashboard</span>
                   </div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Premium Wireless Headphones • Shipped via DHL Express (Waybill #9400 1000 8421)
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-[11px] font-mono text-slate-500 hidden md:inline">TRADER PORTAL • ACTIVE</span>
+                  <div className="flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400 text-xs bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-200/60 dark:border-emerald-500/20">
+                    <CheckCircle2 className="h-3.5 w-3.5" /> Live &amp; Connected
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 text-xs shrink-0 w-full md:w-auto justify-between md:justify-end">
-                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                  <CheckCircle2 className="h-4 w-4" /> Transit In Progress
+              {/* Actual Dashboard Screenshot Container */}
+              <div className="relative w-full bg-slate-950 overflow-hidden">
+                <Image
+                  src="/dashboard-preview.png"
+                  alt="Prop Nation Trader Portal Dashboard"
+                  width={1024}
+                  height={576}
+                  className="w-full h-auto object-cover object-top select-none transition-transform duration-500 group-hover:scale-[1.008]"
+                  priority
+                />
+              </div>
+
+              {/* Quick Live Tracking Sub-Bar */}
+              <div className="p-4 sm:p-5 bg-white dark:bg-slate-950 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                  <div className="h-10 w-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:rotate-6 transition-transform">
+                    <Truck className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                      </span>
+                      <span className="text-xs font-bold text-slate-900 dark:text-white">Active Dispatch Tracking</span>
+                      <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">#RW-10294</span>
+                    </div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Premium Wireless Headphones • Shipped via DHL Express (Waybill #9400 1000 8421)
+                    </div>
+                  </div>
                 </div>
-                <Link href="/register">
-                  <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs h-9 rounded-lg shadow-sm">
-                    Open Trader Portal
-                  </Button>
-                </Link>
+
+                <div className="flex items-center gap-4 text-xs shrink-0 w-full md:w-auto justify-between md:justify-end">
+                  <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+                    <CheckCircle2 className="h-4 w-4" /> Transit In Progress
+                  </div>
+                  <Link href="/register">
+                    <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs h-9 rounded-lg shadow-sm active:scale-[0.98] transition-transform">
+                      Open Trader Portal
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -1194,6 +1343,10 @@ export default function HomePage() {
           Your Next Reward Starts With Your Next Trade.
       ───────────────────────────────────────────────────────────── */}
       <section className="relative w-full py-12 sm:py-16 lg:py-20 overflow-hidden bg-gradient-to-b from-slate-100 to-white dark:from-[#080c14] dark:to-[#05070a]">
+        {/* Ambient background glow orbs */}
+        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-emerald-500/[0.09] rounded-full blur-3xl pointer-events-none animate-pulse-glow" />
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-teal-500/[0.07] rounded-full blur-3xl pointer-events-none animate-pulse-glow" />
+
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
           <Badge variant="outline" className="border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 text-xs">
             Start Today
@@ -1212,9 +1365,12 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
             <Link href="/register" className="w-full sm:w-auto">
-              <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md shadow-emerald-600/20">
-                Get Started Now
-                <ArrowRight className="h-4 w-4 ml-2" />
+              <Button className="relative overflow-hidden w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md shadow-emerald-600/20 active:scale-[0.98] group">
+                <span className="relative z-10 flex items-center justify-center">
+                  Get Started Now
+                  <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
+                </span>
+                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
               </Button>
             </Link>
             <Link href="#rewards" className="w-full sm:w-auto">
