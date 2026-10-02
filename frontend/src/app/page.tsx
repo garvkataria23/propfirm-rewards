@@ -19,6 +19,8 @@ import {
   Clock,
   Layers,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Calculator,
   ExternalLink,
   Wallet,
@@ -44,6 +46,16 @@ import {
   RefreshCw,
   Eye,
   CheckCircle,
+  Play,
+  Tv,
+  Brain,
+  CandlestickChart,
+  Crown,
+  Calendar,
+  Scale,
+  Smartphone,
+  Globe,
+  Radio,
 } from 'lucide-react';
 
 interface PropFirmOffer {
@@ -189,6 +201,83 @@ const MATRIX_DATA: Record<string, Record<string, {
   },
 };
 
+// Video Success Stories Carousel Data (Continuation Image 1)
+const SUCCESS_STORIES = [
+  {
+    amount: '$45,476.80',
+    title: 'HOW RAHUL SCALED FROM $10K TO $100K WITH CODE NATION',
+    coach: 'By Trading Psychology Coach Paulina',
+    firm: 'FundingPips',
+    trader: 'Rahul K. (India)',
+    badge: 'SUCCESS STORY',
+    accent: 'from-blue-900 to-sky-950',
+  },
+  {
+    amount: '$27,153.00',
+    title: 'DIDI REVEALS HIS EVALUATION STRATEGY & RAPID REWARDS',
+    coach: 'By Trading Psychology Coach Paulina',
+    firm: 'FundedSquad',
+    trader: 'Didi M. (France)',
+    badge: 'SUCCESS STORY',
+    accent: 'from-sky-900 to-indigo-950',
+  },
+  {
+    amount: '$39,000.00',
+    title: '28+ TRADES UNBEATABLE RECORD: $39K REWARDS CLAIMED',
+    coach: 'By Trading Psychology Coach Paulina',
+    firm: 'FTMO & FundingPips',
+    trader: 'Tariq A. (UAE)',
+    badge: 'SUCCESS STORY',
+    accent: 'from-blue-950 to-slate-900',
+  },
+  {
+    amount: '$36,500.00',
+    title: 'ARMAN EARNS $36.5K — ZERO EMOTIONS ON 2-STEP',
+    coach: 'By Trading Psychology Coach Paulina',
+    firm: 'Pipstone Capital',
+    trader: 'Arman V. (Armenia)',
+    badge: 'SUCCESS STORY',
+    accent: 'from-indigo-950 to-blue-900',
+  },
+  {
+    amount: '$139,900.00',
+    title: 'SMART MONEY CONFLUENCE: WHEN TIMING MEETS CONFIDENCE',
+    coach: 'By Trading Psychology Coach Paulina',
+    firm: 'FundedNext',
+    trader: 'Jessica L. (UK)',
+    badge: 'SUCCESS STORY',
+    accent: 'from-sky-950 to-blue-900',
+  },
+];
+
+// Masterclass Media Hub Data (Continuation Image 3)
+const MASTERCLASS_TABS = [
+  {
+    id: 'psychology',
+    title: 'Trading Psychology',
+    subtitle: 'Master the habits & mindset behind performance',
+    description: 'Understand how top funded traders manage drawdowns, avoid revenge trading, and stay consistent during high-impact news releases.',
+    instructor: 'Paulina S., Lead Trading Performance Coach',
+    duration: '42 mins • Episode 14',
+  },
+  {
+    id: 'beyond',
+    title: 'Beyond the Charts',
+    subtitle: 'Understand what truly moves the market',
+    description: 'Deep dive into intermarket correlations, bond yields, institutional order flow, and liquidity pool sweeps.',
+    instructor: 'David M., Chief Macro Strategist',
+    duration: '55 mins • Episode 09',
+  },
+  {
+    id: 'tradintv',
+    title: 'TradinTV',
+    subtitle: 'Watch real traders execute live in real time',
+    description: 'Uncut, unfiltered live evaluation passing sessions with commentary on entry timing, stop-loss placement, and risk management.',
+    instructor: 'Alex R., Head of Live Execution',
+    duration: '1 hr 15 mins • Live Stream',
+  },
+];
+
 export default function HomePage() {
   const [propFirms, setPropFirms] = useState<PropFirm[]>([]);
   const [rewards, setRewards] = useState<Reward[]>([]);
@@ -197,6 +286,12 @@ export default function HomePage() {
   // Pricing Matrix Selection
   const [selectedType, setSelectedType] = useState<string>('2step');
   const [selectedSize, setSelectedSize] = useState<string>('5k');
+
+  // Masterclass Tab State (Image 3)
+  const [activeMasterclassTab, setActiveMasterclassTab] = useState<string>('psychology');
+
+  // Video Stories Carousel Scroll State (Image 1)
+  const [storyScrollIdx, setStoryScrollIdx] = useState<number>(0);
 
   // FAQ Accordion State
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -220,6 +315,7 @@ export default function HomePage() {
   };
 
   const currentMatrix = MATRIX_DATA[selectedType]?.[selectedSize] || MATRIX_DATA['2step']['5k'];
+  const activeMasterclass = MASTERCLASS_TABS.find((t) => t.id === activeMasterclassTab) || MASTERCLASS_TABS[0];
 
   const faqs = [
     {
@@ -388,597 +484,393 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 3. "TRADE WITH PEACE OF MIND" SECTION (FundingPips Image 2) */}
+      {/* 3. SUCCESS STORIES VIDEO CAROUSEL (Continuation Image 1 Top) */}
       {/* ======================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
-        <div className="rounded-[2.5rem] bg-gradient-to-r from-emerald-50/70 via-cyan-50/50 to-blue-50/70 dark:from-slate-900/90 dark:via-slate-900/60 dark:to-slate-950/90 border border-slate-200/80 dark:border-slate-800 p-8 sm:p-14 lg:p-16 relative overflow-hidden shadow-sm">
-          {/* Subtle radial decorative glow */}
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-200/30 dark:bg-cyan-900/20 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-            {/* Left Column */}
-            <div className="lg:col-span-6 space-y-6 text-left">
-              <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c182a] dark:text-white leading-[1.12]">
-                Trade with peace of mind
-              </h2>
-
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-lg">
-                No complicated processes. No hidden requirements. A clear path to trading and earning real luxury physical rewards.
-              </p>
-
-              {/* Pill feature tags (Image 2 exact pills) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 rounded-full border border-slate-200/60 dark:border-slate-700/60 shadow-xs">
-                  <RefreshCw className="h-4 w-4 text-emerald-500" />
-                  <span>Flexible Rewards Cycles</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 rounded-full border border-slate-200/60 dark:border-slate-700/60 shadow-xs">
-                  <ShieldCheck className="h-4 w-4 text-blue-500" />
-                  <span>1$ = 10 Points Guaranteed</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 rounded-full border border-slate-200/60 dark:border-slate-700/60 shadow-xs">
-                  <Award className="h-4 w-4 text-purple-500" />
-                  <span>Zero Reward Denial</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 rounded-full border border-slate-200/60 dark:border-slate-700/60 shadow-xs">
-                  <TagIcon className="h-4 w-4 text-amber-500" />
-                  <span>Universal Code: NATION</span>
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <Link href="/prop-firms">
-                  <Button
-                    variant="outline"
-                    className="border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-7 py-3 rounded-full font-bold text-xs shadow-xs hover:bg-slate-50 h-11"
-                  >
-                    Pricing &amp; Catalog
-                  </Button>
-                </Link>
-              </div>
+      <section className="w-full bg-slate-50/60 dark:bg-[#060a15] py-12 sm:py-16 border-y border-slate-100 dark:border-slate-800/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Badge variant="purple" className="bg-[#0c182a] text-white">Verified Trader Interviews</Badge>
+              <span className="text-xs font-bold text-slate-500 dark:text-slate-400 hidden sm:inline">
+                Real Payouts &amp; Challenge Pass Proof
+              </span>
             </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setStoryScrollIdx((prev) => Math.max(0, prev - 1))}
+                className="p-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 transition-colors"
+                title="Previous"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setStoryScrollIdx((prev) => Math.min(SUCCESS_STORIES.length - 1, prev + 1))}
+                className="p-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 transition-colors"
+                title="Next"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
 
-            {/* Right Column: Simulated App Window & Floating 3D Sapphire Gem Card (Image 2) */}
-            <div className="lg:col-span-6 relative">
-              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-xl overflow-hidden text-left p-4 sm:p-6 space-y-4">
-                {/* Browser Titlebar */}
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-2.5 w-2.5 rounded-full bg-rose-400" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-amber-400" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                  </div>
-                  <span className="text-[10px] text-slate-400 font-mono">app.propnation.com/rewards</span>
-                  <div className="w-8" />
-                </div>
-
-                <div className="space-y-1">
-                  <h4 className="text-xs font-bold text-slate-900 dark:text-white">Ready to request your reward?</h4>
-                  <p className="text-[11px] text-slate-500">
-                    Please click on the request button then proceed to fill out the required information.
-                  </p>
-                </div>
-
-                {/* Table Simulation */}
-                <div className="space-y-2 pt-2 text-[11px] text-slate-500">
-                  <div className="grid grid-cols-4 font-semibold text-slate-400 text-[10px] pb-1 border-b border-slate-100 dark:border-slate-800">
-                    <span>Account Type</span>
-                    <span>Request On</span>
-                    <span>Payment Method</span>
-                    <span className="text-right">ID</span>
-                  </div>
-                  <div className="grid grid-cols-4 py-1 border-b border-slate-100/60 dark:border-slate-800/40">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">Master Account</span>
-                    <span>Feb 14, 2026</span>
-                    <span>Card / Wire</span>
-                    <span className="text-right font-mono">5552468012</span>
-                  </div>
-                  <div className="grid grid-cols-4 py-1 border-b border-slate-100/60 dark:border-slate-800/40">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">Master Account</span>
-                    <span>Mar 21, 2026</span>
-                    <span>Rise</span>
-                    <span className="text-right font-mono">5558000800</span>
-                  </div>
-                </div>
-
-                {/* Floating Midnight Blue Glossy 3D Card (Image 2 Exact Asset) */}
-                <div className="relative rounded-2xl bg-[#0c182a] text-white p-5 sm:p-6 shadow-2xl border border-sky-500/20 overflow-hidden flex items-center justify-between">
-                  <div className="space-y-1 z-10">
-                    <span className="text-xs text-sky-300/80 font-medium">Total Rewards Dispatched</span>
-                    <div className="text-2xl sm:text-3xl font-[900] tracking-tight text-white">
-                      $125,721
-                    </div>
-                    <span className="text-[11px] text-slate-400 block pt-2">
-                      Rewards count: <strong>48</strong>
+          {/* Horizontal Story Cards Track */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {SUCCESS_STORIES.slice(storyScrollIdx, storyScrollIdx + 4).map((story, idx) => (
+              <div
+                key={idx}
+                className="group relative rounded-2xl overflow-hidden border border-slate-200/90 dark:border-slate-800 bg-[#0c182a] text-white p-5 space-y-4 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-[10px] font-bold text-sky-400">
+                    <span className="uppercase tracking-widest">{story.badge}</span>
+                    <span className="bg-sky-950/80 px-2 py-0.5 rounded border border-sky-500/30 text-white font-mono">
+                      {story.firm}
                     </span>
                   </div>
 
-                  {/* 3D Sapphire Blue Diamond Art */}
-                  <div className="relative h-20 w-20 sm:h-24 sm:w-24 shrink-0">
-                    <div className="absolute inset-0 bg-sky-500/20 rounded-full blur-xl animate-pulse" />
-                    <div className="h-full w-full rounded-2xl bg-gradient-to-tr from-blue-700 via-sky-400 to-indigo-500 flex items-center justify-center shadow-lg rotate-12 transform hover:rotate-0 transition-transform duration-500">
-                      <Sparkles className="h-10 w-10 text-white" />
-                    </div>
+                  <div className="text-2xl sm:text-3xl font-[900] text-emerald-400 tracking-tight font-mono">
+                    {story.amount}
+                  </div>
+
+                  <h4 className="text-xs font-bold text-slate-100 line-clamp-2 leading-snug group-hover:text-sky-300 transition-colors">
+                    {story.title}
+                  </h4>
+                </div>
+
+                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                  <span className="text-[10px] text-slate-400 truncate max-w-[140px]">
+                    {story.trader}
+                  </span>
+                  <div className="flex items-center gap-1 text-[11px] font-bold text-sky-400 group-hover:translate-x-0.5 transition-transform">
+                    <Play className="h-3 w-3 fill-sky-400" />
+                    <span>Watch</span>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* 4. "HOW IT WORKS" 3-CARD ARCHITECTURE (FundingPips Image 3) */}
+      {/* 4. "TRADE ON YOUR TERMS" SECTION (Continuation Image 1 Bottom) */}
       {/* ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-12">
         <div className="space-y-3 max-w-xl mx-auto">
           <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c182a] dark:text-white">
-            How it works
+            Trade on your terms
           </h2>
           <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 font-normal">
-            No fluff, no fine print. Here&apos;s exactly how it works.
+            Markets, platforms, and payouts, all on your schedule.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 text-left">
-          {/* Card 01: Challenge Phase */}
-          <div className="rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 p-7 sm:p-8 flex flex-col justify-between space-y-8 hover:border-slate-300 transition-colors">
+          {/* Card 1: 5 Markets */}
+          <div className="rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 p-8 space-y-6 flex flex-col justify-between hover:border-slate-300 transition-colors shadow-xs">
             <div className="space-y-6">
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">01 Challenge Phase</span>
-                <h3 className="text-2xl font-[900] text-[#0c182a] dark:text-white tracking-tight">
-                  Pass the Challenge
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Prove your skills in a clear, fair challenge. Use partner code <strong>NATION</strong> across FundedSquad, Pipstone, FTMO, FundedNext, or FundingPips.
+              {/* Minimalist 5 Markets Diagram */}
+              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/70 dark:border-slate-800/80 flex items-center justify-center p-4 relative overflow-hidden">
+                <div className="flex items-center justify-center gap-3">
+                  <div className="h-7 w-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-500">FX</div>
+                  <div className="h-7 w-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-500">MET</div>
+                  <div className="h-12 w-12 rounded-xl bg-[#0c182a] text-white flex items-center justify-center font-bold shadow-md">
+                    <CandlestickChart className="h-6 w-6 text-sky-400" />
+                  </div>
+                  <div className="h-7 w-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-500">ENG</div>
+                  <div className="h-7 w-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-500">BTC</div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-[900] text-[#0c182a] dark:text-white">5 Markets.</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                  The five core asset classes FX, Metals, Energies, Crypto and Indices in global financial markets.
                 </p>
               </div>
-
-              {/* Checklist Graphic (Image 3 exact UI) */}
-              <div className="space-y-2.5 bg-white dark:bg-slate-950 p-4 rounded-2xl border border-slate-200/70 dark:border-slate-800/80 shadow-xs">
-                {[
-                  'Profit target reached',
-                  'Max. daily loss adhered',
-                  'Max. loss static rule',
-                  'Min. trading days achieved',
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200 py-1 border-b border-slate-100 dark:border-slate-800 last:border-0">
-                    <span>{item}</span>
-                    <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-slate-200/60 dark:border-slate-800">
-              <p className="text-xs text-slate-500 italic">
-                &ldquo;The platform is smooth, execution is fast, and the rules are clear and fair.&rdquo;
-              </p>
-              <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 block mt-1">
-                Alaa Smaisem, Turkey
-              </span>
             </div>
           </div>
 
-          {/* Card 02: Rewards */}
-          <div className="rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 p-7 sm:p-8 flex flex-col justify-between space-y-8 hover:border-slate-300 transition-colors">
+          {/* Card 2: 5 Partner Prop Firms */}
+          <div className="rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 p-8 space-y-6 flex flex-col justify-between hover:border-slate-300 transition-colors shadow-xs">
             <div className="space-y-6">
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">02 Rewards</span>
-                <h3 className="text-2xl font-[900] text-[#0c182a] dark:text-white tracking-tight">
-                  Real Cash &amp; Tech. Fast.
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Submit your purchase invoice or screen recording. Our automated OCR parser awards 10 reward points per $1 spent within minutes.
+              {/* Clean Floating Prop Firm Logo Tiles */}
+              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/70 dark:border-slate-800/80 flex items-center justify-center p-4 gap-2">
+                <div className="h-10 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700">
+                  FundedSquad
+                </div>
+                <div className="h-11 px-3.5 rounded-xl bg-[#0c182a] text-white flex items-center justify-center text-xs font-bold shadow-md">
+                  FundingPips
+                </div>
+                <div className="h-10 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700">
+                  FTMO
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-[900] text-[#0c182a] dark:text-white">5 Partner Prop Firms.</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                  Supported across FundedSquad, Pipstone, FTMO, FundedNext, and FundingPips with universal code NATION.
                 </p>
               </div>
-
-              {/* Floating Navy 3D Card (Image 3 exact UI) */}
-              <div className="rounded-2xl bg-[#0c182a] text-white p-6 shadow-xl border border-sky-500/20 text-center space-y-2">
-                <span className="text-[10px] font-bold tracking-widest text-sky-400 uppercase">
-                  PropNation Rewards
-                </span>
-                <div className="text-3xl font-[900] text-white tracking-tight">
-                  $314M+
-                </div>
-                <span className="text-[11px] text-slate-400 block">
-                  Total rewarded to traders
-                </span>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-slate-200/60 dark:border-slate-800">
-              <p className="text-xs text-slate-500 italic">
-                &ldquo;The rewards arriving in my wallet within minutes. Easiest cashback system in the industry.&rdquo;
-              </p>
-              <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 block mt-1">
-                Rinaldi Relagus, Indonesia
-              </span>
             </div>
           </div>
 
-          {/* Card 03: Scaling Plan */}
-          <div className="rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 p-7 sm:p-8 flex flex-col justify-between space-y-8 hover:border-slate-300 transition-colors">
+          {/* Card 3: Get Paid Your Way */}
+          <div className="rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 p-8 space-y-6 flex flex-col justify-between hover:border-slate-300 transition-colors shadow-xs">
             <div className="space-y-6">
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">03 Scaling Plan</span>
-                <h3 className="text-2xl font-[900] text-[#0c182a] dark:text-white tracking-tight">
-                  Scale PRIME Capital
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Trade your way from challenge to $2M PRIME capital, with daily rewards and luxury physical rewards (Nike, Apple, Rolex).
+              {/* Payout Frequency Tabs & Wallet Diagram */}
+              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/70 dark:border-slate-800/80 flex flex-col items-center justify-center p-4 space-y-2">
+                <div className="h-10 w-10 rounded-xl bg-[#0c182a] text-white flex items-center justify-center shadow-md">
+                  <Wallet className="h-5 w-5 text-emerald-400" />
+                </div>
+                <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400">
+                  <span className="px-2 py-0.5 rounded">Weekly</span>
+                  <span className="bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full font-bold border border-emerald-500/20">Bi-Weekly</span>
+                  <span className="px-2 py-0.5 rounded">Monthly</span>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-[900] text-[#0c182a] dark:text-white">Get Paid your way.</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                  Balancing quick access to capital with overall account growth and real luxury physical rewards.
                 </p>
               </div>
-
-              {/* Rising Bar Chart Graphic (Image 3 exact UI) */}
-              <div className="h-32 bg-white dark:bg-slate-950 p-4 rounded-2xl border border-slate-200/70 dark:border-slate-800/80 shadow-xs flex items-end justify-between gap-2">
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-t h-10" />
-                  <span className="text-[9px] text-slate-400 font-semibold">$10k</span>
-                </div>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-t h-14" />
-                  <span className="text-[9px] text-slate-400 font-semibold">$25k</span>
-                </div>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full bg-slate-300 dark:bg-slate-700 rounded-t h-20" />
-                  <span className="text-[9px] text-slate-400 font-semibold">$50k</span>
-                </div>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full bg-sky-200 dark:bg-sky-900/40 rounded-t h-24" />
-                  <span className="text-[9px] text-slate-400 font-semibold">$165k</span>
-                </div>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full bg-[#0c182a] dark:bg-sky-500 rounded-t h-28 relative">
-                    <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[9px] font-bold text-sky-600 dark:text-sky-300">$2M</span>
-                  </div>
-                  <span className="text-[9px] text-slate-900 dark:text-white font-bold">PRIME</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-slate-200/60 dark:border-slate-800">
-              <p className="text-xs text-slate-500 italic">
-                &ldquo;What began with a humble $10K account has now grown into an impressive $165K with luxury tech rewards.&rdquo;
-              </p>
-              <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 block mt-1">
-                Vipul Gupta, India
-              </span>
             </div>
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* 5. "CFD'S GLORY DAYS ARE BACK!" BANNER (Image 4 Top) */}
+      {/* 5. "YOUR SKILL IS OUR CAPITAL" 3-STAGE PATHWAY (Continuation Image 2) */}
       {/* ======================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4 text-center space-y-6">
-        <h2 className="text-2xl sm:text-4xl font-[900] text-[#0c182a] dark:text-white tracking-tight">
-          CFD&apos;s Glory Days Are Back!
-        </h2>
-
-        {/* 3 Green Pill Checkmarks */}
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/20 px-4 py-2 rounded-full text-xs font-bold">
-            <CheckCircle className="h-4 w-4 text-emerald-500" />
-            <span>No Striking System</span>
-          </div>
-          <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/20 px-4 py-2 rounded-full text-xs font-bold">
-            <CheckCircle className="h-4 w-4 text-emerald-500" />
-            <span>No Risk Per Trade Idea</span>
-          </div>
-          <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/20 px-4 py-2 rounded-full text-xs font-bold">
-            <CheckCircle className="h-4 w-4 text-emerald-500" />
-            <span>No Profit Concentration</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* 6. INTERACTIVE PRICING & CHALLENGE MATRIX (Image 4 Exact UI) */}
-      {/* ======================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 text-center space-y-10" id="pricing">
-        <div className="space-y-2 max-w-xl mx-auto">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Pricing</span>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-12">
+        <div className="space-y-3 max-w-xl mx-auto">
           <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c182a] dark:text-white">
-            Choose your challenge
+            Your skill is our capital
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-normal">
-            1 Step, 2 Step, or Zero. Multiple routes to match your trading style and budget.
+          <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 font-normal">
+            A structured path from proving your edge in sim to trading PRIME capital.
           </p>
         </div>
 
-        {/* Step 1: Challenge Type Toggle Pills */}
-        <div className="space-y-2">
-          <span className="text-xs font-semibold text-slate-400">1 Challenge type</span>
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            {CHALLENGE_TYPES.map((type) => (
-              <button
-                key={type.id}
-                onClick={() => setSelectedType(type.id)}
-                className={`px-5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
-                  selectedType === type.id
-                    ? 'bg-[#0c182a] text-white shadow-md'
-                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
-                }`}
-              >
-                <div className="text-[10px] opacity-70 font-normal">{type.subtitle}</div>
-                <div className="text-sm font-extrabold">{type.label}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Step 2: Account Size Toggle Pills */}
-        <div className="space-y-2">
-          <span className="text-xs font-semibold text-slate-400">2 Account size</span>
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            {ACCOUNT_SIZES.map((size) => (
-              <button
-                key={size.id}
-                onClick={() => setSelectedSize(size.id)}
-                className={`px-5 py-2 rounded-xl text-xs font-bold font-mono transition-all ${
-                  selectedSize === size.id
-                    ? 'bg-[#0c182a] text-white shadow-md'
-                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
-                }`}
-              >
-                {size.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 3 Comparison Cards (Standard / FLEX / Pro) - Image 4 exact columns */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left pt-6">
-          {/* Card: Standard */}
-          <div className="rounded-3xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 space-y-6 flex flex-col justify-between shadow-xs">
-            <div className="space-y-4">
-              <div className="text-center pb-4 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Standard</span>
-                <h4 className="text-lg font-[900] text-[#0c182a] dark:text-white mt-0.5">Biggest Daily Loss</h4>
-              </div>
-
-              <div className="space-y-3 text-xs">
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Target</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{currentMatrix.standard.target}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Max Loss (Static)</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{currentMatrix.standard.maxLoss}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Min Days</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{currentMatrix.standard.minDays}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Split</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">{currentMatrix.standard.split}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-              <div className="flex items-baseline justify-between">
-                <div>
-                  <span className="text-2xl font-[900] text-[#0c182a] dark:text-white">${currentMatrix.standard.price}</span>
-                  <span className="text-[11px] text-slate-400 ml-1">USD</span>
-                </div>
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
-                  +{currentMatrix.standard.points} PTS
-                </span>
-              </div>
-              <Link href="/prop-firms">
-                <Button className="w-full bg-[#0c182a] hover:bg-[#15253e] text-white font-bold text-xs h-11 rounded-xl">
-                  Buy for ${currentMatrix.standard.price}
-                </Button>
-              </Link>
-            </div>
-          </div>
-
-          {/* Card: FLEX (Featured in Center with Navy Badge) */}
-          <div className="rounded-3xl bg-white dark:bg-slate-950 border-2 border-[#0c182a] dark:border-sky-500 p-6 sm:p-8 space-y-6 flex flex-col justify-between shadow-lg relative">
-            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#0c182a] text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border border-white/20">
-              FLEX • Most Popular
-            </div>
-
-            <div className="space-y-4 pt-1">
-              <div className="text-center pb-4 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] font-bold uppercase text-sky-600 dark:text-sky-400 tracking-wider">FLEX Model</span>
-                <h4 className="text-lg font-[900] text-[#0c182a] dark:text-white mt-0.5">Biggest Max Loss</h4>
-              </div>
-
-              <div className="space-y-3 text-xs">
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Target</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{currentMatrix.flex.target}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Max Loss (Static)</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{currentMatrix.flex.maxLoss}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Min Days</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{currentMatrix.flex.minDays}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Split</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">{currentMatrix.flex.split}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-              <div className="flex items-baseline justify-between">
-                <div>
-                  <span className="text-2xl font-[900] text-[#0c182a] dark:text-white">${currentMatrix.flex.price}</span>
-                  <span className="text-[11px] text-slate-400 ml-1">USD</span>
-                </div>
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
-                  +{currentMatrix.flex.points} PTS
-                </span>
-              </div>
-              <Link href="/prop-firms">
-                <Button className="w-full bg-[#0c182a] hover:bg-[#15253e] text-white font-bold text-xs h-11 rounded-xl shadow-md">
-                  Buy for ${currentMatrix.flex.price}
-                </Button>
-              </Link>
-            </div>
-          </div>
-
-          {/* Card: Pro */}
-          <div className="rounded-3xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 space-y-6 flex flex-col justify-between shadow-xs">
-            <div className="space-y-4">
-              <div className="text-center pb-4 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Pro</span>
-                <h4 className="text-lg font-[900] text-[#0c182a] dark:text-white mt-0.5">Lowest Profit Target</h4>
-              </div>
-
-              <div className="space-y-3 text-xs">
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Target</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{currentMatrix.pro.target}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Max Loss (Static)</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{currentMatrix.pro.maxLoss}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Min Days</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{currentMatrix.pro.minDays}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                  <span className="text-slate-500">Split</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">{currentMatrix.pro.split}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-              <div className="flex items-baseline justify-between">
-                <div>
-                  <span className="text-2xl font-[900] text-[#0c182a] dark:text-white">${currentMatrix.pro.price}</span>
-                  <span className="text-[11px] text-slate-400 ml-1">USD</span>
-                </div>
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
-                  +{currentMatrix.pro.points} PTS
-                </span>
-              </div>
-              <Link href="/prop-firms">
-                <Button className="w-full bg-[#0c182a] hover:bg-[#15253e] text-white font-bold text-xs h-11 rounded-xl">
-                  Buy for ${currentMatrix.pro.price}
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* 5 Prop Firms Switcher Ribbon */}
-        <div className="pt-6">
-          <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider block mb-3">
-            Supported Partner Prop Firms (Code: NATION)
-          </span>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            {['FundedSquad', 'Pipstone Capital', 'FTMO', 'FundedNext', 'FundingPips'].map((firm, idx) => (
-              <Link
-                key={idx}
-                href="/prop-firms"
-                className="bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 px-4 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors"
-              >
-                {firm} • 1$ = 10 PTS
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* 7. "TRADER'S JOURNEY" CASE STUDY SECTION (FundingPips Image 5) */}
-      {/* ======================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-        <div className="space-y-10">
-          <div className="text-left space-y-1">
-            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c182a] dark:text-white">
-              Trader&apos;s Journey
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Case study • 4 Jul → 21 Jul • $100K 2 Step Pro
+        {/* 3 Connected Stage Cards on Orbit */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left relative max-w-5xl mx-auto">
+          {/* Stage 1 */}
+          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 space-y-3 shadow-md hover:-translate-y-1 transition-transform">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
+              <Target className="h-3.5 w-3.5 text-sky-500" />
+              Stage 1
+            </span>
+            <h4 className="text-xl font-[900] text-[#0c182a] dark:text-white">Prove your edge</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              On Sim &amp; grow with PRIME. Complete challenge objectives with zero hidden drawdown tricks.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Timeline Milestones (Image 5 exact UI) */}
-            <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
-              {/* Step 1 */}
-              <div className="space-y-4 p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
-                <span className="text-xs font-bold text-slate-400">Jul 4</span>
-                <div className="space-y-1">
-                  <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Evaluation Purchased</div>
-                  <div className="text-2xl font-[900] text-[#0c182a] dark:text-white">$466</div>
-                  <span className="text-[10px] text-slate-400 block">$100K 2 Step Pro</span>
-                </div>
-              </div>
+          {/* Stage 2 */}
+          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 space-y-3 shadow-md hover:-translate-y-1 transition-transform">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
+              <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
+              Stage 2
+            </span>
+            <h4 className="text-xl font-[900] text-[#0c182a] dark:text-white">Scale PRIME capital</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Scale all the way to $2M allocation with compounding rewards and higher profit splits.
+            </p>
+          </div>
 
-              {/* Step 2 */}
-              <div className="space-y-4 p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
-                <span className="text-xs font-bold text-slate-400">Jul 4</span>
-                <div className="space-y-1">
-                  <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Phase 1 Passed</div>
-                  <div className="text-xl font-[900] text-emerald-600 dark:text-emerald-400">Same day</div>
-                  <span className="text-[10px] text-slate-400 block">Status: ✓ Clear</span>
-                </div>
-              </div>
+          {/* Stage 3: Midnight Navy Card with Crown */}
+          <div className="rounded-3xl bg-[#0c182a] text-white p-6 sm:p-8 space-y-3 shadow-2xl border border-sky-500/30 hover:-translate-y-1 transition-transform relative overflow-hidden">
+            <div className="absolute top-2 right-2 text-2xl">👑</div>
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-sky-950 px-3 py-1 rounded-full border border-sky-500/40">
+              <Crown className="h-3.5 w-3.5 text-amber-400" />
+              Stage 3
+            </span>
+            <h4 className="text-xl font-[900] text-white">Become a fund manager</h4>
+            <p className="text-xs text-slate-300">
+              Earn directly from investor capital with lifetime VIP reward perks and instant cashouts.
+            </p>
+          </div>
+        </div>
 
-              {/* Step 3 */}
-              <div className="space-y-4 p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
-                <span className="text-xs font-bold text-slate-400">Jul 9</span>
-                <div className="space-y-1">
-                  <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Phase 2 Passed</div>
-                  <div className="text-xl font-[900] text-emerald-600 dark:text-emerald-400">✓ Funded</div>
-                  <span className="text-[10px] text-slate-400 block">5 days after Phase 1</span>
-                </div>
-              </div>
+        {/* Feature Pills & Buttons */}
+        <div className="space-y-6 pt-4">
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-900 px-4 py-2 rounded-full text-xs font-bold text-slate-700 dark:text-slate-300">
+              <Calendar className="h-4 w-4 text-emerald-500" />
+              <span>80% Daily Rewards</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-900 px-4 py-2 rounded-full text-xs font-bold text-slate-700 dark:text-slate-300">
+              <Scale className="h-4 w-4 text-blue-500" />
+              <span>Up to 1:2000 leverage</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-900 px-4 py-2 rounded-full text-xs font-bold text-slate-700 dark:text-slate-300">
+              <Coins className="h-4 w-4 text-amber-500" />
+              <span>1$ = 10 PTS Cashback</span>
+            </div>
+          </div>
 
-              {/* Step 4 */}
-              <div className="space-y-4 p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
-                <span className="text-xs font-bold text-slate-400">Jul 21</span>
-                <div className="space-y-1">
-                  <div className="text-xs font-bold text-slate-800 dark:text-slate-200">First Reward In</div>
-                  <div className="text-xl font-[900] text-emerald-600 dark:text-emerald-400">$4,050<span className="text-xs font-normal">.90</span></div>
-                  <span className="text-[10px] text-slate-400 block">Via Rise in 9 hrs</span>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link href="/prop-firms">
+              <Button className="bg-[#0c182a] hover:bg-[#15253e] text-white font-bold text-xs h-11 px-7 rounded-full shadow-md">
+                Get Started
+              </Button>
+            </Link>
+            <Link href="/how-it-works">
+              <Button variant="outline" className="border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white font-bold text-xs h-11 px-7 rounded-full">
+                See roadmap
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 6. "BUILT BY TRADERS, FOR TRADERS" MASTERCLASS HUB (Continuation Image 3) */}
+      {/* ======================================================== */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-10">
+        <div className="space-y-3 max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c182a] dark:text-white">
+            Built by traders, for traders. Your growth is our mission
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            At PropNation we don&apos;t just reward traders. We build them.
+          </p>
+        </div>
+
+        {/* Video Player Hero Frame (Continuation Image 3) */}
+        <div className="max-w-5xl mx-auto rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-[#0c182a] text-white shadow-2xl relative">
+          <div className="aspect-[16/9] sm:aspect-[21/9] w-full relative flex items-center justify-center overflow-hidden">
+            <img
+              src="/fundingpips-masterclass.jpg"
+              alt="Trading Masterclass"
+              className="w-full h-full object-cover opacity-60"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0c182a] via-[#0c182a]/50 to-transparent" />
+
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center space-y-4 z-10">
+              <span className="text-xs font-bold text-sky-400 uppercase tracking-widest bg-sky-950/80 px-3 py-1 rounded-full border border-sky-500/30">
+                {activeMasterclass.title}
+              </span>
+              <h3 className="text-2xl sm:text-4xl font-[900] text-white tracking-tight max-w-2xl">
+                {activeMasterclass.subtitle}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 max-w-xl hidden sm:block">
+                {activeMasterclass.description}
+              </p>
+              <button className="bg-white hover:bg-slate-100 text-[#0c182a] font-bold text-xs px-6 py-3 rounded-full flex items-center gap-2 shadow-lg transition-transform hover:scale-105">
+                <Play className="h-3.5 w-3.5 fill-[#0c182a]" />
+                <span>Watch last episode</span>
+              </button>
+            </div>
+          </div>
+
+          {/* 3 Selectable Masterclass Episode Tabs Below */}
+          <div className="p-4 sm:p-6 bg-[#08101d] grid grid-cols-1 sm:grid-cols-3 gap-3 border-t border-slate-800">
+            {MASTERCLASS_TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveMasterclassTab(tab.id)}
+                className={`p-4 rounded-2xl text-left transition-all space-y-1 ${
+                  activeMasterclassTab === tab.id
+                    ? 'bg-[#0f1d33] border-2 border-sky-400 shadow-md'
+                    : 'bg-[#0a1424] hover:bg-[#0d192d] border border-slate-800'
+                }`}
+              >
+                <div className="text-xs font-bold text-white flex items-center justify-between">
+                  <span>{tab.title}</span>
+                  {activeMasterclassTab === tab.id && <span className="h-2 w-2 rounded-full bg-sky-400" />}
                 </div>
+                <p className="text-[11px] text-slate-400 line-clamp-1">
+                  {tab.subtitle}
+                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 7. DISCORD COMMUNITY & LIVE BOT UPDATES (Continuation Image 4 Top) */}
+      {/* ======================================================== */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          {/* Left Column */}
+          <div className="lg:col-span-5 space-y-6 text-left">
+            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c182a] dark:text-white leading-[1.12]">
+              Learn, grow and connect with traders worldwide
+            </h2>
+
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Traders from 195 countries trust our platform and celebrate daily cashback payouts in our active community.
+            </p>
+
+            <div className="flex items-center gap-8 pt-2">
+              <div>
+                <span className="text-xs text-slate-400 block">Traders</span>
+                <span className="text-2xl font-[900] text-[#0c182a] dark:text-white">3 million+</span>
+              </div>
+              <div className="border-l border-slate-200 dark:border-slate-800 pl-8">
+                <span className="text-xs text-slate-400 block">Rewards Distributed</span>
+                <span className="text-2xl font-[900] text-[#0c182a] dark:text-white">$314M+</span>
               </div>
             </div>
 
-            {/* Right Side Navy Highlight Box (Image 5 exact UI) */}
-            <div className="lg:col-span-4 space-y-3">
-              <div className="rounded-xl bg-slate-100/80 dark:bg-slate-900/80 p-3 text-left text-xs border border-slate-200 dark:border-slate-800">
-                <div className="text-amber-400 font-bold mb-1">★★★★★</div>
-                <p className="text-slate-600 dark:text-slate-300 italic">
-                  &ldquo;Best of the best, I&apos;ve been with them for 2 years now&rdquo;
-                </p>
-                <span className="text-[10px] font-bold text-slate-400 block mt-1">— Majed M.</span>
+            <div className="pt-2">
+              <a
+                href="https://discord.gg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button className="bg-[#0c182a] hover:bg-[#15253e] text-white font-bold text-xs h-12 px-7 rounded-full shadow-md">
+                  Join Discord Community
+                </Button>
+              </a>
+            </div>
+          </div>
+
+          {/* Right Column: iPad / Tablet Mockup of Discord Server (Image 4 exact UI) */}
+          <div className="lg:col-span-7">
+            <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-[#0c182a] text-white p-5 sm:p-7 shadow-2xl space-y-4 text-left">
+              {/* Discord Server Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-2xl bg-sky-500 text-white flex items-center justify-center font-bold text-sm shadow-md">
+                    PN
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span>PropNation Community</span>
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    </div>
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      8,435 Online • 220,057 Members
+                    </span>
+                  </div>
+                </div>
+                <Badge variant="success">#rewards-live-updates</Badge>
               </div>
 
-              <div className="rounded-2xl bg-[#0c182a] text-white p-6 shadow-2xl border border-sky-500/20 text-center space-y-4">
-                <div className="space-y-1">
-                  <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">
-                    9 Total Rewards
-                  </span>
-                  <div className="text-4xl font-[900] text-white tracking-tight">
-                    5,531%
-                  </div>
-                  <span className="text-xs text-sky-300/80 font-mono block">
-                    $466 → $26,242
-                  </span>
+              {/* Live Discord Bot Notifications Stream */}
+              <div className="space-y-2.5 font-mono text-xs text-slate-300 pt-2">
+                <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-2">
+                  <span className="text-sky-400 font-bold shrink-0">🤖 Bot:</span>
+                  <span className="truncate">An FP Trader from NL just secured a <strong className="text-emerald-400 font-bold">$965.20 reward</strong>! 🔥</span>
                 </div>
-
-                <Link href="/prop-firms">
-                  <Button className="w-full bg-white hover:bg-slate-100 text-[#0c182a] font-bold text-xs h-10 rounded-xl">
-                    Buy Challenge
-                  </Button>
-                </Link>
+                <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-2">
+                  <span className="text-sky-400 font-bold shrink-0">🤖 Bot:</span>
+                  <span className="truncate">An FS Trader from DE just claimed an <strong className="text-sky-400 font-bold">Apple Watch Ultra</strong>! 🔥</span>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-2">
+                  <span className="text-sky-400 font-bold shrink-0">🤖 Bot:</span>
+                  <span className="truncate">A Pipstone Trader from US just secured a <strong className="text-emerald-400 font-bold">$1,250.00 reward</strong>! 🔥</span>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-2">
+                  <span className="text-sky-400 font-bold shrink-0">🤖 Bot:</span>
+                  <span className="truncate">An FTMO Trader from UK just claimed a <strong className="text-purple-400 font-bold">MacBook Pro M3</strong>! 🔥</span>
+                </div>
               </div>
             </div>
           </div>
@@ -986,65 +878,137 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 8. "REAL TRADERS, REAL REWARDS, REAL IMPACT" TESTIMONIALS (Image 5 Bottom) */}
+      {/* 8. LIVE BROKER & ECOSYSTEM ADVANTAGE (Continuation Image 4 Bottom) */}
       {/* ======================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-slate-100 dark:border-slate-800 text-center space-y-12">
-        <div className="space-y-3 max-w-2xl mx-auto">
-          <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c182a] dark:text-white">
-            Real traders, real rewards, real impact
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
-            Hear it directly from traders who passed their challenge and received their reward. These are real stories from traders whose lives changed with each dollar they received.
-          </p>
-        </div>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-slate-100 dark:border-slate-800">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-6 space-y-6 text-left">
+            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c182a] dark:text-white leading-[1.12]">
+              Ecosystem advantage &amp; regulated execution
+            </h2>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Built for traders by traders. The trader-first experience you trust, now available with seamless cashback and automated payouts across all 5 firms.
+            </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-          {[
-            {
-              trader: 'Marcus Lindholm',
-              country: 'Sweden 🇸🇪',
-              firm: 'FTMO & Funding Pips',
-              payout: '$18,400 Payout + MacBook Pro M3',
-              quote: 'Code NATION gave me 10% off my $200K evaluation and I got 11,800 points credited in 24 hours. The MacBook arrived in Stockholm 3 days later!',
-            },
-            {
-              trader: 'Tariq Al-Mansoor',
-              country: 'UAE 🇦🇪',
-              firm: 'FundedSquad $100K',
-              payout: '$9,250 Payout + iPhone 18 Pro',
-              quote: 'Submitted my FundedSquad billing PDF using the new upload form. Instant AI OCR verification, zero hassle. PropNation is hands down the best reward ecosystem.',
-            },
-            {
-              trader: 'Elena Rostova',
-              country: 'Germany 🇩🇪',
-              firm: 'Pipstone Capital',
-              payout: '$12,100 Payout + G-Shock Watch',
-              quote: '1$ = 10 points guaranteed. I redeemed a G-Shock Mudmaster and $500 USDT payout. Everything is authentic and customer support is live 24/7.',
-            },
-          ].map((item, idx) => (
-            <div key={idx} className="rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 space-y-4 shadow-xs">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">{item.trader}</h4>
-                  <span className="text-[11px] text-slate-400">{item.country} • {item.firm}</span>
-                </div>
-                <div className="text-amber-400 text-xs">★★★★★</div>
+            <div className="space-y-3 pt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" />
+                <span>Multiple tier-1 regulatory licenses</span>
               </div>
-
-              <div className="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs font-bold px-3 py-1 rounded-full border border-emerald-500/20 inline-block">
-                {item.payout}
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" />
+                <span>Up to 1:2000 leverage across all 5 firms</span>
               </div>
-
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed italic">
-                &ldquo;{item.quote}&rdquo;
-              </p>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" />
+                <span>24/5 dedicated human support</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" />
+                <span>Universal referral code: NATION (1$ = 10 PTS)</span>
+              </div>
             </div>
-          ))}
+
+            <div className="pt-2">
+              <Link href="/prop-firms">
+                <Button className="bg-[#0c182a] hover:bg-[#15253e] text-white font-bold text-xs h-11 px-7 rounded-full shadow-md">
+                  Start Trading
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Right Mobile App Analytics Mockup (Image 4 exact phone screen) */}
+          <div className="lg:col-span-6 flex justify-center">
+            <div className="w-full max-w-sm rounded-[2.5rem] bg-[#0c182a] text-white p-6 border-4 border-slate-300 dark:border-slate-800 shadow-2xl space-y-5 text-left relative overflow-hidden">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div>
+                  <span className="text-[10px] text-slate-400 block font-mono">ACCOUNT BALANCE</span>
+                  <div className="text-2xl font-[900] text-white">$21,079.65</div>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] text-emerald-400 block font-mono">TOTAL PROFIT</span>
+                  <div className="text-base font-bold text-emerald-400">+$10,931.70</div>
+                </div>
+              </div>
+
+              {/* Chart Line Simulation */}
+              <div className="h-24 bg-gradient-to-b from-sky-500/10 to-transparent rounded-xl border-b border-sky-400/40 relative flex items-end">
+                <div className="w-full h-1 bg-sky-400 shadow-glow" />
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-center text-xs pt-1">
+                <div className="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+                  <span className="text-[9px] text-slate-400 block">Win Rate</span>
+                  <span className="font-bold text-white">67.0%</span>
+                </div>
+                <div className="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+                  <span className="text-[9px] text-slate-400 block">Avg Win</span>
+                  <span className="font-bold text-white">$287.47</span>
+                </div>
+                <div className="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+                  <span className="text-[9px] text-slate-400 block">Volume</span>
+                  <span className="font-bold text-white">138.4</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* 9. LUXURY REWARDS STORE PREVIEW (Nike, G-Shock, iPhone, Mac) */}
+      {/* 9. "BUILDING TRADERS GLOBALLY SINCE 2022" (Continuation Image 5) */}
+      {/* ======================================================== */}
+      <section className="w-full bg-[#060e1d] text-white py-20 sm:py-28 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-16">
+          <div className="space-y-3 max-w-xl mx-auto">
+            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-white">
+              Building Traders Globally Since 2022
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-400">
+              The gold standard for prop firm challenge cashback, live verification, and luxury rewards.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 text-center max-w-5xl mx-auto">
+            {/* Column 1 */}
+            <div className="space-y-3">
+              <div className="h-12 w-12 rounded-2xl bg-sky-500/10 text-sky-400 mx-auto flex items-center justify-center">
+                <Users className="h-6 w-6" />
+              </div>
+              <h4 className="text-xl font-[900] text-white">200+ employees</h4>
+              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
+                A global team with decades of market experience driving your trading performance.
+              </p>
+            </div>
+
+            {/* Column 2 */}
+            <div className="space-y-3">
+              <div className="h-12 w-12 rounded-2xl bg-sky-500/10 text-sky-400 mx-auto flex items-center justify-center">
+                <Globe className="h-6 w-6" />
+              </div>
+              <h4 className="text-xl font-[900] text-white">5 global offices</h4>
+              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
+                Strategically positioned to support traders across all regions around the world.
+              </p>
+            </div>
+
+            {/* Column 3 */}
+            <div className="space-y-3">
+              <div className="h-12 w-12 rounded-2xl bg-sky-500/10 text-sky-400 mx-auto flex items-center justify-center">
+                <Headphones className="h-6 w-6" />
+              </div>
+              <h4 className="text-xl font-[900] text-white">24/7 Real Human Support</h4>
+              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
+                Real support available whenever you need it via live chat and dedicated VIP desks.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 10. LUXURY REWARDS STORE PREVIEW (Nike, G-Shock, iPhone, Mac) */}
       {/* ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-slate-100 dark:border-slate-800">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-10">
@@ -1104,7 +1068,7 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 10. CLEAN ACCORDION FAQS */}
+      {/* 11. CLEAN ACCORDION FAQS */}
       {/* ======================================================== */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-slate-100 dark:border-slate-800 text-left space-y-8">
         <div className="text-center space-y-2">
@@ -1138,7 +1102,7 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 11. FLOATING LIVE CHAT BUBBLE (Exact match to FundingPips bottom right) */}
+      {/* 12. FLOATING LIVE CHAT BUBBLE (Exact match to FundingPips bottom right) */}
       {/* ======================================================== */}
       <div className="fixed bottom-6 right-6 z-50">
         <Link
@@ -1160,15 +1124,6 @@ function GlobeIcon(props: React.SVGProps<SVGSVGElement>) {
       <circle cx="12" cy="12" r="10" />
       <line x1="2" y1="12" x2="22" y2="12" />
       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>
-  );
-}
-
-function TagIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
-      <path d="M7 7h.01" />
     </svg>
   );
 }
