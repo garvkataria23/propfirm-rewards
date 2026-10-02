@@ -843,6 +843,14 @@ export default function HomePage() {
                     </div>
                     <span className="font-mono font-bold text-rose-600 dark:text-rose-400 text-sm">-5,000</span>
                   </div>
+
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
+                    <div>
+                      <div className="font-semibold text-slate-800 dark:text-slate-200">Affiliate Referral Yield</div>
+                      <div className="text-[10px] text-slate-500">Tier 2 Verification Bonus</div>
+                    </div>
+                    <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-sm">+1,500</span>
+                  </div>
                 </div>
               </div>
 
@@ -875,32 +883,91 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                {/* Progress Box */}
-                <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-5 space-y-5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs">
-                        <Headphones className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                {/* 3 Tracked Goals Stack */}
+                <div className="space-y-3">
+                  {/* Item 1: Headphones */}
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
+                          <Headphones className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400" />
+                        </div>
+                        <div>
+                          <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Wireless Headphones</div>
+                          <div className="text-[10px] text-slate-500">20,000 Points Goal</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Wireless Headphones</div>
-                        <div className="text-xs text-slate-500">20,000 Points Goal</div>
+                      <div className="text-right">
+                        <div className="text-[10px] text-slate-500">Your Points</div>
+                        <div className="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm">12,500</div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-xs text-slate-500">Your Points</div>
-                      <div className="font-mono font-bold text-slate-900 dark:text-white text-sm sm:text-base">12,500</div>
+                    <div className="space-y-1">
+                      <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[62.5%]" />
+                      </div>
+                      <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                        <span>62.5% Completed</span>
+                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">7,500 more to unlock</span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Progress Bar */}
-                  <div className="space-y-2">
-                    <div className="h-3 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[62.5%]" />
+                  {/* Item 2: Sneakers */}
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
+                          <Tag className="h-4.5 w-4.5 text-sky-600 dark:text-sky-400" />
+                        </div>
+                        <div>
+                          <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Streetwear Sneakers</div>
+                          <div className="text-[10px] text-slate-500">15,000 Points Goal</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[10px] text-slate-500">Your Points</div>
+                        <div className="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm">12,500</div>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 font-medium">
-                      <span>62.5% Completed</span>
-                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">7,500 more points to unlock</span>
+                    <div className="space-y-1">
+                      <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-sky-500 to-blue-500 rounded-full w-[83.3%]" />
+                      </div>
+                      <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                        <span>83.3% Completed</span>
+                        <span className="font-semibold text-sky-600 dark:text-sky-400">2,500 more to unlock</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Item 3: Gaming Controller / Accessory */}
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-9 w-9 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs shrink-0">
+                          <Gamepad2 className="h-4.5 w-4.5 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <div>
+                          <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Mechanical Gaming Keyboard</div>
+                          <div className="text-[10px] text-slate-500">10,000 Points Goal</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[10px] text-slate-500">Status</div>
+                        <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                          Unlocked
+                        </span>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[100%]" />
+                      </div>
+                      <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                        <span>100% Completed</span>
+                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">Ready to Claim!</span>
+                      </div>
                     </div>
                   </div>
                 </div>
