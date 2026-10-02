@@ -13,16 +13,14 @@ services:
       - key: PORT
         value: 10000
       - key: DATABASE_URL
-        fromDatabase:
-          name: propnation-db
-          property: connectionString
+        value: REDACTED_DATABASE_URL
+      - key: SUPABASE_URL
+        value: https://icqkfaurtrkqeqlcegvu.supabase.co
+      - key: SUPABASE_KEY
+        value: REDACTED_SUPABASE_KEY
       - key: JWT_SECRET
-        generateValue: true
+        value: REDACTED_JWT_SECRET
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: CORS_ORIGIN
-        value: https://frontend-eta-beryl-ezh34u4upe.vercel.app
-
-databases:
-  - name: propnation-db
-    plan: free
+        value: https://frontend-eta-beryl-ezh34u4upe.vercel.app,http://localhost:3000
