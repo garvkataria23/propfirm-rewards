@@ -62,7 +62,7 @@ export function Navbar() {
           <span className="font-mono font-black text-purple-900 dark:text-purple-100 tracking-wider bg-white dark:bg-purple-900/80 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-700">
             NATION
           </span>
-          <span className="text-[10px] text-purple-700 dark:text-purple-300 font-bold">1$ = 10 PTS</span>
+          <span className="text-[10px] text-purple-700 dark:text-purple-300 font-bold">1$ = 100 PTS</span>
         </div>
 
         {/* Desktop Nav Links */}

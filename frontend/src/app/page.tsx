@@ -467,7 +467,7 @@ export default function HomePage() {
           </span>
           <span className="hidden md:inline text-purple-400/50">•</span>
           <span className="hidden md:inline font-bold text-purple-300">
-            1$ = 10 Reward Points Across All 5 Prop Firms
+            1$ = 100 Reward Points Across All 5 Prop Firms
           </span>
         </div>
       </div>
@@ -512,7 +512,7 @@ export default function HomePage() {
                 <span className="font-mono font-black text-purple-900 dark:text-purple-200 bg-white dark:bg-purple-900/80 px-2 py-0.5 rounded border border-purple-200 dark:border-purple-700">
                   NATION
                 </span>
-                <span className="font-bold text-purple-700 dark:text-purple-300">1$ = 10 PTS Cashback</span>
+                <span className="font-bold text-purple-700 dark:text-purple-300">1$ = 100 Points Cashback</span>
               </div>
 
               {/* Dual Action Buttons */}
@@ -549,24 +549,42 @@ export default function HomePage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/40 dark:from-[#070913]/60 via-transparent to-transparent pointer-events-none" />
 
-                {/* Floating pill badge on crystal */}
-                <div className="absolute bottom-3 left-3 right-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 border border-purple-200/80 dark:border-purple-900/80 shadow-xl flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold shadow-sm">
-                      <Sparkles className="h-4 w-4" />
+                {/* Floating prominent badge on hero card */}
+                <div className="absolute bottom-3 left-3 right-3 bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl rounded-2xl p-3 sm:p-3.5 border-2 border-purple-300/80 dark:border-purple-700/80 shadow-2xl space-y-2">
+                  {/* Top row: Partner Code & Copy Button */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-violet-600 to-purple-600 text-white flex items-center justify-center font-bold shadow-md shadow-purple-600/30 shrink-0">
+                        <Sparkles className="h-4 w-4 animate-pulse" />
+                      </div>
+                      <div>
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">
+                          Partner Code
+                        </div>
+                        <div className="text-base font-black font-mono text-purple-950 dark:text-white tracking-wider leading-none">
+                          NATION
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-[11px] font-bold text-slate-900 dark:text-white">Partner Code</div>
-                      <div className="text-[10px] text-purple-600 dark:text-purple-400 font-mono font-bold">NATION (1$ = 10 PTS)</div>
-                    </div>
+                    <button
+                      onClick={() => handleCopyCode('NATION')}
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-md shadow-purple-600/20 active:scale-95 cursor-pointer"
+                    >
+                      {copiedCode === 'NATION' ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                      <span>{copiedCode === 'NATION' ? 'Copied!' : 'Copy'}</span>
+                    </button>
                   </div>
-                  <button
-                    onClick={() => handleCopyCode('NATION')}
-                    className="bg-purple-50 dark:bg-slate-800 hover:bg-purple-100 text-purple-700 dark:text-purple-300 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 border border-purple-200 dark:border-purple-700"
-                  >
-                    {copiedCode === 'NATION' ? <Check className="h-3 w-3 text-purple-600" /> : <Copy className="h-3 w-3" />}
-                    <span>{copiedCode === 'NATION' ? 'Copied' : 'Copy'}</span>
-                  </button>
+
+                  {/* High-visibility prominent 1$ = 100 Points text */}
+                  <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-gradient-to-r from-purple-500/15 via-violet-500/20 to-indigo-500/15 border border-purple-400/40 dark:border-purple-500/40">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-200">
+                      Reward Rate:
+                    </span>
+                    <span className="text-sm sm:text-base font-black text-purple-700 dark:text-purple-300 font-mono tracking-tight flex items-center gap-1.5">
+                      <span className="bg-purple-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded shadow-xs">YIELD</span>
+                      <span>1 $ = 100 Points</span>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
