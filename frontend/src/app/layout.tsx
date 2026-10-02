@@ -18,9 +18,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'PropFirm Rewards — Trade. Earn. Get Rewarded.',
+  title: 'PropNation — Trade. Earn. Get Rewarded.',
   description:
     'Purchase eligible prop-firm challenges with our affiliate codes, verify your purchase, earn reward points, and redeem them for tech gear, gadgets, and gift cards.',
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({

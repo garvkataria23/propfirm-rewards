@@ -44,14 +44,21 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/90 dark:border-slate-800/80 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Brand Logo - Classy Purplish Style */}
-        <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-2.5 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-950 via-violet-900 to-indigo-800 text-white shadow-md shadow-purple-950/30 group-hover:scale-105 transition-transform border border-purple-500/30">
-            <span className="font-black text-sm tracking-tighter text-purple-300">P<span className="text-white">N</span></span>
+        {/* Brand Logo - Official PropNation Logo */}
+        <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-3 group">
+          <div className="relative h-10 w-10 rounded-xl overflow-hidden shadow-sm group-hover:scale-105 transition-transform bg-black flex items-center justify-center border border-slate-700/40">
+            <img
+              src="/logo.png"
+              alt="PropNation Logo"
+              className="h-full w-full object-cover"
+            />
           </div>
-          <div className="flex items-center">
-            <span className="text-lg font-black tracking-tight text-[#0c1024] dark:text-white">
-              PropNation<span className="text-xs font-normal text-purple-400 align-super ml-0.5">®</span>
+          <div className="flex flex-col">
+            <span className="text-lg font-black tracking-tight text-[#0c1024] dark:text-white leading-tight">
+              PROP NATION<span className="text-xs font-normal text-emerald-500 dark:text-emerald-400 align-super ml-0.5">®</span>
+            </span>
+            <span className="text-[9px] font-bold tracking-widest text-slate-500 uppercase -mt-0.5">
+              Trade • Earn • Get Rewarded
             </span>
           </div>
         </Link>

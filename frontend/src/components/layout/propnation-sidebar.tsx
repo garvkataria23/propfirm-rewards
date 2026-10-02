@@ -180,17 +180,21 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
       className={`w-64 sm:w-72 bg-white text-slate-800 border-r border-slate-200 dark:bg-[#070e20] dark:text-slate-200 dark:border-[#14234b]/60 flex flex-col h-full select-none transition-colors ${className}`}
     >
       {/* Brand Header */}
-      <div className="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-[#14234b]/50 shrink-0">
+      <div className="h-16 flex items-center justify-between px-5 border-b border-slate-200 dark:border-[#14234b]/50 shrink-0">
         <Link
           href="/dashboard"
           onClick={onClose}
-          className="flex items-center gap-1.5 group cursor-pointer"
+          className="flex items-center gap-2.5 group cursor-pointer"
         >
-          <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center">
-            <span className="text-blue-600 dark:text-blue-500 font-extrabold group-hover:text-blue-500 transition-colors">
-              Prop
-            </span>
-            <span>Nation</span>
+          <div className="relative h-9 w-9 rounded-lg overflow-hidden shadow-xs group-hover:scale-105 transition-transform bg-black flex items-center justify-center border border-slate-700/40">
+            <img
+              src="/logo.png"
+              alt="PropNation Logo"
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <span className="text-base font-black tracking-tight text-slate-900 dark:text-white flex items-center">
+            PROP NATION
           </span>
         </Link>
       </div>

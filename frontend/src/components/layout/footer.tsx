@@ -23,13 +23,22 @@ export function Footer() {
         <div className="space-y-8 text-left">
           {/* Brand Logo & Tagline */}
           <div className="space-y-3">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0c182a] text-white shadow-xs group-hover:scale-105 transition-transform border border-sky-500/20">
-                <span className="font-black text-sm tracking-tighter text-sky-400">P<span className="text-white">N</span></span>
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative h-11 w-11 rounded-xl overflow-hidden shadow-sm group-hover:scale-105 transition-transform bg-black flex items-center justify-center border border-slate-700/50">
+                <img
+                  src="/logo.png"
+                  alt="PropNation Logo"
+                  className="h-full w-full object-cover"
+                />
               </div>
-              <span className="text-xl font-black tracking-tight text-white">
-                PropNation<span className="text-xs font-normal text-slate-400 align-super ml-0.5">&reg;</span>
-              </span>
+              <div className="flex flex-col">
+                <span className="text-xl font-black tracking-tight text-white leading-tight">
+                  PROP NATION<span className="text-xs font-normal text-emerald-400 align-super ml-0.5">&reg;</span>
+                </span>
+                <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase -mt-0.5">
+                  Trade • Earn • Get Rewarded
+                </span>
+              </div>
             </Link>
 
             <p className="text-xs sm:text-sm text-slate-400 max-w-md leading-relaxed">

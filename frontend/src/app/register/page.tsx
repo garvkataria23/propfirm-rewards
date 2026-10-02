@@ -140,9 +140,15 @@ export default function RegisterPage() {
       <div className="w-full max-w-md space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 mb-1">
-            <Coins className="h-6 w-6" />
-          </div>
+          <Link href="/" className="inline-block">
+            <div className="h-16 w-16 mx-auto rounded-2xl overflow-hidden shadow-md bg-black border border-slate-700/50 flex items-center justify-center mb-2 hover:scale-105 transition-transform">
+              <img
+                src="/logo.png"
+                alt="PropNation Logo"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </Link>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
             Create Trader Account
           </h1>

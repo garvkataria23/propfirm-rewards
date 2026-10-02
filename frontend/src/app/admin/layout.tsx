@@ -107,19 +107,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className="w-full md:w-64 border-r border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 p-4 space-y-6 shrink-0 flex flex-col justify-between">
         <div className="space-y-6">
           <div className="flex items-center justify-between px-2 py-1">
-            <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                <ShieldCheck className="h-5 w-5" />
+            <Link href="/admin" className="flex items-center gap-2.5">
+              <div className="h-9 w-9 rounded-xl overflow-hidden shadow-xs bg-black border border-slate-700/50 flex items-center justify-center">
+                <img
+                  src="/logo.png"
+                  alt="PropNation Logo"
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div>
                 <h2 className="text-sm font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5">
-                  Admin Portal
+                  PropNation Admin
                 </h2>
                 <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
-                  Superadmin Control
+                  Staff Control Center
                 </p>
               </div>
-            </div>
+            </Link>
             <ThemeToggle />
           </div>
 
