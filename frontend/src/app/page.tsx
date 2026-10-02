@@ -360,12 +360,12 @@ export default function HomePage() {
             </div>
 
             {/* Right Column: Premium Dashboard Preview Mockup with Floating Micro-Elements */}
-            <div className="lg:col-span-5 w-full flex justify-center relative">
+            <div className="lg:col-span-5 w-full flex justify-center lg:justify-end relative">
               {/* Soft ambient back-glow */}
               <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-sky-500/10 rounded-3xl blur-2xl animate-pulse-glow pointer-events-none -z-10" />
 
               {/* Floating Pill: Live Order Verified */}
-              <div className="animate-float-reverse absolute -top-4 -left-2 sm:-left-6 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-emerald-500/30 px-3.5 py-1.5 rounded-full shadow-lg shadow-emerald-950/5 flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200 select-none">
+              <div className="animate-float-reverse absolute -top-4 -left-2 sm:-left-4 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-emerald-500/30 px-3.5 py-1.5 rounded-full shadow-lg shadow-emerald-950/5 flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200 select-none">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -549,12 +549,12 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-5 relative z-10">
             {/* Step 1 */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 group cursor-default shadow-2xs">
+            <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3 group cursor-default shadow-xs">
               <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
                 <span>STEP 01</span>
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
               </div>
-              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
+              <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
                 <Search className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Choose a Prop Firm</h3>
@@ -564,12 +564,12 @@ export default function HomePage() {
             </div>
 
             {/* Step 2 */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 group cursor-default shadow-2xs">
+            <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3 group cursor-default shadow-xs">
               <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
                 <span>STEP 02</span>
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
               </div>
-              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
+              <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
                 <Tag className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Buy Using Our Code</h3>
@@ -579,12 +579,12 @@ export default function HomePage() {
             </div>
 
             {/* Step 3 */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 group cursor-default shadow-2xs">
+            <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3 group cursor-default shadow-xs">
               <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
                 <span>STEP 03</span>
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
               </div>
-              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
+              <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
                 <FileCheck2 className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Submit Your Proof</h3>
@@ -594,12 +594,12 @@ export default function HomePage() {
             </div>
 
             {/* Step 4 */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-3 group cursor-default shadow-2xs">
+            <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3 group cursor-default shadow-xs">
               <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
                 <span>STEP 04</span>
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
               </div>
-              <div className="h-10 w-10 rounded-xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs group-hover:scale-110 group-hover:text-emerald-500 transition-all duration-300">
+              <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs group-hover:scale-110 group-hover:text-emerald-500 transition-all duration-300">
                 <CheckCircle className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Get Verified</h3>
@@ -609,7 +609,7 @@ export default function HomePage() {
             </div>
 
             {/* Step 5 */}
-            <div className="card-lift rounded-2xl bg-emerald-50/90 dark:bg-emerald-500/[0.06] border border-emerald-300 dark:border-emerald-500/30 p-5 space-y-3 shadow-2xs group cursor-default relative overflow-hidden">
+            <div className="card-lift rounded-2xl bg-emerald-50/90 dark:bg-emerald-500/[0.06] border border-emerald-300 dark:border-emerald-500/30 p-5 space-y-3 shadow-xs group cursor-default relative overflow-hidden">
               <div className="absolute -right-8 -top-8 w-20 h-20 bg-emerald-400/10 rounded-full blur-xl pointer-events-none group-hover:bg-emerald-400/20 transition-colors" />
               <div className="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-400 tracking-wider flex items-center justify-between">
                 <span>STEP 05</span>
