@@ -34,18 +34,18 @@ export function Navbar() {
   const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
 
   const navLinks = [
-    { label: 'How It Works', href: '/how-it-works', icon: Compass },
-    { label: 'Prop Firms', href: '/prop-firms', icon: Layers },
-    { label: 'Rewards Store', href: '/rewards', icon: Gift },
-    { label: 'FAQ', href: '/faq', icon: HelpCircle },
-    { label: 'Contact', href: '/contact', icon: ShieldCheck },
+    { label: 'How It Works', href: user ? '/dashboard/help-center' : '/how-it-works', icon: Compass },
+    { label: 'Prop Firms', href: user ? '/dashboard/prop-firms' : '/prop-firms', icon: Layers },
+    { label: 'Rewards Store', href: user ? '/dashboard/rewards' : '/rewards', icon: Gift },
+    { label: 'FAQ', href: user ? '/dashboard/faq' : '/faq', icon: HelpCircle },
+    { label: 'Contact', href: user ? '/dashboard/support' : '/contact', icon: ShieldCheck },
   ];
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/90 dark:border-slate-800/80 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand Logo - Classy Purplish Style */}
-        <Link href="/" className="flex items-center gap-2.5 group">
+        <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-2.5 group">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-950 via-violet-900 to-indigo-800 text-white shadow-md shadow-purple-950/30 group-hover:scale-105 transition-transform border border-purple-500/30">
             <span className="font-black text-sm tracking-tighter text-purple-300">P<span className="text-white">N</span></span>
           </div>

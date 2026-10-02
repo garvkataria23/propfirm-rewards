@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/context/auth-context';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -143,8 +144,19 @@ const FALLBACK_FIRMS: PropFirm[] = [
 ];
 
 function PropFirmsContent() {
+  const { user, isLoading } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const typeParam = searchParams.get('type')?.toLowerCase();
+
+  // Redirect signed-in users to in-dashboard prop-firms
+  useEffect(() => {
+    if (!isLoading && user && pathname === '/prop-firms') {
+      const q = typeof window !== 'undefined' ? window.location.search : '';
+      router.replace(`/dashboard/prop-firms${q}`);
+    }
+  }, [user, isLoading, pathname, router]);
 
   const [propFirms, setPropFirms] = useState<PropFirm[]>(FALLBACK_FIRMS);
   const [selectedType, setSelectedType] = useState<string>(

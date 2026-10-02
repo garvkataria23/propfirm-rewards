@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/context/auth-context';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -42,6 +44,16 @@ interface Review {
 }
 
 export default function ReviewsPage() {
+  const { user, isLoading } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && user && pathname === '/reviews') {
+      router.replace('/dashboard/reviews');
+    }
+  }, [user, isLoading, pathname, router]);
+
   const [selectedFilter, setSelectedFilter] = useState<string>('ALL');
   const [writeModalOpen, setWriteModalOpen] = useState(false);
 

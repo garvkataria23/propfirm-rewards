@@ -1,13 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/context/auth-context';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ShieldCheck, ChevronDown, ArrowRight, HelpCircle } from 'lucide-react';
 
 export default function FAQPage() {
+  const { user, isLoading } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && user && pathname === '/faq') {
+      router.replace('/dashboard/faq');
+    }
+  }, [user, isLoading, pathname, router]);
+
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   const faqs = [

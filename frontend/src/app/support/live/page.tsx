@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -76,7 +77,16 @@ interface SupportTicket {
 type SupportChannel = 'LIVE_CHAT' | 'WHATSAPP' | 'CALL' | 'FAQ';
 
 export default function LiveSupportPage() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && user && pathname === '/support/live') {
+      router.replace('/dashboard/support');
+    }
+  }, [user, isLoading, pathname, router]);
+
   const [activeChannel, setActiveChannel] = useState<SupportChannel>('LIVE_CHAT');
 
   // Live Chat States

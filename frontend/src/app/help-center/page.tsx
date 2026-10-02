@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/context/auth-context';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -65,6 +67,16 @@ const ARTICLES: Article[] = [
 ];
 
 export default function HelpCenterPage() {
+  const { user, isLoading } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && user && pathname === '/help-center') {
+      router.replace('/dashboard/help-center');
+    }
+  }, [user, isLoading, pathname, router]);
+
   const [search, setSearch] = useState('');
 
   const filteredArticles = ARTICLES.filter(

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/auth-context';
 import { Button } from '@/components/ui/button';
@@ -54,7 +55,17 @@ interface UserAddress {
 }
 
 export default function RewardsStorePage() {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, isLoading } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // If user is already authenticated and visits the public /rewards route, redirect inside dashboard!
+  useEffect(() => {
+    if (!isLoading && user && pathname === '/rewards') {
+      router.replace('/dashboard/rewards');
+    }
+  }, [user, isLoading, pathname, router]);
+
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');

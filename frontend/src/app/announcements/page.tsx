@@ -1,7 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/context/auth-context';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -70,6 +72,16 @@ const ANNOUNCEMENTS: Announcement[] = [
 ];
 
 export default function AnnouncementsPage() {
+  const { user, isLoading } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && user && pathname === '/announcements') {
+      router.replace('/dashboard/announcements');
+    }
+  }, [user, isLoading, pathname, router]);
+
   return (
     <div className="space-y-8 max-w-5xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
