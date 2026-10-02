@@ -291,7 +291,7 @@ export default function HomePage() {
           1. HERO SECTION
           Full-screen premium fintech hero with interactive dashboard visual
       ───────────────────────────────────────────────────────────── */}
-      <section className="relative w-full pt-8 pb-20 sm:pt-16 sm:pb-28 overflow-hidden border-b border-slate-200/80 dark:border-slate-800/80">
+      <section className="relative w-full pt-6 pb-12 sm:pt-12 sm:pb-16 lg:pb-20 overflow-hidden border-b border-slate-200/80 dark:border-slate-800/80">
         {/* Subtle glows for light/dark */}
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-emerald-500/[0.06] dark:bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none -z-10" />
         <div className="absolute top-1/3 left-10 w-[400px] h-[400px] bg-blue-600/[0.05] dark:bg-blue-600/[0.03] rounded-full blur-3xl pointer-events-none -z-10" />
@@ -493,7 +493,7 @@ export default function HomePage() {
           3. HOW IT WORKS
           From Purchase to Reward in 5 Simple Steps
       ───────────────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
+      <section id="how-it-works" className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Section Heading */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -587,7 +587,7 @@ export default function HomePage() {
           4. PROP FIRMS SECTION
           Dynamic / placeholder cards with tiers and point yield
       ───────────────────────────────────────────────────────────── */}
-      <section id="prop-firms" className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
+      <section id="prop-firms" className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -704,7 +704,7 @@ export default function HomePage() {
           5. REWARD SHOWCASE
           Your Trading. Your Rewards.
       ───────────────────────────────────────────────────────────── */}
-      <section id="rewards" className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
+      <section id="rewards" className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -782,7 +782,7 @@ export default function HomePage() {
           6. POINTS SYSTEM VISUAL & REWARD PROGRESS (2-Column)
           Every Eligible Purchase Gets You Closer
       ───────────────────────────────────────────────────────────── */}
-      <section className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
+      <section className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Section Heading */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -992,7 +992,7 @@ export default function HomePage() {
           7. WHY JOIN SECTION
           More Than Just a Referral Code
       ───────────────────────────────────────────────────────────── */}
-      <section className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
+      <section className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -1060,7 +1060,7 @@ export default function HomePage() {
           8. DASHBOARD PREVIEW & REDEMPTION PROCESS
           Realistic SaaS product mockup
       ───────────────────────────────────────────────────────────── */}
-      <section className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
+      <section className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -1144,7 +1144,7 @@ export default function HomePage() {
           9. FREQUENTLY ASKED QUESTIONS
           Full 10-Question Comprehensive Accordion
       ───────────────────────────────────────────────────────────── */}
-      <section id="faq" className="w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
+      <section id="faq" className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="text-center space-y-3">
             <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 text-xs">
@@ -1193,7 +1193,7 @@ export default function HomePage() {
           10. FINAL CTA BANNER
           Your Next Reward Starts With Your Next Trade.
       ───────────────────────────────────────────────────────────── */}
-      <section className="relative w-full py-20 sm:py-28 overflow-hidden bg-gradient-to-b from-slate-100 to-white dark:from-[#080c14] dark:to-[#05070a]">
+      <section className="relative w-full py-12 sm:py-16 lg:py-20 overflow-hidden bg-gradient-to-b from-slate-100 to-white dark:from-[#080c14] dark:to-[#05070a]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
           <Badge variant="outline" className="border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 text-xs">
             Start Today

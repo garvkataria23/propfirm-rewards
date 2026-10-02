@@ -18,7 +18,7 @@ export function Footer() {
 
   return (
     <footer className="w-full bg-[#050816] text-slate-400 border-t border-slate-900 font-sans transition-colors">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 space-y-10">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:py-14 sm:px-6 lg:px-8 space-y-8">
         {/* Brand Info & 2-Column Mobile Navigation (Screenshot 1: media_1790940232221.png) */}
         <div className="space-y-8 text-left">
           {/* Brand Logo & Tagline */}

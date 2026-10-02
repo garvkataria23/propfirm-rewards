@@ -57,30 +57,33 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* Mobile Top Header */}
-      <div className="lg:hidden sticky top-0 z-40 bg-white/95 dark:bg-[#070e20]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between shadow-xs transition-colors">
-        <button
-          onClick={() => setMobileSidebarOpen(true)}
-          className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 hover:bg-slate-200 transition-colors"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
+      <div className="lg:hidden sticky top-0 z-40 bg-white/95 dark:bg-[#070e20]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-3.5 py-2.5 flex items-center justify-between shadow-xs transition-colors">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setMobileSidebarOpen(true)}
+            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 hover:bg-slate-200 transition-colors cursor-pointer"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
 
-        <Link href="/dashboard" className="flex items-center">
-          <span className="text-lg font-black tracking-tight text-slate-900 dark:text-white flex items-center">
-            <span className="text-blue-600 dark:text-blue-400 font-extrabold">Prop</span>
-            <span>Nation</span>
-          </span>
-        </Link>
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <div className="relative h-7 w-7 flex items-center justify-center shrink-0">
+              <img src="/logo.png" alt="Prop Nation" className="h-full w-auto object-contain select-none" />
+            </div>
+            <span className="text-base font-black tracking-tight text-slate-900 dark:text-white flex items-center">
+              PROP NATION<span className="text-[9px] font-semibold text-emerald-600 dark:text-emerald-400 align-super ml-0.5">®</span>
+            </span>
+          </Link>
+        </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <GoogleTranslate id="google_translate_dash_mobile" compact />
+        <div className="flex items-center gap-2">
           <ThemeToggle />
 
           <Link
             href="/dashboard/wallet"
-            className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-500/30 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-full text-xs font-bold"
+            className="flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 px-2.5 py-1 rounded-full text-xs font-bold"
           >
-            <Wallet className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+            <Coins className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
             <span>{(user.points?.available || 0).toLocaleString()} PTS</span>
           </Link>
         </div>
@@ -182,7 +185,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Child Pages Container */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-3.5 sm:p-5 lg:p-7 max-w-7xl w-full mx-auto space-y-5">
           {children}
         </main>
       </div>
