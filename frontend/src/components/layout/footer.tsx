@@ -182,17 +182,17 @@ export function Footer() {
                 <h4 className="font-bold text-white tracking-wide">Legal</h4>
                 <ul className="space-y-2 text-slate-400">
                   <li>
-                    <Link href="/faq" className="hover:text-white transition-colors">
+                    <Link href="/terms" className="hover:text-white transition-colors">
                       Terms &amp; Conditions
                     </Link>
                   </li>
                   <li>
-                    <Link href="/faq" className="hover:text-white transition-colors">
-                      Terms &amp; Conditions - PRIME
+                    <Link href="/terms" className="hover:text-white transition-colors">
+                      Affiliate Disclosure
                     </Link>
                   </li>
                   <li>
-                    <Link href="/faq" className="hover:text-white transition-colors">
+                    <Link href="/privacy" className="hover:text-white transition-colors">
                       Privacy Policy
                     </Link>
                   </li>
@@ -227,17 +227,17 @@ export function Footer() {
               <h4 className="font-bold text-white tracking-wide">Legal</h4>
               <ul className="space-y-2 text-slate-400">
                 <li>
-                  <Link href="/faq" className="hover:text-white transition-colors">
+                  <Link href="/terms" className="hover:text-white transition-colors">
                     Terms &amp; Conditions
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="hover:text-white transition-colors">
-                    Terms &amp; Conditions - PRIME
+                  <Link href="/terms" className="hover:text-white transition-colors">
+                    Affiliate Disclosure
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="hover:text-white transition-colors">
+                  <Link href="/privacy" className="hover:text-white transition-colors">
                     Privacy Policy
                   </Link>
                 </li>

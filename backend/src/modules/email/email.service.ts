@@ -6,10 +6,12 @@ export class EmailService {
   private readonly logger = new Logger(EmailService.name);
   private resend: Resend | null = null;
   private readonly fromEmail: string;
+  private readonly frontendUrl: string;
 
   constructor() {
     const apiKey = process.env.RESEND_API_KEY;
     this.fromEmail = process.env.EMAIL_FROM || 'PropFirm Rewards <support@propfirmrewards.com>';
+    this.frontendUrl = (process.env.FRONTEND_URL || 'https://propfirmrewards.com').replace(/\/$/, '');
 
     if (apiKey) {
       this.resend = new Resend(apiKey);
@@ -46,7 +48,7 @@ export class EmailService {
           Your trader account is now active. Buy eligible prop-firm challenges using our referral codes, submit your proof of purchase, and earn points redeemable for top-tier trading gear and gift cards.
         </p>
         <div style="margin: 24px 0;">
-          <a href="http://localhost:3000/prop-firms" style="background-color: #10b981; color: #000; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">Explore Prop Firms</a>
+          <a href="${this.frontendUrl}/prop-firms" style="background-color: #10b981; color: #000; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">Explore Prop Firms</a>
         </div>
         <p style="color: #64748b; font-size: 13px;">If you have any questions, our support team is available 24/7.</p>
       </div>
@@ -65,7 +67,7 @@ export class EmailService {
           Our review team is verifying the order details against affiliate records. You will receive an automated notification as soon as points are credited.
         </p>
         <div style="margin: 24px 0;">
-          <a href="http://localhost:3000/dashboard/purchases" style="background-color: #3b82f6; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">View Submission Status</a>
+          <a href="${this.frontendUrl}/dashboard/purchases" style="background-color: #3b82f6; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">View Submission Status</a>
         </div>
       </div>
     `;
@@ -84,7 +86,7 @@ export class EmailService {
           <p style="margin: 4px 0 0 0; color: #cbd5e1; font-size: 14px;">Updated Available Balance: <strong>${newBalance.toLocaleString()} Points</strong></p>
         </div>
         <div style="margin: 24px 0;">
-          <a href="http://localhost:3000/rewards" style="background-color: #10b981; color: #000; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">Explore Rewards Store</a>
+          <a href="${this.frontendUrl}/rewards" style="background-color: #10b981; color: #000; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">Explore Rewards Store</a>
         </div>
       </div>
     `;
@@ -103,7 +105,7 @@ export class EmailService {
           <p style="margin: 0; color: #cbd5e1;"><strong>Tracking Number:</strong> <span style="font-family: monospace; color: #8b5cf6;">${trackingNumber}</span></p>
         </div>
         <div style="margin: 24px 0;">
-          <a href="http://localhost:3000/dashboard/redemptions" style="background-color: #8b5cf6; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">Track Reward</a>
+          <a href="${this.frontendUrl}/dashboard/redemptions" style="background-color: #8b5cf6; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">Track Reward</a>
         </div>
       </div>
     `;

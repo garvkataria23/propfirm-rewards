@@ -76,7 +76,8 @@ export class StorageService {
     fs.writeFileSync(filePath, file.buffer);
 
     const port = process.env.PORT || 4000;
-    const url = `http://localhost:${port}/uploads/${folder}/${localFileName}`;
+    const backendUrl = process.env.BACKEND_URL || `http://localhost:${port}`;
+    const url = `${backendUrl.replace(/\/$/, '')}/uploads/${folder}/${localFileName}`;
 
     return {
       url,
