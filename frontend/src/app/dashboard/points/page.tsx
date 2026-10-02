@@ -169,7 +169,7 @@ export default function PointsLedgerPage() {
       tx.type,
       `"${tx.description.replace(/"/g, '""')}"`,
       tx.points,
-      `$${(Math.abs(tx.points) / 100).toFixed(2)}`,
+      `$${(Math.abs(tx.points) / 10).toFixed(2)}`,
       tx.balanceAfter,
     ]);
 
@@ -220,7 +220,7 @@ export default function PointsLedgerPage() {
             <Badge variant="success">Audited Ledger</Badge>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Double-entry points statement, automatic valuation (100 PTS = $1.00 USD), and timestamped transaction ledger.
+            Double-entry points statement, automatic valuation (10 PTS = $1.00 USD | 1$ = 10 points), and timestamped transaction ledger.
           </p>
         </div>
 
@@ -256,7 +256,7 @@ export default function PointsLedgerPage() {
             <span className="text-xs text-slate-500 font-normal">PTS</span>
           </div>
           <div className="text-xs font-black text-emerald-600 dark:text-emerald-400">
-            ≈ ${(availablePts / 100).toFixed(2)} USD Liquid Cashout Value
+            ≈ ${(availablePts / 10).toFixed(2)} USD Liquid Cashout Value
           </div>
         </div>
 
@@ -270,7 +270,7 @@ export default function PointsLedgerPage() {
             <span className="text-xs text-slate-500 font-normal">PTS</span>
           </div>
           <div className="text-xs text-slate-500">
-            ≈ ${(earnedPts / 100).toFixed(2)} USD Total Historical Yield
+            ≈ ${(earnedPts / 10).toFixed(2)} USD Total Historical Yield
           </div>
         </div>
 
@@ -284,7 +284,7 @@ export default function PointsLedgerPage() {
             <span className="text-xs text-slate-500 font-normal">PTS</span>
           </div>
           <div className="text-xs text-purple-600 dark:text-purple-400 font-bold">
-            ${(redeemedPts / 100).toFixed(2)} Claimed in tech &amp; passes
+            ${(redeemedPts / 10).toFixed(2)} Claimed in tech &amp; passes
           </div>
         </div>
 
@@ -298,7 +298,7 @@ export default function PointsLedgerPage() {
             <span className="text-xs text-slate-500 font-normal">PTS</span>
           </div>
           <div className="text-xs text-amber-600 dark:text-amber-400 font-bold">
-            ≈ ${(pendingPts / 100).toFixed(2)} USD in cooling window
+            ≈ ${(pendingPts / 10).toFixed(2)} USD in cooling window
           </div>
         </div>
       </div>
@@ -393,7 +393,7 @@ export default function PointsLedgerPage() {
                       {isPositive ? `+${tx.points.toLocaleString()}` : tx.points.toLocaleString()} PTS
                     </td>
                     <td className="py-3.5 px-4 text-right text-slate-600 dark:text-slate-300 font-mono whitespace-nowrap">
-                      ${(Math.abs(tx.points) / 100).toFixed(2)}
+                      ${(Math.abs(tx.points) / 10).toFixed(2)}
                     </td>
                     <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap">
                       {tx.balanceAfter.toLocaleString()} PTS

@@ -25,7 +25,7 @@ export default function HowItWorksPage() {
       num: '01',
       title: 'Choose an Eligible Prop Firm',
       description:
-        'Browse our verified list of industry-leading proprietary trading firms such as FTMO, Funding Pips, Alpha Capital Group, and FundedNext. Compare challenge accounts and potential reward points.',
+        'Browse our verified list of industry-leading proprietary trading firms: FundedSquad, Pipstone Capital, FTMO, FundedNext, and Funding Pips. Compare challenge accounts and earn 10 points per $1 spent.',
       tips: 'Ensure the firm and challenge tier you wish to purchase are active on our platform.',
     },
     {

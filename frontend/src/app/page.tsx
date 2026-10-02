@@ -69,12 +69,12 @@ interface Reward {
 
 // Live real-time ticker stream modeled after FundingPips transparency
 const LIVE_VERIFICATION_STREAM = [
-  { trader: '@Marco_FX (UK)', firm: 'Funding Pips $100K 2-Step', yield: '+4,500 PTS', usd: '$45.00 Back', time: 'Just now' },
-  { trader: '@K_Larsson (SE)', firm: 'FTMO $200K Challenge', yield: '+11,200 PTS', usd: '$112.00 Back', time: '3m ago' },
-  { trader: '@S_Kapoor (IN)', firm: 'Funding Pips $50K 1-Step', yield: '+2,900 PTS', usd: '$29.00 Back', time: '7m ago' },
-  { trader: '@Lucas_R (US)', firm: 'Redeemed Apple iPad Air M2', yield: 'Shipped via DHL', usd: 'Delivered', time: '12m ago' },
-  { trader: '@David_T (DE)', firm: 'Withdrew $250.00 USDT', yield: 'Paid Out', usd: 'Completed', time: '18m ago' },
-  { trader: '@Jean_P (FR)', firm: 'FundedNext $100K Stellar', yield: '+5,400 PTS', usd: '$54.00 Back', time: '22m ago' },
+  { trader: '@Marco_FX (UK)', firm: 'Funding Pips $100K 2-Step', yield: '+3,990 PTS', usd: '$399.00 Challenge', time: 'Just now' },
+  { trader: '@K_Larsson (SE)', firm: 'FTMO $200K Challenge', yield: '+11,800 PTS', usd: '$1,180.00 Challenge', time: '3m ago' },
+  { trader: '@S_Kapoor (IN)', firm: 'FundedSquad $50K Challenge', yield: '+3,500 PTS', usd: '$350.00 Challenge', time: '7m ago' },
+  { trader: '@Lucas_R (US)', firm: 'Pipstone Capital $100K Standard', yield: '+5,200 PTS', usd: '$520.00 Challenge', time: '12m ago' },
+  { trader: '@David_T (DE)', firm: 'Withdrew $250.00 USDT (2,500 PTS)', yield: 'Paid Out', usd: 'Completed', time: '18m ago' },
+  { trader: '@Jean_P (FR)', firm: 'FundedNext $100K Stellar', yield: '+5,490 PTS', usd: '$549.00 Challenge', time: '22m ago' },
 ];
 
 // Interactive Evaluation Matrix data (FundingPips inspired)
@@ -165,8 +165,8 @@ export default function HomePage() {
 
   const faqs = [
     {
-      q: 'How does PropFirm Rewards work with Funding Pips & other prop firms?',
-      a: 'We operate as an official affiliate partner with premier proprietary trading firms including Funding Pips, FTMO, and FundedNext. When you purchase an evaluation account using our referral code or link, the firm shares an affiliate marketing commission with us. We redistribute this revenue directly back to you as spendable Reward Points (100 PTS = $1.00 USD), which you can redeem for tech gear, free challenges, or direct USDT cashouts.',
+      q: 'How does PropFirm Rewards work with our partnered prop firms?',
+      a: 'We operate as an official affiliate partner with premier proprietary trading firms: FundedSquad, Pipstone Capital, FTMO, FundedNext, and Funding Pips. When you purchase an evaluation account using our referral code or link, the firm shares an affiliate marketing commission with us. We redistribute this revenue directly back to you as spendable Reward Points (1$ = 10 Reward Points | 10 PTS = $1.00 USD), which you can redeem for tech gear, free challenges, or direct USDT cashouts.',
     },
     {
       q: 'Does using your code change my prop firm account rules or fees?',
@@ -251,7 +251,7 @@ export default function HomePage() {
           </h1>
 
           <p className="mx-auto max-w-2xl text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal px-2">
-            Never pay full retail price for prop firm evaluations again. Apply our official partner codes for <span className="font-semibold text-slate-900 dark:text-white">Funding Pips, FTMO, and FundedNext</span>, verify your invoice in &lt;24 hours, and receive <span className="font-bold text-emerald-600 dark:text-emerald-400">up to 30% back</span> in cashout value, free accounts, and premium trading hardware.
+            Never pay full retail price for prop firm evaluations again. Apply our official partner codes for <span className="font-semibold text-slate-900 dark:text-white">FundedSquad, Pipstone Capital, FTMO, FundedNext, and Funding Pips</span>, verify your invoice in &lt;24 hours, and receive <span className="font-bold text-emerald-600 dark:text-emerald-400">1$ = 10 Reward Points</span> in cashout value, free accounts, and premium trading hardware.
           </p>
 
           {/* Action CTAs (Mobile Stacked, Desktop Row) */}
@@ -602,7 +602,7 @@ export default function HomePage() {
             {
               step: 'PHASE 01',
               title: 'Select Firm & Apply Code',
-              desc: 'Choose Funding Pips, FTMO, or FundedNext and apply our verified affiliate code during checkout for direct discount & attribution.',
+              desc: 'Choose FundedSquad, Pipstone Capital, FTMO, FundedNext, or Funding Pips and apply our verified affiliate code during checkout.',
               icon: Target,
             },
             {

@@ -58,9 +58,9 @@ export class PurchasesService {
       }
     }
 
-    // Fallback: if no offer selected, calculate proportional estimate (e.g. 15 points per $1)
+    // 1$ = 10 points rule
     if (pointsAwarded === 0 && dto.purchaseAmountUsd > 0) {
-      pointsAwarded = Math.round(dto.purchaseAmountUsd * 15);
+      pointsAwarded = Math.round(dto.purchaseAmountUsd * 10);
     }
 
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
@@ -328,7 +328,7 @@ export class PurchasesService {
     // Calculate points: offer points or custom admin override points
     const pointsToAward = dto.customPoints !== undefined && dto.customPoints !== null
       ? Number(dto.customPoints)
-      : (submission.pointsAwarded || submission.offer?.rewardPoints || Math.round(submission.purchaseAmountUsd * 15));
+      : (submission.pointsAwarded || submission.offer?.rewardPoints || Math.round(submission.purchaseAmountUsd * 10));
 
     if (pointsToAward <= 0) {
       throw new BadRequestException('Points awarded must be greater than zero');

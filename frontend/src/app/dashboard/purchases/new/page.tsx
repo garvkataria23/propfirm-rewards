@@ -367,7 +367,7 @@ export default function SubmitPurchasePage() {
           </div>
 
           {/* Reward Points Estimate Banner */}
-          {activeOffer && (
+          {activeOffer ? (
             <div className="rounded-xl border border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/20 p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-9 w-9 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
@@ -380,9 +380,24 @@ export default function SubmitPurchasePage() {
                   </div>
                 </div>
               </div>
-              <Badge variant="success">Auto-Calculated</Badge>
+              <Badge variant="success">1$ = 10 PTS</Badge>
             </div>
-          )}
+          ) : purchaseAmountUsd ? (
+            <div className="rounded-xl border border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/20 p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <Coins className="h-5 w-5" />
+                </div>
+                <div>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">Estimated Reward Yield:</span>
+                  <div className="text-base font-bold text-slate-900 dark:text-white">
+                    +{Math.round(Number(purchaseAmountUsd) * 10).toLocaleString()} Reward Points
+                  </div>
+                </div>
+              </div>
+              <Badge variant="success">1$ = 10 PTS</Badge>
+            </div>
+          ) : null}
 
           {/* Order ID & Account ID */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

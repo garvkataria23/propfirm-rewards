@@ -98,11 +98,11 @@ export default function TraderWalletPage() {
   const lifetimeRedeemed = summary?.totalPointsRedeemed ?? user?.points?.lifetimeRedeemed ?? 0;
   const verifiedChallenges = summary?.totalVerifiedPurchases ?? 3;
 
-  // Valuation: 100 PTS = $1.00 USD
-  const availableUsd = (availablePoints / 100).toFixed(2);
-  const pendingUsd = (pendingPoints / 100).toFixed(2);
-  const lifetimeUsd = (lifetimeEarned / 100).toFixed(2);
-  const redeemedUsd = (lifetimeRedeemed / 100).toFixed(2);
+  // Valuation: 10 PTS = $1.00 USD (1$ = 10 points)
+  const availableUsd = (availablePoints / 10).toFixed(2);
+  const pendingUsd = (pendingPoints / 10).toFixed(2);
+  const lifetimeUsd = (lifetimeEarned / 10).toFixed(2);
+  const redeemedUsd = (lifetimeRedeemed / 10).toFixed(2);
 
   // VIP Tier Calculations
   const getVipTierInfo = (verifiedCount: number) => {
