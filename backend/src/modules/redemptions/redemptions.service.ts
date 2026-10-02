@@ -244,4 +244,24 @@ export class RedemptionsService {
 
     return result;
   }
+
+  async adminDeleteRedemption(id: string, adminId: string) {
+    const redemption = await this.prisma.redemption.findUnique({ where: { id } });
+    if (!redemption) throw new NotFoundException('Redemption not found');
+
+    await this.prisma.redemption.delete({ where: { id } });
+
+    await this.prisma.auditLog.create({
+      data: {
+        adminId,
+        action: 'DELETE_REDEMPTION',
+        entity: 'Redemption',
+        entityId: id,
+        notes: `Admin deleted redemption order: ${redemption.redemptionCode}`,
+      },
+    });
+
+    return { message: 'Redemption deleted successfully' };
+  }
 }
+

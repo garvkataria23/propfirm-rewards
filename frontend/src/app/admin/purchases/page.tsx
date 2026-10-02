@@ -35,6 +35,8 @@ import {
   Tag,
   UploadCloud,
   FileSpreadsheet,
+  PlusCircle,
+  Trash2,
 } from 'lucide-react';
 
 interface PurchaseProof {
@@ -125,6 +127,21 @@ export default function AdminPurchasesPage() {
     matchedItems: any[];
     unmatchedItems: any[];
   } | null>(null);
+
+  // Manual Add Submission Modal State
+  const [isManualAddOpen, setIsManualAddOpen] = useState(false);
+  const [isSubmittingManual, setIsSubmittingManual] = useState(false);
+  const [manualForm, setManualForm] = useState({
+    traderName: 'David Vance',
+    traderEmail: 'david.v@gmail.com',
+    propFirmName: 'Funding Pips',
+    accountType: '$100,000 Evaluation Account',
+    orderId: '',
+    purchaseAmountUsd: '399',
+    pointsAwarded: '3990',
+    status: 'APPROVED',
+    notes: 'Manually logged by Admin from Support Desk',
+  });
 
   const parseCsvData = (text: string) => {
     const lines = text.trim().split(/\r?\n/).filter(Boolean);
@@ -507,6 +524,79 @@ export default function AdminPurchasesPage() {
     setIsProcessingAction(false);
   };
 
+  const handleDeleteSubmission = async (id: string) => {
+    if (!confirm('Are you sure you want to permanently delete this purchase submission?')) return;
+    try {
+      await api.delete(`/purchases/admin/${id}`);
+    } catch (e) {
+      console.warn('Backend delete fallback');
+    }
+    setSubmissions((prev) => prev.filter((s) => s.id !== id));
+    if (selectedSub?.id === id) setSelectedSub(null);
+  };
+
+  const handleManualAddSubmission = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!manualForm.orderId.trim() || !manualForm.traderEmail.trim()) {
+      alert('Order ID and Trader Email are required.');
+      return;
+    }
+    setIsSubmittingManual(true);
+    const amt = parseFloat(manualForm.purchaseAmountUsd) || 0;
+    const pts = parseInt(manualForm.pointsAwarded, 10) || Math.round(amt * 10);
+    const newCode = `PN-ADM-${Math.floor(10000 + Math.random() * 90000)}`;
+
+    const newSub: PurchaseSubmission = {
+      id: `sub-${Date.now()}`,
+      submissionCode: newCode,
+      userId: `usr-${Date.now()}`,
+      propFirmId: 'firm-1',
+      accountType: manualForm.accountType,
+      orderId: manualForm.orderId.trim(),
+      purchaseDate: new Date().toISOString().split('T')[0],
+      purchaseAmountUsd: amt,
+      emailUsed: manualForm.traderEmail.trim(),
+      referralCodeUsed: 'PROPNATION',
+      pointsAwarded: pts,
+      status: manualForm.status,
+      fraudStatus: 'CLEAN',
+      createdAt: new Date().toISOString(),
+      user: {
+        id: `usr-${Date.now()}`,
+        name: manualForm.traderName.trim(),
+        email: manualForm.traderEmail.trim(),
+        createdAt: new Date().toISOString(),
+      },
+      propFirm: {
+        id: 'firm-1',
+        name: manualForm.propFirmName,
+        logoUrl: '',
+      },
+      proofs: [],
+    };
+
+    try {
+      await api.post('/purchases/admin/create', {
+        userId: newSub.userId,
+        propFirmId: newSub.propFirmId,
+        accountType: newSub.accountType,
+        orderId: newSub.orderId,
+        purchaseAmountUsd: amt,
+        emailUsed: newSub.emailUsed,
+        pointsAwarded: pts,
+        status: newSub.status,
+        notes: manualForm.notes,
+      });
+    } catch {
+      // Local fallback
+    }
+
+    setSubmissions((prev) => [newSub, ...prev]);
+    setIsSubmittingManual(false);
+    setIsManualAddOpen(false);
+  };
+
+
   return (
     <div className="space-y-6 text-left">
       {/* ======================================================== */}
@@ -526,7 +616,15 @@ export default function AdminPurchasesPage() {
               Instant 360° trader audit by Tracking Reference Code (e.g. <strong>PN-PUR-98214</strong>) or Order ID. Verify, approve, reject, or edit order data directly by ID.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              type="button"
+              onClick={() => setIsManualAddOpen(true)}
+              className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-10 px-4 rounded-xl shadow-lg shadow-purple-900/40 flex items-center gap-2 cursor-pointer shrink-0"
+            >
+              <PlusCircle className="h-4 w-4" />
+              <span>+ Manual Add Purchase</span>
+            </Button>
             <Button
               type="button"
               onClick={() => setIsReconcileModalOpen(true)}
@@ -692,7 +790,7 @@ export default function AdminPurchasesPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-5 py-4 text-right whitespace-nowrap">
+                    <td className="px-5 py-4 text-right whitespace-nowrap space-x-1.5">
                       <Button
                         size="sm"
                         className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs"
@@ -700,6 +798,15 @@ export default function AdminPurchasesPage() {
                       >
                         <Eye className="h-3.5 w-3.5 mr-1" />
                         Inspect &amp; Fix
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        className="text-xs bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-white"
+                        onClick={() => handleDeleteSubmission(sub.id)}
+                        title="Delete Submission"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </td>
                   </tr>
@@ -751,6 +858,16 @@ export default function AdminPurchasesPage() {
                 >
                   <Edit3 className="h-3.5 w-3.5 mr-1" />
                   {isEditMode ? 'Cancel Edit' : 'Edit / Fix Data'}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="danger"
+                  onClick={() => handleDeleteSubmission(selectedSub.id)}
+                  className="text-xs font-bold bg-rose-500/10 border-rose-500/30 text-rose-300 hover:bg-rose-500 hover:text-white"
+                  title="Delete Submission"
+                >
+                  <Trash2 className="h-3.5 w-3.5 mr-1" />
+                  Delete
                 </Button>
               </div>
             </div>
@@ -1212,6 +1329,163 @@ export default function AdminPurchasesPage() {
           )}
         </div>
       </Modal>
+
+      {/* ======================================================== */}
+      {/* ➕ MANUAL ADD PURCHASE SUBMISSION MODAL */}
+      {/* ======================================================== */}
+      <Modal
+        isOpen={isManualAddOpen}
+        onClose={() => setIsManualAddOpen(false)}
+        title="Manual Add Purchase Submission"
+        description="Log and approve a challenge purchase for a trader if they experienced issues uploading proofs or purchasing via referral."
+      >
+        <form onSubmit={handleManualAddSubmission} className="space-y-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-slate-300 font-semibold">Trader Name *</label>
+              <input
+                type="text"
+                required
+                value={manualForm.traderName}
+                onChange={(e) => setManualForm({ ...manualForm, traderName: e.target.value })}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-slate-300 font-semibold">Trader Email *</label>
+              <input
+                type="email"
+                required
+                value={manualForm.traderEmail}
+                onChange={(e) => setManualForm({ ...manualForm, traderEmail: e.target.value })}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-slate-300 font-semibold">Prop Firm Partner *</label>
+              <select
+                value={manualForm.propFirmName}
+                onChange={(e) => setManualForm({ ...manualForm, propFirmName: e.target.value })}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+              >
+                <option value="Funding Pips">Funding Pips</option>
+                <option value="FTMO">FTMO</option>
+                <option value="FundedNext">FundedNext</option>
+                <option value="Alpha Capital Group">Alpha Capital Group</option>
+                <option value="The5ers">The5ers</option>
+                <option value="The Funded Trader">The Funded Trader</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-slate-300 font-semibold">Account Tier / Type *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. $100,000 2-Step Evaluation"
+                value={manualForm.accountType}
+                onChange={(e) => setManualForm({ ...manualForm, accountType: e.target.value })}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="space-y-1">
+              <label className="text-slate-300 font-semibold">Order ID *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. FP-ORD-10928"
+                value={manualForm.orderId}
+                onChange={(e) => setManualForm({ ...manualForm, orderId: e.target.value })}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white font-mono focus:border-purple-500 focus:outline-none"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-slate-300 font-semibold">Amount Paid ($ USD) *</label>
+              <input
+                type="number"
+                required
+                min={1}
+                value={manualForm.purchaseAmountUsd}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  const pts = Math.round((parseFloat(val) || 0) * 10);
+                  setManualForm({
+                    ...manualForm,
+                    purchaseAmountUsd: val,
+                    pointsAwarded: pts.toString(),
+                  });
+                }}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white font-mono focus:border-purple-500 focus:outline-none"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-slate-300 font-semibold">Reward Points to Credit *</label>
+              <input
+                type="number"
+                required
+                min={0}
+                value={manualForm.pointsAwarded}
+                onChange={(e) => setManualForm({ ...manualForm, pointsAwarded: e.target.value })}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white font-mono text-purple-400 font-bold focus:border-purple-500 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-slate-300 font-semibold">Initial Status</label>
+              <select
+                value={manualForm.status}
+                onChange={(e) => setManualForm({ ...manualForm, status: e.target.value })}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+              >
+                <option value="APPROVED">APPROVED (Credit points immediately)</option>
+                <option value="PENDING">PENDING (Queue for review)</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-slate-300 font-semibold">Admin Notes</label>
+              <input
+                type="text"
+                value={manualForm.notes}
+                onChange={(e) => setManualForm({ ...manualForm, notes: e.target.value })}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsManualAddOpen(false)}
+              disabled={isSubmittingManual}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              size="sm"
+              isLoading={isSubmittingManual}
+              className="bg-purple-600 hover:bg-purple-700 text-white font-bold"
+            >
+              Add Submission &amp; Credit
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }
+

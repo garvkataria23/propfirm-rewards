@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateAddressDto, UpdateUserStatusDto } from './dto/user.dto';
+import { CreateAddressDto, UpdateUserStatusDto, CreateUserAdminDto, UpdateUserAdminDto, ResetPasswordAdminDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -191,4 +192,200 @@ export class UsersService {
 
     return updated;
   }
+
+  async adminCreateUser(dto: CreateUserAdminDto, adminId: string) {
+    const existing = await this.prisma.user.findUnique({
+      where: { email: dto.email.toLowerCase().trim() },
+    });
+    if (existing) {
+      throw new ConflictException('A user with this email address already exists');
+    }
+
+    const passwordHash = await bcrypt.hash(dto.password, 10);
+    const user = await this.prisma.user.create({
+      data: {
+        email: dto.email.toLowerCase().trim(),
+        passwordHash,
+        name: dto.name.trim(),
+        phone: dto.phone || null,
+        country: dto.country || null,
+        role: dto.role || 'USER',
+        status: dto.status || 'ACTIVE',
+        emailVerified: true,
+      },
+    });
+
+    let initialBalance = 0;
+    if (dto.initialPoints && Number(dto.initialPoints) > 0) {
+      const points = Number(dto.initialPoints);
+      await this.prisma.pointsLedger.create({
+        data: {
+          userId: user.id,
+          type: 'ADMIN_CREDIT',
+          points,
+          balanceAfter: points,
+          description: dto.notes || 'Initial signup / welcome points assigned by admin',
+          reason: 'Manual account creation with bonus points',
+          createdById: adminId,
+        },
+      });
+      initialBalance = points;
+    }
+
+    // Audit Log
+    await this.prisma.auditLog.create({
+      data: {
+        adminId,
+        action: 'CREATE_USER',
+        entity: 'User',
+        entityId: user.id,
+        newValue: JSON.stringify({
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          status: user.status,
+          initialPoints: initialBalance,
+        }),
+        notes: `Admin manually created user: ${user.name} (${user.email})`,
+      },
+    });
+
+    const { passwordHash: _, ...safeUser } = user;
+    return {
+      ...safeUser,
+      availablePoints: initialBalance,
+    };
+  }
+
+  async adminUpdateUser(id: string, dto: UpdateUserAdminDto, adminId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Check unique email if email is being changed
+    if (dto.email && dto.email.toLowerCase().trim() !== user.email) {
+      const emailConflict = await this.prisma.user.findUnique({
+        where: { email: dto.email.toLowerCase().trim() },
+      });
+      if (emailConflict) {
+        throw new ConflictException('Another user with this email already exists');
+      }
+    }
+
+    const updated = await this.prisma.user.update({
+      where: { id },
+      data: {
+        ...(dto.name !== undefined && { name: dto.name.trim() }),
+        ...(dto.email !== undefined && { email: dto.email.toLowerCase().trim() }),
+        ...(dto.phone !== undefined && { phone: dto.phone.trim() || null }),
+        ...(dto.country !== undefined && { country: dto.country.trim() || null }),
+        ...(dto.role !== undefined && { role: dto.role }),
+        ...(dto.status !== undefined && { status: dto.status }),
+        ...(dto.emailVerified !== undefined && { emailVerified: dto.emailVerified }),
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        phone: true,
+        country: true,
+        role: true,
+        status: true,
+        emailVerified: true,
+        createdAt: true,
+      },
+    });
+
+    // Audit Log
+    await this.prisma.auditLog.create({
+      data: {
+        adminId,
+        action: 'UPDATE_USER',
+        entity: 'User',
+        entityId: id,
+        previousValue: JSON.stringify({
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          status: user.status,
+          phone: user.phone,
+          country: user.country,
+        }),
+        newValue: JSON.stringify(dto),
+        notes: `Admin updated user details for: ${updated.name} (${updated.email})`,
+      },
+    });
+
+    return updated;
+  }
+
+  async adminResetPassword(id: string, dto: ResetPasswordAdminDto, adminId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (!dto.newPassword || dto.newPassword.length < 6) {
+      throw new BadRequestException('Password must be at least 6 characters long');
+    }
+
+    const passwordHash = await bcrypt.hash(dto.newPassword, 10);
+    await this.prisma.user.update({
+      where: { id },
+      data: { passwordHash },
+    });
+
+    // Notify user
+    await this.prisma.notification.create({
+      data: {
+        userId: id,
+        title: 'Security Alert: Password Reset by Support',
+        message: `Your account password was updated by an administrator. Reason: ${dto.reason || 'Support assistance'}`,
+        type: 'SECURITY',
+      },
+    });
+
+    // Audit Log
+    await this.prisma.auditLog.create({
+      data: {
+        adminId,
+        action: 'RESET_PASSWORD',
+        entity: 'User',
+        entityId: id,
+        notes: `Admin reset password for user: ${user.name} (${user.email}). Reason: ${dto.reason || 'Not specified'}`,
+      },
+    });
+
+    return { message: 'Password reset successfully' };
+  }
+
+  async adminDeleteUser(id: string, adminId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.role === 'ADMIN' && user.id === adminId) {
+      throw new BadRequestException('You cannot delete your own admin account');
+    }
+
+    // Delete user (cascade will delete points, submissions, addresses, etc.)
+    await this.prisma.user.delete({ where: { id } });
+
+    // Audit Log
+    await this.prisma.auditLog.create({
+      data: {
+        adminId,
+        action: 'DELETE_USER',
+        entity: 'User',
+        entityId: id,
+        previousValue: JSON.stringify({ name: user.name, email: user.email, role: user.role }),
+        notes: `Admin deleted user account: ${user.name} (${user.email})`,
+      },
+    });
+
+    return { message: 'User deleted successfully' };
+  }
 }
+

@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Delete, Patch, Param, Body, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Patch, Param, Body, UseGuards, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateAddressDto, UpdateUserStatusDto } from './dto/user.dto';
+import { CreateAddressDto, UpdateUserStatusDto, CreateUserAdminDto, UpdateUserAdminDto, ResetPasswordAdminDto } from './dto/user.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -49,6 +49,38 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
+  @Post('admin/create')
+  async adminCreateUser(
+    @Body() dto: CreateUserAdminDto,
+    @CurrentUser('id') adminId: string,
+  ) {
+    return this.usersService.adminCreateUser(dto, adminId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Put('admin/:id')
+  async adminUpdateUser(
+    @Param('id') id: string,
+    @Body() dto: UpdateUserAdminDto,
+    @CurrentUser('id') adminId: string,
+  ) {
+    return this.usersService.adminUpdateUser(id, dto, adminId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Patch('admin/:id/password')
+  async adminResetPassword(
+    @Param('id') id: string,
+    @Body() dto: ResetPasswordAdminDto,
+    @CurrentUser('id') adminId: string,
+  ) {
+    return this.usersService.adminResetPassword(id, dto, adminId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @Patch('admin/:id/status')
   async adminUpdateUserStatus(
     @Param('id') id: string,
@@ -56,5 +88,15 @@ export class UsersController {
     @CurrentUser('id') adminId: string,
   ) {
     return this.usersService.adminUpdateUserStatus(id, dto, adminId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Delete('admin/:id')
+  async adminDeleteUser(
+    @Param('id') id: string,
+    @CurrentUser('id') adminId: string,
+  ) {
+    return this.usersService.adminDeleteUser(id, adminId);
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Param, Body, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Patch, Delete, Param, Body, UseGuards, Query } from '@nestjs/common';
 import { RedemptionsService } from './redemptions.service';
 import { UpdateRedemptionStatusDto } from '../rewards/dto/reward.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -54,4 +54,15 @@ export class RedemptionsController {
   ) {
     return this.redemptionsService.updateStatus(id, dto, adminId);
   }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Delete('admin/:id')
+  async adminDeleteRedemption(
+    @Param('id') id: string,
+    @CurrentUser('id') adminId: string,
+  ) {
+    return this.redemptionsService.adminDeleteRedemption(id, adminId);
+  }
 }
+

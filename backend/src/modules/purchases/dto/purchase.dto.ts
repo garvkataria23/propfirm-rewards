@@ -69,3 +69,84 @@ export class ResubmitPurchaseDto {
   @IsNotEmpty({ message: 'Please provide the requested details' })
   userResubmissionNotes: string;
 }
+
+export class AdminCreatePurchaseDto {
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  propFirmId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  accountType: string;
+
+  @IsString()
+  @IsNotEmpty()
+  orderId: string;
+
+  @IsOptional()
+  @IsString()
+  accountId?: string;
+
+  @IsNumber()
+  @Min(0)
+  purchaseAmountUsd: number;
+
+  @IsString()
+  @IsNotEmpty()
+  emailUsed: string;
+
+  @IsOptional()
+  @IsString()
+  referralCodeUsed?: string;
+
+  @IsOptional()
+  @IsNumber()
+  pointsAwarded?: number;
+
+  @IsOptional()
+  @IsString()
+  status?: string; // APPROVED, PENDING, UNDER_REVIEW
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
+}
+
+export class AdminUpdatePurchaseDto {
+  @IsOptional()
+  @IsString()
+  orderId?: string;
+
+  @IsOptional()
+  @IsString()
+  accountType?: string;
+
+  @IsOptional()
+  @IsNumber()
+  purchaseAmountUsd?: number;
+
+  @IsOptional()
+  @IsString()
+  emailUsed?: string;
+
+  @IsOptional()
+  @IsString()
+  referralCodeUsed?: string;
+
+  @IsOptional()
+  @IsNumber()
+  pointsAwarded?: number;
+
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
+}
+

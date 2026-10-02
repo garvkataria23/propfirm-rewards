@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Patch, Param, Body, UseGuards, Query, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Patch, Param, Body, UseGuards, Query, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PurchasesService } from './purchases.service';
-import { SubmitPurchaseDto, ApprovePurchaseDto, RejectPurchaseDto, RequestInfoPurchaseDto, ResubmitPurchaseDto } from './dto/purchase.dto';
+import { SubmitPurchaseDto, ApprovePurchaseDto, RejectPurchaseDto, RequestInfoPurchaseDto, ResubmitPurchaseDto, AdminCreatePurchaseDto, AdminUpdatePurchaseDto } from './dto/purchase.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -68,6 +68,37 @@ export class PurchasesController {
   @Get('admin/:id')
   async getAdminPurchaseById(@Param('id') id: string) {
     return this.purchasesService.getAdminPurchaseById(id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Post('admin/create')
+  async adminCreateSubmission(
+    @Body() dto: AdminCreatePurchaseDto,
+    @CurrentUser('id') adminId: string,
+  ) {
+    return this.purchasesService.adminCreateSubmission(dto, adminId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Put('admin/:id')
+  async adminUpdateSubmission(
+    @Param('id') id: string,
+    @Body() dto: AdminUpdatePurchaseDto,
+    @CurrentUser('id') adminId: string,
+  ) {
+    return this.purchasesService.adminUpdateSubmission(id, dto, adminId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Delete('admin/:id')
+  async adminDeleteSubmission(
+    @Param('id') id: string,
+    @CurrentUser('id') adminId: string,
+  ) {
+    return this.purchasesService.adminDeleteSubmission(id, adminId);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

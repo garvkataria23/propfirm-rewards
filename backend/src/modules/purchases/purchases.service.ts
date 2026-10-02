@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
 import { EmailService } from '../email/email.service';
 import { WhatsAppService } from '../whatsapp/whatsapp.service';
-import { SubmitPurchaseDto, ApprovePurchaseDto, RejectPurchaseDto, RequestInfoPurchaseDto, ResubmitPurchaseDto } from './dto/purchase.dto';
+import { SubmitPurchaseDto, ApprovePurchaseDto, RejectPurchaseDto, RequestInfoPurchaseDto, ResubmitPurchaseDto, AdminCreatePurchaseDto, AdminUpdatePurchaseDto } from './dto/purchase.dto';
 
 @Injectable()
 export class PurchasesService {
@@ -672,5 +672,148 @@ export class PurchasesService {
     });
 
     return updated;
+  }
+
+  async adminCreateSubmission(dto: AdminCreatePurchaseDto, adminId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: dto.userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const propFirm = await this.prisma.propFirm.findUnique({ where: { id: dto.propFirmId } });
+    if (!propFirm) throw new NotFoundException('Prop firm not found');
+
+    const randomSuffix = Math.floor(10000 + Math.random() * 90000);
+    const submissionCode = `PN-ADM-${randomSuffix}`;
+    const status = dto.status || 'APPROVED';
+    const pointsToAward = dto.pointsAwarded || Math.round(dto.purchaseAmountUsd * 10);
+
+    const submission = await this.prisma.$transaction(async (tx) => {
+      const created = await tx.purchaseSubmission.create({
+        data: {
+          submissionCode,
+          userId: dto.userId,
+          propFirmId: dto.propFirmId,
+          accountType: dto.accountType,
+          orderId: dto.orderId,
+          accountId: dto.accountId || null,
+          purchaseDate: new Date(),
+          purchaseAmountUsd: dto.purchaseAmountUsd,
+          emailUsed: dto.emailUsed,
+          referralCodeUsed: dto.referralCodeUsed || propFirm.affiliateCode || 'PROPNATION',
+          notes: dto.notes || 'Manually logged by Admin from Control Panel',
+          status,
+          pointsAwarded: status === 'APPROVED' ? pointsToAward : 0,
+          reviewedById: adminId,
+          reviewedAt: new Date(),
+        },
+        include: {
+          propFirm: true,
+          user: true,
+          proofs: true,
+        },
+      });
+
+      if (status === 'APPROVED' && pointsToAward > 0) {
+        const lastTx = await tx.pointsLedger.findFirst({
+          where: { userId: dto.userId },
+          orderBy: { createdAt: 'desc' },
+          select: { balanceAfter: true },
+        });
+        const currentBalance = lastTx ? lastTx.balanceAfter : 0;
+        const newBalance = currentBalance + pointsToAward;
+
+        await tx.pointsLedger.create({
+          data: {
+            userId: dto.userId,
+            submissionId: created.id,
+            type: 'PURCHASE_REWARD',
+            points: pointsToAward,
+            balanceAfter: newBalance,
+            description: `Admin Verified: ${propFirm.name} - ${dto.accountType}`,
+            reason: 'Manual order entry by Admin',
+            createdById: adminId,
+          },
+        });
+      }
+
+      await tx.auditLog.create({
+        data: {
+          adminId,
+          action: 'MANUAL_CREATE_SUBMISSION',
+          entity: 'PurchaseSubmission',
+          entityId: created.id,
+          newValue: JSON.stringify(dto),
+          notes: `Admin manually created submission for user ${user.name}: ${submissionCode}`,
+        },
+      });
+
+      return created;
+    });
+
+    return submission;
+  }
+
+  async adminUpdateSubmission(id: string, dto: AdminUpdatePurchaseDto, adminId: string) {
+    const submission = await this.prisma.purchaseSubmission.findUnique({
+      where: { id },
+      include: { user: true, propFirm: true },
+    });
+    if (!submission) throw new NotFoundException('Submission not found');
+
+    const updated = await this.prisma.purchaseSubmission.update({
+      where: { id },
+      data: {
+        ...(dto.orderId && { orderId: dto.orderId }),
+        ...(dto.accountType && { accountType: dto.accountType }),
+        ...(dto.purchaseAmountUsd !== undefined && { purchaseAmountUsd: dto.purchaseAmountUsd }),
+        ...(dto.emailUsed && { emailUsed: dto.emailUsed }),
+        ...(dto.referralCodeUsed && { referralCodeUsed: dto.referralCodeUsed }),
+        ...(dto.pointsAwarded !== undefined && { pointsAwarded: dto.pointsAwarded }),
+        ...(dto.status && { status: dto.status }),
+        ...(dto.notes && { notes: dto.notes }),
+      },
+      include: { propFirm: true, user: true, proofs: true },
+    });
+
+    await this.prisma.auditLog.create({
+      data: {
+        adminId,
+        action: 'UPDATE_SUBMISSION',
+        entity: 'PurchaseSubmission',
+        entityId: id,
+        previousValue: JSON.stringify({
+          orderId: submission.orderId,
+          amount: submission.purchaseAmountUsd,
+          points: submission.pointsAwarded,
+          status: submission.status,
+        }),
+        newValue: JSON.stringify(dto),
+        notes: `Admin edited submission ${submission.submissionCode}`,
+      },
+    });
+
+    return updated;
+  }
+
+  async adminDeleteSubmission(id: string, adminId: string) {
+    const submission = await this.prisma.purchaseSubmission.findUnique({
+      where: { id },
+    });
+    if (!submission) throw new NotFoundException('Submission not found');
+
+    // Delete linked proofs first if any, then submission
+    await this.prisma.purchaseProof.deleteMany({ where: { submissionId: id } });
+    await this.prisma.purchaseSubmission.delete({ where: { id } });
+
+    await this.prisma.auditLog.create({
+      data: {
+        adminId,
+        action: 'DELETE_SUBMISSION',
+        entity: 'PurchaseSubmission',
+        entityId: id,
+        notes: `Admin deleted submission ${submission.submissionCode} (Order: ${submission.orderId})`,
+      },
+    });
+
+    return { message: 'Submission deleted successfully' };
   }
 }
