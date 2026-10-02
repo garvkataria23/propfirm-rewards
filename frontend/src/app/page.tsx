@@ -134,12 +134,13 @@ const FALLBACK_PROP_FIRMS: PropFirm[] = [
   },
 ];
 
-// Fallback curated rewards matching the master prompt
+// Fallback curated rewards matching the master prompt with realistic product photography
 const FALLBACK_REWARDS: Reward[] = [
   {
     id: 'r-1',
     name: 'Wireless Noise-Canceling Headphones',
     slug: 'wireless-headphones',
+    imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 20000,
     category: { name: 'Audio Gear', slug: 'audio' },
   },
@@ -147,6 +148,7 @@ const FALLBACK_REWARDS: Reward[] = [
     id: 'r-2',
     name: 'Limited Edition Streetwear Sneakers',
     slug: 'premium-sneakers',
+    imageUrl: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 15000,
     category: { name: 'Apparel', slug: 'apparel' },
   },
@@ -154,6 +156,7 @@ const FALLBACK_REWARDS: Reward[] = [
     id: 'r-3',
     name: 'Pro Mechanical Gaming Accessory',
     slug: 'gaming-accessory',
+    imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 10000,
     category: { name: 'Gaming', slug: 'gaming' },
   },
@@ -161,6 +164,7 @@ const FALLBACK_REWARDS: Reward[] = [
     id: 'r-4',
     name: 'Flagship 5G Smartphone',
     slug: 'flagship-smartphone',
+    imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 100000,
     category: { name: 'Mobile Tech', slug: 'mobile' },
   },
@@ -168,6 +172,7 @@ const FALLBACK_REWARDS: Reward[] = [
     id: 'r-5',
     name: 'Ultra Retina 11-inch Tablet',
     slug: 'ultra-tablet',
+    imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 60000,
     category: { name: 'Workstations', slug: 'workstations' },
   },
@@ -175,6 +180,7 @@ const FALLBACK_REWARDS: Reward[] = [
     id: 'r-6',
     name: '$50 Global Digital Gift Card',
     slug: 'digital-gift-card',
+    imageUrl: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 5000,
     category: { name: 'Vouchers', slug: 'vouchers' },
   },
@@ -201,7 +207,11 @@ export default function HomePage() {
       .get<Reward[]>('/rewards', { inStockOnly: true })
       .then((data) => {
         if (data && Array.isArray(data) && data.length > 0) {
-          setRewards(data);
+          const merged = data.slice(0, 6).map((item, idx) => ({
+            ...item,
+            imageUrl: item.imageUrl || FALLBACK_REWARDS[idx % FALLBACK_REWARDS.length].imageUrl,
+          }));
+          setRewards(merged);
         }
       })
       .catch(() => {});
@@ -702,9 +712,17 @@ export default function HomePage() {
                   className="rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 flex flex-col justify-between space-y-6 hover:border-slate-300 dark:hover:border-slate-700 transition-all group shadow-xs"
                 >
                   <div className="space-y-4">
-                    {/* Visual box */}
-                    <div className="aspect-[16/10] rounded-xl bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800/80 flex items-center justify-center p-6 text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors shadow-2xs">
-                      <ItemIcon className="h-12 w-12 stroke-[1.5]" />
+                    {/* Visual image box */}
+                    <div className="aspect-[16/10] rounded-xl bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800/80 overflow-hidden flex items-center justify-center p-4 relative shadow-2xs group/img">
+                      {item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="h-full w-full object-cover rounded-lg group-hover/img:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <ItemIcon className="h-12 w-12 stroke-[1.5] text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors" />
+                      )}
                     </div>
 
                     <div>
