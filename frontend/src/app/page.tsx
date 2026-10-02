@@ -204,6 +204,11 @@ export default function HomePage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [counterPoints, setCounterPoints] = useState<number>(10000);
   const [calcSpend, setCalcSpend] = useState<number>(499);
+  const [showcaseTab, setShowcaseTab] = useState<'3d' | 'live'>('3d');
+  const [heroTab, setHeroTab] = useState<'wallet' | '3d'>('wallet');
+
+  // Locale-safe number formatting to prevent hydration mismatch
+  const formatPoints = (pts: number) => pts.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   useEffect(() => {
     api
@@ -343,10 +348,19 @@ export default function HomePage() {
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
                   </Button>
                 </Link>
+                <Link href="#ecosystem" className="w-full sm:w-auto">
+                  <Button
+                    variant="outline"
+                    className="w-full sm:w-auto border-emerald-500/40 dark:border-emerald-500/40 bg-emerald-50/60 dark:bg-emerald-950/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-xs flex items-center justify-center gap-2"
+                  >
+                    <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                    3D Showcase
+                  </Button>
+                </Link>
                 <Link href="#rewards" className="w-full sm:w-auto">
                   <Button
                     variant="outline"
-                    className="w-full sm:w-auto border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 px-8 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-xs"
+                    className="w-full sm:w-auto border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 px-6 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-xs"
                   >
                     Explore Rewards
                   </Button>
@@ -385,104 +399,168 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="w-full max-w-md rounded-2xl bg-white dark:bg-gradient-to-b dark:from-slate-900/95 dark:to-[#0b0f17] border border-slate-200/90 dark:border-slate-800 p-5 sm:p-6 shadow-xl shadow-slate-200/50 dark:shadow-black/80 space-y-5 backdrop-blur-xl relative transition-all duration-300 hover:shadow-2xl">
-                {/* Header Row: Balance */}
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4">
-                  <div>
-                    <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                      Available Points
-                    </div>
-                    <div className="text-3xl font-[900] text-slate-900 dark:text-white tracking-tight font-mono flex items-baseline gap-2 mt-0.5">
-                      <span className="transition-all duration-300">{counterPoints.toLocaleString()}</span>
-                      <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-md animate-pulse">
-                        +2,500 Points
-                      </span>
-                    </div>
-                  </div>
-                  <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs">
-                    <Wallet className="h-5 w-5" />
-                  </div>
-                </div>
-
-                {/* Reward Progress Card */}
-                <div className="rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/70 dark:border-slate-800/80 p-3.5 space-y-2.5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
-                      <Smartphone className="h-4 w-4 text-sky-600 dark:text-sky-400" />
-                      iPhone Flagship
-                    </span>
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">75% unlocked</span>
-                  </div>
-                  {/* Progress bar */}
-                  <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[75%] transition-all duration-500" />
-                  </div>
-                  <div className="flex justify-between text-[11px] text-slate-500 font-medium">
-                    <span>12,500 PTS</span>
-                    <span>16,600 PTS Goal</span>
-                  </div>
-                </div>
-
-                {/* Recent Activity List */}
-                <div className="space-y-2">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                    Recent Activity
-                  </div>
-                  <div className="space-y-2 text-xs">
-                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                        <div>
-                          <div className="font-semibold text-slate-800 dark:text-slate-200">Purchase Verified</div>
-                          <div className="text-[10px] text-slate-500">Order #PS-88412 • Pipstone</div>
-                        </div>
-                      </div>
-                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+2,500 PTS</span>
-                    </div>
-
-                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors">
-                      <div className="flex items-center gap-2">
-                        <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
-                        <div>
-                          <div className="font-semibold text-slate-800 dark:text-slate-200">Bonus Earned</div>
-                          <div className="text-[10px] text-slate-500">First Purchase Boost</div>
-                        </div>
-                      </div>
-                      <span className="font-mono font-bold text-blue-600 dark:text-blue-400">+1,000 PTS</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Referral Code Quick Copy Box */}
-                <div className="pt-1">
-                  <div className="rounded-xl bg-slate-100/90 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-3 flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block tracking-wider">
-                        Universal Referral Code
-                      </span>
-                      <span className="font-mono font-black text-slate-900 dark:text-white text-base tracking-wider">
-                        NATION
-                      </span>
-                    </div>
+              <div className="w-full max-w-md rounded-2xl bg-white dark:bg-gradient-to-b dark:from-slate-900/95 dark:to-[#0b0f17] border border-slate-200/90 dark:border-slate-800 p-5 sm:p-6 shadow-xl shadow-slate-200/50 dark:shadow-black/80 space-y-4 backdrop-blur-xl relative transition-all duration-300 hover:shadow-2xl">
+                {/* Mode Selector Tab in Hero Mockup Card */}
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-3">
+                  <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
                     <button
                       type="button"
-                      onClick={() => handleCopyCode('NATION')}
-                      className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                      onClick={() => setHeroTab('wallet')}
+                      className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                        heroTab === 'wallet'
+                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
+                          : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                      }`}
                     >
-                      {copiedCode === 'NATION' ? (
-                        <>
-                          <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                          <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="h-3.5 w-3.5 text-slate-500" />
-                          <span>Copy</span>
-                        </>
-                      )}
+                      Live Wallet
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setHeroTab('3d')}
+                      className={`flex items-center gap-1 px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                        heroTab === '3d'
+                          ? 'bg-emerald-500 text-slate-950 shadow-2xs font-extrabold'
+                          : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                      }`}
+                    >
+                      <Sparkles className="h-3 w-3" />
+                      3D Render
                     </button>
                   </div>
+                  <a
+                    href="#ecosystem"
+                    className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
+                  >
+                    Full View <ArrowRight className="h-3 w-3" />
+                  </a>
                 </div>
+
+                {heroTab === '3d' ? (
+                  <div className="space-y-3">
+                    <div className="relative rounded-xl overflow-hidden border border-emerald-500/30 group/heroimg aspect-[16/10] bg-black">
+                      <Image
+                        src="/propfirm1.png"
+                        alt="Trade Rewards 3D Platform Showcase"
+                        width={600}
+                        height={400}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover/heroimg:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-3">
+                        <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">
+                          Ultra-HD 3D Model
+                        </span>
+                        <span className="text-xs font-bold text-white">
+                          TradeRewards Ecosystem &amp; Flagship Tech
+                        </span>
+                      </div>
+                    </div>
+                    <a href="#ecosystem" className="block">
+                      <Button className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold h-9 rounded-lg">
+                        Expand Full 3D Panorama <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
+                      </Button>
+                    </a>
+                  </div>
+                ) : (
+                  <>
+                    {/* Header Row: Balance */}
+                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4">
+                      <div>
+                        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                          Available Points
+                        </div>
+                        <div className="text-3xl font-[900] text-slate-900 dark:text-white tracking-tight font-mono flex items-baseline gap-2 mt-0.5">
+                          <span className="transition-all duration-300">{formatPoints(counterPoints)}</span>
+                          <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-md animate-pulse">
+                            +2,500 Points
+                          </span>
+                        </div>
+                      </div>
+                      <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs">
+                        <Wallet className="h-5 w-5" />
+                      </div>
+                    </div>
+
+                    {/* Reward Progress Card */}
+                    <div className="rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/70 dark:border-slate-800/80 p-3.5 space-y-2.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-semibold text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
+                          <Smartphone className="h-4 w-4 text-sky-600 dark:text-sky-400" />
+                          iPhone Flagship
+                        </span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">75% unlocked</span>
+                      </div>
+                      {/* Progress bar */}
+                      <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[75%] transition-all duration-500" />
+                      </div>
+                      <div className="flex justify-between text-[11px] text-slate-500 font-medium">
+                        <span>12,500 PTS</span>
+                        <span>16,600 PTS Goal</span>
+                      </div>
+                    </div>
+
+                    {/* Recent Activity List */}
+                    <div className="space-y-2">
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        Recent Activity
+                      </div>
+                      <div className="space-y-2 text-xs">
+                        <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                            <div>
+                              <div className="font-semibold text-slate-800 dark:text-slate-200">Purchase Verified</div>
+                              <div className="text-[10px] text-slate-500">Order #PS-88412 • Pipstone</div>
+                            </div>
+                          </div>
+                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+2,500 PTS</span>
+                        </div>
+
+                        <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                            <div>
+                              <div className="font-semibold text-slate-800 dark:text-slate-200">Bonus Earned</div>
+                              <div className="text-[10px] text-slate-500">First Purchase Boost</div>
+                            </div>
+                          </div>
+                          <span className="font-mono font-bold text-blue-600 dark:text-blue-400">+1,000 PTS</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Referral Code Quick Copy Box */}
+                    <div className="pt-1">
+                      <div className="rounded-xl bg-slate-100/90 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-3 flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block tracking-wider">
+                            Universal Referral Code
+                          </span>
+                          <span className="font-mono font-black text-slate-900 dark:text-white text-base tracking-wider">
+                            NATION
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyCode('NATION')}
+                          className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                        >
+                          {copiedCode === 'NATION' ? (
+                            <>
+                              <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                              <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="h-3.5 w-3.5 text-slate-500" />
+                              <span>Copy</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -704,7 +782,7 @@ export default function HomePage() {
                         >
                           <span className="text-slate-700 dark:text-slate-300 font-medium">{offer.accountTierName}</span>
                           <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                            +{offer.rewardPoints.toLocaleString()} PTS
+                            +{formatPoints(offer.rewardPoints)} PTS
                           </span>
                         </div>
                       ))
@@ -801,7 +879,7 @@ export default function HomePage() {
 
                     <div className="flex items-baseline gap-1.5 pt-1">
                       <span className="text-2xl font-[900] text-emerald-600 dark:text-emerald-400 font-mono group-hover:scale-105 transition-transform origin-left">
-                        {item.pointsRequired.toLocaleString()}
+                        {formatPoints(item.pointsRequired)}
                       </span>
                       <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase">Points</span>
                     </div>
@@ -906,7 +984,7 @@ export default function HomePage() {
                   <div className="flex items-center justify-between pt-2 border-t border-slate-200/60 dark:border-slate-800/60 text-xs">
                     <span className="text-slate-500 font-medium">Points Earned This Challenge:</span>
                     <span className="font-mono font-black text-emerald-600 dark:text-emerald-400 text-sm">
-                      +{(calcSpend * 10).toLocaleString()} PTS
+                      +{formatPoints(calcSpend * 10)} PTS
                     </span>
                   </div>
                 </div>
@@ -916,7 +994,7 @@ export default function HomePage() {
                   <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-500">
                     <span>Recent Ledger Activity</span>
                     <span className="text-emerald-600 dark:text-emerald-400 font-mono">
-                      Projected: {(12500 + calcSpend * 10).toLocaleString()} PTS
+                      Projected: {formatPoints(12500 + calcSpend * 10)} PTS
                     </span>
                   </div>
 
@@ -929,7 +1007,7 @@ export default function HomePage() {
                         </div>
                         <div className="text-[10px] text-emerald-700/80 dark:text-emerald-400/80">Pending Order Confirmation</div>
                       </div>
-                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+{(calcSpend * 10).toLocaleString()}</span>
+                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+{formatPoints(calcSpend * 10)}</span>
                     </div>
 
                     <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80">
@@ -1014,7 +1092,7 @@ export default function HomePage() {
                           <div className="text-right">
                             <div className="text-[10px] text-slate-500">Projected Points</div>
                             <div className="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
-                              {projectedTotal.toLocaleString()}
+                              {formatPoints(projectedTotal)}
                             </div>
                           </div>
                         </div>
@@ -1033,7 +1111,7 @@ export default function HomePage() {
                               </span>
                             ) : (
                               <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                                {headphonesLeft.toLocaleString()} more to unlock
+                                {formatPoints(headphonesLeft)} more to unlock
                               </span>
                             )}
                           </div>
@@ -1055,7 +1133,7 @@ export default function HomePage() {
                           <div className="text-right">
                             <div className="text-[10px] text-slate-500">Projected Points</div>
                             <div className="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
-                              {projectedTotal.toLocaleString()}
+                              {formatPoints(projectedTotal)}
                             </div>
                           </div>
                         </div>
@@ -1074,7 +1152,7 @@ export default function HomePage() {
                               </span>
                             ) : (
                               <span className="font-semibold text-sky-600 dark:text-sky-400">
-                                {sneakersLeft.toLocaleString()} more to unlock
+                                {formatPoints(sneakersLeft)} more to unlock
                               </span>
                             )}
                           </div>
@@ -1197,30 +1275,64 @@ export default function HomePage() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          8. DASHBOARD PREVIEW & REDEMPTION PROCESS
-          Realistic SaaS product mockup
+          8. 3D ECOSYSTEM SHOWCASE & TRADER PORTAL
+          Featuring Ultra-HD 3D Model (propfirm1.png) & Live Dashboard
       ───────────────────────────────────────────────────────────── */}
-      <section className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section id="ecosystem" className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           {/* Header */}
-          <div className="text-center max-w-2xl mx-auto space-y-3">
+          <div className="text-center max-w-3xl mx-auto space-y-3">
             <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/60 text-xs">
-              Portal Overview
+              <Sparkles className="h-3 w-3 mr-1.5 text-emerald-500" />
+              Platform &amp; Rewards Ecosystem
             </Badge>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
-              Professional Trader Dashboard
+              The Complete Trader Rewards Experience
             </h2>
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              Manage your challenges, point logs, and shipping timelines with full transparency.
+              From eligible prop-firm challenges to real-time points accreditation, flagship Apple &amp; Sony electronics, authentic sneakers, and instant crypto payouts.
             </p>
+
+            {/* Interactive View Switcher Tabs */}
+            <div className="pt-2 flex items-center justify-center">
+              <div className="inline-flex items-center p-1 rounded-xl bg-slate-200/80 dark:bg-slate-900 border border-slate-300/80 dark:border-slate-800 shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => setShowcaseTab('3d')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    showcaseTab === '3d'
+                      ? 'bg-white dark:bg-emerald-500 text-slate-900 dark:text-slate-950 shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-emerald-500 dark:text-slate-950" />
+                  <span>3D Rewards Ecosystem</span>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-800/40">
+                    Render
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowcaseTab('live')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    showcaseTab === 'live'
+                      ? 'bg-white dark:bg-emerald-500 text-slate-900 dark:text-slate-950 shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Activity className="h-3.5 w-3.5 text-emerald-500 dark:text-slate-950" />
+                  <span>Live App Portal</span>
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* Large Dashboard Mockup with Ambient Glow & Live Tracking */}
+          {/* Large Showcase Mockup Container with Ambient Glow & Frame */}
           <div className="relative group">
-            {/* Soft ambient back-glow */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-indigo-500/10 rounded-3xl blur-2xl animate-pulse-glow pointer-events-none -z-10" />
+            {/* Soft ambient back-glow matching neon theme */}
+            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 via-teal-500/15 to-emerald-600/20 rounded-3xl blur-3xl animate-pulse-glow pointer-events-none -z-10" />
 
-            <div className="rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-2xl shadow-slate-200/60 dark:shadow-black/60 transition-all duration-300">
+            <div className="rounded-2xl bg-white dark:bg-[#070b12] border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-2xl shadow-emerald-950/20 transition-all duration-300">
               {/* Browser / App Header bar */}
               <div className="h-11 bg-slate-100/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 backdrop-blur-sm">
                 <div className="flex items-center gap-2">
@@ -1229,27 +1341,52 @@ export default function HomePage() {
                   <span className="h-3 w-3 rounded-full bg-emerald-400/90" />
                   <div className="ml-3 hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-mono text-[11px] shadow-2xs">
                     <Lock className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
-                    <span>app.propnation.com/dashboard</span>
+                    <span>{showcaseTab === '3d' ? 'propnation.com/ecosystem' : 'app.propnation.com/dashboard'}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-[11px] font-mono text-slate-500 hidden md:inline">TRADER PORTAL • ACTIVE</span>
+                  <span className="text-[11px] font-mono text-slate-500 hidden md:inline">
+                    {showcaseTab === '3d' ? '3D ULTRA-HD SHOWCASE • PROPFIRM1' : 'TRADER PORTAL • ACTIVE'}
+                  </span>
                   <div className="flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400 text-xs bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-200/60 dark:border-emerald-500/20">
-                    <CheckCircle2 className="h-3.5 w-3.5" /> Live &amp; Connected
+                    <CheckCircle2 className="h-3.5 w-3.5" /> {showcaseTab === '3d' ? 'Ultra HD 4K Render' : 'Live & Connected'}
                   </div>
                 </div>
               </div>
 
-              {/* Actual Dashboard Screenshot Container */}
-              <div className="relative w-full bg-slate-950 overflow-hidden">
-                <Image
-                  src="/dashboard-preview.png"
-                  alt="Prop Nation Trader Portal Dashboard"
-                  width={1024}
-                  height={576}
-                  className="w-full h-auto object-cover object-top select-none transition-transform duration-500 group-hover:scale-[1.008]"
-                  priority
-                />
+              {/* Showcase Image Display Container */}
+              <div className="relative w-full bg-black overflow-hidden flex items-center justify-center">
+                {showcaseTab === '3d' ? (
+                  <div className="relative w-full group/canvas">
+                    <Image
+                      src="/propfirm1.png"
+                      alt="Trade Rewards 3D Platform Showcase featuring TradeRewards Dashboard, iPhone 16 Pro, AirPods Max, MacBook, PS5, Nike Sneakers and Prop Firm partners"
+                      width={1536}
+                      height={1024}
+                      className="w-full h-auto object-cover select-none transition-transform duration-700 ease-out group-hover/canvas:scale-[1.012]"
+                      priority
+                    />
+                    {/* Floating Interactive Highlights Bar */}
+                    <div className="absolute bottom-4 left-4 right-4 hidden sm:flex items-center justify-between pointer-events-none">
+                      <div className="bg-slate-900/90 backdrop-blur-md border border-emerald-500/30 text-white px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 shadow-lg">
+                        <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+                        <span>Interactive 3D Ecosystem • High-Res Visual</span>
+                      </div>
+                      <div className="bg-slate-900/90 backdrop-blur-md border border-slate-700 text-slate-300 px-3.5 py-1.5 rounded-full text-xs font-mono shadow-lg">
+                        Available Points: 12,500 • FTMO, The 5ers, E8, FundedNext
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Image
+                    src="/dashboard-preview.png"
+                    alt="Prop Nation Trader Portal Dashboard"
+                    width={1024}
+                    height={576}
+                    className="w-full h-auto object-cover object-top select-none transition-transform duration-500 group-hover:scale-[1.008]"
+                    priority
+                  />
+                )}
               </div>
 
               {/* Quick Live Tracking Sub-Bar */}
@@ -1265,10 +1402,12 @@ export default function HomePage() {
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                       </span>
                       <span className="text-xs font-bold text-slate-900 dark:text-white">Active Dispatch Tracking</span>
-                      <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">#RW-10294</span>
+                      <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                        #RW-10294
+                      </span>
                     </div>
                     <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                      Premium Wireless Headphones • Shipped via DHL Express (Waybill #9400 1000 8421)
+                      Apple iPhone 16 Pro &amp; AirPods Max • Shipped via DHL Express (Waybill #9400 1000 8421)
                     </div>
                   </div>
                 </div>
