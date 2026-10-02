@@ -18,11 +18,11 @@ export function Footer() {
 
   return (
     <footer className="w-full bg-[#050816] text-slate-400 border-t border-slate-900 font-sans transition-colors">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 space-y-12">
-        {/* Top 4-Column Navigation & Brand Info (Screenshots 5) */}
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 space-y-10">
+        {/* Brand Info & 2-Column Mobile Navigation (Screenshot 1: media_1790940232221.png) */}
         <div className="space-y-8 text-left">
-          {/* Brand Info */}
-          <div className="space-y-4">
+          {/* Brand Logo & Tagline */}
+          <div className="space-y-3">
             <Link href="/" className="flex items-center gap-2 group">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0c182a] text-white shadow-xs group-hover:scale-105 transition-transform border border-sky-500/20">
                 <span className="font-black text-sm tracking-tighter text-sky-400">P<span className="text-white">N</span></span>
@@ -36,13 +36,13 @@ export function Footer() {
               Trade with a clear path to capital, rewards, scaling, and community.
             </p>
 
-            {/* Social Icons (Facebook, X, Instagram, YouTube) */}
-            <div className="flex items-center gap-3 pt-1 text-slate-400">
+            {/* Social Media Icons (Facebook, X, Instagram, YouTube) */}
+            <div className="flex items-center gap-3 pt-2 text-slate-400">
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="h-8 w-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:text-white hover:border-slate-700 transition-colors"
+                className="h-8 w-8 rounded-full bg-slate-900/80 border border-slate-800 flex items-center justify-center hover:text-white hover:border-slate-700 transition-colors"
                 title="Facebook"
               >
                 <FacebookIcon className="h-4 w-4" />
@@ -51,7 +51,7 @@ export function Footer() {
                 href="https://x.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="h-8 w-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:text-white hover:border-slate-700 transition-colors"
+                className="h-8 w-8 rounded-full bg-slate-900/80 border border-slate-800 flex items-center justify-center hover:text-white hover:border-slate-700 transition-colors"
                 title="X / Twitter"
               >
                 <XIcon className="h-3.5 w-3.5" />
@@ -60,7 +60,7 @@ export function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="h-8 w-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:text-white hover:border-slate-700 transition-colors"
+                className="h-8 w-8 rounded-full bg-slate-900/80 border border-slate-800 flex items-center justify-center hover:text-white hover:border-slate-700 transition-colors"
                 title="Instagram"
               >
                 <InstagramIcon className="h-4 w-4" />
@@ -69,7 +69,7 @@ export function Footer() {
                 href="https://youtube.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="h-8 w-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:text-white hover:border-slate-700 transition-colors"
+                className="h-8 w-8 rounded-full bg-slate-900/80 border border-slate-800 flex items-center justify-center hover:text-white hover:border-slate-700 transition-colors"
                 title="YouTube"
               >
                 <YouTubeIcon className="h-4 w-4" />
@@ -77,74 +77,122 @@ export function Footer() {
             </div>
           </div>
 
-          {/* 4 Link Columns (Screenshot 5 Exact Layout) */}
+          {/* Links Grid: 2 columns on Mobile matching Screenshot 1 exactly */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-xs pt-4">
-            {/* Column 1: Products */}
-            <div className="space-y-3">
-              <h4 className="font-bold text-white tracking-wide">Products</h4>
-              <ul className="space-y-2 text-slate-400">
-                <li>
-                  <Link href="/prop-firms" className="hover:text-white transition-colors">
-                    2 Step Standard
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/prop-firms" className="hover:text-white transition-colors">
-                    2 Step Pro
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/prop-firms" className="hover:text-white transition-colors">
-                    2 Step Flex
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/prop-firms" className="hover:text-white transition-colors">
-                    1 Step Flex
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/prop-firms" className="hover:text-white transition-colors">
-                    Zero
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/prop-firms" className="hover:text-white transition-colors">
-                    Free Trial
-                  </Link>
-                </li>
-              </ul>
+            {/* Col 1 (Mobile: Products + Community) */}
+            <div className="space-y-6">
+              <div className="space-y-2.5">
+                <h4 className="font-bold text-white tracking-wide">Products</h4>
+                <ul className="space-y-2 text-slate-400">
+                  <li>
+                    <Link href="/prop-firms" className="hover:text-white transition-colors">
+                      2 Step Standard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/prop-firms" className="hover:text-white transition-colors">
+                      2 Step Pro
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/prop-firms" className="hover:text-white transition-colors">
+                      2 Step Flex
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/prop-firms" className="hover:text-white transition-colors">
+                      1 Step Flex
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/prop-firms" className="hover:text-white transition-colors">
+                      Zero
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/prop-firms" className="hover:text-white transition-colors">
+                      Free Trial
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Mobile-only Community block under Products */}
+              <div className="space-y-2.5 sm:hidden">
+                <h4 className="font-bold text-white tracking-wide">Community</h4>
+                <ul className="space-y-2 text-slate-400">
+                  <li>
+                    <Link href="/announcements" className="hover:text-white transition-colors">
+                      Blog
+                    </Link>
+                  </li>
+                  <li>
+                    <a href="https://discord.gg" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                      Discord
+                    </a>
+                  </li>
+                  <li>
+                    <Link href="/faq" className="hover:text-white transition-colors">
+                      FAQs
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </div>
 
-            {/* Column 2: Platform */}
-            <div className="space-y-3">
-              <h4 className="font-bold text-white tracking-wide">Platform</h4>
-              <ul className="space-y-2 text-slate-400">
-                <li>
-                  <Link href="/how-it-works" className="hover:text-white transition-colors">
-                    PRIME
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/rewards" className="hover:text-white transition-colors">
-                    Rewards
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/how-it-works" className="hover:text-white transition-colors">
-                    Trading Objectives
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/prop-firms" className="hover:text-white transition-colors">
-                    Tradin
-                  </Link>
-                </li>
-              </ul>
+            {/* Col 2 (Mobile: Platform + Legal) */}
+            <div className="space-y-6">
+              <div className="space-y-2.5">
+                <h4 className="font-bold text-white tracking-wide">Platform</h4>
+                <ul className="space-y-2 text-slate-400">
+                  <li>
+                    <Link href="/how-it-works" className="hover:text-white transition-colors">
+                      PRIME
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/rewards" className="hover:text-white transition-colors">
+                      Rewards
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/how-it-works" className="hover:text-white transition-colors">
+                      Trading Objectives
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/prop-firms" className="hover:text-white transition-colors">
+                      Tradin
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Mobile-only Legal block under Platform */}
+              <div className="space-y-2.5 sm:hidden">
+                <h4 className="font-bold text-white tracking-wide">Legal</h4>
+                <ul className="space-y-2 text-slate-400">
+                  <li>
+                    <Link href="/faq" className="hover:text-white transition-colors">
+                      Terms &amp; Conditions
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/faq" className="hover:text-white transition-colors">
+                      Terms &amp; Conditions - PRIME
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/faq" className="hover:text-white transition-colors">
+                      Privacy Policy
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </div>
 
-            {/* Column 3: Community */}
-            <div className="space-y-3">
+            {/* Desktop Col 3: Community */}
+            <div className="hidden sm:block space-y-2.5">
               <h4 className="font-bold text-white tracking-wide">Community</h4>
               <ul className="space-y-2 text-slate-400">
                 <li>
@@ -165,8 +213,8 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Column 4: Legal */}
-            <div className="space-y-3">
+            {/* Desktop Col 4: Legal */}
+            <div className="hidden sm:block space-y-2.5">
               <h4 className="font-bold text-white tracking-wide">Legal</h4>
               <ul className="space-y-2 text-slate-400">
                 <li>
@@ -190,7 +238,7 @@ export function Footer() {
         </div>
 
         {/* ======================================================== */}
-        {/* Important Information & Disclaimer (Screenshots 6, 7 & 8) */}
+        {/* Important Information & Disclaimer (Screenshots 2 & 3: media_1790940232323.png & media_1790940232326.png) */}
         {/* ======================================================== */}
         <div className="pt-8 border-t border-slate-900 space-y-6 text-left text-[11px] sm:text-xs text-slate-400 leading-relaxed">
           <h3 className="text-sm font-bold text-slate-200">
@@ -236,15 +284,21 @@ export function Footer() {
             <div>
               <h4 className="font-bold text-slate-300">Corporate &amp; Related Entities</h4>
               <p className="mt-1 text-slate-400">
-                PropNation Corp is a limited liability company incorporated under international commercial guidelines. Services are not offered to residents of certain jurisdictions, including countries on the FATF and EU/UN sanctions lists, Vietnam, and UAE.
+                PropNation Corp is a limited liability company incorporated under the laws of the Comoros Union with company number: HY01223081, having its registered address at Bonovo Road, Fomboni Island of Moh&eacute;li, Comoros Union. The Company holds an International Brokerage and Clearing House License, Ibc Regulation Act 2014 (License No. Bfx2024004).
               </p>
-              <p className="mt-2 text-slate-300 font-medium">
+              <p className="mt-2 text-slate-400">
+                Note: Although licensed, PropNation Corp does not conduct brokerage services or offer real trading accounts on this website. Its services are limited to simulated trading programs.
+              </p>
+              <p className="mt-2 text-slate-400">
+                Restrictions: Services are not offered to residents of certain jurisdictions, including countries on the FATF and EU/UN sanctions lists, Vietnam, and UAE.
+              </p>
+              <p className="mt-3 text-slate-300 font-bold">
                 Registered Address of PropNation:
               </p>
               <p className="text-slate-400">
                 Premises NO. 19948-001, IFZA Business Park, DDP Dubai, UAE
               </p>
-              <p className="mt-2 text-slate-300 font-medium">
+              <p className="mt-3 text-slate-300 font-bold">
                 Related Entities (non-operational support and administrative offices):
               </p>
               <p className="text-slate-400">
@@ -258,22 +312,25 @@ export function Footer() {
         </div>
 
         {/* ======================================================== */}
-        {/* Payment Methods Row (Screenshot 6 & 7) */}
+        {/* Payment Methods Row (Screenshots 4 & 5: media_1790940232224.png & media_1790940232028.png) */}
         {/* ======================================================== */}
-        <div className="pt-8 border-t border-slate-900">
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 opacity-75 grayscale hover:grayscale-0 transition-all py-3">
+        <div className="pt-6 pb-2 border-t border-slate-900 space-y-4">
+          <div className="flex flex-wrap items-center justify-between sm:justify-center gap-6 sm:gap-10 opacity-70 grayscale hover:grayscale-0 transition-all">
             <span className="font-black text-sm tracking-wider text-slate-300">Skrill</span>
             <span className="font-bold text-sm tracking-tight text-slate-300 italic">PayPal</span>
-            <div className="flex items-center -space-x-1.5">
-              <div className="h-4 w-4 rounded-full bg-slate-400/80" />
-              <div className="h-4 w-4 rounded-full bg-slate-500/80" />
+            <div className="flex items-center -space-x-2">
+              <div className="h-5 w-5 rounded-full bg-slate-400/80" />
+              <div className="h-5 w-5 rounded-full bg-slate-500/80" />
             </div>
             <span className="font-black text-sm tracking-widest text-slate-300">VISA</span>
             <span className="font-black text-sm text-slate-300 flex items-center gap-1 font-mono">
-              <span className="text-base">&#8383;</span> Bitcoin
+              <span className="text-lg leading-none">&#8383;</span>
             </span>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between sm:justify-center gap-6 sm:gap-10 opacity-70 grayscale hover:grayscale-0 transition-all pt-1">
             <span className="font-semibold text-xs tracking-tight text-slate-300 flex items-center gap-1">
-              <span></span> Pay
+              <span className="text-sm"></span> Pay
             </span>
             <span className="font-bold text-xs tracking-tight text-slate-300 flex items-center gap-1">
               <span>G</span> Pay
@@ -284,9 +341,9 @@ export function Footer() {
         </div>
 
         {/* ======================================================== */}
-        {/* Bottom Language, Legal Links & Copyright (Screenshots 6, 7) */}
+        {/* Bottom Language, Legal Links & Copyright (Screenshots 4 & 5) */}
         {/* ======================================================== */}
-        <div className="pt-6 border-t border-slate-900 space-y-4 text-xs text-slate-500">
+        <div className="pt-6 border-t border-slate-900 space-y-5 text-xs text-slate-500">
           {/* Language Selector */}
           <div className="flex items-center justify-start">
             <button className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800">
@@ -296,27 +353,24 @@ export function Footer() {
             </button>
           </div>
 
-          {/* Legal Links Row */}
-          <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-slate-400 text-[11px] sm:text-xs">
+          {/* Legal Links (stacked cleanly on mobile) */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-slate-400 text-xs">
             <Link href="/faq" className="hover:text-white transition-colors">
               Terms &amp; Conditions
             </Link>
-            <span>•</span>
             <Link href="/faq" className="hover:text-white transition-colors">
               Terms &amp; Conditions - PRIME
             </Link>
-            <span>•</span>
             <Link href="/faq" className="hover:text-white transition-colors">
               Privacy Policy
             </Link>
-            <span>•</span>
-            <button className="hover:text-white transition-colors">
+            <button className="hover:text-white transition-colors text-left sm:text-center">
               Cookie preferences
             </button>
           </div>
 
           {/* Copyright & Built With */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-2 text-[11px] text-slate-500">
+          <div className="pt-2 text-[11px] text-slate-500 space-y-1">
             <div>
               &copy; 2026 PropNation. All rights reserved.
             </div>
