@@ -18,8 +18,10 @@ model User {
   phone         String?
   country       String?
   avatarUrl     String?
-  role          String    @default("USER") // USER, ADMIN
+  role          String    @default("USER") // USER, ADMIN, SUPER_ADMIN, SUPPORT_LEAD, SUPPORT_AGENT, FINANCE_OFFICER
   status        String    @default("ACTIVE") // ACTIVE, SUSPENDED, PENDING
+  department    String?   // GENERAL, SUPPORT, BILLING, KYC, VIP
+  permissions   String?   // JSON array of granular permissions
   emailVerified Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -32,10 +34,14 @@ model User {
   redemptions   Redemption[]
   notifications Notification[]
   auditLogs     AuditLog[]
+  supportTickets  SupportTicket[]    @relation("TraderTickets")
+  assignedTickets SupportTicket[]    @relation("AgentAssignedTickets")
+  chatMessages    ChatMessage[]      @relation("UserChatMessages")
 
   @@index([email])
   @@index([role])
   @@index([status])
+  @@index([department])
 }
 
 model UserAddress {
@@ -285,3 +291,49 @@ model SystemSetting {
 
   @@index([key])
 }
+
+model SupportTicket {
+  id            String        @id @default(uuid())
+  ticketNumber  String        @unique
+  userId        String
+  assignedToId  String?
+  subject       String
+  department    String        @default("GENERAL") // GENERAL, PURCHASE_PROOF, CASHOUT_PAYOUT, ACCOUNT_VERIFICATION, VIP
+  priority      String        @default("MEDIUM")  // LOW, MEDIUM, HIGH, URGENT
+  status        String        @default("OPEN")    // OPEN, IN_PROGRESS, WAITING_TRADER, RESOLVED, CLOSED
+  lastMessageAt DateTime      @default(now())
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user          User          @relation("TraderTickets", fields: [userId], references: [id], onDelete: Cascade)
+  assignedTo    User?         @relation("AgentAssignedTickets", fields: [assignedToId], references: [id])
+  messages      ChatMessage[]
+
+  @@index([userId])
+  @@index([assignedToId])
+  @@index([status])
+  @@index([department])
+  @@index([priority])
+  @@index([lastMessageAt])
+}
+
+model ChatMessage {
+  id             String        @id @default(uuid())
+  ticketId       String
+  senderId       String
+  senderRole     String        @default("USER") // USER, SUPPORT_AGENT, SUPPORT_LEAD, ADMIN, SYSTEM
+  message        String
+  isInternalNote Boolean       @default(false)  // Staff only internal notes (hidden from trader)
+  attachments    String?       // JSON array of file URLs
+  isRead         Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+
+  ticket         SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  sender         User          @relation("UserChatMessages", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([senderId])
+  @@index([createdAt])
+  @@index([isInternalNote])
+}
+

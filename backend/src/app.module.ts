@@ -12,6 +12,7 @@ import { RewardsModule } from './modules/rewards/rewards.module';
 import { RedemptionsModule } from './modules/redemptions/redemptions.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { SupportModule } from './modules/support/support.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -30,6 +31,7 @@ import { AppController } from './app.controller';
     RedemptionsModule,
     NotificationsModule,
     AdminModule,
+    SupportModule,
   ],
 })
 export class AppModule {}

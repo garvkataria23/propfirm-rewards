@@ -18,6 +18,7 @@ import {
   ChevronRight,
   LogOut,
   AlertTriangle,
+  MessageSquare,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -29,18 +30,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [pendingCount, setPendingCount] = useState<number>(0);
 
+  const STAFF_ROLES = ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER'];
+  const isStaff = user && STAFF_ROLES.includes(user.role);
+
   useEffect(() => {
     if (!isLoading) {
       if (!user) {
         router.push('/login');
-      } else if (user.role !== 'ADMIN') {
+      } else if (!STAFF_ROLES.includes(user.role)) {
         router.push('/dashboard');
       }
     }
   }, [user, isLoading, router]);
 
   useEffect(() => {
-    if (user?.role === 'ADMIN') {
+    if (user && STAFF_ROLES.includes(user.role)) {
       api.get<{ metrics: { pendingVerification: number } }>('/admin/stats')
         .then((res) => {
           setPendingCount(res.metrics?.pendingVerification || 0);
@@ -52,19 +56,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (isLoading) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center text-slate-500 dark:text-slate-400">
-        Authenticating admin credentials...
+        Authenticating staff credentials...
       </div>
     );
   }
 
-  if (!user || user.role !== 'ADMIN') {
+  if (!isStaff) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center text-center p-4">
         <div className="max-w-md space-y-4">
           <AlertTriangle className="h-12 w-12 text-rose-500 mx-auto" />
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">Access Denied</h2>
           <p className="text-xs text-slate-600 dark:text-slate-400">
-            Administrative privileges required. Please sign in with an authorized admin account.
+            Administrative or Support Staff privileges required. Please sign in with an authorized staff account.
           </p>
           <Link href="/login">
             <Button size="sm">Go to Login</Button>
@@ -77,11 +81,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const navLinks = [
     { label: 'Overview', href: '/admin', icon: LayoutDashboard },
     {
+      label: 'Live Support Desk',
+      href: '/admin/support',
+      icon: MessageSquare,
+      badge: 'Live',
+    },
+    {
       label: 'Purchase Verifications',
       href: '/admin/purchases',
       icon: ShoppingBag,
       badge: pendingCount > 0 ? pendingCount : undefined,
     },
+    { label: 'Team & Roles', href: '/admin/team', icon: ShieldCheck },
     { label: 'Trader Management', href: '/admin/users', icon: Users },
     { label: 'Prop Firms & Offers', href: '/admin/prop-firms', icon: Layers },
     { label: 'Rewards Catalog', href: '/admin/rewards', icon: Gift },

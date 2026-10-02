@@ -7,6 +7,8 @@ async function main() {
   console.log('🌱 Starting database seed...');
 
   // 1. Clean existing records if any
+  await prisma.chatMessage.deleteMany();
+  await prisma.supportTicket.deleteMany();
   await prisma.notification.deleteMany();
   await prisma.auditLog.deleteMany();
   await prisma.pointsLedger.deleteMany();
@@ -25,22 +27,86 @@ async function main() {
   const adminPasswordHash = await bcrypt.hash('Admin@123456', 10);
   const traderPasswordHash = await bcrypt.hash('Trader@123456', 10);
 
-  // 3. Create Admin
+  // 3. Create Super Admin
   const admin = await prisma.user.create({
     data: {
       email: 'admin@propfirmrewards.com',
       passwordHash: adminPasswordHash,
-      name: 'System Admin',
+      name: 'Alexander Sterling',
       phone: '+1 (555) 019-2834',
       country: 'United States',
-      role: 'ADMIN',
+      role: 'SUPER_ADMIN',
       status: 'ACTIVE',
+      department: 'EXECUTIVE',
+      permissions: JSON.stringify([
+        'manage_team',
+        'assign_tickets',
+        'resolve_tickets',
+        'approve_purchases',
+        'manage_payouts',
+        'manage_rewards',
+        'view_audit_logs',
+        'system_settings',
+      ]),
       emailVerified: true,
       avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
     },
   });
 
-  // 4. Create Demo Traders
+  // 4. Create Staff Team Members
+  const sarah = await prisma.user.create({
+    data: {
+      email: 'sarah.support@propfirmrewards.com',
+      passwordHash: adminPasswordHash,
+      name: 'Sarah Chen',
+      phone: '+44 20 7946 0912',
+      country: 'United Kingdom',
+      role: 'SUPPORT_LEAD',
+      status: 'ACTIVE',
+      department: 'VIP_CONCIERGE',
+      permissions: JSON.stringify([
+        'assign_tickets',
+        'resolve_tickets',
+        'view_audit_logs',
+      ]),
+      emailVerified: true,
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+    },
+  });
+
+  const marcus = await prisma.user.create({
+    data: {
+      email: 'marcus.support@propfirmrewards.com',
+      passwordHash: adminPasswordHash,
+      name: 'Marcus Vance',
+      phone: '+1 (555) 847-2931',
+      country: 'United States',
+      role: 'SUPPORT_AGENT',
+      status: 'ACTIVE',
+      department: 'VERIFICATION',
+      permissions: JSON.stringify(['resolve_tickets']),
+      emailVerified: true,
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+    },
+  });
+
+  const elena = await prisma.user.create({
+    data: {
+      email: 'elena.finance@propfirmrewards.com',
+      passwordHash: adminPasswordHash,
+      name: 'Elena Rostova',
+      phone: '+49 30 901820',
+      country: 'Germany',
+      role: 'FINANCE_OFFICER',
+      status: 'ACTIVE',
+      department: 'PAYOUTS',
+      permissions: JSON.stringify(['manage_payouts', 'resolve_tickets']),
+      emailVerified: true,
+      avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150',
+    },
+  });
+
+  // 5. Create Demo Trader
   const alex = await prisma.user.create({
     data: {
       email: 'trader@example.com',
@@ -52,20 +118,6 @@ async function main() {
       status: 'ACTIVE',
       emailVerified: true,
       avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
-    },
-  });
-
-  const sarah = await prisma.user.create({
-    data: {
-      email: 'sarah.chen@example.com',
-      passwordHash: traderPasswordHash,
-      name: 'Sarah Chen',
-      phone: '+44 20 7946 0912',
-      country: 'United Kingdom',
-      role: 'USER',
-      status: 'ACTIVE',
-      emailVerified: true,
-      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
     },
   });
 
@@ -677,7 +729,108 @@ async function main() {
     ],
   });
 
-  // 12. System Settings
+  // 12. Support Tickets & Live Chat Conversations
+  const ticket1 = await prisma.supportTicket.create({
+    data: {
+      ticketNumber: 'TICK-1001',
+      userId: alex.id,
+      assignedToId: marcus.id,
+      subject: 'Expedite $100K Funding Pips purchase review',
+      department: 'PURCHASE_PROOF',
+      priority: 'HIGH',
+      status: 'IN_PROGRESS',
+      lastMessageAt: new Date(Date.now() - 1000 * 60 * 15),
+      messages: {
+        create: [
+          {
+            senderId: alex.id,
+            senderRole: 'USER',
+            message: 'Hello team, I just submitted my $100K Funding Pips confirmation PDF. Could you expedite review so I can claim the 6,500 points before Friday?',
+            isInternalNote: false,
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
+          },
+          {
+            senderId: marcus.id,
+            senderRole: 'SUPPORT_AGENT',
+            message: 'Internal Staff Note: OCR confidence is 98.4%. Order ID matched Funding Pips format. Awaiting secondary compliance hash.',
+            isInternalNote: true,
+            createdAt: new Date(Date.now() - 1000 * 60 * 45),
+          },
+          {
+            senderId: marcus.id,
+            senderRole: 'SUPPORT_AGENT',
+            message: 'Hi Alex! Marcus from verification support here. I am reviewing your proof invoice right now. The OCR matched cleanly with Funding Pips. You should see points awarded within 30 minutes!',
+            isInternalNote: false,
+            createdAt: new Date(Date.now() - 1000 * 60 * 15),
+          },
+        ],
+      },
+    },
+  });
+
+  const ticket2 = await prisma.supportTicket.create({
+    data: {
+      ticketNumber: 'TICK-1002',
+      userId: alex.id,
+      assignedToId: null,
+      subject: 'USDT TRC20 vs ERC20 cashout minimums',
+      department: 'CASHOUT_PAYOUT',
+      priority: 'MEDIUM',
+      status: 'OPEN',
+      lastMessageAt: new Date(Date.now() - 1000 * 60 * 30),
+      messages: {
+        create: [
+          {
+            senderId: alex.id,
+            senderRole: 'USER',
+            message: 'Quick question for the billing desk: Are USDT TRC20 withdrawals processed with 0 gas fee, or should I opt for direct bank wire?',
+            isInternalNote: false,
+            createdAt: new Date(Date.now() - 1000 * 60 * 30),
+          },
+        ],
+      },
+    },
+  });
+
+  const ticket3 = await prisma.supportTicket.create({
+    data: {
+      ticketNumber: 'TICK-1003',
+      userId: alex.id,
+      assignedToId: sarah.id,
+      subject: 'Diamond Whale VIP Tier 2.0x boost activation',
+      department: 'VIP',
+      priority: 'URGENT',
+      status: 'WAITING_TRADER',
+      lastMessageAt: new Date(Date.now() - 1000 * 60 * 5),
+      messages: {
+        create: [
+          {
+            senderId: alex.id,
+            senderRole: 'USER',
+            message: 'I just crossed 50,000 lifetime points. Does the Diamond Whale 2.0x multiplier apply automatically on my next FundedNext challenge?',
+            isInternalNote: false,
+            createdAt: new Date(Date.now() - 1000 * 60 * 120),
+          },
+          {
+            senderId: sarah.id,
+            senderRole: 'SUPPORT_LEAD',
+            message: 'Internal Note: Confirmed lifetime points 52,400. VIP Concierge privileges enabled in metadata.',
+            isInternalNote: true,
+            createdAt: new Date(Date.now() - 1000 * 60 * 30),
+          },
+          {
+            senderId: sarah.id,
+            senderRole: 'SUPPORT_LEAD',
+            message: 'Hello Alex! Congratulations on achieving Diamond Whale VIP status! 🐋 Yes, your 2.0x points multiplier is already active across all partnered prop firms. Let us know if you need priority challenge activation.',
+            isInternalNote: false,
+            createdAt: new Date(Date.now() - 1000 * 60 * 5),
+          },
+        ],
+      },
+    },
+  });
+
+  // 13. System Settings
   await prisma.systemSetting.createMany({
     data: [
       { key: 'PLATFORM_NAME', value: 'PropFirm Rewards', description: 'Official public platform name' },
