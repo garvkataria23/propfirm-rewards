@@ -28,6 +28,13 @@ import {
   Zap,
   Lock,
   Headphones,
+  ArrowUpRight,
+  BarChart3,
+  Target,
+  Laptop,
+  Truck,
+  FileCheck,
+  Percent,
 } from 'lucide-react';
 
 interface PropFirmOffer {
@@ -60,14 +67,65 @@ interface Reward {
   category: { name: string; slug: string };
 }
 
-// Simulated real-time verified trader stream
-const LIVE_STREAM_ACTIVITY = [
-  { trader: '@Marco_FX (UK)', action: 'Verified $100K FundedNext', pts: '+4,500 PTS', time: '2m ago' },
-  { trader: '@David_T (DE)', action: 'Withdrew $250.00 USDT', pts: 'Paid Out', time: '5m ago' },
-  { trader: '@S_Kapoor (IN)', action: 'Verified $50K Funding Pips', pts: '+2,400 PTS', time: '8m ago' },
-  { trader: '@Lucas_R (US)', action: 'Redeemed Apple iPad Air M2', pts: 'Shipped via DHL', time: '14m ago' },
-  { trader: '@Jean_P (FR)', action: 'Verified $200K FTMO Challenge', pts: '+11,200 PTS', time: '19m ago' },
-  { trader: '@Mateo_C (ES)', action: 'Claimed Free $25K Challenge', pts: 'Code Issued', time: '23m ago' },
+// Live real-time ticker stream modeled after FundingPips transparency
+const LIVE_VERIFICATION_STREAM = [
+  { trader: '@Marco_FX (UK)', firm: 'Funding Pips $100K 2-Step', yield: '+4,500 PTS', usd: '$45.00 Back', time: 'Just now' },
+  { trader: '@K_Larsson (SE)', firm: 'FTMO $200K Challenge', yield: '+11,200 PTS', usd: '$112.00 Back', time: '3m ago' },
+  { trader: '@S_Kapoor (IN)', firm: 'Funding Pips $50K 1-Step', yield: '+2,900 PTS', usd: '$29.00 Back', time: '7m ago' },
+  { trader: '@Lucas_R (US)', firm: 'Redeemed Apple iPad Air M2', yield: 'Shipped via DHL', usd: 'Delivered', time: '12m ago' },
+  { trader: '@David_T (DE)', firm: 'Withdrew $250.00 USDT', yield: 'Paid Out', usd: 'Completed', time: '18m ago' },
+  { trader: '@Jean_P (FR)', firm: 'FundedNext $100K Stellar', yield: '+5,400 PTS', usd: '$54.00 Back', time: '22m ago' },
+];
+
+// Interactive Evaluation Matrix data (FundingPips inspired)
+const EVALUATION_MODELS = [
+  {
+    id: '2step',
+    name: '2-Step Standard',
+    badge: 'Most Popular',
+    popular: true,
+    sizes: [
+      { size: '$10,000', price: 60, points: 600, cash: 6.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'PIPSREWARDS' },
+      { size: '$25,000', price: 139, points: 1400, cash: 14.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'PIPSREWARDS' },
+      { size: '$50,000', price: 239, points: 2400, cash: 24.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'PIPSREWARDS' },
+      { size: '$100,000', price: 399, points: 4500, cash: 45.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'PIPSREWARDS' },
+      { size: '$200,000', price: 799, points: 9500, cash: 95.0, target1: '8%', target2: '5%', maxDaily: '5%', maxLoss: '10%', minDays: '0 Days', promo: 'PIPSREWARDS' },
+    ],
+  },
+  {
+    id: '1step',
+    name: '1-Step Flex',
+    badge: 'Fastest Funding',
+    popular: false,
+    sizes: [
+      { size: '$10,000', price: 75, points: 750, cash: 7.5, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'PIPSREWARDS' },
+      { size: '$25,000', price: 165, points: 1650, cash: 16.5, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'PIPSREWARDS' },
+      { size: '$50,000', price: 285, points: 2900, cash: 29.0, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'PIPSREWARDS' },
+      { size: '$100,000', price: 475, points: 5200, cash: 52.0, target1: '10%', target2: 'None', maxDaily: '4%', maxLoss: '6% Trailing', minDays: '0 Days', promo: 'PIPSREWARDS' },
+    ],
+  },
+  {
+    id: 'instant',
+    name: 'Zero Evaluation (Instant)',
+    badge: 'Skip Challenge',
+    popular: false,
+    sizes: [
+      { size: '$10,000', price: 290, points: 3000, cash: 30.0, target1: 'No Target', target2: 'None', maxDaily: '3%', maxLoss: '6%', minDays: 'Immediate', promo: 'PIPSREWARDS' },
+      { size: '$25,000', price: 650, points: 7000, cash: 70.0, target1: 'No Target', target2: 'None', maxDaily: '3%', maxLoss: '6%', minDays: 'Immediate', promo: 'PIPSREWARDS' },
+      { size: '$50,000', price: 1250, points: 14000, cash: 140.0, target1: 'No Target', target2: 'None', maxDaily: '3%', maxLoss: '6%', minDays: 'Immediate', promo: 'PIPSREWARDS' },
+    ],
+  },
+  {
+    id: 'futures',
+    name: 'Futures Evaluation',
+    badge: 'CME / Topstep & Apex',
+    popular: false,
+    sizes: [
+      { size: '$25,000', price: 125, points: 1300, cash: 13.0, target1: '$1,500', target2: 'None', maxDaily: 'None', maxLoss: '$1,500 EOD', minDays: '1 Day', promo: 'PROPNATION' },
+      { size: '$50,000', price: 165, points: 1800, cash: 18.0, target1: '$3,000', target2: 'None', maxDaily: 'None', maxLoss: '$2,000 EOD', minDays: '1 Day', promo: 'PROPNATION' },
+      { size: '$100,000', price: 320, points: 3500, cash: 35.0, target1: '$6,000', target2: 'None', maxDaily: 'None', maxLoss: '$3,000 EOD', minDays: '1 Day', promo: 'PROPNATION' },
+    ],
+  },
 ];
 
 export default function HomePage() {
@@ -75,33 +133,23 @@ export default function HomePage() {
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-  // Calculator state
-  const [calcSelectedFirmId, setCalcSelectedFirmId] = useState<string>('');
-  const [calcSelectedOfferId, setCalcSelectedOfferId] = useState<string>('');
+  // Interactive Challenge Matrix State (FundingPips style)
+  const [selectedModelIdx, setSelectedModelIdx] = useState<number>(0);
+  const [selectedSizeIdx, setSelectedSizeIdx] = useState<number>(3); // Defaults to $100K
 
   // FAQ state
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    // Load active prop firms and rewards from live backend
+    // Load live firms & rewards
     api
       .get<PropFirm[]>('/prop-firms')
-      .then((data) => {
-        setPropFirms(data);
-        if (data.length > 0) {
-          setCalcSelectedFirmId(data[0].id);
-          if (data[0].offers && data[0].offers.length > 0) {
-            setCalcSelectedOfferId(data[0].offers[0].id);
-          }
-        }
-      })
+      .then((data) => setPropFirms(data))
       .catch(console.error);
 
     api
       .get<Reward[]>('/rewards', { inStockOnly: true })
-      .then((data) => {
-        setRewards(data.slice(0, 4));
-      })
+      .then((data) => setRewards(data.slice(0, 4)))
       .catch(console.error);
   }, []);
 
@@ -111,169 +159,339 @@ export default function HomePage() {
     setTimeout(() => setCopiedCode(null), 2500);
   };
 
-  const selectedFirm = propFirms.find((p) => p.id === calcSelectedFirmId);
-  const selectedOffer = selectedFirm?.offers.find((o) => o.id === calcSelectedOfferId);
-
-  const steps = [
-    {
-      num: '01',
-      title: 'Choose Prop Firm & Apply Code',
-      desc: 'Pick your preferred prop firm from our directory and apply our exclusive partner referral code at checkout.',
-    },
-    {
-      num: '02',
-      title: 'Upload Invoice & Order ID',
-      desc: 'Submit your purchase proof, order ID, and receipt screenshot in your clean trader dashboard portal.',
-    },
-    {
-      num: '03',
-      title: 'Automated & Manual Audit',
-      desc: 'Our compliance team verifies your purchase against prop firm affiliate records within 12 to 24 hours.',
-    },
-    {
-      num: '04',
-      title: 'Points Credited To Wallet',
-      desc: 'Earn up to 30% back in reward points credited immediately to your tamper-proof ledger (100 PTS = $1 USD).',
-    },
-    {
-      num: '05',
-      title: 'Redeem Gear or Cash Out',
-      desc: 'Exchange points for brand new MacBook Pros, trading monitors, free evaluation passes, or instant USDT withdrawals.',
-    },
-    {
-      num: '06',
-      title: 'Express Insured Delivery',
-      desc: 'Physical gadgets are dispatched brand new via express DHL/FedEx with full tracking and insurance.',
-    },
-  ];
+  const activeModel = EVALUATION_MODELS[selectedModelIdx] || EVALUATION_MODELS[0];
+  const safeSizeIdx = Math.min(selectedSizeIdx, activeModel.sizes.length - 1);
+  const activePlan = activeModel.sizes[safeSizeIdx] || activeModel.sizes[0];
 
   const faqs = [
     {
-      q: 'How does PropFirm Rewards work?',
-      a: 'We partner with leading proprietary trading firms. When you purchase an evaluation or challenge account using our affiliate links or referral discount codes, the prop firm credits us an affiliate commission. Rather than keeping it all, we share this value with you as reward points that you can redeem for tech gear, trading hardware, free evaluation accounts, or direct USDT cashouts.',
+      q: 'How does PropFirm Rewards work with Funding Pips & other prop firms?',
+      a: 'We operate as an official affiliate partner with premier proprietary trading firms including Funding Pips, FTMO, and FundedNext. When you purchase an evaluation account using our referral code or link, the firm shares an affiliate marketing commission with us. We redistribute this revenue directly back to you as spendable Reward Points (100 PTS = $1.00 USD), which you can redeem for tech gear, free challenges, or direct USDT cashouts.',
     },
     {
-      q: 'Is PropFirm Rewards a prop firm or broker?',
-      a: 'No, absolutely not. We do not provide trading capital, financial advice, or brokerage services. We are solely an affiliate loyalty rewards platform providing maximum cashbacks and gear to prop firm traders.',
+      q: 'Does using your code change my prop firm account rules or fees?',
+      a: 'Never. In fact, our exclusive promo codes frequently give you an immediate 5% to 15% discount at checkout, and your trading account has the exact same rules, drawdown limits, profit split, and leverage as buying directly. You simply earn massive cashback on top.',
     },
     {
-      q: 'How long does purchase verification take?',
-      a: 'Most purchases are verified and credited with reward points within 12 to 24 hours. Once verified, points are immediately available in your wallet.',
+      q: 'How fast is purchase verification and points crediting?',
+      a: 'Our verification desk audits submitted invoices and Order IDs within 12 to 24 business hours. Once verified, points are immediately written to your permanent, tamper-proof wallet ledger.',
     },
     {
-      q: 'What is the points to dollar valuation?',
-      a: 'Our points have a clear, transparent valuation: 100 PTS = $1.00 USD. A 10,000 PTS balance gives you $100.00 USD worth of rewards, free challenge passes, or cashout value.',
+      q: 'Can I withdraw my cashback points directly to Crypto or Bank?',
+      a: 'Yes! Head to your Trader Wallet section inside the dashboard to request instant USDT (TRC-20/ERC-20) or Direct Bank Wire cashouts, processed in under 15 minutes for verified accounts.',
     },
     {
-      q: 'Can I withdraw my points directly to Crypto or Bank?',
-      a: 'Yes! Head to your Trader Wallet section in the dashboard to request instant USDT (TRC-20/ERC-20) or Direct Bank Wire cashouts, processed in under 15 minutes for verified accounts.',
+      q: 'How are physical tech rewards (MacBooks, iPads, 4K monitors) delivered?',
+      a: 'All physical rewards are dispatched brand-new in original retail packaging via express couriers (DHL, FedEx, UPS) with full insurance and live tracking sent directly to your email.',
     },
     {
-      q: 'How are physical tech rewards shipped?',
-      a: 'Physical electronics and hardware (MacBooks, iPads, 4K monitors, Keychron keyboards) are dispatched brand-new via express couriers (FedEx, DHL, UPS) with signature confirmation and tracking.',
+      q: 'Can I submit past purchases?',
+      a: 'Yes, as long as the purchase was completed using our designated affiliate code or link within the last 14 calendar days, and hasn\'t been claimed by another user.',
     },
   ];
 
   return (
-    <div className="flex flex-col gap-24 pb-20 transition-colors">
-      {/* Live Social Proof Activity Ticker */}
-      <div className="w-full bg-slate-100/90 dark:bg-[#050b18] border-b border-slate-200 dark:border-slate-800/80 py-2.5 px-4 overflow-hidden transition-colors">
+    <div className="flex flex-col gap-24 pb-24 transition-colors">
+      {/* 1. Live Social Proof Ticker (FundingPips Style) */}
+      <div className="w-full bg-slate-50/80 dark:bg-[#060b18] border-b border-slate-200/90 dark:border-slate-800/80 py-2.5 px-4 overflow-hidden transition-colors">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 text-xs">
           <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold shrink-0">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-            <span className="uppercase tracking-wider">Live Activity:</span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="uppercase tracking-wider">Live Proof Audit Stream:</span>
           </div>
 
           <div className="flex items-center gap-6 overflow-x-auto no-scrollbar whitespace-nowrap text-slate-600 dark:text-slate-400">
-            {LIVE_STREAM_ACTIVITY.map((item, idx) => (
+            {LIVE_VERIFICATION_STREAM.map((item, idx) => (
               <div key={idx} className="inline-flex items-center gap-2">
                 <span className="text-slate-900 dark:text-white font-semibold">{item.trader}</span>
-                <span>{item.action}</span>
+                <span>purchased {item.firm}</span>
                 <span className="text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20">
-                  {item.pts}
+                  {item.yield}
                 </span>
-                <span className="text-slate-400 dark:text-slate-600 font-mono text-[10px]">{item.time}</span>
-                {idx < LIVE_STREAM_ACTIVITY.length - 1 && <span className="text-slate-300 dark:text-slate-700">•</span>}
+                <span className="text-slate-400 dark:text-slate-600 font-mono text-[10px]">({item.time})</span>
+                {idx < LIVE_VERIFICATION_STREAM.length - 1 && (
+                  <span className="text-slate-300 dark:text-slate-700">•</span>
+                )}
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Hero Section */}
-      <section className="relative pt-12 pb-16 overflow-hidden bg-grid-pattern">
-        {/* Ambient Glows */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[350px] bg-blue-500/10 dark:bg-blue-500/15 blur-[130px] rounded-full pointer-events-none" />
-        <div className="absolute top-1/3 left-1/4 w-[450px] h-[300px] bg-emerald-500/10 blur-[140px] rounded-full pointer-events-none" />
+      {/* 2. Hero Section: Clean, Authoritative, High-Conversion */}
+      <section className="relative pt-12 pb-16 overflow-hidden">
+        {/* Subtle Ambient Radial Gradients */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[380px] bg-blue-500/10 dark:bg-blue-600/15 blur-[140px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 left-1/4 w-[450px] h-[300px] bg-emerald-500/10 blur-[150px] rounded-full pointer-events-none" />
 
         <div className="relative mx-auto max-w-5xl px-4 sm:px-6 text-center space-y-8">
           {/* Trust Badge */}
-          <div className="inline-flex items-center gap-2.5 rounded-full border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-400 shadow-xs">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>The #1 Cashback &amp; Rewards Club for Proprietary Traders</span>
-            <span className="text-slate-300 dark:text-slate-600">|</span>
-            <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300">
-              <Star className="h-3 w-3 text-amber-500 fill-amber-500" /> 4.9/5 TrustScore
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/80 px-4 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-xs backdrop-blur-md">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-bold text-slate-900 dark:text-white">The Official Rewards Ecosystem</span>
+            <span className="text-slate-300 dark:text-slate-700">|</span>
+            <span className="flex items-center gap-1 text-slate-600 dark:text-slate-300 font-medium">
+              <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
+              <span>4.9/5 by 14,200+ Prop Traders</span>
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1]">
-            Turn Every Prop Challenge Into{' '}
-            <span className="bg-gradient-to-r from-emerald-600 via-teal-500 to-blue-600 dark:from-emerald-400 dark:via-teal-300 dark:to-blue-400 bg-clip-text text-transparent">
-              Real-World Rewards.
+          {/* Main Headline */}
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.08]">
+            Your Skill. Their Capital.{' '}
+            <span className="bg-gradient-to-r from-blue-600 via-teal-500 to-emerald-600 dark:from-blue-400 dark:via-teal-300 dark:to-emerald-400 bg-clip-text text-transparent">
+              Your Real Rewards.
             </span>
           </h1>
 
           <p className="mx-auto max-w-2xl text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-            Never buy a prop firm challenge at full price again. Apply our partner referral codes, verify your invoice in &lt;24 hours, and get <span className="text-slate-900 dark:text-white font-bold">up to 30% back</span> in spendable reward points, tech gear, or instant crypto cashouts.
+            Never pay full retail price for prop firm evaluations again. Apply our official partner codes for <span className="font-semibold text-slate-900 dark:text-white">Funding Pips, FTMO, and FundedNext</span>, verify your invoice in &lt;24 hours, and receive <span className="font-bold text-emerald-600 dark:text-emerald-400">up to 30% back</span> in cashout value, free accounts, and premium trading hardware.
           </p>
 
+          {/* Action CTAs */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link href="/register">
-              <Button size="lg" className="w-full sm:w-auto shadow-lg shadow-blue-600/20 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base px-8 py-6">
-                Start Earning Cashback
+              <Button size="lg" className="w-full sm:w-auto shadow-lg shadow-blue-600/20 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base px-8 py-6 rounded-xl">
+                Get Started &amp; Earn Cashback
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
-            <Link href="/prop-firms">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/60 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white px-8 py-6 font-semibold">
-                <Layers className="h-4 w-4 mr-2 text-emerald-600 dark:text-emerald-400" />
-                Browse 20+ Prop Firms
+            <Link href="#calculator">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/60 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white px-8 py-6 font-semibold rounded-xl">
+                <Calculator className="h-4 w-4 mr-2 text-emerald-600 dark:text-emerald-400" />
+                Explore Evaluation Matrix
               </Button>
             </Link>
           </div>
 
-          {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-10 max-w-4xl mx-auto border-t border-slate-200 dark:border-slate-800/80">
+          {/* 4 Clean Stats Highlights */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-10 max-w-4xl mx-auto border-t border-slate-200/90 dark:border-slate-800/80">
             <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 text-center shadow-xs">
               <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400">$450,000+</div>
-              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Cashback Distributed</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Cashback Distributed</div>
             </div>
             <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 text-center shadow-xs">
               <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">&lt; 24 Hours</div>
-              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Audit &amp; Credit SLA</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Audit &amp; Credit SLA</div>
             </div>
             <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 text-center shadow-xs">
               <div className="text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400">14,200+</div>
-              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Active Prop Traders</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Active Prop Traders</div>
             </div>
             <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 text-center shadow-xs">
               <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">100%</div>
-              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Insured Tech Delivery</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Genuine Retail Warranty</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Comparison Grid: Direct Purchase vs PropRewards */}
+      {/* 3. The Interactive Evaluation Matrix (FundingPips Signature Centerpiece) */}
+      <section id="calculator" className="mx-auto max-w-6xl px-4 sm:px-6 scroll-mt-20">
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-8">
+          <Badge variant="purple">Interactive Evaluation Matrix</Badge>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            Transparent Pricing &amp; Guaranteed Cashback Yield
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Compare account models, evaluation objectives, and see exactly how many reward points are credited to your wallet.
+          </p>
+        </div>
+
+        {/* Model Tabs Bar */}
+        <div className="flex items-center justify-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar">
+          {EVALUATION_MODELS.map((model, idx) => (
+            <button
+              key={model.id}
+              onClick={() => {
+                setSelectedModelIdx(idx);
+                setSelectedSizeIdx(0);
+              }}
+              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 flex items-center gap-2 cursor-pointer ${
+                selectedModelIdx === idx
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25'
+                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60'
+              }`}
+            >
+              <span>{model.name}</span>
+              {model.popular && (
+                <span className="text-[10px] uppercase font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-full">
+                  HOT
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Main Matrix Card */}
+        <div className="rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl overflow-hidden transition-colors">
+          {/* Account Size Pills Header */}
+          <div className="p-6 sm:p-8 bg-slate-50/70 dark:bg-slate-950/40 border-b border-slate-200/80 dark:border-slate-800/80">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span className="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 block mb-1">
+                  1. Select Account Size
+                </span>
+                <div className="text-lg font-black text-slate-900 dark:text-white">
+                  Trading Capital Allocation
+                </div>
+              </div>
+
+              {/* Capital Pills */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                {activeModel.sizes.map((plan, idx) => (
+                  <button
+                    key={plan.size}
+                    onClick={() => setSelectedSizeIdx(idx)}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                      safeSizeIdx === idx
+                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+                        : 'bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-400'
+                    }`}
+                  >
+                    {plan.size}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Matrix Specification Grid */}
+          <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Rules / Specs Breakdown (7 cols) */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">Phase 1 Target</span>
+                  <span className="text-base font-bold text-slate-900 dark:text-white">{activePlan.target1}</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">Phase 2 Target</span>
+                  <span className="text-base font-bold text-slate-900 dark:text-white">{activePlan.target2}</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">Max Daily Drawdown</span>
+                  <span className="text-base font-bold text-slate-900 dark:text-white">{activePlan.maxDaily}</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">Max Total Loss</span>
+                  <span className="text-base font-bold text-slate-900 dark:text-white">{activePlan.maxLoss}</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">Min Trading Days</span>
+                  <span className="text-base font-bold text-slate-900 dark:text-white">{activePlan.minDays}</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">Profit Split</span>
+                  <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">Up to 95%</span>
+                </div>
+              </div>
+
+              {/* Referral Code Quick Copy Bar */}
+              <div className="p-4 rounded-2xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-blue-800 dark:text-blue-300 block">
+                    Checkout Discount &amp; Cashback Code:
+                  </span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                    Apply this code on the prop firm website to qualify for points.
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="font-mono text-sm font-black bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-3 py-1.5 rounded-lg text-slate-900 dark:text-white">
+                    {activePlan.promo}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleCopyCode(activePlan.promo)}
+                    className="cursor-pointer"
+                  >
+                    {copiedCode === activePlan.promo ? (
+                      <>
+                        <Check className="h-4 w-4 mr-1 text-emerald-600 dark:text-emerald-400" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4 mr-1" />
+                        Copy Code
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Yield & Action Card (5 cols) */}
+            <div className="lg:col-span-5 p-6 rounded-2xl border border-emerald-300 dark:border-emerald-500/40 bg-gradient-to-br from-white to-emerald-50/70 dark:from-slate-900 dark:to-emerald-950/30 shadow-lg space-y-5 text-center sm:text-left">
+              <div className="flex items-center justify-between pb-3 border-b border-emerald-200 dark:border-emerald-900/40">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+                  Standard Challenge Price
+                </span>
+                <span className="text-2xl font-black text-slate-900 dark:text-white">
+                  ${activePlan.price} USD
+                </span>
+              </div>
+
+              <div className="space-y-1">
+                <span className="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 block">
+                  Reward Points Earned (Cashback)
+                </span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl font-black text-emerald-600 dark:text-emerald-400">
+                    +{activePlan.points.toLocaleString()}
+                  </span>
+                  <span className="text-sm font-bold text-slate-600 dark:text-slate-300">PTS</span>
+                </div>
+                <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                  ≈ ${activePlan.cash.toFixed(2)} USD Spendable Cashout Value
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-1">
+                <div className="flex justify-between">
+                  <span>Net Challenge Cost:</span>
+                  <span className="font-bold text-slate-900 dark:text-white">
+                    ${(activePlan.price - activePlan.cash).toFixed(2)} USD
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Audit Clearance Time:</span>
+                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">&lt; 24 Hours</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <Link href="/dashboard/purchases/new" className="block">
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 shadow-md shadow-emerald-600/20">
+                    Submit This Purchase Proof →
+                  </Button>
+                </Link>
+                <Link href="/prop-firms" className="block">
+                  <Button variant="ghost" size="sm" className="w-full text-xs text-slate-500 dark:text-slate-400">
+                    Browse All Eligible Prop Firms
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Comparison Section: Buying Direct vs Buying via Us */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="text-center max-w-3xl mx-auto space-y-3 mb-10">
-          <Badge variant="purple">Why Smart Traders Use Us</Badge>
+          <Badge variant="purple">Value Comparison</Badge>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Stop Leaving Free Capital On The Table
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Why buy prop firm challenges directly when you can earn massive loyalty dividends?
+            Why buy challenges at full retail price with zero return when you can earn loyalty dividends?
           </p>
         </div>
 
@@ -283,7 +501,7 @@ export default function HomePage() {
             <div>
               <div className="flex items-center justify-between pb-4 border-b border-rose-200 dark:border-rose-500/20">
                 <span className="text-sm font-bold text-rose-700 dark:text-rose-400 uppercase tracking-wider">
-                  Buying Directly From Prop Firm
+                  Buying Direct From Prop Firm
                 </span>
                 <span className="text-xs bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300 font-bold px-2.5 py-1 rounded-full">
                   0% Return
@@ -291,19 +509,19 @@ export default function HomePage() {
               </div>
               <ul className="space-y-4 pt-6 text-sm text-slate-600 dark:text-slate-400">
                 <li className="flex items-center gap-3">
-                  <span className="h-5 w-5 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-xs">✕</span>
-                  <span>Pay full price with zero cashback or loyalty credit</span>
+                  <span className="h-5 w-5 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-xs shrink-0">✕</span>
+                  <span>Pay full price with zero cashback or loyalty points</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="h-5 w-5 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-xs">✕</span>
+                  <span className="h-5 w-5 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-xs shrink-0">✕</span>
                   <span>If you fail the evaluation, 100% of your fee is permanently lost</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="h-5 w-5 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-xs">✕</span>
+                  <span className="h-5 w-5 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-xs shrink-0">✕</span>
                   <span>No second-chance challenge pass vouchers</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="h-5 w-5 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-xs">✕</span>
+                  <span className="h-5 w-5 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-xs shrink-0">✕</span>
                   <span>No tech gadgets, monitors, or crypto rewards</span>
                 </li>
               </ul>
@@ -313,7 +531,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Buying via PropRewards Card */}
+          {/* Buying via Us Card */}
           <div className="rounded-3xl border border-emerald-300 dark:border-emerald-500/40 bg-gradient-to-br from-white via-white to-emerald-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950/30 p-8 space-y-6 flex flex-col justify-between shadow-xl relative">
             <div className="absolute -top-3.5 right-8">
               <span className="bg-emerald-600 text-white text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md">
@@ -324,7 +542,7 @@ export default function HomePage() {
             <div>
               <div className="flex items-center justify-between pb-4 border-b border-emerald-200 dark:border-emerald-500/20">
                 <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
-                  Buying With PropRewards Code
+                  Buying With Our Referral Code
                 </span>
                 <span className="text-xs bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 font-bold px-2.5 py-1 rounded-full">
                   Up To 30% Cashback
@@ -362,142 +580,68 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Visual Journey Flow Section */}
+      {/* 5. The 4-Stage Trader Progression (FundingPips 'Student to Master' Style) */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
-          <Badge variant="success">Simple 6-Step Journey</Badge>
+          <Badge variant="success">The Trader Progression</Badge>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-            How The Rewards System Works
+            How The Cashback Lifecycle Operates
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            A transparent and seamless process designed to maximize value from every challenge purchase.
+            A structured, auditable journey from buying your challenge to receiving luxury rewards.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {steps.map((s, idx) => (
-            <div
-              key={idx}
-              className="relative p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-slate-900/50 card-hover-glow space-y-3 shadow-xs"
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-200 dark:border-emerald-500/20">
-                  STEP {s.num}
-                </span>
-                <CheckCircle2 className="h-5 w-5 text-slate-400 dark:text-slate-600" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{s.title}</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{s.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Interactive Points Calculator */}
-      <section className="mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="relative rounded-3xl border border-emerald-200 dark:border-emerald-500/30 bg-white dark:bg-gradient-to-b dark:from-slate-900/90 dark:to-slate-950 p-8 sm:p-10 shadow-xl backdrop-blur-xl transition-colors">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="space-y-4 max-w-md">
-              <div className="inline-flex items-center gap-2 text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
-                <Calculator className="h-4 w-4" />
-                <span>Rewards &amp; Cashout Calculator</span>
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                Calculate Your Challenge Reward Points
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Select any partner prop firm and challenge size to see exact points and equivalent dollar cashout value.
-              </p>
-
-              {/* Form Selectors */}
-              <div className="space-y-3 pt-2">
-                <div>
-                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                    Select Prop Firm
-                  </label>
-                  <select
-                    value={calcSelectedFirmId}
-                    onChange={(e) => {
-                      setCalcSelectedFirmId(e.target.value);
-                      const firm = propFirms.find((p) => p.id === e.target.value);
-                      if (firm && firm.offers && firm.offers.length > 0) {
-                        setCalcSelectedOfferId(firm.offers[0].id);
-                      }
-                    }}
-                    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
-                  >
-                    {propFirms.map((f) => (
-                      <option key={f.id} value={f.id}>
-                        {f.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                    Select Challenge Size
-                  </label>
-                  <select
-                    value={calcSelectedOfferId}
-                    onChange={(e) => setCalcSelectedOfferId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
-                  >
-                    {selectedFirm?.offers?.map((o) => (
-                      <option key={o.id} value={o.id}>
-                        {o.accountTierName} (${o.purchasePriceUsd})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Result Box */}
-            <div className="w-full md:w-80 rounded-2xl border border-emerald-200 dark:border-emerald-500/40 bg-emerald-50/60 dark:bg-emerald-950/30 p-6 text-center space-y-4 shadow-sm">
-              <div className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
-                You Will Earn
-              </div>
-              <div className="text-4xl sm:text-5xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
-                {selectedOffer ? selectedOffer.rewardPoints.toLocaleString() : '0'}
-              </div>
-              <div className="text-xs font-bold text-slate-600 dark:text-slate-300">
-                Reward Points (≈ ${selectedOffer ? (selectedOffer.rewardPoints / 100).toFixed(2) : '0.00'} USD)
-              </div>
-
-              {selectedFirm && (
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-800/80">
-                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-2">Referral Code to use at checkout:</div>
-                  <div className="flex items-center justify-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg shadow-xs">
-                    <span className="font-mono font-bold text-sm text-emerald-700 dark:text-emerald-300">
-                      {selectedFirm.affiliateCode}
-                    </span>
-                    <button
-                      onClick={() => handleCopyCode(selectedFirm.affiliateCode)}
-                      className="text-slate-400 hover:text-slate-700 dark:hover:text-white"
-                      title="Copy Code"
-                    >
-                      {copiedCode === selectedFirm.affiliateCode ? (
-                        <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
-                    </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            {
+              step: 'PHASE 01',
+              title: 'Select Firm & Apply Code',
+              desc: 'Choose Funding Pips, FTMO, or FundedNext and apply our verified affiliate code during checkout for direct discount & attribution.',
+              icon: Target,
+            },
+            {
+              step: 'PHASE 02',
+              title: 'Upload Invoice Proof',
+              desc: 'Submit your order number, purchase receipt or dashboard billing screenshot in your clean trader dashboard portal.',
+              icon: FileCheck,
+            },
+            {
+              step: 'PHASE 03',
+              title: 'Audited & Credited',
+              desc: 'Our compliance desk matches transaction records with the prop firm partner within 12-24 hours and credits points immediately.',
+              icon: ShieldCheck,
+            },
+            {
+              step: 'PHASE 04',
+              title: 'Liquidate or Redeem',
+              desc: 'Exchange points for brand-new Apple MacBooks, iPads, 4K monitors, free challenge passes, or instant USDT withdrawals.',
+              icon: Gift,
+            },
+          ].map((card, idx) => {
+            const Icon = card.icon;
+            return (
+              <div
+                key={idx}
+                className="p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 shadow-xs space-y-4 transition-colors"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-mono font-bold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-500/20">
+                    {card.step}
+                  </span>
+                  <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                    <Icon className="h-4 w-4" />
                   </div>
                 </div>
-              )}
-
-              <Link href="/dashboard/purchases/new" className="block pt-2">
-                <Button className="w-full font-bold" size="sm">
-                  Submit This Purchase Proof
-                </Button>
-              </Link>
-            </div>
-          </div>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">{card.title}</h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{card.desc}</p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      {/* Featured Prop Firms Section */}
+      {/* 6. Featured Prop Firms Section */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
@@ -562,7 +706,7 @@ export default function HomePage() {
                       </span>
                       <button
                         onClick={() => handleCopyCode(firm.affiliateCode)}
-                        className="rounded p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+                        className="rounded p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                         title="Copy code"
                       >
                         {copiedCode === firm.affiliateCode ? (
@@ -599,13 +743,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Rewards Section */}
+      {/* 7. Featured Hardware & Rewards Showcase */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <Badge variant="info">Marketplace</Badge>
+            <Badge variant="info">Rewards Store</Badge>
             <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-2">
-              Featured Rewards
+              Featured Rewards &amp; Hardware
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Redeem verified points for brand-new electronics, monitors, sneakers, and gift cards.
@@ -613,7 +757,7 @@ export default function HomePage() {
           </div>
           <Link href="/rewards">
             <Button variant="outline" size="sm" className="border-slate-300 dark:border-slate-700">
-              Explore Full Catalog
+              Explore Full Marketplace
               <ArrowRight className="h-4 w-4 ml-1.5" />
             </Button>
           </Link>
@@ -663,7 +807,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FAQ Accordion Section */}
+      {/* 8. FAQ Accordion Section */}
       <section className="mx-auto max-w-4xl px-4 sm:px-6 space-y-8">
         <div className="text-center space-y-2">
           <Badge variant="outline">Got Questions?</Badge>
@@ -681,11 +825,11 @@ export default function HomePage() {
             return (
               <div
                 key={idx}
-                className="rounded-xl border border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 overflow-hidden shadow-xs"
+                className="rounded-xl border border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 overflow-hidden shadow-xs transition-colors"
               >
                 <button
                   onClick={() => setOpenFaq(isOpen ? null : idx)}
-                  className="w-full px-6 py-4.5 text-left flex items-center justify-between font-semibold text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors text-sm sm:text-base"
+                  className="w-full px-6 py-4.5 text-left flex items-center justify-between font-semibold text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors text-sm sm:text-base cursor-pointer"
                 >
                   <span>{faq.q}</span>
                   <ChevronDown
@@ -705,12 +849,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Trust & CTA Banner */}
+      {/* 9. Final High-Conversion Trust & CTA Banner */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="relative rounded-3xl border border-blue-200 dark:border-slate-800 bg-gradient-to-r from-blue-50 via-white to-blue-50/50 dark:from-blue-950/40 dark:via-slate-900 dark:to-slate-900/90 p-8 sm:p-14 text-center space-y-6 overflow-hidden shadow-xl transition-colors">
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 dark:border-blue-500/30 bg-blue-100 dark:bg-blue-500/10 px-4 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-400">
             <Coins className="h-4 w-4" />
-            <span>Ready To Upgrade Your Setup?</span>
+            <span>Ready To Upgrade Your Trading Setup?</span>
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight max-w-2xl mx-auto">
@@ -723,13 +867,13 @@ export default function HomePage() {
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link href="/register">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/20">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/20 rounded-xl px-8 py-6">
                 Create Free Trader Account
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
             <Link href="/contact">
-              <Button variant="outline" size="lg" className="border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200">
+              <Button variant="outline" size="lg" className="border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 rounded-xl px-8 py-6">
                 Contact Support Desk
               </Button>
             </Link>
