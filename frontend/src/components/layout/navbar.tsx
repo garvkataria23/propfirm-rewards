@@ -7,6 +7,7 @@ import { useAuth } from '@/context/auth-context';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { GoogleTranslate } from '@/components/ui/google-translate';
 import {
   Sparkles,
   Coins,
@@ -86,8 +87,11 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Right CTA / User Status / Theme Switcher */}
-        <div className="hidden md:flex items-center gap-3">
+        {/* Right CTA / User Status / Theme Switcher / Language */}
+        <div className="hidden md:flex items-center gap-2.5">
+          {/* Google Translate (100+ Languages) */}
+          <GoogleTranslate id="google_translate_desktop" />
+
           {/* Light / Dark Mode Toggle */}
           <ThemeToggle />
 
@@ -144,23 +148,24 @@ export function Navbar() {
           )}
         </div>
 
-        {/* Mobile Hamburger, Buy Challenge CTA & Theme Toggle */}
-        <div className="flex md:hidden items-center gap-2">
+        {/* Mobile Actions: Language, Theme Toggle, Buy Challenge CTA & Hamburger */}
+        <div className="flex md:hidden items-center gap-1.5 sm:gap-2">
+          <GoogleTranslate id="google_translate_mobile" compact />
           <ThemeToggle />
 
           <Link href="/prop-firms">
             <Button
               size="sm"
-              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-bold text-xs px-3 py-1.5 h-8 rounded-lg shadow-sm"
+              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-bold text-xs px-2.5 sm:px-3 py-1.5 h-8 rounded-lg shadow-sm"
             >
-              Buy Challenge
+              Buy
             </Button>
           </Link>
 
           {user && (
             <Link
               href="/dashboard/points"
-              className="flex items-center gap-1 bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-500/30 text-purple-800 dark:text-purple-300 px-2.5 py-1 rounded-full text-xs font-bold"
+              className="flex items-center gap-1 bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-500/30 text-purple-800 dark:text-purple-300 px-2 py-1 rounded-full text-[11px] font-bold"
             >
               <Sparkles className="h-3 w-3 text-purple-600 dark:text-purple-400" />
               <span>{(user.points?.available || 0).toLocaleString()}</span>
@@ -169,7 +174,7 @@ export function Navbar() {
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+            className="rounded-lg p-1.5 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -180,6 +185,13 @@ export function Navbar() {
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 px-4 pt-3 pb-6 space-y-3 backdrop-blur-2xl transition-colors">
+          {/* Mobile Drawer Language Selector */}
+          <div className="pb-2.5 border-b border-slate-100 dark:border-slate-800/80">
+            <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5 px-1">
+              Select Language
+            </div>
+            <GoogleTranslate id="google_translate_drawer" className="w-full" />
+          </div>
           <nav className="flex flex-col gap-1">
             {navLinks.map((link) => {
               const Icon = link.icon;

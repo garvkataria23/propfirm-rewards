@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 import { PropNationSidebar } from '@/components/layout/propnation-sidebar';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { GoogleTranslate } from '@/components/ui/google-translate';
 import {
   Menu,
   X,
@@ -65,7 +66,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </span>
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <GoogleTranslate id="google_translate_dash_mobile" compact />
           <ThemeToggle />
 
           <Link
@@ -114,7 +116,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            {/* Google Translate (100+ Languages) */}
+            <GoogleTranslate id="google_translate_dashboard" />
+
             {/* Theme Toggle (Light / Dark) */}
             <ThemeToggle />
 

@@ -98,3 +98,48 @@ body {
 .dark .bg-grid-pattern {
   background-image: radial-gradient(rgba(168, 85, 247, 0.1) 1px, transparent 1px);
 }
+
+/* ===== GOOGLE TRANSLATE ENGINE & RTL STYLES ===== */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+[dir="rtl"] .rotate-180 {
+  transform: rotate(0deg);
+}
+
+.google-translate-engine {
+  position: absolute;
+  left: -10000px;
+  top: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hide Google's native top branding banner */
+.goog-te-banner-frame.skiptranslate,
+body > .skiptranslate,
+#goog-gt-tt,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+/* Prevent Google Translate from pushing body down by 40px */
+body {
+  top: 0 !important;
+}
+
+/* Hide Google original text popups on hover */
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+}
+
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+

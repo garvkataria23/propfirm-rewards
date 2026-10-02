@@ -35,6 +35,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <link rel="preconnect" href="https://translate.google.com" />
+        <link rel="preconnect" href="https://translate.googleapis.com" />
+        <link rel="preconnect" href="https://www.gstatic.com" />
+        <link rel="dns-prefetch" href="https://translate.google.com" />
+        <link rel="dns-prefetch" href="https://translate.googleapis.com" />
+        <link rel="dns-prefetch" href="https://www.gstatic.com" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
