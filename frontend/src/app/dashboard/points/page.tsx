@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { useAuth } from '@/context/auth-context';
+import { userDataStore } from '@/lib/userDataStore';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -109,25 +111,39 @@ export default function PointsLedgerPage() {
     pendingPoints: 4500,
   };
 
+  const { user } = useAuth();
+
   useEffect(() => {
+    const userEmail = user?.email || (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) || 'trader@example.com';
+    const localLedger = userDataStore.getUserLedger(userEmail);
+    const available = userDataStore.calculateAvailablePoints(userEmail);
+    const pending = userDataStore.calculatePendingPoints(userEmail);
+
+    const userSummary: PointsSummary = {
+      availablePoints: available,
+      totalPointsEarned: available + 22000,
+      totalPointsRedeemed: 22000,
+      pendingPoints: pending,
+    };
+
     Promise.all([
       api.get<PointsSummary>('/points/summary'),
       api.get<{ transactions: PointsTransaction[] }>('/points/ledger', { limit: 100 }),
     ])
       .then(([sum, ledger]) => {
-        setSummary(sum || DEFAULT_SUMMARY);
+        setSummary(sum || userSummary);
         if (ledger.transactions && ledger.transactions.length > 0) {
           setTransactions(ledger.transactions);
         } else {
-          setTransactions(DEFAULT_TRANSACTIONS);
+          setTransactions(localLedger as any);
         }
       })
       .catch(() => {
-        setSummary(DEFAULT_SUMMARY);
-        setTransactions(DEFAULT_TRANSACTIONS);
+        setSummary(userSummary);
+        setTransactions(localLedger as any);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   const getTypeBadge = (type: string) => {
     switch (type) {

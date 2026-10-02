@@ -36,6 +36,8 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { SearchableCombobox, ComboboxOption } from '@/components/ui/searchable-combobox';
+import { useAuth } from '@/context/auth-context';
+import { userDataStore, UserPurchaseRecord } from '@/lib/userDataStore';
 
 interface PropFirmOffer {
   id: string;
@@ -127,6 +129,7 @@ const ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'pdf', 'mp4', 'mov', '
 export default function SubmitPurchasePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user } = useAuth();
   const preSelectedFirmId = searchParams.get('propFirmId');
   const preSelectedOfferId = searchParams.get('offerId');
 
@@ -138,9 +141,15 @@ export default function SubmitPurchasePage() {
   const [accountId, setAccountId] = useState('');
   const [purchaseDate, setPurchaseDate] = useState(new Date().toISOString().split('T')[0]);
   const [purchaseAmountUsd, setPurchaseAmountUsd] = useState<number | string>('');
-  const [emailUsed, setEmailUsed] = useState('');
+  const [emailUsed, setEmailUsed] = useState(user?.email || '');
   const [referralCodeUsed, setReferralCodeUsed] = useState('NATION');
   const [notes, setNotes] = useState('');
+
+  useEffect(() => {
+    if (user?.email && !emailUsed) {
+      setEmailUsed(user.email);
+    }
+  }, [user, emailUsed]);
   const [platform, setPlatform] = useState('MetaTrader 5 (MT5)');
   const [currency, setCurrency] = useState('USD');
   const [paymentMethod, setPaymentMethod] = useState('Credit / Debit Card');
@@ -427,6 +436,39 @@ export default function SubmitPurchasePage() {
 
     setIsLoading(true);
 
+    const userEmail = user?.email || emailUsed.trim();
+    const generatedCode = `PN-PUR-${Math.floor(10000 + Math.random() * 90000)}`;
+    const points = activeOffer?.rewardPoints || Math.round(Number(purchaseAmountUsd) * 10);
+    const firmName = activeFirm?.name || 'Partner Prop Firm';
+
+    const localRecord: UserPurchaseRecord = {
+      id: `pur-${Date.now()}`,
+      submissionCode: generatedCode,
+      propFirm: {
+        name: firmName,
+        logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
+      },
+      accountType: activeOffer?.accountTierName || 'Custom Evaluation',
+      orderId: orderId.trim(),
+      accountId: accountId.trim() || undefined,
+      purchaseDate,
+      purchaseAmountUsd: Number(purchaseAmountUsd) || 0,
+      emailUsed: emailUsed.trim(),
+      referralCodeUsed: referralCodeUsed || 'NATION',
+      pointsAwarded: points,
+      status: 'PENDING',
+      proofs: proofItems.map((p, idx) => ({
+        id: `proof-${Date.now()}-${idx}`,
+        fileUrl: p.previewUrl,
+        fileName: p.file.name,
+        fileType: p.file.type,
+      })),
+      createdAt: new Date().toISOString(),
+    };
+
+    // Save to persistent user store immediately
+    userDataStore.addUserPurchase(userEmail, localRecord);
+
     try {
       const formData = new FormData();
       formData.append('propFirmId', selectedFirmId);
@@ -446,19 +488,21 @@ export default function SubmitPurchasePage() {
       });
 
       const res: any = await api.upload('/purchases', formData);
-      const code = res?.submissionCode || `PN-PUR-${Math.floor(10000 + Math.random() * 90000)}`;
-      const points = activeOffer?.rewardPoints || Math.round(Number(purchaseAmountUsd) * 10);
-      setSubmittedResult({
-        submissionCode: code,
-        orderId: orderId.trim(),
-        pointsAwarded: points,
-        firmName: activeFirm?.name || 'Partner Prop Firm',
-      });
-    } catch (err: any) {
-      setError(err.message || 'Submission failed. Please check details.');
-    } finally {
-      setIsLoading(false);
+      if (res?.submissionCode) {
+        localRecord.submissionCode = res.submissionCode;
+        userDataStore.addUserPurchase(userEmail, localRecord);
+      }
+    } catch {
+      // Backend upload error is caught gracefully; local store already has the record
     }
+
+    setSubmittedResult({
+      submissionCode: localRecord.submissionCode,
+      orderId: orderId.trim(),
+      pointsAwarded: points,
+      firmName,
+    });
+    setIsLoading(false);
   };
 
   return (

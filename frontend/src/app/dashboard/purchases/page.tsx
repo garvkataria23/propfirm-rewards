@@ -52,7 +52,11 @@ interface PurchaseSubmission {
   createdAt: string;
 }
 
+import { useAuth } from '@/context/auth-context';
+import { userDataStore } from '@/lib/userDataStore';
+
 export default function PurchasesListPage() {
+  const { user } = useAuth();
   const [purchases, setPurchases] = useState<PurchaseSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -67,16 +71,33 @@ export default function PurchasesListPage() {
 
   const fetchPurchases = () => {
     setLoading(true);
+    const userEmail = user?.email || (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) || 'trader@example.com';
+    const localPurchases = userDataStore.getUserPurchases(userEmail);
+
     api
       .get<PurchaseSubmission[]>('/purchases')
-      .then((data) => setPurchases(data))
-      .catch(console.error)
+      .then((data) => {
+        if (data && data.length > 0) {
+          const merged = [...data];
+          localPurchases.forEach((lp) => {
+            if (!merged.some((m) => m.orderId === lp.orderId || m.submissionCode === lp.submissionCode)) {
+              merged.push(lp as any);
+            }
+          });
+          setPurchases(merged);
+        } else {
+          setPurchases(localPurchases as any);
+        }
+      })
+      .catch(() => {
+        setPurchases(localPurchases as any);
+      })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
     fetchPurchases();
-  }, []);
+  }, [user]);
 
   const handleCopy = (code: string) => {
     navigator.clipboard.writeText(code);

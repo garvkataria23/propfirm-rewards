@@ -73,6 +73,14 @@ export default function ProfilePage() {
     fetchAddresses();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setPhone(user.phone || '');
+      setCountry(user.country || 'United States');
+    }
+  }, [user]);
+
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUpdatingProfile(true);

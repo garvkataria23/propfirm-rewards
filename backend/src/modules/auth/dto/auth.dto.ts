@@ -47,3 +47,21 @@ export class UpdateProfileDto {
   @IsString()
   avatarUrl?: string;
 }
+
+export class GoogleAuthDto {
+  @IsEmail({}, { message: 'Please provide a valid email address' })
+  email: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'Full name is required' })
+  name: string;
+
+  @IsOptional()
+  @IsString()
+  avatarUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  googleId?: string;
+}
+

@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
-import { LoginDto, RegisterDto, UpdateProfileDto } from './dto/auth.dto';
+import { LoginDto, RegisterDto, UpdateProfileDto, GoogleAuthDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -82,6 +82,65 @@ export class AuthService {
 
     if (user.status === 'SUSPENDED') {
       throw new UnauthorizedException('Your account has been suspended. Please contact support.');
+    }
+
+    const token = this.generateToken(user);
+
+    return {
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        status: user.status,
+        country: user.country,
+        avatarUrl: user.avatarUrl,
+      },
+    };
+  }
+
+  async googleLogin(dto: GoogleAuthDto) {
+    const email = dto.email.toLowerCase().trim();
+    let user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (user) {
+      if (user.status === 'SUSPENDED') {
+        throw new UnauthorizedException('Your account has been suspended. Please contact support.');
+      }
+      if (dto.avatarUrl && !user.avatarUrl) {
+        user = await this.prisma.user.update({
+          where: { id: user.id },
+          data: { avatarUrl: dto.avatarUrl },
+        });
+      }
+    } else {
+      const randomPassword = await bcrypt.hash(`google_${Date.now()}_${Math.random()}`, 10);
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          passwordHash: randomPassword,
+          name: dto.name.trim(),
+          avatarUrl: dto.avatarUrl || null,
+          role: 'USER',
+          status: 'ACTIVE',
+          emailVerified: true,
+        },
+      });
+
+      await this.prisma.notification.create({
+        data: {
+          userId: user.id,
+          title: 'Welcome to PropFirm Rewards!',
+          message: 'Your Google-linked account is ready. Explore active prop-firm codes to earn points.',
+          type: 'SYSTEM',
+          linkUrl: '/prop-firms',
+        },
+      });
+
+      this.emailService.sendWelcomeEmail(user.email, user.name).catch(() => {});
     }
 
     const token = this.generateToken(user);
