@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/auth-context';
-import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,6 +24,16 @@ import {
   Save,
   Check,
   Copy,
+  BarChart3,
+  TrendingUp,
+  Download,
+  Filter,
+  Activity,
+  FileText,
+  RefreshCw,
+  ArrowUpRight,
+  Zap,
+  Search,
 } from 'lucide-react';
 
 interface NotificationTrigger {
@@ -43,6 +52,17 @@ interface WhatsAppLog {
   recipient: string;
   sentAt: string;
   status: 'DELIVERED' | 'READ' | 'QUEUED';
+  latency: string;
+}
+
+interface DeliveryDayData {
+  day: string;
+  date: string;
+  sent: number;
+  delivered: number;
+  read: number;
+  failed: number;
+  rate: number;
 }
 
 export default function WhatsAppDashboardPage() {
@@ -52,9 +72,17 @@ export default function WhatsAppDashboardPage() {
   const [phoneNumber, setPhoneNumber] = useState(user?.phone || '+91 98765 43210');
   const [countryCode, setCountryCode] = useState('+91');
   const [rawPhone, setRawPhone] = useState('9876543210');
-  const [isConnected, setIsConnected] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+
+  // Timeframe for Graph Analytics
+  const [analyticsRange, setAnalyticsRange] = useState<'7d' | '14d' | '30d'>('7d');
+  const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(6);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Filter for dispatch logs table
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'READ' | 'DELIVERED' | 'QUEUED'>('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Test Message Simulator State
   const [selectedTemplate, setSelectedTemplate] = useState<'verification' | 'points' | 'shipment' | 'deal'>('verification');
@@ -113,7 +141,91 @@ export default function WhatsAppDashboardPage() {
     },
   ]);
 
-  // Sample dispatch log
+  // Delivery Volume Data for 7, 14, and 30 Days
+  const deliveryDataSets: Record<'7d' | '14d' | '30d', DeliveryDayData[]> = {
+    '7d': [
+      { day: 'Fri', date: 'Sep 26', sent: 142, delivered: 140, read: 131, failed: 2, rate: 98.6 },
+      { day: 'Sat', date: 'Sep 27', sent: 185, delivered: 183, read: 174, failed: 2, rate: 98.9 },
+      { day: 'Sun', date: 'Sep 28', sent: 160, delivered: 158, read: 149, failed: 2, rate: 98.7 },
+      { day: 'Mon', date: 'Sep 29', sent: 210, delivered: 208, read: 196, failed: 2, rate: 99.0 },
+      { day: 'Tue', date: 'Sep 30', sent: 245, delivered: 242, read: 228, failed: 3, rate: 98.8 },
+      { day: 'Wed', date: 'Oct 01', sent: 218, delivered: 215, read: 201, failed: 3, rate: 98.6 },
+      { day: 'Thu (Today)', date: 'Oct 02', sent: 268, delivered: 264, read: 245, failed: 4, rate: 98.5 },
+    ],
+    '14d': [
+      { day: '19 Sep', date: 'Sep 19', sent: 120, delivered: 118, read: 110, failed: 2, rate: 98.3 },
+      { day: '20 Sep', date: 'Sep 20', sent: 135, delivered: 133, read: 125, failed: 2, rate: 98.5 },
+      { day: '21 Sep', date: 'Sep 21', sent: 110, delivered: 108, read: 101, failed: 2, rate: 98.2 },
+      { day: '22 Sep', date: 'Sep 22', sent: 170, delivered: 168, read: 158, failed: 2, rate: 98.8 },
+      { day: '23 Sep', date: 'Sep 23', sent: 195, delivered: 193, read: 182, failed: 2, rate: 99.0 },
+      { day: '24 Sep', date: 'Sep 24', sent: 180, delivered: 177, read: 167, failed: 3, rate: 98.3 },
+      { day: '25 Sep', date: 'Sep 25', sent: 205, delivered: 202, read: 191, failed: 3, rate: 98.5 },
+      { day: '26 Sep', date: 'Sep 26', sent: 142, delivered: 140, read: 131, failed: 2, rate: 98.6 },
+      { day: '27 Sep', date: 'Sep 27', sent: 185, delivered: 183, read: 174, failed: 2, rate: 98.9 },
+      { day: '28 Sep', date: 'Sep 28', sent: 160, delivered: 158, read: 149, failed: 2, rate: 98.7 },
+      { day: '29 Sep', date: 'Sep 29', sent: 210, delivered: 208, read: 196, failed: 2, rate: 99.0 },
+      { day: '30 Sep', date: 'Sep 30', sent: 245, delivered: 242, read: 228, failed: 3, rate: 98.8 },
+      { day: '01 Oct', date: 'Oct 01', sent: 218, delivered: 215, read: 201, failed: 3, rate: 98.6 },
+      { day: 'Today', date: 'Oct 02', sent: 268, delivered: 264, read: 245, failed: 4, rate: 98.5 },
+    ],
+    '30d': [
+      { day: 'Wk 1', date: 'Sep 03 - Sep 09', sent: 980, delivered: 968, read: 905, failed: 12, rate: 98.7 },
+      { day: 'Wk 2', date: 'Sep 10 - Sep 16', sent: 1140, delivered: 1125, read: 1056, failed: 15, rate: 98.6 },
+      { day: 'Wk 3', date: 'Sep 17 - Sep 23', sent: 1290, delivered: 1276, read: 1198, failed: 14, rate: 98.9 },
+      { day: 'Wk 4', date: 'Sep 24 - Sep 30', sent: 1460, delivered: 1441, read: 1355, failed: 19, rate: 98.7 },
+      { day: 'Current', date: 'Oct 01 - Oct 02', sent: 486, delivered: 479, read: 446, failed: 7, rate: 98.5 },
+    ],
+  };
+
+  const currentChartData = deliveryDataSets[analyticsRange];
+  const maxVolume = Math.max(...currentChartData.map((d) => d.sent), 1);
+
+  // Totals for current range
+  const totalSent = currentChartData.reduce((acc, d) => acc + d.sent, 0);
+  const totalDelivered = currentChartData.reduce((acc, d) => acc + d.delivered, 0);
+  const totalRead = currentChartData.reduce((acc, d) => acc + d.read, 0);
+  const totalFailed = currentChartData.reduce((acc, d) => acc + d.failed, 0);
+  const overallDeliveryRate = ((totalDelivered / (totalSent || 1)) * 100).toFixed(1);
+  const overallReadRate = ((totalRead / (totalDelivered || 1)) * 100).toFixed(1);
+
+  // Active inspected day (defaults to last item)
+  const activeDay = hoveredBarIndex !== null && currentChartData[hoveredBarIndex]
+    ? currentChartData[hoveredBarIndex]
+    : currentChartData[currentChartData.length - 1];
+
+  // Category breakdown distribution
+  const categoriesBreakdown = [
+    {
+      category: 'Purchase Audits & Verification',
+      share: 46,
+      count: Math.round(totalSent * 0.46),
+      rate: '99.4%',
+      badgeColor: 'bg-emerald-500',
+    },
+    {
+      category: 'Reward Points Ledger Credit',
+      share: 28,
+      count: Math.round(totalSent * 0.28),
+      rate: '98.9%',
+      badgeColor: 'bg-blue-500',
+    },
+    {
+      category: 'Courier & Live Tracking (FedEx/DHL)',
+      share: 16,
+      count: Math.round(totalSent * 0.16),
+      rate: '99.7%',
+      badgeColor: 'bg-purple-500',
+    },
+    {
+      category: 'VIP Flash Promos & Reminders',
+      share: 10,
+      count: Math.round(totalSent * 0.10),
+      rate: '96.2%',
+      badgeColor: 'bg-amber-500',
+    },
+  ];
+
+  // Sample dispatch logs
   const [logs, setLogs] = useState<WhatsAppLog[]>([
     {
       id: 'WA-88412',
@@ -122,14 +234,25 @@ export default function WhatsAppDashboardPage() {
       recipient: '+91 98765 43210',
       sentAt: 'Today, 11:42 AM',
       status: 'READ',
+      latency: '0.8s',
     },
     {
       id: 'WA-88409',
       type: 'POINTS_LEDGER',
       message: '💰 Cashback Alert: Your Available Balance is now 15,700 PTS (≈ $157.00 USD). Ready for cashout or rewards.',
       recipient: '+91 98765 43210',
-      sentAt: 'Yesterday, 04:15 PM',
+      sentAt: 'Today, 09:15 AM',
       status: 'READ',
+      latency: '1.1s',
+    },
+    {
+      id: 'WA-88401',
+      type: 'TRACKING_UPDATE',
+      message: '📦 Reward Dispatch: Apple AirPods Pro (2nd Gen) package picked up by DHL Express. Tracking #DHL-882941029.',
+      recipient: '+91 98765 43210',
+      sentAt: 'Yesterday, 04:30 PM',
+      status: 'READ',
+      latency: '0.9s',
     },
     {
       id: 'WA-88390',
@@ -138,6 +261,25 @@ export default function WhatsAppDashboardPage() {
       recipient: '+91 98765 43210',
       sentAt: 'Oct 01, 09:30 AM',
       status: 'DELIVERED',
+      latency: '1.4s',
+    },
+    {
+      id: 'WA-88375',
+      type: 'DEADLINE_PING',
+      message: '⏰ 3-Day Reminder: Complete your invoice verification for FTMO Challenge within 72 hours to secure +6,000 PTS.',
+      recipient: '+91 98765 43210',
+      sentAt: 'Sep 30, 02:15 PM',
+      status: 'READ',
+      latency: '1.0s',
+    },
+    {
+      id: 'WA-88350',
+      type: 'SECURITY_ALERT',
+      message: '🛡️ New Login Detected: Trader account accessed from IP 104.28.142.1 (Mumbai, India). If this was you, ignore.',
+      recipient: '+91 98765 43210',
+      sentAt: 'Sep 29, 08:04 PM',
+      status: 'DELIVERED',
+      latency: '0.7s',
     },
   ]);
 
@@ -181,7 +323,6 @@ export default function WhatsAppDashboardPage() {
       setTestSending(false);
       setTestSuccess(true);
 
-      // Add to log
       const newEntry: WhatsAppLog = {
         id: `WA-${Math.floor(10000 + Math.random() * 90000)}`,
         type: selectedTemplate.toUpperCase(),
@@ -189,6 +330,7 @@ export default function WhatsAppDashboardPage() {
         recipient: phoneNumber,
         sentAt: 'Just now',
         status: 'DELIVERED',
+        latency: '0.8s',
       };
       setLogs([newEntry, ...logs]);
 
@@ -202,37 +344,394 @@ export default function WhatsAppDashboardPage() {
     window.open(`https://api.whatsapp.com/send?phone=${cleanNumber}&text=${encodedText}`, '_blank');
   };
 
+  // CSV Report Generator
+  const handleExportCSV = () => {
+    const headers = ['Message ID', 'Notification Type', 'Recipient', 'Message Content', 'Timestamp', 'Status', 'SLA Latency'];
+    const rows = logs.map((l) => [
+      l.id,
+      l.type,
+      l.recipient,
+      `"${l.message.replace(/"/g, '""')}"`,
+      l.sentAt,
+      l.status,
+      l.latency,
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `whatsapp_delivery_report_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Refresh Analytics simulation
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 600);
+  };
+
+  // Filtered logs
+  const filteredLogs = logs.filter((log) => {
+    const matchesStatus = statusFilter === 'ALL' || log.status === statusFilter;
+    const matchesSearch =
+      searchQuery === '' ||
+      log.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      log.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      log.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      log.recipient.includes(searchQuery);
+    return matchesStatus && matchesSearch;
+  });
+
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto pb-12">
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs transition-colors">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
               <MessageCircle className="h-5 w-5" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-              WhatsApp Reminders &amp; Instant Alerts
+              WhatsApp Alerts &amp; Delivery Report
             </h1>
-            <Badge variant="success">Active</Badge>
+            <Badge variant="success" className="gap-1 font-bold">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Meta Cloud API Live
+            </Badge>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            Automated WhatsApp reminders for verified purchases, points clearance, and luxury reward courier dispatch.
+            Real-time delivery graphs, read statistics, and instant automated WhatsApp reminders for verified trader rewards.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleExportCSV}
+            className="border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold"
+          >
+            <Download className="h-4 w-4 mr-1.5 text-emerald-600 dark:text-emerald-400" />
+            Export CSV Report
+          </Button>
+
           <a
             href="https://wa.me/?text=Hello%20PropFirm%20Rewards%20Support"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button size="sm" variant="outline" className="border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20">
+            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
               <MessageCircle className="h-4 w-4 mr-1.5" />
-              Chat With Human Agent
+              Direct Chat
               <ExternalLink className="h-3 w-3 ml-1" />
             </Button>
           </a>
+        </div>
+      </div>
+
+      {/* 4 Performance KPI Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Total Sent */}
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-1 transition-colors">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Total Dispatched
+            </span>
+            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+              <Send className="h-4 w-4" />
+            </div>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+            {totalSent.toLocaleString()}
+          </div>
+          <div className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold pt-1">
+            <TrendingUp className="h-3.5 w-3.5" />
+            <span>+18.4% vs last period</span>
+          </div>
+        </div>
+
+        {/* Delivered Rate */}
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-1 transition-colors">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Delivered Rate
+            </span>
+            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <CheckCheck className="h-4 w-4" />
+            </div>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white flex items-baseline gap-2">
+            <span>{overallDeliveryRate}%</span>
+            <span className="text-xs font-medium text-slate-400 dark:text-slate-500">
+              ({totalDelivered.toLocaleString()})
+            </span>
+          </div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 pt-1 flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span>{totalFailed} queued/retried</span>
+          </div>
+        </div>
+
+        {/* Read Rate */}
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-1 transition-colors">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Read / Opened Rate
+            </span>
+            <div className="p-2 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400">
+              <CheckCheck className="h-4 w-4 text-blue-500 dark:text-sky-400" />
+            </div>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white flex items-baseline gap-2">
+            <span>{overallReadRate}%</span>
+            <span className="text-xs font-medium text-slate-400 dark:text-slate-500">
+              ({totalRead.toLocaleString()})
+            </span>
+          </div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 pt-1">
+            Avg open speed: <strong className="text-slate-700 dark:text-slate-300">2.8 minutes</strong>
+          </div>
+        </div>
+
+        {/* Latency / API SLA */}
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-1 transition-colors">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Meta Cloud SLA
+            </span>
+            <div className="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+              <Zap className="h-4 w-4" />
+            </div>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+            0.98s
+          </div>
+          <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold pt-1 flex items-center gap-1">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            <span>99.98% Gateway Uptime</span>
+          </div>
+        </div>
+      </div>
+
+      {/* GRAPH & ANALYTICS REPORT SECTION */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        {/* Left (8 Cols): Interactive Daily Delivery Volume Bar Graph */}
+        <div className="lg:col-span-8 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-6 transition-colors flex flex-col justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <div className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                  Message Delivery &amp; Open Rate Graph
+                </h3>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Hover or click any bar below to view daily volume, delivered count, and read rate breakdown.
+              </p>
+            </div>
+
+            {/* Timeframe selector pill tabs */}
+            <div className="flex items-center gap-2">
+              <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold">
+                {(['7d', '14d', '30d'] as const).map((range) => (
+                  <button
+                    key={range}
+                    type="button"
+                    onClick={() => {
+                      setAnalyticsRange(range);
+                      setHoveredBarIndex(deliveryDataSets[range].length - 1);
+                    }}
+                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      analyticsRange === range
+                        ? 'bg-white dark:bg-slate-700 text-slate-950 dark:text-white shadow-xs font-black'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {range === '7d' ? '7 Days' : range === '14d' ? '14 Days' : '30 Days'}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={handleRefresh}
+                title="Refresh metrics"
+                className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin text-emerald-500' : ''}`} />
+              </button>
+            </div>
+          </div>
+
+          {/* Interactive Inspection Ribbon */}
+          {activeDay && (
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">Selected Date</span>
+                <span className="font-extrabold text-slate-900 dark:text-white">{activeDay.day} ({activeDay.date})</span>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">Sent Messages</span>
+                <span className="font-extrabold text-slate-900 dark:text-white">{activeDay.sent} alerts</span>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 block">Delivered (✓✓)</span>
+                <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
+                  {activeDay.delivered} ({activeDay.rate}%)
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 block">Read / Opened</span>
+                <span className="font-extrabold text-blue-600 dark:text-blue-400">
+                  {activeDay.read} ({((activeDay.read / activeDay.delivered) * 100).toFixed(0)}%)
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Responsive Bar Graph Visual */}
+          <div className="pt-4 pb-2">
+            <div className="h-56 flex items-end gap-2 sm:gap-4 justify-between border-b border-slate-200 dark:border-slate-800 px-2">
+              {currentChartData.map((d, index) => {
+                const heightPercent = Math.max((d.sent / maxVolume) * 100, 12);
+                const deliveredHeightPercent = Math.max((d.delivered / d.sent) * 100, 10);
+                const readHeightPercent = Math.max((d.read / d.sent) * 100, 8);
+                const isSelected = hoveredBarIndex === index;
+
+                return (
+                  <div
+                    key={`${d.day}-${index}`}
+                    className="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer"
+                    onMouseEnter={() => setHoveredBarIndex(index)}
+                    onClick={() => setHoveredBarIndex(index)}
+                  >
+                    {/* Hover count pill */}
+                    <div
+                      className={`text-[10px] font-bold py-0.5 px-1.5 rounded mb-1 transition-all pointer-events-none whitespace-nowrap ${
+                        isSelected
+                          ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 opacity-100 scale-105'
+                          : 'opacity-0 group-hover:opacity-100 bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900'
+                      }`}
+                    >
+                      {d.delivered}/{d.sent}
+                    </div>
+
+                    {/* Bar container */}
+                    <div
+                      className={`w-full max-w-[42px] rounded-t-lg transition-all flex flex-col justify-end overflow-hidden ${
+                        isSelected
+                          ? 'ring-2 ring-emerald-500 shadow-md scale-[1.03]'
+                          : 'opacity-85 hover:opacity-100'
+                      }`}
+                      style={{ height: `${heightPercent}%` }}
+                    >
+                      {/* Stacked visually: Sent total container */}
+                      <div className="w-full h-full bg-slate-200 dark:bg-slate-800 flex flex-col justify-end">
+                        {/* Delivered volume fill (Emerald) */}
+                        <div
+                          className="w-full bg-gradient-to-t from-emerald-600 to-emerald-400 relative"
+                          style={{ height: `${deliveredHeightPercent}%` }}
+                        >
+                          {/* Inner read indicator strip (Blue) */}
+                          <div
+                            className="w-full bg-blue-500/80 dark:bg-sky-400/80"
+                            style={{ height: `${readHeightPercent}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Day label */}
+                    <span
+                      className={`text-[11px] mt-2.5 truncate font-medium transition-colors ${
+                        isSelected
+                          ? 'font-bold text-emerald-600 dark:text-emerald-400'
+                          : 'text-slate-500 dark:text-slate-400'
+                      }`}
+                    >
+                      {d.day}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Graph Legend */}
+            <div className="flex flex-wrap items-center justify-between gap-4 mt-4 pt-2 text-xs text-slate-500 dark:text-slate-400">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-3 w-3 rounded-xs bg-emerald-500" />
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">Delivered Messages</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="h-3 w-3 rounded-xs bg-blue-500" />
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">Read Receipts</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="h-3 w-3 rounded-xs bg-slate-200 dark:bg-slate-800" />
+                  <span>Pending / Queued</span>
+                </div>
+              </div>
+
+              <div className="text-[11px] font-mono text-slate-400">
+                Peak Time: 11:30 AM – 3:30 PM UTC
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right (4 Cols): Message Category Distribution & Breakdown */}
+        <div className="lg:col-span-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-5 transition-colors flex flex-col justify-between">
+          <div className="pb-3 border-b border-slate-100 dark:border-slate-800">
+            <h3 className="font-bold text-slate-900 dark:text-white text-base">
+              Alert Category Distribution
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Breakdown of automated notifications triggered by category.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {categoriesBreakdown.map((cat, idx) => (
+              <div key={idx} className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-slate-800 dark:text-slate-200 truncate pr-2">
+                    {cat.category}
+                  </span>
+                  <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold shrink-0">
+                    {cat.rate}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                  <span>{cat.count.toLocaleString()} messages</span>
+                  <span>{cat.share}% total</span>
+                </div>
+
+                <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full ${cat.badgeColor}`}
+                    style={{ width: `${cat.share}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Quick SLA info badge */}
+          <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-700 dark:text-emerald-300 space-y-1">
+            <div className="flex items-center gap-1.5 font-bold">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span>Direct WhatsApp Cloud API Guarantee</span>
+            </div>
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+              Every message has TLS 1.3 encryption and automated retry policies in case of mobile network drops.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -474,18 +973,61 @@ export default function WhatsAppDashboardPage() {
         </div>
       </div>
 
-      {/* WhatsApp Dispatch Activity Log */}
-      <div className="p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-4 transition-colors">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+      {/* WhatsApp Dispatch Activity & Audit Log Report */}
+      <div className="p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-5 transition-colors">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2">
             <Clock className="h-5 w-5 text-slate-500 dark:text-slate-400" />
-            <h3 className="font-bold text-slate-900 dark:text-white text-base">
-              Recent WhatsApp Alert Dispatch Logs
-            </h3>
+            <div>
+              <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                Recent WhatsApp Alert Dispatch Logs &amp; Audit Trail
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Full delivery timeline, carrier latency metrics, and read receipts.
+              </p>
+            </div>
           </div>
-          <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-            {logs.length} Messages Logged
-          </span>
+
+          {/* Table Filters and Search */}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative">
+              <Search className="h-3.5 w-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search recipient or ID..."
+                className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 w-44"
+              />
+            </div>
+
+            <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-[11px] font-bold">
+              {(['ALL', 'READ', 'DELIVERED', 'QUEUED'] as const).map((st) => (
+                <button
+                  key={st}
+                  type="button"
+                  onClick={() => setStatusFilter(st)}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    statusFilter === st
+                      ? 'bg-white dark:bg-slate-700 text-slate-950 dark:text-white shadow-xs font-black'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  {st}
+                </button>
+              ))}
+            </div>
+
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleExportCSV}
+              className="h-8 text-xs font-semibold border-slate-300 dark:border-slate-700"
+            >
+              <Download className="h-3 w-3 mr-1 text-emerald-600 dark:text-emerald-400" />
+              CSV
+            </Button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -497,29 +1039,56 @@ export default function WhatsAppDashboardPage() {
                 <th className="py-2.5 px-3">Recipient</th>
                 <th className="py-2.5 px-3">Content Preview</th>
                 <th className="py-2.5 px-3">Timestamp</th>
+                <th className="py-2.5 px-3">Carrier Latency</th>
                 <th className="py-2.5 px-3 text-right">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {logs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                  <td className="py-3 px-3 font-mono font-bold text-slate-700 dark:text-slate-300">{log.id}</td>
-                  <td className="py-3 px-3">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-500/20">
-                      {log.type}
-                    </span>
-                  </td>
-                  <td className="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">{log.recipient}</td>
-                  <td className="py-3 px-3 max-w-xs truncate text-slate-700 dark:text-slate-300">{log.message}</td>
-                  <td className="py-3 px-3 text-slate-500 dark:text-slate-400">{log.sentAt}</td>
-                  <td className="py-3 px-3 text-right">
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                      <CheckCheck className="h-3.5 w-3.5 text-blue-500" />
-                      {log.status}
-                    </span>
+              {filteredLogs.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-slate-400">
+                    No matching delivery records found.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredLogs.map((log) => (
+                  <tr key={log.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
+                    <td className="py-3 px-3 font-mono font-bold text-slate-700 dark:text-slate-300">{log.id}</td>
+                    <td className="py-3 px-3">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-500/20">
+                        {log.type}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">{log.recipient}</td>
+                    <td className="py-3 px-3 max-w-xs truncate text-slate-700 dark:text-slate-300">{log.message}</td>
+                    <td className="py-3 px-3 text-slate-500 dark:text-slate-400">{log.sentAt}</td>
+                    <td className="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">
+                      <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                        <Zap className="h-3 w-3" />
+                        {log.latency}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3 text-right">
+                      {log.status === 'READ' ? (
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-600 dark:text-sky-400">
+                          <CheckCheck className="h-3.5 w-3.5 text-blue-500 dark:text-sky-300" />
+                          READ
+                        </span>
+                      ) : log.status === 'DELIVERED' ? (
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                          <CheckCheck className="h-3.5 w-3.5 text-emerald-500" />
+                          DELIVERED
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 dark:text-amber-400">
+                          <Clock className="h-3.5 w-3.5" />
+                          QUEUED
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
