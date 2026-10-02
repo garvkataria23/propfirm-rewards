@@ -357,9 +357,14 @@ export default function HomePage() {
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-  // Pricing Matrix Selection
+  // "How it works?" Stepper & Fanned Cards State
+  const [howItWorksStep, setHowItWorksStep] = useState<'account' | 'pass' | 'paid'>('account');
+  const [fannedCard, setFannedCard] = useState<'zero' | '1step' | '2step'>('1step');
+
+  // Pricing Matrix Selection & View Mode
   const [selectedType, setSelectedType] = useState<string>('2step');
   const [selectedSize, setSelectedSize] = useState<string>('5k');
+  const [pricingViewMode, setPricingViewMode] = useState<'plans' | 'compare'>('plans');
 
   // Masterclass Tab State
   const [activeMasterclassTab, setActiveMasterclassTab] = useState<string>('psychology');
@@ -450,43 +455,61 @@ export default function HomePage() {
       </div>
 
       {/* ======================================================== */}
-      {/* 2. HERO SECTION (Clean White, Classy Lighting & Crystal Art) */}
+      {/* 2. HERO SECTION (Matching Mobile Reference Screenshot 5) */}
       {/* ======================================================== */}
-      <section className="relative w-full pt-12 pb-16 sm:pt-20 sm:pb-24 lg:pt-24 lg:pb-32 overflow-hidden bg-white dark:bg-[#070913]">
+      <section className="relative w-full pt-8 pb-14 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28 overflow-hidden bg-white dark:bg-[#070913]">
         {/* Soft Ethereal Atmospheric Glows (Light Purple & Violet) */}
         <div className="absolute top-0 right-0 w-[55vw] h-[55vw] max-w-[800px] max-h-[800px] bg-gradient-to-bl from-purple-200/40 via-violet-100/30 to-transparent dark:from-purple-900/20 dark:via-violet-950/10 rounded-full blur-3xl pointer-events-none -z-10" />
         <div className="absolute top-1/4 left-0 w-[35vw] h-[35vw] max-w-[500px] max-h-[500px] bg-gradient-to-tr from-violet-100/40 via-purple-100/20 to-transparent dark:from-purple-950/15 rounded-full blur-3xl pointer-events-none -z-10" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            {/* Left Content */}
-            <div className="lg:col-span-7 space-y-6 sm:space-y-8 z-10 text-left">
-              <div className="inline-flex items-center gap-2 rounded-full bg-purple-50 dark:bg-purple-950/60 px-3.5 py-1 text-xs font-bold text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-                <Sparkles className="h-3.5 w-3.5 text-purple-600" />
-                <span>Universal Code: NATION (1$ = 10 PTS)</span>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left / Main Content */}
+            <div className="lg:col-span-7 space-y-5 sm:space-y-7 z-10 text-center lg:text-left flex flex-col items-center lg:items-start">
+              {/* Trustpilot & Google Review Pill (Exact match of Screenshot 5) */}
+              <div className="inline-flex items-center gap-2 rounded-full bg-purple-50 dark:bg-purple-950/60 px-3.5 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 border border-purple-200 dark:border-purple-800 shadow-xs">
+                <div className="flex items-center gap-0.5 text-purple-600 font-bold">
+                  {'★★★★★'.split('').map((_, i) => (
+                    <span key={i} className="text-xs leading-none">★</span>
+                  ))}
+                </div>
+                <span className="font-bold text-[11px] text-slate-900 dark:text-slate-100">69,611 reviews Trustpilot</span>
+                <span className="text-purple-400 font-bold">•</span>
+                <span className="font-bold text-[11px] text-amber-500">4.8 rated Google</span>
               </div>
 
-              <h1 className="text-4xl sm:text-6xl lg:text-[4.25rem] font-[900] tracking-[-0.035em] text-[#0c1024] dark:text-white leading-[1.06]">
+              {/* Headline */}
+              <h1 className="text-3xl sm:text-5xl lg:text-[4.25rem] font-[900] tracking-[-0.035em] text-[#0c1024] dark:text-white leading-[1.08]">
                 Turn your trading skills into luxury rewards
               </h1>
 
-              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl font-normal">
-                Join over 45,000+ traders in the world&apos;s leading prop firm reward ecosystem. Trade in a fully simulated environment with <strong>FundedSquad, Pipstone, FTMO, FundedNext &amp; FundingPips</strong> and earn 10 reward points per $1 spent.
+              {/* Subtitle */}
+              <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl font-normal">
+                Join over 3,000,000 traders in the world&apos;s leading prop firm reward ecosystem. Trade simulated accounts with <strong>FundedSquad, Pipstone, FTMO, FundedNext &amp; FundingPips</strong> and earn 10 reward points per $1 spent.
               </p>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <Link href="/prop-firms">
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white px-7 py-3.5 rounded-full font-bold text-sm tracking-tight shadow-lg shadow-purple-600/25 transition-all h-12">
-                    Explore 5 Prop Firms
+              {/* Universal Code Badge */}
+              <div className="inline-flex items-center gap-2 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800 px-3 py-1.5 text-xs">
+                <span className="text-slate-600 dark:text-slate-300 font-medium">Universal Code:</span>
+                <span className="font-mono font-black text-purple-900 dark:text-purple-200 bg-white dark:bg-purple-900/80 px-2 py-0.5 rounded border border-purple-200 dark:border-purple-700">
+                  NATION
+                </span>
+                <span className="font-bold text-purple-700 dark:text-purple-300">1$ = 10 PTS Cashback</span>
+              </div>
+
+              {/* Dual Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full pt-1">
+                <Link href="/prop-firms" className="w-full sm:w-auto">
+                  <Button className="w-full sm:w-auto bg-[#0c1024] hover:bg-[#15253e] text-white px-7 py-3.5 rounded-full font-bold text-sm tracking-tight shadow-lg shadow-purple-950/20 transition-all h-12">
+                    Buy Evaluation
                   </Button>
                 </Link>
-                <Link href="/rewards">
+                <Link href="/rewards" className="w-full sm:w-auto">
                   <Button
                     variant="outline"
-                    className="border-purple-200 dark:border-purple-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-purple-950/40 px-7 py-3.5 rounded-full font-semibold text-sm tracking-tight transition-all h-12 shadow-xs"
+                    className="w-full sm:w-auto border-purple-200 dark:border-purple-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-purple-950/40 px-7 py-3.5 rounded-full font-semibold text-sm tracking-tight transition-all h-12 shadow-xs"
                   >
-                    Explore Rewards Catalog
+                    Explore Rewards
                   </Button>
                 </Link>
               </div>
@@ -494,7 +517,7 @@ export default function HomePage() {
 
             {/* Right Visual: 3D Crystal Lightning Art */}
             <div className="lg:col-span-5 relative flex items-center justify-center">
-              <div className="relative w-full max-w-[460px] aspect-square rounded-3xl overflow-hidden border border-purple-100 dark:border-purple-900/60 shadow-2xl bg-gradient-to-b from-purple-50/50 to-white dark:from-slate-900 dark:to-slate-950 group">
+              <div className="relative w-full max-w-[420px] aspect-square rounded-3xl overflow-hidden border border-purple-100 dark:border-purple-900/60 shadow-2xl bg-gradient-to-b from-purple-50/50 to-white dark:from-slate-900 dark:to-slate-950 group">
                 <img
                   src="/hero-lighting-crystal.jpg"
                   alt="3D Sapphire Lightning Crystal"
@@ -502,22 +525,22 @@ export default function HomePage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/40 dark:from-[#070913]/60 via-transparent to-transparent pointer-events-none" />
 
-                {/* Floating pill badge */}
-                <div className="absolute bottom-4 left-4 right-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl p-3 border border-purple-200/80 dark:border-purple-900/80 shadow-xl flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
+                {/* Floating pill badge on crystal */}
+                <div className="absolute bottom-3 left-3 right-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 border border-purple-200/80 dark:border-purple-900/80 shadow-xl flex items-center justify-between">
+                  <div className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold shadow-sm">
                       <Sparkles className="h-4 w-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-900 dark:text-white">Universal Partner Code</div>
-                      <div className="text-[11px] text-purple-600 dark:text-purple-400 font-mono font-bold">NATION (1$ = 10 PTS)</div>
+                      <div className="text-[11px] font-bold text-slate-900 dark:text-white">Partner Code</div>
+                      <div className="text-[10px] text-purple-600 dark:text-purple-400 font-mono font-bold">NATION (1$ = 10 PTS)</div>
                     </div>
                   </div>
                   <button
                     onClick={() => handleCopyCode('NATION')}
-                    className="bg-purple-50 dark:bg-slate-800 hover:bg-purple-100 text-purple-700 dark:text-purple-300 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1 border border-purple-200 dark:border-purple-700"
+                    className="bg-purple-50 dark:bg-slate-800 hover:bg-purple-100 text-purple-700 dark:text-purple-300 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 border border-purple-200 dark:border-purple-700"
                   >
-                    {copiedCode === 'NATION' ? <Check className="h-3.5 w-3.5 text-purple-600" /> : <Copy className="h-3.5 w-3.5" />}
+                    {copiedCode === 'NATION' ? <Check className="h-3 w-3 text-purple-600" /> : <Copy className="h-3 w-3" />}
                     <span>{copiedCode === 'NATION' ? 'Copied' : 'Copy'}</span>
                   </button>
                 </div>
@@ -525,86 +548,569 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Social Proof Stats Banner */}
-          <div className="mt-16 sm:mt-24 pt-10 border-t border-purple-100 dark:border-purple-900/50 grid grid-cols-2 md:grid-cols-5 gap-6 sm:gap-8 items-center text-left">
-            <div>
-              <div className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200">
-                <TrendingUp className="h-4 w-4 text-purple-600" />
-                <span className="text-2xl sm:text-3xl font-[900] tracking-tight text-[#0c1024] dark:text-white">$314M+</span>
+          {/* Horizontal 3-Stat Counter Bar (Exact match of Screenshot 5) */}
+          <div className="mt-10 sm:mt-16 pt-6 border-t border-purple-100 dark:border-purple-900/50">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 py-4 px-3 sm:px-6 rounded-2xl bg-purple-50/50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/40 text-center">
+              <div>
+                <div className="text-xl sm:text-3xl font-[900] text-[#0c1024] dark:text-white">195+</div>
+                <div className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Countries</div>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Rewards Distributed</p>
-            </div>
-
-            <div>
-              <div className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200">
-                <Users className="h-4 w-4 text-purple-600" />
-                <span className="text-2xl sm:text-3xl font-[900] tracking-tight text-[#0c1024] dark:text-white">3M+</span>
+              <div className="border-x border-purple-200 dark:border-purple-800/60">
+                <div className="text-xl sm:text-3xl font-[900] text-[#0c1024] dark:text-white">3M+</div>
+                <div className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Traders</div>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Traders Worldwide</p>
-            </div>
-
-            <div>
-              <div className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200">
-                <GlobeIcon className="h-4 w-4 text-purple-600" />
-                <span className="text-2xl sm:text-3xl font-[900] tracking-tight text-[#0c1024] dark:text-white">195+</span>
+              <div>
+                <div className="text-xl sm:text-3xl font-[900] text-[#0c1024] dark:text-white">$314M+</div>
+                <div className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Total Rewards</div>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Countries Serviced</p>
-            </div>
-
-            {/* Trustpilot Review Badge */}
-            <div className="border-l border-purple-100 dark:border-purple-900/50 pl-4 sm:pl-6">
-              <div className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1">
-                <span>Excellent</span>
-              </div>
-              <div className="flex items-center gap-1 text-purple-500 text-xs my-0.5">
-                {'★★★★★'.split('').map((s, i) => (
-                  <span key={i} className="text-purple-600 font-bold">★</span>
-                ))}
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono ml-1">Trustpilot</span>
-              </div>
-              <p className="text-[10px] text-slate-400">69,806 reviews</p>
-            </div>
-
-            {/* Google Review Badge */}
-            <div className="border-l border-purple-100 dark:border-purple-900/50 pl-4 sm:pl-6">
-              <div className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1">
-                <span>Excellent</span>
-              </div>
-              <div className="flex items-center gap-1 text-amber-400 text-xs my-0.5">
-                {'★★★★★'.split('').map((s, i) => (
-                  <span key={i} className="text-amber-400 font-bold">★</span>
-                ))}
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono ml-1">Google</span>
-              </div>
-              <p className="text-[10px] text-slate-400">4.8 rated</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* 3. SUCCESS STORIES VIDEO CAROUSEL */}
+      {/* 3. HOW IT WORKS & 3 OVERLAPPING FANNED CARDS (Screenshot 1) */}
       {/* ======================================================== */}
-      <section className="w-full bg-purple-50/30 dark:bg-[#060814] py-12 sm:py-16 border-y border-purple-100 dark:border-purple-950/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Badge variant="purple">Verified Trader Interviews</Badge>
-              <span className="text-xs font-bold text-slate-500 dark:text-slate-400 hidden sm:inline">
-                Real Payouts &amp; Challenge Pass Proof
+      <section className="w-full bg-white dark:bg-[#070913] py-14 sm:py-20 border-t border-purple-100 dark:border-purple-950/60 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 text-center">
+          {/* Header */}
+          <div className="space-y-2 max-w-xl mx-auto">
+            <span className="text-xs font-bold text-purple-600 uppercase tracking-wider block">How it works?</span>
+            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c1024] dark:text-white">
+              Every reward paid. Never denied.
+            </h2>
+          </div>
+
+          {/* Stepper Tabs (Pick your account -> Pass & get funded -> Get Paid) */}
+          <div className="flex items-center justify-center gap-3 sm:gap-8 border-b border-purple-100 dark:border-purple-900/60 pb-3 max-w-md mx-auto text-xs sm:text-sm font-bold">
+            <button
+              onClick={() => setHowItWorksStep('account')}
+              className={`pb-2 relative transition-colors cursor-pointer ${
+                howItWorksStep === 'account'
+                  ? 'text-purple-600 dark:text-purple-400 font-[900]'
+                  : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+              }`}
+            >
+              Pick your account
+              {howItWorksStep === 'account' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 dark:bg-purple-400 rounded-full" />
+              )}
+            </button>
+            <span className="text-slate-300 dark:text-slate-700">→</span>
+            <button
+              onClick={() => setHowItWorksStep('pass')}
+              className={`pb-2 relative transition-colors cursor-pointer ${
+                howItWorksStep === 'pass'
+                  ? 'text-purple-600 dark:text-purple-400 font-[900]'
+                  : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+              }`}
+            >
+              Pass &amp; get funded
+              {howItWorksStep === 'pass' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 dark:bg-purple-400 rounded-full" />
+              )}
+            </button>
+            <span className="text-slate-300 dark:text-slate-700">→</span>
+            <button
+              onClick={() => setHowItWorksStep('paid')}
+              className={`pb-2 relative transition-colors cursor-pointer ${
+                howItWorksStep === 'paid'
+                  ? 'text-purple-600 dark:text-purple-400 font-[900]'
+                  : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+              }`}
+            >
+              Get Paid
+              {howItWorksStep === 'paid' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 dark:bg-purple-400 rounded-full" />
+              )}
+            </button>
+          </div>
+
+          {/* 3 Overlapping Fanned Cards Deck (Exact Match of Screenshot 1) */}
+          <div className="relative py-8 sm:py-12 max-w-lg mx-auto flex items-center justify-center min-h-[320px]">
+            {/* Left Card: Zero (Tilted Left) */}
+            <div
+              onClick={() => {
+                setFannedCard('zero');
+                setSelectedType('zero');
+              }}
+              className={`absolute left-2 sm:left-6 w-44 sm:w-52 rounded-2xl p-4 sm:p-5 border transition-all duration-300 cursor-pointer text-left select-none ${
+                fannedCard === 'zero'
+                  ? 'z-20 scale-105 bg-[#0c1024] text-white border-purple-500 shadow-2xl -rotate-1'
+                  : 'z-10 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-purple-100 dark:border-purple-900/60 shadow-lg -rotate-6 hover:-rotate-3'
+              }`}
+            >
+              <span className="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                Instant funding
+              </span>
+              <div className="text-2xl sm:text-3xl font-[900] mt-3">Zero</div>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">No evaluation phase</p>
+              <div className="mt-4 pt-3 border-t border-purple-100 dark:border-purple-900/40 text-xs font-bold text-purple-600 dark:text-purple-400">
+                from $60
+              </div>
+            </div>
+
+            {/* Center Card: One Step FLEX (Active / Lifted Forward) */}
+            <div
+              onClick={() => {
+                setFannedCard('1step');
+                setSelectedType('1step');
+              }}
+              className={`relative z-20 w-48 sm:w-56 rounded-2xl p-5 sm:p-6 border-2 transition-all duration-300 cursor-pointer text-left select-none shadow-2xl ${
+                fannedCard === '1step'
+                  ? 'scale-105 bg-gradient-to-b from-[#130d2d] to-[#0a071a] text-white border-purple-500 shadow-purple-950/40'
+                  : 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-purple-200 dark:border-purple-800'
+              }`}
+            >
+              <span className="inline-block text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-purple-600 text-white shadow-xs">
+                1 Day Pass
+              </span>
+              <div className="text-2xl sm:text-3xl font-[900] mt-3">One Step</div>
+              <div className="text-xs font-black tracking-widest text-purple-400 mt-0.5">F L E X</div>
+              <p className="text-[10px] text-slate-400 mt-1">Fast single-phase evaluation</p>
+              <div className="mt-4 pt-3 border-t border-purple-900/50 flex items-baseline justify-between">
+                <span className="text-xs font-bold text-purple-300">from $52</span>
+                <span className="text-[9px] font-mono text-purple-400">+520 PTS</span>
+              </div>
+            </div>
+
+            {/* Right Card: 2 Step (Tilted Right) */}
+            <div
+              onClick={() => {
+                setFannedCard('2step');
+                setSelectedType('2step');
+              }}
+              className={`absolute right-2 sm:right-6 w-44 sm:w-52 rounded-2xl p-4 sm:p-5 border transition-all duration-300 cursor-pointer text-left select-none ${
+                fannedCard === '2step'
+                  ? 'z-20 scale-105 bg-[#0c1024] text-white border-purple-500 shadow-2xl rotate-1'
+                  : 'z-10 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-purple-100 dark:border-purple-900/60 shadow-lg rotate-6 hover:rotate-3'
+              }`}
+            >
+              <span className="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                Classic 2 phases
+              </span>
+              <div className="text-2xl sm:text-3xl font-[900] mt-3">2 Step</div>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Industry standard model</p>
+              <div className="mt-4 pt-3 border-t border-purple-100 dark:border-purple-900/40 text-xs font-bold text-purple-600 dark:text-purple-400">
+                from $33
+              </div>
+            </div>
+          </div>
+
+          {/* CFD's Glory Days Are Back! & 3 Check Pills (Screenshot 1) */}
+          <div className="space-y-4 pt-4 max-w-xl mx-auto">
+            <h3 className="text-lg sm:text-xl font-[900] text-[#0c1024] dark:text-white">
+              CFD&apos;s Glory Days Are Back!
+            </h3>
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs font-semibold text-slate-700 dark:text-slate-300">
+              <span className="inline-flex items-center gap-1.5 bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 px-3 py-1.5 rounded-full">
+                <Check className="h-3.5 w-3.5 text-purple-600 font-bold" />
+                No Striking System
+              </span>
+              <span className="inline-flex items-center gap-1.5 bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 px-3 py-1.5 rounded-full">
+                <Check className="h-3.5 w-3.5 text-purple-600 font-bold" />
+                No Risk Per Trade Idea
+              </span>
+              <span className="inline-flex items-center gap-1.5 bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 px-3 py-1.5 rounded-full">
+                <Check className="h-3.5 w-3.5 text-purple-600 font-bold" />
+                No Profit Concentration
               </span>
             </div>
-            <div className="flex items-center gap-2">
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 4. PRICING: CHOOSE YOUR CHALLENGE (Screenshots 2 & 3) */}
+      {/* ======================================================== */}
+      <section className="w-full bg-slate-50/50 dark:bg-[#060814] py-14 sm:py-20 border-t border-purple-100 dark:border-purple-950/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 text-center">
+          {/* Section Heading */}
+          <div className="space-y-2 max-w-2xl mx-auto">
+            <span className="text-xs font-bold text-purple-600 uppercase tracking-wider block">Pricing</span>
+            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c1024] dark:text-white">
+              Choose your challenge
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-normal">
+              1 Step, 2 Step, or Zero. Multiple routes to match your trading style and budget.
+            </p>
+          </div>
+
+          {/* Section 1: 1 Challenge Type (3 Selector Cards) */}
+          <div className="space-y-3 max-w-xl mx-auto text-left">
+            <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+              1 Challenge type
+            </div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              {CHALLENGE_TYPES.map((type) => {
+                const isSelected = selectedType === type.id;
+                return (
+                  <button
+                    key={type.id}
+                    onClick={() => {
+                      setSelectedType(type.id);
+                      setFannedCard(type.id as 'zero' | '1step' | '2step');
+                    }}
+                    className={`p-3 rounded-2xl text-left transition-all cursor-pointer flex flex-col justify-between min-h-[72px] ${
+                      isSelected
+                        ? 'bg-[#0c1024] text-white shadow-md border-2 border-purple-500'
+                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-purple-100 dark:border-purple-900/60 hover:border-purple-300'
+                    }`}
+                  >
+                    <span className="text-[10px] font-bold text-purple-400 truncate block">
+                      {type.subtitle}
+                    </span>
+                    <span className="text-sm font-[900] tracking-tight mt-1">
+                      {type.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Section 2: 2 Account Size (5 Pills) */}
+          <div className="space-y-3 max-w-xl mx-auto text-left">
+            <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+              2 Account size
+            </div>
+            <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
+              {ACCOUNT_SIZES.map((size) => {
+                const isSelected = selectedSize === size.id;
+                return (
+                  <button
+                    key={size.id}
+                    onClick={() => setSelectedSize(size.id)}
+                    className={`py-2 px-1 text-center rounded-xl text-xs font-black transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#0c1024] text-white shadow-md border-2 border-purple-500'
+                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-purple-100 dark:border-purple-900/60 hover:bg-purple-50'
+                    }`}
+                  >
+                    {size.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* View Mode Switcher: [Plans] vs [Compare] */}
+          <div className="flex items-center justify-center gap-2 pt-2">
+            <div className="inline-flex items-center p-1 rounded-full bg-purple-100/70 dark:bg-slate-900 border border-purple-200 dark:border-purple-800">
+              <button
+                onClick={() => setPricingViewMode('plans')}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  pricingViewMode === 'plans'
+                    ? 'bg-[#0c1024] text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                Plans
+              </button>
+              <button
+                onClick={() => setPricingViewMode('compare')}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  pricingViewMode === 'compare'
+                    ? 'bg-[#0c1024] text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                Compare
+              </button>
+            </div>
+          </div>
+
+          {/* Plan Cards or Compare Matrix */}
+          {pricingViewMode === 'plans' ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto text-left">
+              {/* Card 1: Standard */}
+              <div className="rounded-3xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/60 p-6 sm:p-7 space-y-5 shadow-md flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                      Biggest Daily Loss
+                    </span>
+                    <span className="text-xs font-bold text-slate-400">Standard</span>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-2xl font-[900] text-[#0c1024] dark:text-white">
+                      Standard {selectedSize.toUpperCase()}
+                    </div>
+                    <div className="flex items-baseline gap-1.5 pt-1">
+                      <span className="text-3xl font-[900] text-slate-900 dark:text-white">${currentMatrix.standard.price}</span>
+                      <span className="text-xs text-slate-400 font-mono">USD</span>
+                    </div>
+                    <div className="text-[11px] font-bold text-purple-600 dark:text-purple-400">
+                      +{currentMatrix.standard.points} PTS Earned with Code NATION
+                    </div>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 border-t border-purple-100 dark:border-purple-900/40 pt-4">
+                    <div className="flex justify-between"><span>Profit Target:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.standard.target}</strong></div>
+                    <div className="flex justify-between"><span>Daily Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.standard.dailyLoss}</strong></div>
+                    <div className="flex justify-between"><span>Max Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.standard.maxLoss}</strong></div>
+                    <div className="flex justify-between"><span>Min Days:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.standard.minDays}</strong></div>
+                    <div className="flex justify-between"><span>Split:</span><strong className="text-purple-600 dark:text-purple-400 font-bold">{currentMatrix.standard.split}</strong></div>
+                  </div>
+                </div>
+
+                <Link href="/prop-firms" className="pt-2">
+                  <Button className="w-full bg-[#0c1024] hover:bg-[#1a223f] text-white font-bold text-xs h-11 rounded-xl">
+                    Buy ${currentMatrix.standard.price}
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Card 2: FLEX (Highlighted / Lowest Profit Target) */}
+              <div className="rounded-3xl bg-gradient-to-b from-purple-50/60 to-white dark:from-purple-950/40 dark:to-slate-900 border-2 border-purple-500 p-6 sm:p-7 space-y-5 shadow-xl relative flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-purple-600 text-white shadow-xs">
+                      Lowest Profit Target
+                    </span>
+                    <span className="text-xs font-bold text-purple-600 dark:text-purple-400 font-mono">FLEX</span>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-2xl font-[900] text-[#0c1024] dark:text-white">
+                      F L E X {selectedSize.toUpperCase()}
+                    </div>
+                    <div className="flex items-baseline gap-1.5 pt-1">
+                      <span className="text-3xl font-[900] text-purple-600 dark:text-purple-400">${currentMatrix.flex.price}</span>
+                      <span className="text-xs text-slate-400 font-mono">USD</span>
+                    </div>
+                    <div className="text-[11px] font-bold text-purple-600 dark:text-purple-300">
+                      +{currentMatrix.flex.points} PTS Earned with Code NATION
+                    </div>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 border-t border-purple-200 dark:border-purple-800/40 pt-4">
+                    <div className="flex justify-between"><span>Profit Target:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.flex.target}</strong></div>
+                    <div className="flex justify-between"><span>Daily Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.flex.dailyLoss}</strong></div>
+                    <div className="flex justify-between"><span>Max Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.flex.maxLoss}</strong></div>
+                    <div className="flex justify-between"><span>Min Days:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.flex.minDays}</strong></div>
+                    <div className="flex justify-between"><span>Split:</span><strong className="text-purple-600 dark:text-purple-400 font-bold">{currentMatrix.flex.split}</strong></div>
+                  </div>
+                </div>
+
+                <Link href="/prop-firms" className="pt-2">
+                  <Button className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-bold text-xs h-11 rounded-xl shadow-md shadow-purple-600/25">
+                    Buy ${currentMatrix.flex.price}
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Card 3: Pro (Biggest Max Loss) */}
+              <div className="rounded-3xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/60 p-6 sm:p-7 space-y-5 shadow-md flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                      Biggest Max Loss
+                    </span>
+                    <span className="text-xs font-bold text-slate-400 font-mono">PRO</span>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-2xl font-[900] text-[#0c1024] dark:text-white">
+                      PRO {selectedSize.toUpperCase()}
+                    </div>
+                    <div className="flex items-baseline gap-1.5 pt-1">
+                      <span className="text-3xl font-[900] text-slate-900 dark:text-white">${currentMatrix.pro.price}</span>
+                      <span className="text-xs text-slate-400 font-mono">USD</span>
+                    </div>
+                    <div className="text-[11px] font-bold text-purple-600 dark:text-purple-400">
+                      +{currentMatrix.pro.points} PTS Earned with Code NATION
+                    </div>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 border-t border-purple-100 dark:border-purple-900/40 pt-4">
+                    <div className="flex justify-between"><span>Profit Target:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.pro.target}</strong></div>
+                    <div className="flex justify-between"><span>Daily Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.pro.dailyLoss}</strong></div>
+                    <div className="flex justify-between"><span>Max Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.pro.maxLoss}</strong></div>
+                    <div className="flex justify-between"><span>Min Days:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.pro.minDays}</strong></div>
+                    <div className="flex justify-between"><span>Split:</span><strong className="text-purple-600 dark:text-purple-400 font-bold">{currentMatrix.pro.split}</strong></div>
+                  </div>
+                </div>
+
+                <Link href="/prop-firms" className="pt-2">
+                  <Button className="w-full bg-[#0c1024] hover:bg-[#1a223f] text-white font-bold text-xs h-11 rounded-xl">
+                    Buy ${currentMatrix.pro.price}
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            /* Comparison Table View */
+            <div className="max-w-4xl mx-auto rounded-3xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/60 p-5 sm:p-6 overflow-x-auto shadow-lg text-left">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-purple-100 dark:border-purple-900/60 text-slate-400">
+                    <th className="py-3 px-3 text-left font-bold">Metric</th>
+                    <th className="py-3 px-3 text-left font-bold text-slate-900 dark:text-white">Standard</th>
+                    <th className="py-3 px-3 text-left font-bold text-purple-600 dark:text-purple-400">FLEX</th>
+                    <th className="py-3 px-3 text-left font-bold text-slate-900 dark:text-white">PRO</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-purple-50 dark:divide-purple-950/60 font-medium">
+                  <tr>
+                    <td className="py-3 px-3 text-slate-500">Price (USD)</td>
+                    <td className="py-3 px-3 font-bold text-slate-900 dark:text-white">${currentMatrix.standard.price}</td>
+                    <td className="py-3 px-3 font-bold text-purple-600 dark:text-purple-400">${currentMatrix.flex.price}</td>
+                    <td className="py-3 px-3 font-bold text-slate-900 dark:text-white">${currentMatrix.pro.price}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-3 text-slate-500">Cashback Points</td>
+                    <td className="py-3 px-3 font-bold text-purple-600">+{currentMatrix.standard.points} PTS</td>
+                    <td className="py-3 px-3 font-bold text-purple-600">+{currentMatrix.flex.points} PTS</td>
+                    <td className="py-3 px-3 font-bold text-purple-600">+{currentMatrix.pro.points} PTS</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-3 text-slate-500">Profit Target</td>
+                    <td className="py-3 px-3">{currentMatrix.standard.target}</td>
+                    <td className="py-3 px-3 font-bold text-purple-600">{currentMatrix.flex.target}</td>
+                    <td className="py-3 px-3">{currentMatrix.pro.target}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-3 text-slate-500">Daily Loss</td>
+                    <td className="py-3 px-3">{currentMatrix.standard.dailyLoss}</td>
+                    <td className="py-3 px-3">{currentMatrix.flex.dailyLoss}</td>
+                    <td className="py-3 px-3">{currentMatrix.pro.dailyLoss}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-3 text-slate-500">Max Loss</td>
+                    <td className="py-3 px-3">{currentMatrix.standard.maxLoss}</td>
+                    <td className="py-3 px-3">{currentMatrix.flex.maxLoss}</td>
+                    <td className="py-3 px-3">{currentMatrix.pro.maxLoss}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-3 text-slate-500">Min Trading Days</td>
+                    <td className="py-3 px-3">{currentMatrix.standard.minDays}</td>
+                    <td className="py-3 px-3 font-bold text-purple-600">{currentMatrix.flex.minDays}</td>
+                    <td className="py-3 px-3">{currentMatrix.pro.minDays}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-3 text-slate-500">Profit Split</td>
+                    <td className="py-3 px-3 font-bold text-purple-600">{currentMatrix.standard.split}</td>
+                    <td className="py-3 px-3 font-bold text-purple-600">{currentMatrix.flex.split}</td>
+                    <td className="py-3 px-3 font-bold text-purple-600">{currentMatrix.pro.split}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 5. TRADER'S JOURNEY CASE STUDY (Screenshot 3) */}
+      {/* ======================================================== */}
+      <section className="w-full bg-white dark:bg-[#070913] py-14 sm:py-20 border-t border-purple-100 dark:border-purple-950/60">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="space-y-1 text-center sm:text-left">
+            <h2 className="text-2xl sm:text-4xl font-[900] tracking-tight text-[#0c1024] dark:text-white">
+              Trader&apos;s Journey
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+              Case study • 4 Jul → 21 Jul • $100K 2 Step Pro
+            </p>
+          </div>
+
+          {/* Timeline Card */}
+          <div className="rounded-3xl border border-purple-100 dark:border-purple-900/60 bg-purple-50/30 dark:bg-slate-900/60 p-6 sm:p-8 space-y-6 shadow-md text-left">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 sm:gap-6 relative">
+              {/* Step 1 */}
+              <div className="space-y-2 relative pb-4 sm:pb-0 border-b sm:border-b-0 sm:border-r border-purple-100 dark:border-purple-900/40 pr-2">
+                <span className="text-[11px] font-bold text-purple-600 dark:text-purple-400 block font-mono">Jul 4</span>
+                <h4 className="text-xs font-black text-slate-900 dark:text-white">Evaluation Purchased</h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">$100K 2 Step Pro</p>
+                <div className="text-xs font-bold text-slate-900 dark:text-white font-mono">$466</div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="space-y-2 relative pb-4 sm:pb-0 border-b sm:border-b-0 sm:border-r border-purple-100 dark:border-purple-900/40 pr-2">
+                <span className="text-[11px] font-bold text-purple-600 dark:text-purple-400 block font-mono">Jul 4</span>
+                <h4 className="text-xs font-black text-slate-900 dark:text-white">Phase 1 Passed</h4>
+                <div className="inline-flex items-center gap-1 text-[11px] font-bold text-purple-600">
+                  <Check className="h-3 w-3" /> Clear
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">Same day</div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="space-y-2 relative pb-4 sm:pb-0 border-b sm:border-b-0 sm:border-r border-purple-100 dark:border-purple-900/40 pr-2">
+                <span className="text-[11px] font-bold text-purple-600 dark:text-purple-400 block font-mono">Jul 9</span>
+                <h4 className="text-xs font-black text-slate-900 dark:text-white">Phase 2 Passed</h4>
+                <div className="inline-flex items-center gap-1 text-[11px] font-bold text-purple-600">
+                  <Check className="h-3 w-3" /> Funded
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">5 days after Phase 1</div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="space-y-2">
+                <span className="text-[11px] font-bold text-purple-600 dark:text-purple-400 block font-mono">Jul 21</span>
+                <h4 className="text-xs font-black text-slate-900 dark:text-white">First Reward</h4>
+                <div className="text-base font-black text-purple-600 dark:text-purple-400 font-mono">
+                  $4,050.90
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">Via Rise in 9 hrs</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 6. TRADER ROI BANNER & VIDEO SUCCESS STORIES (Screenshot 4) */}
+      {/* ======================================================== */}
+      <section className="w-full bg-[#0c0920] text-white py-14 sm:py-20 border-t border-purple-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          {/* Big ROI Card (Exact Match of Screenshot 4) */}
+          <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-r from-[#170e3a] via-[#120a2e] to-[#0c0920] border-2 border-purple-500/50 p-6 sm:p-10 shadow-2xl space-y-6 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="space-y-2">
+                <div className="text-4xl sm:text-6xl font-[900] text-purple-300 tracking-tight font-mono">
+                  ROI 5,531%
+                </div>
+                <div className="text-base sm:text-lg font-bold text-white font-mono">
+                  $466 → $26,242
+                </div>
+                <div className="text-xs sm:text-sm text-purple-200/80 font-medium">
+                  ★★★★★ &quot;Best of the best&quot; — Majed M.
+                </div>
+              </div>
+
+              <Link href="/prop-firms" className="w-full sm:w-auto">
+                <Button className="w-full sm:w-auto bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm px-8 py-3.5 h-12 rounded-full shadow-lg shadow-purple-600/30">
+                  Buy Challenge
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Real Traders, Real Rewards, Real Impact Header */}
+          <div className="flex items-center justify-between">
+            <div className="space-y-1 text-left">
+              <h3 className="text-2xl sm:text-4xl font-[900] text-white tracking-tight">
+                Real traders, real rewards, real impact
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400">
+                Hear it directly from traders who passed their challenge and received their reward...
+              </p>
+            </div>
+
+            <div className="hidden sm:flex items-center gap-2">
               <button
                 onClick={() => setStoryScrollIdx((prev) => Math.max(0, prev - 1))}
-                className="p-2 rounded-full border border-purple-200 dark:border-purple-800 bg-white dark:bg-slate-900 hover:bg-purple-50 transition-colors"
+                className="p-2 rounded-full border border-purple-800 bg-slate-900 hover:bg-purple-900/60 transition-colors"
                 title="Previous"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setStoryScrollIdx((prev) => Math.min(SUCCESS_STORIES.length - 1, prev + 1))}
-                className="p-2 rounded-full border border-purple-200 dark:border-purple-800 bg-white dark:bg-slate-900 hover:bg-purple-50 transition-colors"
+                className="p-2 rounded-full border border-purple-800 bg-slate-900 hover:bg-purple-900/60 transition-colors"
                 title="Next"
               >
                 <ChevronRight className="h-4 w-4" />
@@ -612,17 +1118,17 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Horizontal Story Cards Track */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {SUCCESS_STORIES.slice(storyScrollIdx, storyScrollIdx + 4).map((story, idx) => (
+          {/* Horizontal Swipeable Track (Mobile Snap Scroll) */}
+          <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 text-left">
+            {SUCCESS_STORIES.map((story, idx) => (
               <div
                 key={idx}
-                className="group relative rounded-2xl overflow-hidden border border-purple-100 dark:border-purple-900/60 bg-[#0c1024] text-white p-5 space-y-4 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                className="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-center rounded-2xl overflow-hidden border border-purple-900/60 bg-[#120a2e] text-white p-5 space-y-4 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between shrink-0"
               >
-                <div className="space-y-3 text-left">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between text-[10px] font-bold text-purple-300">
                     <span className="uppercase tracking-widest">{story.badge}</span>
-                    <span className="bg-purple-950/80 px-2 py-0.5 rounded border border-purple-500/30 text-white font-mono">
+                    <span className="bg-purple-950/90 px-2 py-0.5 rounded border border-purple-500/30 text-white font-mono">
                       {story.firm}
                     </span>
                   </div>
@@ -631,16 +1137,17 @@ export default function HomePage() {
                     {story.amount}
                   </div>
 
-                  <h4 className="text-xs font-bold text-slate-100 line-clamp-2 leading-snug group-hover:text-purple-300 transition-colors">
+                  <h4 className="text-xs font-bold text-slate-100 line-clamp-2 leading-snug">
                     {story.title}
                   </h4>
+                  <p className="text-[10px] text-slate-400">{story.coach}</p>
                 </div>
 
                 <div className="pt-3 border-t border-purple-950 flex items-center justify-between">
                   <span className="text-[10px] text-slate-400 truncate max-w-[140px]">
                     {story.trader}
                   </span>
-                  <div className="flex items-center gap-1 text-[11px] font-bold text-purple-400 group-hover:translate-x-0.5 transition-transform">
+                  <div className="flex items-center gap-1 text-[11px] font-bold text-purple-400">
                     <Play className="h-3 w-3 fill-purple-400" />
                     <span>Watch</span>
                   </div>
@@ -652,94 +1159,7 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 4. "TRADE ON YOUR TERMS" 3 CARDS */}
-      {/* ======================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-12">
-        <div className="space-y-3 max-w-xl mx-auto">
-          <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c1024] dark:text-white">
-            Trade on your terms
-          </h2>
-          <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 font-normal">
-            Markets, platforms, and payouts, all on your schedule.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 text-left">
-          {/* Card 1: 5 Markets */}
-          <div className="rounded-3xl bg-purple-50/30 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
-            <div className="space-y-6">
-              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-purple-100 dark:border-purple-900/60 flex items-center justify-center p-4 relative overflow-hidden">
-                <div className="flex items-center justify-center gap-3">
-                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">FX</div>
-                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">MET</div>
-                  <div className="h-12 w-12 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold shadow-md">
-                    <CandlestickChart className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">ENG</div>
-                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">BTC</div>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-[900] text-[#0c1024] dark:text-white">5 Markets.</h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
-                  The five core asset classes FX, Metals, Energies, Crypto and Indices in global financial markets.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: 5 Partner Prop Firms */}
-          <div className="rounded-3xl bg-purple-50/30 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
-            <div className="space-y-6">
-              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-purple-100 dark:border-purple-900/60 flex items-center justify-center p-4 gap-2">
-                <div className="h-10 px-3 rounded-xl bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-                  FundedSquad
-                </div>
-                <div className="h-11 px-3.5 rounded-xl bg-purple-600 text-white flex items-center justify-center text-xs font-bold shadow-md">
-                  FundingPips
-                </div>
-                <div className="h-10 px-3 rounded-xl bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-                  FTMO
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-[900] text-[#0c1024] dark:text-white">5 Partner Prop Firms.</h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
-                  Supported across FundedSquad, Pipstone, FTMO, FundedNext, and FundingPips with universal code NATION.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 3: Get Paid Your Way */}
-          <div className="rounded-3xl bg-purple-50/30 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
-            <div className="space-y-6">
-              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-purple-100 dark:border-purple-900/60 flex flex-col items-center justify-center p-4 space-y-2">
-                <div className="h-10 w-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-md">
-                  <Wallet className="h-5 w-5 text-white" />
-                </div>
-                <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400">
-                  <span className="px-2 py-0.5 rounded">Weekly</span>
-                  <span className="bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded-full font-bold border border-purple-300">Bi-Weekly</span>
-                  <span className="px-2 py-0.5 rounded">Monthly</span>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-[900] text-[#0c1024] dark:text-white">Get Paid your way.</h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
-                  Balancing quick access to capital with overall account growth and real luxury physical rewards.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* 5. OFFICIAL PARTNER PROP FIRMS DIRECTORY (All 5 Listed Firms) */}
+      {/* 7. OFFICIAL PARTNER PROP FIRMS DIRECTORY (All 5 Listed Firms) */}
       {/* ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-purple-100 dark:border-purple-950/60 text-center space-y-12">
         <div className="space-y-3 max-w-2xl mx-auto">
@@ -835,159 +1255,94 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 6. INTERACTIVE CHALLENGE PRICING MATRIX & REWARDS ESTIMATOR */}
+      {/* 8. "TRADE ON YOUR TERMS" 3 CARDS */}
       {/* ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-12">
-        <div className="space-y-3 max-w-2xl mx-auto">
-          <Badge variant="purple">Transparent Challenge Pricing</Badge>
+        <div className="space-y-3 max-w-xl mx-auto">
           <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight text-[#0c1024] dark:text-white">
-            Choose your challenge model
+            Trade on your terms
           </h2>
           <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 font-normal">
-            Select your preferred evaluation model and account size. Apply code <strong className="font-mono text-purple-600 font-bold">NATION</strong> to claim discounts and earn 10 reward points per $1 spent.
+            Markets, platforms, and payouts, all on your schedule.
           </p>
         </div>
 
-        {/* Model Tabs (Zero, FLEX, 2-Step) */}
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          {CHALLENGE_TYPES.map((type) => (
-            <button
-              key={type.id}
-              onClick={() => setSelectedType(type.id)}
-              className={`px-5 py-3 rounded-2xl text-xs font-bold transition-all text-left flex flex-col ${
-                selectedType === type.id
-                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/25 scale-105'
-                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200 border border-slate-200 dark:border-slate-800'
-              }`}
-            >
-              <span className="font-[900] text-sm">{type.label}</span>
-              <span className={`text-[10px] ${selectedType === type.id ? 'text-purple-100' : 'text-slate-400'}`}>
-                {type.subtitle}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        {/* Account Size Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2 max-w-md mx-auto">
-          {ACCOUNT_SIZES.map((size) => (
-            <button
-              key={size.id}
-              onClick={() => setSelectedSize(size.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                selectedSize === size.id
-                  ? 'bg-[#0c1024] text-white shadow-md'
-                  : 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100'
-              }`}
-            >
-              {size.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Matrix Comparison Cards (Standard, FLEX, PRO) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto text-left">
-          {/* Card: Standard / Classic */}
-          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/40 p-6 sm:p-8 space-y-6 shadow-md hover:shadow-xl transition-all">
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600">Standard Tier</span>
-              <h3 className="text-xl font-[900] text-slate-900 dark:text-white">{selectedSize.toUpperCase()} Account</h3>
-              <div className="flex items-baseline gap-2 pt-2">
-                <span className="text-3xl font-[900] text-slate-900 dark:text-white">${currentMatrix.standard.price}</span>
-                <span className="text-xs text-slate-400 font-mono">USD</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 text-left">
+          {/* Card 1: 5 Markets */}
+          <div className="rounded-3xl bg-purple-50/30 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
+            <div className="space-y-6">
+              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-purple-100 dark:border-purple-900/60 flex items-center justify-center p-4 relative overflow-hidden">
+                <div className="flex items-center justify-center gap-3">
+                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">FX</div>
+                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">MET</div>
+                  <div className="h-12 w-12 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold shadow-md">
+                    <CandlestickChart className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">ENG</div>
+                  <div className="h-7 w-7 rounded-lg bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-purple-700">BTC</div>
+                </div>
               </div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-bold text-xs border border-purple-200 dark:border-purple-800">
-                <Coins className="h-3.5 w-3.5" />
-                <span>+{currentMatrix.standard.points} Points Earned</span>
+
+              <div>
+                <h3 className="text-lg font-[900] text-[#0c1024] dark:text-white">5 Markets.</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                  The five core asset classes FX, Metals, Energies, Crypto and Indices in global financial markets.
+                </p>
               </div>
             </div>
-
-            <div className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 border-t border-purple-100 dark:border-purple-900/40 pt-4">
-              <div className="flex justify-between"><span>Profit Target:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.standard.target}</strong></div>
-              <div className="flex justify-between"><span>Maximum Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.standard.maxLoss}</strong></div>
-              <div className="flex justify-between"><span>Daily Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.standard.dailyLoss}</strong></div>
-              <div className="flex justify-between"><span>Minimum Days:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.standard.minDays}</strong></div>
-              <div className="flex justify-between"><span>Profit Split:</span><strong className="text-purple-600 dark:text-purple-400 font-bold">{currentMatrix.standard.split}</strong></div>
-            </div>
-
-            <Link href="/prop-firms" className="block pt-2">
-              <Button className="w-full bg-[#0c1024] hover:bg-[#15253e] text-white font-bold text-xs h-11 rounded-xl">
-                Choose Partner Firm
-                <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-              </Button>
-            </Link>
           </div>
 
-          {/* Card: Flex (Highlighted) */}
-          <div className="rounded-3xl bg-gradient-to-b from-purple-50/50 to-white dark:from-purple-950/40 dark:to-slate-900 border-2 border-purple-500 p-6 sm:p-8 space-y-6 shadow-xl relative hover:shadow-2xl transition-all">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow-sm">
-              Most Popular
-            </div>
-
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600">FLEX Fast Pass</span>
-              <h3 className="text-xl font-[900] text-slate-900 dark:text-white">{selectedSize.toUpperCase()} Account</h3>
-              <div className="flex items-baseline gap-2 pt-2">
-                <span className="text-3xl font-[900] text-purple-600 dark:text-purple-400">${currentMatrix.flex.price}</span>
-                <span className="text-xs text-slate-400 font-mono">USD</span>
+          {/* Card 2: 5 Partner Prop Firms */}
+          <div className="rounded-3xl bg-purple-50/30 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
+            <div className="space-y-6">
+              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-purple-100 dark:border-purple-900/60 flex items-center justify-center p-4 gap-2">
+                <div className="h-10 px-3 rounded-xl bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                  FundedSquad
+                </div>
+                <div className="h-11 px-3.5 rounded-xl bg-purple-600 text-white flex items-center justify-center text-xs font-bold shadow-md">
+                  FundingPips
+                </div>
+                <div className="h-10 px-3 rounded-xl bg-purple-50 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                  FTMO
+                </div>
               </div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-200 font-bold text-xs border border-purple-300">
-                <Coins className="h-3.5 w-3.5 text-purple-600" />
-                <span>+{currentMatrix.flex.points} Points Earned</span>
+
+              <div>
+                <h3 className="text-lg font-[900] text-[#0c1024] dark:text-white">5 Partner Prop Firms.</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                  Supported across FundedSquad, Pipstone, FTMO, FundedNext, and FundingPips with universal code NATION.
+                </p>
               </div>
             </div>
-
-            <div className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 border-t border-purple-200 dark:border-purple-800/40 pt-4">
-              <div className="flex justify-between"><span>Profit Target:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.flex.target}</strong></div>
-              <div className="flex justify-between"><span>Maximum Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.flex.maxLoss}</strong></div>
-              <div className="flex justify-between"><span>Daily Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.flex.dailyLoss}</strong></div>
-              <div className="flex justify-between"><span>Minimum Days:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.flex.minDays}</strong></div>
-              <div className="flex justify-between"><span>Profit Split:</span><strong className="text-purple-600 dark:text-purple-400 font-bold">{currentMatrix.flex.split}</strong></div>
-            </div>
-
-            <Link href="/prop-firms" className="block pt-2">
-              <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-11 rounded-xl shadow-md shadow-purple-600/25">
-                Apply Code NATION &amp; Buy
-                <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-              </Button>
-            </Link>
           </div>
 
-          {/* Card: Pro */}
-          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/40 p-6 sm:p-8 space-y-6 shadow-md hover:shadow-xl transition-all">
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600">PRO Zero-Limit</span>
-              <h3 className="text-xl font-[900] text-slate-900 dark:text-white">{selectedSize.toUpperCase()} Account</h3>
-              <div className="flex items-baseline gap-2 pt-2">
-                <span className="text-3xl font-[900] text-slate-900 dark:text-white">${currentMatrix.pro.price}</span>
-                <span className="text-xs text-slate-400 font-mono">USD</span>
+          {/* Card 3: Get Paid Your Way */}
+          <div className="rounded-3xl bg-purple-50/30 dark:bg-slate-900/60 border border-purple-100 dark:border-purple-900/50 p-8 space-y-6 flex flex-col justify-between hover:border-purple-300 transition-colors shadow-xs">
+            <div className="space-y-6">
+              <div className="h-36 rounded-2xl bg-white dark:bg-slate-950 border border-purple-100 dark:border-purple-900/60 flex flex-col items-center justify-center p-4 space-y-2">
+                <div className="h-10 w-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-md">
+                  <Wallet className="h-5 w-5 text-white" />
+                </div>
+                <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400">
+                  <span className="px-2 py-0.5 rounded">Weekly</span>
+                  <span className="bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded-full font-bold border border-purple-300">Bi-Weekly</span>
+                  <span className="px-2 py-0.5 rounded">Monthly</span>
+                </div>
               </div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-bold text-xs border border-purple-200 dark:border-purple-800">
-                <Coins className="h-3.5 w-3.5" />
-                <span>+{currentMatrix.pro.points} Points Earned</span>
+
+              <div>
+                <h3 className="text-lg font-[900] text-[#0c1024] dark:text-white">Get Paid your way.</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                  Balancing quick access to capital with overall account growth and real luxury physical rewards.
+                </p>
               </div>
             </div>
-
-            <div className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 border-t border-purple-100 dark:border-purple-900/40 pt-4">
-              <div className="flex justify-between"><span>Profit Target:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.pro.target}</strong></div>
-              <div className="flex justify-between"><span>Maximum Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.pro.maxLoss}</strong></div>
-              <div className="flex justify-between"><span>Daily Loss:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.pro.dailyLoss}</strong></div>
-              <div className="flex justify-between"><span>Minimum Days:</span><strong className="text-slate-900 dark:text-white">{currentMatrix.pro.minDays}</strong></div>
-              <div className="flex justify-between"><span>Profit Split:</span><strong className="text-purple-600 dark:text-purple-400 font-bold">{currentMatrix.pro.split}</strong></div>
-            </div>
-
-            <Link href="/prop-firms" className="block pt-2">
-              <Button className="w-full bg-[#0c182a] hover:bg-[#15253e] text-white font-bold text-xs h-11 rounded-xl">
-                Choose Partner Firm
-                <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* 7. "YOUR SKILL IS OUR CAPITAL" 3-STAGE PATHWAY */}
+      {/* 9. "YOUR SKILL IS OUR CAPITAL" 3-STAGE PATHWAY */}
       {/* ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-12">
         <div className="space-y-3 max-w-xl mx-auto">

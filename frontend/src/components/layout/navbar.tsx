@@ -144,16 +144,25 @@ export function Navbar() {
           )}
         </div>
 
-        {/* Mobile Hamburger & Theme Toggle */}
+        {/* Mobile Hamburger, Buy Challenge CTA & Theme Toggle */}
         <div className="flex md:hidden items-center gap-2">
           <ThemeToggle />
+
+          <Link href="/prop-firms">
+            <Button
+              size="sm"
+              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-bold text-xs px-3 py-1.5 h-8 rounded-lg shadow-sm"
+            >
+              Buy Challenge
+            </Button>
+          </Link>
 
           {user && (
             <Link
               href="/dashboard/points"
-              className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 px-2.5 py-1 rounded-full text-xs font-bold"
+              className="flex items-center gap-1 bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-500/30 text-purple-800 dark:text-purple-300 px-2.5 py-1 rounded-full text-xs font-bold"
             >
-              <Sparkles className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
+              <Sparkles className="h-3 w-3 text-purple-600 dark:text-purple-400" />
               <span>{(user.points?.available || 0).toLocaleString()}</span>
             </Link>
           )}
@@ -161,6 +170,7 @@ export function Navbar() {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+            aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -181,7 +191,7 @@ export function Navbar() {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold rounded-lg ${
                     active
-                      ? 'text-emerald-700 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-500/10'
+                      ? 'text-purple-700 bg-purple-50 dark:text-purple-400 dark:bg-purple-500/10'
                       : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
                   }`}
                 >
@@ -230,7 +240,7 @@ export function Navbar() {
                   </Button>
                 </Link>
                 <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="primary" className="w-full">
+                  <Button className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-bold">
                     Start Earning
                   </Button>
                 </Link>
