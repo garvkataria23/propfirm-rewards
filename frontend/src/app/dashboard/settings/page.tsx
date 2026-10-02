@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { GoogleTranslate } from '@/components/ui/google-translate';
+import { useSidebarMode } from '@/hooks/use-sidebar-mode';
 import {
   Settings,
   Lock,
@@ -14,10 +15,14 @@ import {
   Globe,
   Check,
   AlertTriangle,
+  PanelLeft,
+  Pin,
+  PinOff,
 } from 'lucide-react';
 
 export default function SettingsPage() {
   const { user } = useAuth();
+  const { isPinned, setPinned } = useSidebarMode();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -58,6 +63,76 @@ export default function SettingsPage() {
           Manage your login credentials, two-factor authentication, and platform communication preferences.
         </p>
       </div>
+
+      {/* Workspace & Sidebar Display Preferences */}
+      <Card className="p-6 bg-white dark:bg-[#070e20] border-slate-200/90 dark:border-[#14234b]/60 space-y-5 shadow-sm">
+        <div className="flex items-center gap-3 pb-4 border-b border-slate-100 dark:border-[#14234b]/60">
+          <div className="h-10 w-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-500/30 flex items-center justify-center shrink-0">
+            <PanelLeft className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">Sidebar &amp; Workspace Layout</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Control the desktop navigation behavior to maximize trading screen space.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          {/* Option 1: Auto-collapse on Hover */}
+          <div
+            onClick={() => setPinned(false)}
+            className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+              !isPinned
+                ? 'border-blue-600 bg-blue-50/50 dark:border-blue-500 dark:bg-blue-950/30 shadow-xs'
+                : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-900/40'
+            }`}
+          >
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <PinOff className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                  Auto-Collapse (Hover Mode)
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950 px-2 py-0.5 rounded-full">
+                  Recommended
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                Sidebar stays minimal (68px icon rail) and expands automatically when you hover. Maximizes screen width for charts, tables, and stats.
+              </p>
+            </div>
+            <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1">
+              {!isPinned ? '✓ Active Mode' : 'Click to Select'}
+            </div>
+          </div>
+
+          {/* Option 2: Full-Time Open */}
+          <div
+            onClick={() => setPinned(true)}
+            className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+              isPinned
+                ? 'border-blue-600 bg-blue-50/50 dark:border-blue-500 dark:bg-blue-950/30 shadow-xs'
+                : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-900/40'
+            }`}
+          >
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <Pin className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 fill-current" />
+                  Full-Time Open (Pinned)
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                Sidebar stays permanently expanded (256px width) side-by-side with your dashboard. Ideal for ultra-wide desktop monitors.
+              </p>
+            </div>
+            <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1">
+              {isPinned ? '✓ Active Mode' : 'Click to Select'}
+            </div>
+          </div>
+        </div>
+      </Card>
 
       {/* Security: Password Update */}
       <Card className="p-6 bg-white dark:bg-[#070e20] border-slate-200/90 dark:border-[#14234b]/60 space-y-6 shadow-sm">

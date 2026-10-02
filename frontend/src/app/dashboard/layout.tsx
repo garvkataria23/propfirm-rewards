@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 import { PropNationSidebar } from '@/components/layout/propnation-sidebar';
+import { useSidebarMode } from '@/hooks/use-sidebar-mode';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { GoogleTranslate } from '@/components/ui/google-translate';
 import {
@@ -23,6 +24,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const { isPinned } = useSidebarMode();
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -45,8 +47,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 dark:bg-[#060b18] dark:text-slate-100 flex flex-col lg:flex-row antialiased transition-colors">
-      {/* Desktop Persistent Left Sidebar */}
-      <div className="hidden lg:block shrink-0 h-screen sticky top-0 z-30 shadow-xl border-r border-slate-200 dark:border-slate-800">
+      {/* Desktop Left Sidebar: Dynamic Width Spacer */}
+      <div
+        className={`hidden lg:block shrink-0 h-screen sticky top-0 z-30 transition-[width] duration-300 ease-in-out ${
+          isPinned ? 'w-64' : 'w-[68px]'
+        }`}
+      >
         <PropNationSidebar />
       </div>
 
