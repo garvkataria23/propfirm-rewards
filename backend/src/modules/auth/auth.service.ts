@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { OAuth2Client } from 'google-auth-library';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
 import { LoginDto, RegisterDto, UpdateProfileDto, GoogleAuthDto } from './dto/auth.dto';
@@ -100,8 +101,47 @@ export class AuthService {
     };
   }
 
+  private googleOAuthClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
   async googleLogin(dto: GoogleAuthDto) {
-    const email = dto.email.toLowerCase().trim();
+    const rawToken = dto.credential || dto.idToken;
+    if (!rawToken || typeof rawToken !== 'string') {
+      throw new BadRequestException('A valid Google ID token / credential is required');
+    }
+
+    let payload: any;
+    try {
+      const ticket = await this.googleOAuthClient.verifyIdToken({
+        idToken: rawToken,
+        audience: process.env.GOOGLE_CLIENT_ID || undefined,
+      });
+      payload = ticket.getPayload();
+    } catch (err: any) {
+      throw new UnauthorizedException(`Google ID token verification failed: ${err.message}`);
+    }
+
+    if (!payload || !payload.email) {
+      throw new UnauthorizedException('Invalid Google token: missing email claim');
+    }
+
+    // Cryptographic claim validation
+    const validIssuers = ['accounts.google.com', 'https://accounts.google.com'];
+    if (!validIssuers.includes(payload.iss)) {
+      throw new UnauthorizedException('Invalid Google token issuer');
+    }
+
+    if (payload.exp && payload.exp * 1000 < Date.now()) {
+      throw new UnauthorizedException('Google ID token has expired');
+    }
+
+    if (!payload.email_verified) {
+      throw new UnauthorizedException('Google account email has not been verified by Google');
+    }
+
+    const email = payload.email.toLowerCase().trim();
+    const name = (payload.name || payload.given_name || email.split('@')[0]).trim();
+    const avatarUrl = payload.picture || null;
+
     let user = await this.prisma.user.findUnique({
       where: { email },
     });
@@ -110,10 +150,10 @@ export class AuthService {
       if (user.status === 'SUSPENDED') {
         throw new UnauthorizedException('Your account has been suspended. Please contact support.');
       }
-      if (dto.avatarUrl && !user.avatarUrl) {
+      if (avatarUrl && !user.avatarUrl) {
         user = await this.prisma.user.update({
           where: { id: user.id },
-          data: { avatarUrl: dto.avatarUrl },
+          data: { avatarUrl },
         });
       }
     } else {
@@ -122,9 +162,9 @@ export class AuthService {
         data: {
           email,
           passwordHash: randomPassword,
-          name: dto.name.trim(),
-          avatarUrl: dto.avatarUrl || null,
-          role: 'USER',
+          name,
+          avatarUrl,
+          role: 'USER', // SECURITY: ALWAYS default to USER. Never trust client or token claims for elevated roles!
           status: 'ACTIVE',
           emailVerified: true,
         },

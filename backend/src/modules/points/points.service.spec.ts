@@ -32,6 +32,7 @@ describe('PointsService (Ledger & Admin Adjustments)', () => {
       auditLog: {
         create: jest.fn(),
       },
+      $executeRaw: jest.fn(),
       $transaction: jest.fn((callback) => callback(prisma)),
     };
 
@@ -51,10 +52,10 @@ describe('PointsService (Ledger & Admin Adjustments)', () => {
     ).rejects.toThrow(BadRequestException);
   });
 
-  it('should reject negative deduction if it would make balance negative', async () => {
-    prisma.user.findUnique.mockResolvedValue({ id: 'user-1', name: 'Alex' });
-    // Current balance is only 500
-    prisma.pointsLedger.findFirst.mockResolvedValue({ balanceAfter: 500 });
+  it('should reject negative deduction if it would make balance negative (affectedRows === 0)', async () => {
+    prisma.user.findUnique.mockResolvedValue({ id: 'user-1', name: 'Alex', pointsBalance: 500 });
+    // Postgres atomic conditional update matches 0 rows because balance < deduction
+    prisma.$executeRaw.mockResolvedValue(0);
 
     await expect(
       service.adminAdjustPoints(
@@ -65,12 +66,15 @@ describe('PointsService (Ledger & Admin Adjustments)', () => {
     ).rejects.toThrow(BadRequestException);
   });
 
-  it('should credit points safely with audit record and reason', async () => {
-    prisma.user.findUnique.mockResolvedValue({ id: 'user-1', name: 'Alex', email: 'alex@example.com' });
-    prisma.pointsLedger.findFirst.mockResolvedValue({ balanceAfter: 3000 });
+  it('should credit points safely with atomic raw query and audit record', async () => {
+    prisma.user.findUnique
+      .mockResolvedValueOnce({ id: 'user-1', name: 'Alex', email: 'alex@example.com', pointsBalance: 3000 })
+      .mockResolvedValueOnce({ id: 'user-1', pointsBalance: 5000 });
+    prisma.$executeRaw.mockResolvedValue(1);
     prisma.pointsLedger.create.mockResolvedValue({
       id: 'tx-bonus',
       points: 2000,
+      balanceBefore: 3000,
       balanceAfter: 5000,
       reason: 'Top performer monthly bonus',
     });
@@ -81,6 +85,7 @@ describe('PointsService (Ledger & Admin Adjustments)', () => {
       'admin-1',
     );
 
+    expect(prisma.$executeRaw).toHaveBeenCalled();
     expect(prisma.pointsLedger.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({

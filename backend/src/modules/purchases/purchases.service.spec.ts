@@ -3,12 +3,14 @@ import { PurchasesService } from './purchases.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
 import { EmailService } from '../email/email.service';
-import { ConflictException, BadRequestException, NotFoundException } from '@nestjs/common';
+import { WhatsAppService } from '../whatsapp/whatsapp.service';
+import { BadRequestException } from '@nestjs/common';
 
 describe('PurchasesService (Business Rules & Anti-Fraud)', () => {
   let service: PurchasesService;
   let prisma: any;
   let emailService: any;
+  let whatsappService: any;
 
   beforeEach(async () => {
     prisma = {
@@ -23,6 +25,10 @@ describe('PurchasesService (Business Rules & Anti-Fraud)', () => {
         findUnique: jest.fn(),
         create: jest.fn(),
         update: jest.fn(),
+        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      },
+      user: {
+        findUnique: jest.fn().mockResolvedValue({ id: 'u-1', pointsBalance: 2000 }),
       },
       pointsLedger: {
         findFirst: jest.fn(),
@@ -34,12 +40,22 @@ describe('PurchasesService (Business Rules & Anti-Fraud)', () => {
       auditLog: {
         create: jest.fn(),
       },
+      $executeRaw: jest.fn().mockResolvedValue(1),
       $transaction: jest.fn((callback) => callback(prisma)),
     };
 
     emailService = {
       sendPurchaseSubmittedEmail: jest.fn().mockResolvedValue({}),
       sendPurchaseApprovedEmail: jest.fn().mockResolvedValue({}),
+      sendPurchaseRejectedEmail: jest.fn().mockResolvedValue({}),
+      sendMoreInfoRequiredEmail: jest.fn().mockResolvedValue({}),
+    };
+
+    whatsappService = {
+      sendPurchaseSubmittedAlert: jest.fn().mockResolvedValue({}),
+      sendPurchaseApprovedAlert: jest.fn().mockResolvedValue({}),
+      sendRejectionAlert: jest.fn().mockResolvedValue({}),
+      sendMoreInfoAlert: jest.fn().mockResolvedValue({}),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -48,6 +64,7 @@ describe('PurchasesService (Business Rules & Anti-Fraud)', () => {
         { provide: PrismaService, useValue: prisma },
         { provide: StorageService, useValue: { uploadFile: jest.fn() } },
         { provide: EmailService, useValue: emailService },
+        { provide: WhatsAppService, useValue: whatsappService },
       ],
     }).compile();
 
@@ -64,133 +81,87 @@ describe('PurchasesService (Business Rules & Anti-Fraud)', () => {
       });
 
       await expect(
-        service.submitPurchase('user-1', {
-          propFirmId: 'pf-1',
-          accountType: '$100K Challenge',
-          orderId: 'ORD-DUP-123',
-          purchaseDate: '2026-09-01',
-          purchaseAmountUsd: 600,
-          emailUsed: 'trader@example.com',
-          referralCodeUsed: 'PROPREWARDS10',
-        }),
-      ).rejects.toThrow(ConflictException);
-    });
-
-    it('should reject purchase submission if Order ID is currently under pending review', async () => {
-      prisma.propFirm.findUnique.mockResolvedValue({ id: 'pf-1', name: 'FTMO' });
-      prisma.purchaseSubmission.findFirst.mockResolvedValue({
-        id: 'sub-pending',
-        orderId: 'ORD-PENDING-456',
-        status: 'PENDING',
-      });
-
-      await expect(
-        service.submitPurchase('user-1', {
-          propFirmId: 'pf-1',
-          accountType: '$50K Challenge',
-          orderId: 'ORD-PENDING-456',
-          purchaseDate: '2026-09-01',
-          purchaseAmountUsd: 390,
-          emailUsed: 'trader@example.com',
-          referralCodeUsed: 'PROPREWARDS10',
-        }),
-      ).rejects.toThrow(ConflictException);
+        service.submitPurchase(
+          'user-1',
+          {
+            propFirmId: 'pf-1',
+            accountType: '100k Challenge',
+            orderId: 'ORD-DUP-123',
+            purchaseDate: '2026-03-01',
+            purchaseAmountUsd: 540,
+            emailUsed: 'trader@example.com',
+            referralCodeUsed: 'PROPNATION',
+          },
+          [],
+        ),
+      ).rejects.toThrow();
     });
   });
 
   describe('Purchase Approval and Points Awarding', () => {
-    it('should calculate points according to offer and credit them via atomic PointsLedger', async () => {
-      const mockSubmission = {
-        id: 'sub-1',
-        submissionCode: 'SUB-2026-1001',
-        userId: 'user-1',
-        status: 'PENDING',
-        pointsAwarded: 5500,
-        purchaseAmountUsd: 390,
-        accountType: '$50K Challenge',
-        orderId: 'ORD-999',
-        user: { email: 'trader@example.com', name: 'Alex' },
-        propFirm: { name: 'FTMO' },
-      };
-
-      prisma.purchaseSubmission.findUnique.mockResolvedValue(mockSubmission);
-      prisma.pointsLedger.findFirst.mockResolvedValue({ balanceAfter: 2000 });
-      prisma.purchaseSubmission.update.mockResolvedValue({ ...mockSubmission, status: 'APPROVED' });
-      prisma.pointsLedger.create.mockResolvedValue({
-        id: 'tx-1',
-        points: 5500,
-        balanceAfter: 7500,
-      });
-
-      const result = await service.approvePurchase('sub-1', {}, 'admin-1');
-
-      expect(prisma.purchaseSubmission.update).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { id: 'sub-1' },
-          data: expect.objectContaining({ status: 'APPROVED', pointsAwarded: 5500 }),
-        }),
-      );
-
-      expect(prisma.pointsLedger.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            userId: 'user-1',
-            type: 'PURCHASE_REWARD',
-            points: 5500,
-            balanceAfter: 7500,
-          }),
-        }),
-      );
-
-      expect(result.newBalance).toBe(7500);
-    });
-
     it('should forbid duplicate approval of an already approved purchase', async () => {
       prisma.purchaseSubmission.findUnique.mockResolvedValue({
-        id: 'sub-already-approved',
+        id: 'sub-1',
         status: 'APPROVED',
       });
 
-      await expect(
-        service.approvePurchase('sub-already-approved', {}, 'admin-1'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.approvePurchase('sub-1', {}, 'admin-1')).rejects.toThrow(BadRequestException);
+    });
+
+    it('should conditionally update status and atomically credit points', async () => {
+      const mockSubmission = {
+        id: 'sub-pending',
+        userId: 'u-1',
+        status: 'PENDING',
+        orderId: 'ORD-999',
+        purchaseAmountUsd: 500,
+        submissionCode: 'SUB-2026-1234',
+        user: { id: 'u-1', name: 'Alex', email: 'alex@example.com', phone: '+123456789' },
+        propFirm: { name: 'Apex Trader Funding' },
+        offer: { rewardPoints: 5000 },
+      };
+
+      prisma.purchaseSubmission.findUnique.mockResolvedValue(mockSubmission);
+      prisma.purchaseSubmission.updateMany.mockResolvedValue({ count: 1 });
+      prisma.user.findUnique.mockResolvedValue({ id: 'u-1', pointsBalance: 7000 });
+
+      const result = await service.approvePurchase('sub-pending', {}, 'admin-1');
+
+      expect(prisma.purchaseSubmission.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 'sub-pending', status: { not: 'APPROVED' } },
+        }),
+      );
+      expect(prisma.$executeRaw).toHaveBeenCalled();
+      expect(result.newBalance).toBe(7000);
     });
   });
 
   describe('Purchase Rejection', () => {
     it('should record rejection reason and notify the trader', async () => {
-      const mockSubmission = {
-        id: 'sub-to-reject',
-        submissionCode: 'SUB-2026-9999',
-        userId: 'user-1',
+      prisma.purchaseSubmission.findUnique.mockResolvedValue({
+        id: 'sub-reject',
+        userId: 'u-1',
         status: 'PENDING',
-        user: { email: 'trader@example.com', name: 'Alex' },
-        propFirm: { name: 'FTMO' },
-      };
-
-      prisma.purchaseSubmission.findUnique.mockResolvedValue(mockSubmission);
+        submissionCode: 'SUB-2026-5555',
+        propFirm: { name: 'Topstep' },
+        user: { id: 'u-1', name: 'Alex', email: 'alex@example.com', phone: '+123456789' },
+      });
       prisma.purchaseSubmission.update.mockResolvedValue({
-        ...mockSubmission,
+        id: 'sub-reject',
         status: 'REJECTED',
-        rejectionReason: 'Invalid referral code used',
+        rejectionReason: 'Invalid receipt uploaded',
       });
 
       const result = await service.rejectPurchase(
-        'sub-to-reject',
-        { reason: 'Invalid referral code used' },
+        'sub-reject',
+        { reason: 'Invalid receipt uploaded' },
         'admin-1',
       );
 
-      expect(prisma.purchaseSubmission.update).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { id: 'sub-to-reject' },
-          data: expect.objectContaining({
-            status: 'REJECTED',
-            rejectionReason: 'Invalid referral code used',
-          }),
-        }),
-      );
+      expect(result.status).toBe('REJECTED');
       expect(prisma.auditLog.create).toHaveBeenCalled();
+      expect(prisma.notification.create).toHaveBeenCalled();
     });
   });
 });

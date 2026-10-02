@@ -133,14 +133,20 @@ export class RedemptionsService {
 
       // 2. Refund points if cancelled/rejected
       if (refundProcessed) {
-        const lastTx = await tx.pointsLedger.findFirst({
-          where: { userId: redemption.userId },
-          orderBy: { createdAt: 'desc' },
-          select: { balanceAfter: true },
+        // Atomic point balance restore
+        await tx.$executeRaw`
+          UPDATE "User"
+          SET "pointsBalance" = "pointsBalance" + ${redemption.pointsSpent}
+          WHERE "id" = ${redemption.userId}
+        `;
+
+        const updatedUser = await tx.user.findUnique({
+          where: { id: redemption.userId },
+          select: { pointsBalance: true },
         });
 
-        const currentBalance = lastTx ? lastTx.balanceAfter : 0;
-        const newBalance = currentBalance + redemption.pointsSpent;
+        const newBalance = updatedUser?.pointsBalance ?? 0;
+        const balanceBefore = newBalance - redemption.pointsSpent;
 
         await tx.pointsLedger.create({
           data: {
@@ -148,7 +154,11 @@ export class RedemptionsService {
             redemptionId: redemption.id,
             type: 'REFUND_REVERSAL',
             points: redemption.pointsSpent,
+            balanceBefore,
             balanceAfter: newBalance,
+            referenceType: 'REDEMPTION_REFUND',
+            referenceId: redemption.id,
+            idempotencyKey: `refund-${redemption.id}`,
             description: `Points Refund: Cancelled redemption for ${redemption.reward.name} (${redemption.redemptionCode})`,
             reason: dto.adminNotes || 'Order cancelled by administration',
             createdById: adminId,
@@ -157,10 +167,11 @@ export class RedemptionsService {
 
         // Restock
         if (!redemption.reward.isUnlimitedStock) {
-          await tx.reward.update({
-            where: { id: redemption.rewardId },
-            data: { stock: { increment: 1 } },
-          });
+          await tx.$executeRaw`
+            UPDATE "Reward"
+            SET "stock" = "stock" + 1
+            WHERE "id" = ${redemption.rewardId}
+          `;
         }
       }
 

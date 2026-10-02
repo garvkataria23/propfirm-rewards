@@ -136,6 +136,10 @@ export class RedeemRewardDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @IsOptional()
+  @IsString()
+  idempotencyKey?: string;
 }
 
 export class UpdateRedemptionStatusDto {

@@ -49,19 +49,12 @@ export class UpdateProfileDto {
 }
 
 export class GoogleAuthDto {
-  @IsEmail({}, { message: 'Please provide a valid email address' })
-  email: string;
-
-  @IsString()
-  @IsNotEmpty({ message: 'Full name is required' })
-  name: string;
+  @IsString({ message: 'A valid Google ID token / credential is required' })
+  @IsNotEmpty({ message: 'Google credential cannot be empty' })
+  credential?: string;
 
   @IsOptional()
   @IsString()
-  avatarUrl?: string;
-
-  @IsOptional()
-  @IsString()
-  googleId?: string;
+  idToken?: string;
 }
 

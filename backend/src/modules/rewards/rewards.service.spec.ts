@@ -33,6 +33,7 @@ describe('RewardsService (Redemption & Inventory Rules)', () => {
       auditLog: {
         create: jest.fn(),
       },
+      $executeRaw: jest.fn(),
       $transaction: jest.fn((callback) => callback(prisma)),
     };
 
@@ -79,10 +80,16 @@ describe('RewardsService (Redemption & Inventory Rules)', () => {
   });
 
   it('should reject redemption if user has insufficient points balance', async () => {
-    prisma.user.findUnique.mockResolvedValue({
-      id: 'user-1',
-      status: 'ACTIVE',
-    });
+    prisma.user.findUnique
+      .mockResolvedValueOnce({
+        id: 'user-1',
+        status: 'ACTIVE',
+        pointsBalance: 10000,
+      })
+      .mockResolvedValueOnce({
+        id: 'user-1',
+        pointsBalance: 10000,
+      });
 
     prisma.reward.findUnique.mockResolvedValue({
       id: 'reward-expensive',
@@ -93,8 +100,8 @@ describe('RewardsService (Redemption & Inventory Rules)', () => {
       pointsRequired: 120000,
     });
 
-    // User only has 10,000 points
-    prisma.pointsLedger.findFirst.mockResolvedValue({ balanceAfter: 10000 });
+    // Postgres atomic conditional update matches 0 rows (pointsBalance < pointsRequired)
+    prisma.$executeRaw.mockResolvedValue(0);
 
     await expect(
       service.redeemReward('user-1', 'reward-expensive', {}),
@@ -102,11 +109,17 @@ describe('RewardsService (Redemption & Inventory Rules)', () => {
   });
 
   it('should succeed and atomically deduct points and decrement stock when requirements are met', async () => {
-    prisma.user.findUnique.mockResolvedValue({
-      id: 'user-1',
-      status: 'ACTIVE',
-      country: 'United States',
-    });
+    prisma.user.findUnique
+      .mockResolvedValueOnce({
+        id: 'user-1',
+        status: 'ACTIVE',
+        country: 'United States',
+        pointsBalance: 25000,
+      })
+      .mockResolvedValueOnce({
+        id: 'user-1',
+        pointsBalance: 15000,
+      });
 
     const mockReward = {
       id: 'reward-mouse',
@@ -118,8 +131,8 @@ describe('RewardsService (Redemption & Inventory Rules)', () => {
     };
     prisma.reward.findUnique.mockResolvedValue(mockReward);
 
-    // Current balance 25,000
-    prisma.pointsLedger.findFirst.mockResolvedValue({ balanceAfter: 25000 });
+    // Both atomic balance decrement and stock decrement succeed with 1 affected row
+    prisma.$executeRaw.mockResolvedValue(1);
     prisma.userAddress.create.mockResolvedValue({ id: 'addr-1' });
 
     prisma.redemption.create.mockResolvedValue({
@@ -135,6 +148,7 @@ describe('RewardsService (Redemption & Inventory Rules)', () => {
       id: 'tx-rdm',
       type: 'REDEMPTION',
       points: -10000,
+      balanceBefore: 25000,
       balanceAfter: 15000,
     });
 
@@ -146,13 +160,8 @@ describe('RewardsService (Redemption & Inventory Rules)', () => {
       postalCode: '10005',
     });
 
-    // Verified stock decremented
-    expect(prisma.reward.update).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { id: 'reward-mouse' },
-        data: { stock: { decrement: 1 } },
-      }),
-    );
+    // Verified atomic update was called
+    expect(prisma.$executeRaw).toHaveBeenCalled();
 
     // Verified ledger created with negative points
     expect(prisma.pointsLedger.create).toHaveBeenCalledWith(

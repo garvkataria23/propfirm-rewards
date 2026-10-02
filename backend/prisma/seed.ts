@@ -4,6 +4,13 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
+  // CRITICAL PRODUCTION GUARD
+  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_PRODUCTION_SEED !== 'true') {
+    console.error('🛑 [SECURITY ERROR] Refusing to seed database in PRODUCTION environment!');
+    console.error('🛑 Seeding deletes live user balances, redemptions, and records. Aborting immediately.');
+    process.exit(1);
+  }
+
   console.log('🌱 Starting database seed...');
 
   // 1. Clean existing records if any

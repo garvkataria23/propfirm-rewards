@@ -1,4 +1,5 @@
 import { Injectable, BadRequestException, NotFoundException, ConflictException } from '@nestjs/common';
+import * as crypto from 'crypto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
 import { CreateRewardDto, UpdateRewardDto, RedeemRewardDto, UpdateRedemptionStatusDto } from './dto/reward.dto';
@@ -69,9 +70,26 @@ export class RewardsService {
       throw new BadRequestException('Your account is currently not active or suspended from redeeming rewards.');
     }
 
-    // 2. Execute Atomic Transaction
+    // Check idempotency if key provided
+    if (dto.idempotencyKey) {
+      const existingLedger = await this.prisma.pointsLedger.findUnique({
+        where: { idempotencyKey: dto.idempotencyKey },
+        include: { redemption: { include: { reward: true, shippingAddress: true } } },
+      });
+      if (existingLedger?.redemption) {
+        return {
+          redemption: existingLedger.redemption,
+          previousBalance: existingLedger.balanceBefore,
+          pointsSpent: Math.abs(existingLedger.points),
+          remainingBalance: existingLedger.balanceAfter,
+          idempotentReplay: true,
+        };
+      }
+    }
+
+    // 2. Execute Atomic Transaction with Database-Level Lock
     const result = await this.prisma.$transaction(async (tx) => {
-      // Lock and fetch reward
+      // Fetch reward
       const reward = await tx.reward.findUnique({
         where: { id: rewardId },
       });
@@ -84,19 +102,45 @@ export class RewardsService {
         throw new BadRequestException('This reward is currently out of stock.');
       }
 
-      // Check user points balance
-      const latestTx = await tx.pointsLedger.findFirst({
-        where: { userId },
-        orderBy: { createdAt: 'desc' },
-        select: { balanceAfter: true },
-      });
+      // CRITICAL CONCURRENCY SAFEGUARD: Atomic balance deduction
+      // If two requests hit simultaneously, Postgres row-level lock ensures
+      // only one query succeeds in meeting the `pointsBalance >= pointsRequired` condition.
+      const affectedRows = await tx.$executeRaw`
+        UPDATE "User"
+        SET "pointsBalance" = "pointsBalance" - ${reward.pointsRequired}
+        WHERE "id" = ${userId} AND "pointsBalance" >= ${reward.pointsRequired}
+      `;
 
-      const currentBalance = latestTx ? latestTx.balanceAfter : 0;
-      if (currentBalance < reward.pointsRequired) {
+      if (affectedRows === 0) {
+        const currentUser = await tx.user.findUnique({
+          where: { id: userId },
+          select: { pointsBalance: true },
+        });
         throw new BadRequestException(
-          `Insufficient points balance. You have ${currentBalance.toLocaleString()} points, but this reward requires ${reward.pointsRequired.toLocaleString()} points.`,
+          `Insufficient points balance. You have ${(currentUser?.pointsBalance ?? 0).toLocaleString()} points, but this reward requires ${reward.pointsRequired.toLocaleString()} points.`,
         );
       }
+
+      // Atomic stock deduction if applicable
+      if (!reward.isUnlimitedStock) {
+        const stockAffected = await tx.$executeRaw`
+          UPDATE "Reward"
+          SET "stock" = "stock" - 1
+          WHERE "id" = ${reward.id} AND "stock" > 0
+        `;
+        if (stockAffected === 0) {
+          throw new BadRequestException('This reward is currently out of stock.');
+        }
+      }
+
+      // Read current balance after atomic deduction
+      const updatedUser = await tx.user.findUnique({
+        where: { id: userId },
+        select: { pointsBalance: true },
+      });
+
+      const remainingBalance = updatedUser?.pointsBalance ?? 0;
+      const previousBalance = remainingBalance + reward.pointsRequired;
 
       // Handle Shipping Address
       let shippingAddressId = dto.shippingAddressId;
@@ -118,17 +162,11 @@ export class RewardsService {
         shippingAddressId = newAddress.id;
       }
 
-      // Generate Unique Redemption Code: RDM-2026-XXXX
-      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+      // Cryptographically secure unique redemption code: RDM-2026-XXXXXX
+      const randomSuffix = crypto.randomBytes(4).toString('hex').toUpperCase();
       const redemptionCode = `RDM-${new Date().getFullYear()}-${randomSuffix}`;
-
-      // Deduct stock if applicable
-      if (!reward.isUnlimitedStock) {
-        await tx.reward.update({
-          where: { id: reward.id },
-          data: { stock: { decrement: 1 } },
-        });
-      }
+      const idempotencyKey =
+        dto.idempotencyKey || `rdm-${userId}-${Date.now()}-${randomSuffix}`;
 
       // Create Redemption record
       const redemption = await tx.redemption.create({
@@ -147,15 +185,18 @@ export class RewardsService {
         },
       });
 
-      // Deduct Points from Ledger
-      const newBalance = currentBalance - reward.pointsRequired;
+      // Insert immutable PointsLedger entry
       const ledgerEntry = await tx.pointsLedger.create({
         data: {
           userId,
           redemptionId: redemption.id,
           type: 'REDEMPTION',
           points: -reward.pointsRequired,
-          balanceAfter: newBalance,
+          balanceBefore: previousBalance,
+          balanceAfter: remainingBalance,
+          referenceType: 'REWARD_REDEMPTION',
+          referenceId: redemption.id,
+          idempotencyKey,
           description: `Reward Redemption: ${reward.name} (Code: ${redemptionCode})`,
         },
       });
@@ -178,11 +219,12 @@ export class RewardsService {
           action: 'REDEEM_REWARD',
           entity: 'Redemption',
           entityId: redemption.id,
+          previousValue: JSON.stringify({ balance: previousBalance }),
           newValue: JSON.stringify({
             userId,
             rewardName: reward.name,
             pointsSpent: reward.pointsRequired,
-            remainingBalance: newBalance,
+            remainingBalance,
           }),
           notes: `User redeemed ${reward.name}`,
         },
@@ -190,9 +232,10 @@ export class RewardsService {
 
       return {
         redemption,
-        previousBalance: currentBalance,
+        previousBalance,
         pointsSpent: reward.pointsRequired,
-        remainingBalance: newBalance,
+        remainingBalance,
+        ledgerEntry,
       };
     });
 

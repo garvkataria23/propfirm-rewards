@@ -1,4 +1,4 @@
-import { Controller, Get, OnModuleInit, Logger } from '@nestjs/common';
+import { Controller, Get, OnModuleInit, Logger, ServiceUnavailableException } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PrismaService } from './prisma/prisma.service';
 
@@ -10,13 +10,12 @@ export class AppController implements OnModuleInit {
   constructor(private readonly prisma: PrismaService) {}
 
   onModuleInit() {
-    // Run an automated keep-alive database ping every 6 hours (6 * 3600 * 1000 ms)
-    // Ensures Supabase PostgreSQL is kept active 24/7/365 with zero downtime
+    // Run an automated keep-alive database ping every 6 hours
     const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
     setInterval(async () => {
       try {
         await this.prisma.$queryRaw`SELECT 1 as heartbeat`;
-        this.logger.log('Automated database keep-alive heartbeat dispatched successfully to Supabase.');
+        this.logger.log('Automated database keep-alive heartbeat dispatched successfully.');
       } catch (err: any) {
         this.logger.warn(`Keep-alive heartbeat failed: ${err.message}`);
       }
@@ -48,13 +47,45 @@ export class AppController implements OnModuleInit {
     }
 
     return {
-      status: 'ok',
+      status: dbStatus === 'connected' ? 'ok' : 'degraded',
       service: 'propfirm-rewards-api',
       database: dbStatus,
       latencyMs,
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
     };
+  }
+
+  @Get('health/live')
+  @ApiOperation({ summary: 'Liveness probe (returns 200 if process is responsive)' })
+  livenessProbe() {
+    return {
+      status: 'alive',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    };
+  }
+
+  @Get('health/ready')
+  @ApiOperation({ summary: 'Readiness probe (verifies database connectivity)' })
+  async readinessProbe() {
+    const start = Date.now();
+    try {
+      await this.prisma.$queryRaw`SELECT 1 as readiness`;
+      return {
+        status: 'ready',
+        database: 'connected',
+        latencyMs: Date.now() - start,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (err: any) {
+      throw new ServiceUnavailableException({
+        status: 'not_ready',
+        database: 'disconnected',
+        error: err.message,
+        timestamp: new Date().toISOString(),
+      });
+    }
   }
 
   @Get()
@@ -64,6 +95,8 @@ export class AppController implements OnModuleInit {
       message: 'PropFirm Rewards (PropNation) API is running',
       docs: '/api/docs',
       health: '/health',
+      live: '/health/live',
+      ready: '/health/ready',
     };
   }
 }

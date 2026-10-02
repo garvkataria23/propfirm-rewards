@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsString, NotEquals } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, NotEquals } from 'class-validator';
 
 export class AdminAdjustPointsDto {
   @IsInt({ message: 'Points adjustment must be a non-zero integer' })
@@ -12,4 +12,8 @@ export class AdminAdjustPointsDto {
   @IsString()
   @IsNotEmpty({ message: 'Description is required' })
   description: string;
+
+  @IsOptional()
+  @IsString()
+  idempotencyKey?: string;
 }

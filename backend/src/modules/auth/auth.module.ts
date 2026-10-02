@@ -5,11 +5,13 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 
+import { getJwtSecret } from '../../common/config/jwt.config';
+
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'REDACTED_JWT_SECRET',
+      secret: getJwtSecret(),
       signOptions: { expiresIn: '7d' },
     }),
   ],

@@ -178,7 +178,7 @@ DATABASE_URL="file:./dev.db"
 # For Neon / Supabase / Railway PostgreSQL:
 # DATABASE_URL="postgresql://user:password@ep-sample-pool.us-east-2.aws.neon.tech/propfirm?sslmode=require"
 
-JWT_SECRET="REDACTED_JWT_SECRET"
+JWT_SECRET="replace_with_a_secure_random_64_char_secret_in_production"
 JWT_EXPIRES_IN="7d"
 CORS_ORIGIN="http://localhost:3000"
 

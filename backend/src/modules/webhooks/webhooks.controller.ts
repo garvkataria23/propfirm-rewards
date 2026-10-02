@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Param, Body, Query, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Param, Body, Query, Headers, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { WebhooksService, AffiliateWebhookPayload } from './webhooks.service';
 
@@ -9,23 +9,41 @@ export class WebhooksController {
 
   @Post(':slug')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Universal POST postback webhook for prop firm affiliate conversions' })
+  @ApiOperation({ summary: 'HMAC-authenticated POST postback webhook for prop firm affiliate conversions' })
   async handlePostbackPost(
     @Param('slug') slug: string,
     @Body() body: AffiliateWebhookPayload,
     @Query() query: AffiliateWebhookPayload,
+    @Headers('x-signature') sigHeader?: string,
+    @Headers('x-webhook-signature') altSigHeader?: string,
+    @Headers('x-webhook-timestamp') timestampHeader?: string,
   ) {
     const combinedPayload = { ...query, ...body };
-    return this.webhooksService.handleAffiliatePostback(slug, combinedPayload);
+    const signature = sigHeader || altSigHeader || combinedPayload.signature;
+    const timestamp = timestampHeader || combinedPayload.timestamp;
+
+    return this.webhooksService.handleAffiliatePostback(slug, combinedPayload, {
+      signature,
+      timestamp,
+    });
   }
 
   @Get(':slug')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Universal GET postback webhook for prop firm affiliate conversions' })
+  @ApiOperation({ summary: 'HMAC-authenticated GET postback webhook for prop firm affiliate conversions' })
   async handlePostbackGet(
     @Param('slug') slug: string,
     @Query() query: AffiliateWebhookPayload,
+    @Headers('x-signature') sigHeader?: string,
+    @Headers('x-webhook-signature') altSigHeader?: string,
+    @Headers('x-webhook-timestamp') timestampHeader?: string,
   ) {
-    return this.webhooksService.handleAffiliatePostback(slug, query);
+    const signature = sigHeader || altSigHeader || query.signature;
+    const timestamp = timestampHeader || query.timestamp;
+
+    return this.webhooksService.handleAffiliatePostback(slug, query, {
+      signature,
+      timestamp,
+    });
   }
 }

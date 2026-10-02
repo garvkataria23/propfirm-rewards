@@ -23,6 +23,7 @@ model User {
   department    String?   // GENERAL, SUPPORT, BILLING, KYC, VIP
   permissions   String?   // JSON array of granular permissions
   emailVerified Boolean   @default(false)
+  pointsBalance Int       @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -91,7 +92,7 @@ model PropFirmOffer {
   id               String               @id @default(uuid())
   propFirmId       String
   accountTierName  String
-  purchasePriceUsd Float
+  purchasePriceUsd Decimal              @db.Decimal(12, 2)
   rewardPoints     Int
   description      String?
   isActive         Boolean              @default(true)
@@ -116,7 +117,7 @@ model PurchaseSubmission {
   orderId              String
   accountId            String?
   purchaseDate         DateTime
-  purchaseAmountUsd    Float
+  purchaseAmountUsd    Decimal         @db.Decimal(12, 2)
   emailUsed            String
   referralCodeUsed     String
   notes                String?
@@ -138,6 +139,7 @@ model PurchaseSubmission {
   proofs               PurchaseProof[]
   pointsLedger         PointsLedger[]
 
+  @@unique([propFirmId, orderId])
   @@index([userId])
   @@index([propFirmId])
   @@index([orderId])
@@ -160,17 +162,21 @@ model PurchaseProof {
 }
 
 model PointsLedger {
-  id           String              @id @default(uuid())
-  userId       String
-  submissionId String?
-  redemptionId String?
-  type         String
-  points       Int
-  balanceAfter Int
-  description  String
-  reason       String?
-  createdById  String?
-  createdAt    DateTime            @default(now())
+  id             String              @id @default(uuid())
+  userId         String
+  submissionId   String?
+  redemptionId   String?
+  type           String
+  points         Int
+  balanceBefore  Int                 @default(0)
+  balanceAfter   Int
+  description    String
+  reason         String?
+  referenceType  String?
+  referenceId    String?
+  idempotencyKey String?             @unique
+  createdById    String?
+  createdAt      DateTime            @default(now())
 
   user         User                @relation("UserPoints", fields: [userId], references: [id], onDelete: Cascade)
   submission   PurchaseSubmission? @relation(fields: [submissionId], references: [id])
@@ -180,6 +186,7 @@ model PointsLedger {
   @@index([userId])
   @@index([type])
   @@index([createdAt])
+  @@index([idempotencyKey])
 }
 
 model RewardCategory {
@@ -336,4 +343,19 @@ model ChatMessage {
   @@index([createdAt])
   @@index([isInternalNote])
 }
+
+model WebhookEvent {
+  id          String   @id @default(uuid())
+  provider    String
+  eventId     String   @unique
+  signature   String
+  payload     String
+  status      String   @default("PROCESSED") // PROCESSED, FAILED, IGNORED
+  processedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([provider, eventId])
+  @@index([createdAt])
+}
+
 

@@ -201,6 +201,11 @@ export class UsersService {
       throw new ConflictException('A user with this email address already exists');
     }
 
+    if (dto.role === 'SUPER_ADMIN') {
+      throw new BadRequestException('Creating additional Super Administrator accounts via admin panel is prohibited');
+    }
+
+    const initialPoints = dto.initialPoints ? Number(dto.initialPoints) : 0;
     const passwordHash = await bcrypt.hash(dto.password, 10);
     const user = await this.prisma.user.create({
       data: {
@@ -212,24 +217,28 @@ export class UsersService {
         role: dto.role || 'USER',
         status: dto.status || 'ACTIVE',
         emailVerified: true,
+        pointsBalance: initialPoints,
       },
     });
 
     let initialBalance = 0;
-    if (dto.initialPoints && Number(dto.initialPoints) > 0) {
-      const points = Number(dto.initialPoints);
+    if (initialPoints > 0) {
       await this.prisma.pointsLedger.create({
         data: {
           userId: user.id,
           type: 'ADMIN_CREDIT',
-          points,
-          balanceAfter: points,
+          points: initialPoints,
+          balanceBefore: 0,
+          balanceAfter: initialPoints,
+          referenceType: 'ADMIN_INIT',
+          referenceId: adminId,
+          idempotencyKey: `user-init-${user.id}`,
           description: dto.notes || 'Initial signup / welcome points assigned by admin',
           reason: 'Manual account creation with bonus points',
           createdById: adminId,
         },
       });
-      initialBalance = points;
+      initialBalance = initialPoints;
     }
 
     // Audit Log
@@ -261,6 +270,14 @@ export class UsersService {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+
+    if (user.id === adminId && dto.role && dto.role !== user.role) {
+      throw new BadRequestException('Self-role modification is strictly prohibited');
+    }
+
+    if (user.role === 'SUPER_ADMIN' && dto.role && dto.role !== 'SUPER_ADMIN') {
+      throw new BadRequestException('The Super Administrator account cannot be demoted');
     }
 
     // Check unique email if email is being changed
@@ -366,8 +383,12 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    if (user.role === 'ADMIN' && user.id === adminId) {
-      throw new BadRequestException('You cannot delete your own admin account');
+    if (user.role === 'SUPER_ADMIN') {
+      throw new BadRequestException('Super Administrator accounts are permanently protected and cannot be deleted');
+    }
+
+    if (user.id === adminId) {
+      throw new BadRequestException('You cannot delete your own staff account');
     }
 
     // Delete user (cascade will delete points, submissions, addresses, etc.)

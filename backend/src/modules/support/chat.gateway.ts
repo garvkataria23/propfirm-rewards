@@ -8,23 +8,42 @@ import {
   ConnectedSocket,
   MessageBody,
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from '../../prisma/prisma.service';
 import { SupportService } from './support.service';
 import { TicketStatus } from './support.dto';
+import { getJwtSecret } from '../../common/config/jwt.config';
 
-interface ActiveUser {
-  userId: string;
+interface AuthenticatedUser {
+  id: string;
   name: string;
+  email: string;
   role: string;
-  avatarUrl?: string;
-  socketId: string;
+  status: string;
+  avatarUrl?: string | null;
 }
+
+const STAFF_ROLES = ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER'];
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST'],
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+      // Allow local and configured domains
+      if (!origin) return callback(null, true);
+      const configured = process.env.CORS_ORIGIN || '';
+      const allowed = configured.split(',').map((s) => s.trim());
+      if (
+        allowed.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.onrender.com') ||
+        origin.includes('localhost')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   },
   transports: ['websocket', 'polling'],
@@ -34,76 +53,188 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   server: Server;
 
   private logger = new Logger('ChatGateway');
-  private onlineUsers = new Map<string, ActiveUser>(); // socketId -> ActiveUser
-  private typingTimeouts = new Map<string, NodeJS.Timeout>(); // key: `${ticketId}_${userId}`
+  private onlineUsers = new Map<string, { user: AuthenticatedUser; socketId: string }>();
+  private messageRateLimits = new Map<string, { count: number; resetAt: number }>();
+  private typingTimeouts = new Map<string, NodeJS.Timeout>();
 
-  constructor(private readonly supportService: SupportService) {}
+  constructor(
+    private readonly supportService: SupportService,
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  afterInit(server: Server) {
-    this.logger.log('🚀 WebSocket Live Chat Gateway Initialized');
+  afterInit() {
+    this.logger.log('🛡️ Authenticated WebSocket Chat Gateway Initialized');
   }
 
-  handleConnection(client: Socket) {
-    this.logger.log(`🔌 Client connected: ${client.id}`);
+  async handleConnection(client: Socket) {
+    try {
+      // 1. Extract token from handshake auth, query, or headers
+      const rawToken =
+        client.handshake.auth?.token ||
+        client.handshake.headers?.authorization?.replace(/^Bearer\s+/i, '') ||
+        (client.handshake.query?.token as string);
+
+      if (!rawToken || typeof rawToken !== 'string') {
+        this.logger.warn(`[Socket ${client.id}] Connection rejected: No JWT provided.`);
+        client.emit('auth_error', { message: 'Authentication required. No JWT provided.' });
+        client.disconnect(true);
+        return;
+      }
+
+      // 2. Cryptographic JWT verification
+      const payload = this.jwtService.verify(rawToken, { secret: getJwtSecret() });
+      if (!payload?.sub) {
+        this.logger.warn(`[Socket ${client.id}] Connection rejected: Invalid JWT sub.`);
+        client.emit('auth_error', { message: 'Invalid authentication session.' });
+        client.disconnect(true);
+        return;
+      }
+
+      // 3. Verify user in database
+      const user = await this.prisma.user.findUnique({
+        where: { id: payload.sub },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          status: true,
+          avatarUrl: true,
+        },
+      });
+
+      if (!user) {
+        this.logger.warn(`[Socket ${client.id}] Connection rejected: User not found in database.`);
+        client.emit('auth_error', { message: 'User account not found.' });
+        client.disconnect(true);
+        return;
+      }
+
+      if (user.status === 'SUSPENDED') {
+        this.logger.warn(`[Socket ${client.id}] Connection rejected: User ${user.email} is suspended.`);
+        client.emit('auth_error', { message: 'Account is suspended.' });
+        client.disconnect(true);
+        return;
+      }
+
+      // 4. Attach verified server-derived identity to socket
+      client.data.user = user;
+      this.onlineUsers.set(client.id, { user, socketId: client.id });
+
+      this.logger.log(`🔌 Client connected & authenticated: ${user.name} [${user.role}] (${client.id})`);
+
+      client.emit('authenticated', {
+        success: true,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+        onlineCount: this.onlineUsers.size,
+      });
+
+      this.server.emit('presence_update', {
+        userId: user.id,
+        status: 'online',
+        onlineCount: this.onlineUsers.size,
+      });
+    } catch (err: any) {
+      this.logger.warn(`[Socket ${client.id}] Connection rejected: ${err.message}`);
+      client.emit('auth_error', { message: 'Authentication failed. Please sign in again.' });
+      client.disconnect(true);
+    }
   }
 
   handleDisconnect(client: Socket) {
-    const user = this.onlineUsers.get(client.id);
-    if (user) {
-      this.logger.log(`❌ Client disconnected: ${user.name} (${user.role}) - ${client.id}`);
+    const record = this.onlineUsers.get(client.id);
+    if (record) {
       this.onlineUsers.delete(client.id);
+      this.messageRateLimits.delete(client.id);
+      this.logger.log(`❌ Client disconnected: ${record.user.name} (${client.id})`);
+
       this.server.emit('presence_update', {
-        userId: user.userId,
+        userId: record.user.id,
         status: 'offline',
         onlineCount: this.onlineUsers.size,
       });
     }
   }
 
+  private checkRateLimit(clientId: string): boolean {
+    const now = Date.now();
+    const record = this.messageRateLimits.get(clientId);
+
+    if (!record || now > record.resetAt) {
+      this.messageRateLimits.set(clientId, { count: 1, resetAt: now + 3000 });
+      return true;
+    }
+
+    record.count++;
+    if (record.count > 5) {
+      return false; // Max 5 messages per 3-second window
+    }
+    return true;
+  }
+
   @SubscribeMessage('authenticate')
-  handleAuthenticate(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: { userId: string; name: string; role: string; avatarUrl?: string },
-  ) {
-    if (!data?.userId) return;
-
-    this.onlineUsers.set(client.id, {
-      userId: data.userId,
-      name: data.name,
-      role: data.role,
-      avatarUrl: data.avatarUrl,
-      socketId: client.id,
-    });
-
-    this.logger.log(`✅ User authenticated on WebSocket: ${data.name} [${data.role}]`);
-
+  handleAuthenticate(@ConnectedSocket() client: Socket) {
+    const user: AuthenticatedUser = client.data.user;
+    if (!user) {
+      client.emit('error', { message: 'Socket unauthenticated' });
+      return;
+    }
     client.emit('authenticated', {
       success: true,
-      onlineCount: this.onlineUsers.size,
-    });
-
-    this.server.emit('presence_update', {
-      userId: data.userId,
-      status: 'online',
+      user: { id: user.id, name: user.name, role: user.role },
       onlineCount: this.onlineUsers.size,
     });
   }
 
   @SubscribeMessage('join_ticket')
-  handleJoinTicket(
+  async handleJoinTicket(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { ticketId: string; user: { id: string; name: string; role: string } },
+    @MessageBody() data: { ticketId: string },
   ) {
-    if (!data?.ticketId) return;
+    const authUser: AuthenticatedUser = client.data.user;
+    if (!authUser) {
+      client.emit('error', { message: 'Unauthenticated socket' });
+      return;
+    }
+
+    if (!data?.ticketId) {
+      client.emit('error', { message: 'Ticket ID is required' });
+      return;
+    }
+
+    // Server-side authorization check: verify ticket exists and ownership
+    const ticket = await this.prisma.supportTicket.findUnique({
+      where: { id: data.ticketId },
+      select: { id: true, userId: true },
+    });
+
+    if (!ticket) {
+      client.emit('error', { message: 'Ticket not found' });
+      return;
+    }
+
+    const isStaff = STAFF_ROLES.includes(authUser.role);
+    if (!isStaff && ticket.userId !== authUser.id) {
+      this.logger.warn(
+        `🚨 [SECURITY] User ${authUser.id} attempted unauthorized access to ticket ${data.ticketId}!`,
+      );
+      client.emit('error', { message: 'Forbidden: You do not have access to this ticket room' });
+      return;
+    }
 
     const roomName = `ticket_${data.ticketId}`;
     client.join(roomName);
-    this.logger.log(`📥 ${data.user?.name || 'Client'} joined room: ${roomName}`);
+    this.logger.log(`📥 ${authUser.name} (${authUser.role}) joined authorized room: ${roomName}`);
 
-    // Notify room that user has joined / active
     client.to(roomName).emit('user_joined_room', {
       ticketId: data.ticketId,
-      user: data.user,
+      user: { id: authUser.id, name: authUser.name, role: authUser.role },
       timestamp: new Date().toISOString(),
     });
   }
@@ -111,15 +242,16 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('leave_ticket')
   handleLeaveTicket(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { ticketId: string; user?: { id: string; name: string } },
+    @MessageBody() data: { ticketId: string },
   ) {
-    if (!data?.ticketId) return;
+    const authUser: AuthenticatedUser = client.data.user;
+    if (!authUser || !data?.ticketId) return;
 
     const roomName = `ticket_${data.ticketId}`;
     client.leave(roomName);
     client.to(roomName).emit('user_left_room', {
       ticketId: data.ticketId,
-      user: data.user,
+      user: { id: authUser.id, name: authUser.name },
     });
   }
 
@@ -130,42 +262,83 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     data: {
       ticketId: string;
       message: string;
-      senderId: string;
-      senderRole: string;
       isInternalNote?: boolean;
       attachments?: string;
     },
   ) {
+    const authUser: AuthenticatedUser = client.data.user;
+    if (!authUser) {
+      client.emit('error', { message: 'Unauthenticated socket: message rejected' });
+      return { success: false, error: 'Unauthenticated' };
+    }
+
+    // Rate limit check
+    if (!this.checkRateLimit(client.id)) {
+      client.emit('error', { message: 'Rate limit exceeded: Please wait before sending more messages.' });
+      return { success: false, error: 'Rate limit exceeded' };
+    }
+
+    // Message validation
+    if (!data?.message || typeof data.message !== 'string' || data.message.trim().length === 0) {
+      client.emit('error', { message: 'Message content cannot be empty' });
+      return { success: false, error: 'Empty message' };
+    }
+
+    if (data.message.length > 4000) {
+      client.emit('error', { message: 'Message exceeds maximum length (4000 characters)' });
+      return { success: false, error: 'Message too long' };
+    }
+
+    const isStaff = STAFF_ROLES.includes(authUser.role);
+
+    // SECURITY: Traders can NEVER author internal notes!
+    const isInternalNote = isStaff ? Boolean(data.isInternalNote) : false;
+
+    // Sender identity is derived 100% from authenticated socket, NEVER client body!
+    const senderId = authUser.id;
+    const senderRole = authUser.role;
+
     try {
       const roomName = `ticket_${data.ticketId}`;
 
-      // Persist to database
       const result = await this.supportService.addMessage(
         data.ticketId,
-        data.senderId,
-        data.senderRole,
+        senderId,
+        senderRole,
         {
-          message: data.message,
-          isInternalNote: data.isInternalNote ?? false,
+          message: data.message.trim(),
+          isInternalNote,
           attachments: data.attachments,
         },
       );
 
-      // Stop typing immediately when sent
+      // Stop typing status
       client.to(roomName).emit('user_typing', {
         ticketId: data.ticketId,
-        userId: data.senderId,
+        userId: senderId,
         isTyping: false,
       });
 
-      // Broadcast to room
-      this.server.to(roomName).emit('new_message', {
-        ticketId: data.ticketId,
-        message: result.message,
-        ticket: result.ticket,
-      });
+      // Broadcast message:
+      // If internal note, broadcast only to staff sockets
+      if (isInternalNote) {
+        for (const [sId, rec] of this.onlineUsers.entries()) {
+          if (STAFF_ROLES.includes(rec.user.role)) {
+            this.server.to(sId).emit('new_message', {
+              ticketId: data.ticketId,
+              message: result.message,
+              ticket: result.ticket,
+            });
+          }
+        }
+      } else {
+        this.server.to(roomName).emit('new_message', {
+          ticketId: data.ticketId,
+          message: result.message,
+          ticket: result.ticket,
+        });
+      }
 
-      // Also broadcast global ticket update event so admin queue counters update
       this.server.emit('ticket_activity', {
         ticketId: data.ticketId,
         lastMessage: result.message.message,
@@ -175,7 +348,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       });
 
       return { success: true, message: result.message };
-    } catch (err) {
+    } catch (err: any) {
       this.logger.error(`Error sending message: ${err.message}`);
       client.emit('error', { message: err.message });
       return { success: false, error: err.message };
@@ -185,30 +358,28 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('typing_start')
   handleTypingStart(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { ticketId: string; user: { id: string; name: string; role: string } },
+    @MessageBody() data: { ticketId: string },
   ) {
-    if (!data?.ticketId || !data?.user) return;
+    const authUser: AuthenticatedUser = client.data.user;
+    if (!authUser || !data?.ticketId) return;
 
     const roomName = `ticket_${data.ticketId}`;
-    const timeoutKey = `${data.ticketId}_${data.user.id}`;
+    const timeoutKey = `${data.ticketId}_${authUser.id}`;
 
-    // Clear any previous timeout
     if (this.typingTimeouts.has(timeoutKey)) {
       clearTimeout(this.typingTimeouts.get(timeoutKey)!);
     }
 
-    // Broadcast typing to other sockets in room
     client.to(roomName).emit('user_typing', {
       ticketId: data.ticketId,
-      user: data.user,
+      user: { id: authUser.id, name: authUser.name, role: authUser.role },
       isTyping: true,
     });
 
-    // Auto-expire typing status after 4 seconds of inactivity
     const timeout = setTimeout(() => {
       client.to(roomName).emit('user_typing', {
         ticketId: data.ticketId,
-        user: data.user,
+        user: { id: authUser.id, name: authUser.name },
         isTyping: false,
       });
       this.typingTimeouts.delete(timeoutKey);
@@ -220,12 +391,13 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('typing_stop')
   handleTypingStop(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { ticketId: string; user: { id: string; name: string } },
+    @MessageBody() data: { ticketId: string },
   ) {
-    if (!data?.ticketId || !data?.user) return;
+    const authUser: AuthenticatedUser = client.data.user;
+    if (!authUser || !data?.ticketId) return;
 
     const roomName = `ticket_${data.ticketId}`;
-    const timeoutKey = `${data.ticketId}_${data.user.id}`;
+    const timeoutKey = `${data.ticketId}_${authUser.id}`;
 
     if (this.typingTimeouts.has(timeoutKey)) {
       clearTimeout(this.typingTimeouts.get(timeoutKey)!);
@@ -234,7 +406,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     client.to(roomName).emit('user_typing', {
       ticketId: data.ticketId,
-      user: data.user,
+      user: { id: authUser.id, name: authUser.name },
       isTyping: false,
     });
   }
@@ -246,14 +418,19 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     data: {
       ticketId: string;
       assignedToId: string | null;
-      adminUser: { id: string; name: string };
     },
   ) {
+    const authUser: AuthenticatedUser = client.data.user;
+    if (!authUser || !STAFF_ROLES.includes(authUser.role)) {
+      client.emit('error', { message: 'Unauthorized: Only staff can assign tickets' });
+      return { success: false, error: 'Unauthorized' };
+    }
+
     try {
       const updated = await this.supportService.assignTicket(
         data.ticketId,
         data.assignedToId,
-        data.adminUser,
+        { id: authUser.id, name: authUser.name },
       );
 
       const roomName = `ticket_${data.ticketId}`;
@@ -270,7 +447,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       });
 
       return { success: true, ticket: updated };
-    } catch (err) {
+    } catch (err: any) {
       client.emit('error', { message: err.message });
       return { success: false, error: err.message };
     }
@@ -283,14 +460,19 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     data: {
       ticketId: string;
       status: TicketStatus;
-      adminUser: { id: string; name: string };
     },
   ) {
+    const authUser: AuthenticatedUser = client.data.user;
+    if (!authUser || !STAFF_ROLES.includes(authUser.role)) {
+      client.emit('error', { message: 'Unauthorized: Only staff can update ticket status' });
+      return { success: false, error: 'Unauthorized' };
+    }
+
     try {
       const updated = await this.supportService.updateTicketStatus(
         data.ticketId,
         data.status,
-        data.adminUser,
+        { id: authUser.id, name: authUser.name },
       );
 
       const roomName = `ticket_${data.ticketId}`;
@@ -305,7 +487,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       });
 
       return { success: true, ticket: updated };
-    } catch (err) {
+    } catch (err: any) {
       client.emit('error', { message: err.message });
       return { success: false, error: err.message };
     }

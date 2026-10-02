@@ -3,32 +3,47 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 console.log('==================================================');
-console.log('🚀 PropFirm Rewards Backend Starting...');
+console.log('🚀 PropFirm Rewards Backend Starting (Production Hardened)...');
 console.log('==================================================');
 
+const isProduction = process.env.NODE_ENV === 'production';
 const dbUrl = process.env.DATABASE_URL || '';
 
 if (dbUrl) {
   try {
-    console.log('[Runtime] Applying database migrations via prisma db push...');
-    execSync('npx prisma db push --skip-generate --accept-data-loss', { stdio: 'inherit' });
-    console.log('[Runtime] Database schema synced successfully.');
+    if (isProduction) {
+      console.log('[Runtime] Production mode detected. Applying migrations safely...');
+      // In production, execute prisma migrate deploy if migrations directory exists, or non-destructive db push
+      const migrationsDir = path.resolve(__dirname, '..', 'prisma', 'migrations');
+      if (fs.existsSync(migrationsDir)) {
+        execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+        console.log('[Runtime] Migrations applied safely via prisma migrate deploy.');
+      } else {
+        // Safe push without data loss
+        execSync('npx prisma db push --skip-generate', { stdio: 'inherit' });
+        console.log('[Runtime] Schema synchronized non-destructively.');
+      }
 
-    // Auto-seed if flag is on or if table is empty
-    if (process.env.AUTO_SEED === 'true' || process.env.NODE_ENV === 'production') {
-      try {
-        console.log('[Runtime] Running initial database seed...');
+      // CRITICAL: Production startup NEVER automatically runs seed or wipes database!
+      if (process.env.AUTO_SEED === 'true') {
+        console.warn('⚠️ [SECURITY] AUTO_SEED ignored in production to prevent data loss or database tampering.');
+      }
+    } else {
+      console.log('[Runtime] Development mode. Synchronizing schema...');
+      execSync('npx prisma db push --skip-generate', { stdio: 'inherit' });
+
+      // Dev-only manual seeding flag
+      if (process.env.DEV_SEED === 'true' && process.env.NODE_ENV !== 'production') {
+        console.log('[Runtime] Running development seed...');
         execSync('npx ts-node prisma/seed.ts', { stdio: 'inherit' });
-        console.log('[Runtime] Database seed finished.');
-      } catch (seedErr) {
-        console.log('[Runtime] Seed notice (records may already exist):', seedErr.message);
+        console.log('[Runtime] Development seed finished.');
       }
     }
   } catch (dbErr) {
-    console.warn('[Runtime] Warning: Database push warning:', dbErr.message);
+    console.warn('[Runtime] Warning during database migration/sync:', dbErr.message);
   }
 } else {
-  console.log('[Runtime] No DATABASE_URL specified. Running with local default.');
+  console.log('[Runtime] No DATABASE_URL specified. Running with local SQLite default.');
 }
 
 console.log('[Runtime] Launching NestJS Application Server...');

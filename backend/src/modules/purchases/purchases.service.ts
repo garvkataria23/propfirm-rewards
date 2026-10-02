@@ -342,27 +342,20 @@ export class PurchasesService {
     // Calculate points: offer points or custom admin override points
     const pointsToAward = dto.customPoints !== undefined && dto.customPoints !== null
       ? Number(dto.customPoints)
-      : (submission.pointsAwarded || submission.offer?.rewardPoints || Math.round(submission.purchaseAmountUsd * 10));
+      : (submission.pointsAwarded || submission.offer?.rewardPoints || Math.round(Number(submission.purchaseAmountUsd) * 10));
 
     if (pointsToAward <= 0) {
       throw new BadRequestException('Points awarded must be greater than zero');
     }
 
-    // ATOMIC TRANSACTION: update submission + record points in ledger
+    // ATOMIC TRANSACTION: conditional update submission + record points in ledger
     const result = await this.prisma.$transaction(async (tx) => {
-      // 1. Get current balance
-      const lastTx = await tx.pointsLedger.findFirst({
-        where: { userId: submission.userId },
-        orderBy: { createdAt: 'desc' },
-        select: { balanceAfter: true },
-      });
-
-      const currentBalance = lastTx ? lastTx.balanceAfter : 0;
-      const newBalance = currentBalance + pointsToAward;
-
-      // 2. Update submission
-      const updatedSubmission = await tx.purchaseSubmission.update({
-        where: { id },
+      // 1. Conditional update to prevent concurrent double-approval race conditions
+      const updateResult = await tx.purchaseSubmission.updateMany({
+        where: {
+          id,
+          status: { not: 'APPROVED' },
+        },
         data: {
           status: 'APPROVED',
           pointsAwarded: pointsToAward,
@@ -372,6 +365,26 @@ export class PurchasesService {
         },
       });
 
+      if (updateResult.count === 0) {
+        throw new BadRequestException('This purchase has already been approved or processed');
+      }
+
+      // 2. Atomic user balance increment
+      await tx.$executeRaw`
+        UPDATE "User"
+        SET "pointsBalance" = "pointsBalance" + ${pointsToAward}
+        WHERE "id" = ${submission.userId}
+      `;
+
+      // Read updated balance
+      const updatedUser = await tx.user.findUnique({
+        where: { id: submission.userId },
+        select: { pointsBalance: true },
+      });
+
+      const newBalance = updatedUser?.pointsBalance ?? 0;
+      const balanceBefore = newBalance - pointsToAward;
+
       // 3. Create PointsLedger entry
       const ledgerEntry = await tx.pointsLedger.create({
         data: {
@@ -379,7 +392,11 @@ export class PurchasesService {
           submissionId: submission.id,
           type: 'PURCHASE_REWARD',
           points: pointsToAward,
+          balanceBefore,
           balanceAfter: newBalance,
+          referenceType: 'PURCHASE_APPROVAL',
+          referenceId: submission.id,
+          idempotencyKey: `sub-approve-${submission.id}`,
           description: `Verified ${submission.propFirm.name} purchase: ${submission.accountType} (Order: ${submission.orderId})`,
           createdById: adminId,
         },
@@ -407,6 +424,11 @@ export class PurchasesService {
           newValue: JSON.stringify({ status: 'APPROVED', pointsAwarded: pointsToAward }),
           notes: dto.notes || `Approved by admin. Credited ${pointsToAward} points.`,
         },
+      });
+
+      const updatedSubmission = await tx.purchaseSubmission.findUnique({
+        where: { id },
+        include: { propFirm: true, offer: true, user: true },
       });
 
       return { updatedSubmission, ledgerEntry, newBalance };
@@ -492,20 +514,14 @@ export class PurchasesService {
       const pointsToAward =
         submission.pointsAwarded ||
         submission.offer?.rewardPoints ||
-        Math.round(submission.purchaseAmountUsd * 10);
+        Math.round(Number(submission.purchaseAmountUsd) * 10);
 
       await this.prisma.$transaction(async (tx) => {
-        const lastTx = await tx.pointsLedger.findFirst({
-          where: { userId: submission.userId },
-          orderBy: { createdAt: 'desc' },
-          select: { balanceAfter: true },
-        });
-
-        const currentBalance = lastTx ? lastTx.balanceAfter : 0;
-        const newBalance = currentBalance + pointsToAward;
-
-        await tx.purchaseSubmission.update({
-          where: { id: submission.id },
+        const updateResult = await tx.purchaseSubmission.updateMany({
+          where: {
+            id: submission.id,
+            status: { not: 'APPROVED' },
+          },
           data: {
             status: 'APPROVED',
             pointsAwarded: pointsToAward,
@@ -515,13 +531,36 @@ export class PurchasesService {
           },
         });
 
+        if (updateResult.count === 0) {
+          return;
+        }
+
+        // Atomic user balance increment
+        await tx.$executeRaw`
+          UPDATE "User"
+          SET "pointsBalance" = "pointsBalance" + ${pointsToAward}
+          WHERE "id" = ${submission.userId}
+        `;
+
+        const updatedUser = await tx.user.findUnique({
+          where: { id: submission.userId },
+          select: { pointsBalance: true },
+        });
+
+        const newBalance = updatedUser?.pointsBalance ?? 0;
+        const balanceBefore = newBalance - pointsToAward;
+
         await tx.pointsLedger.create({
           data: {
             userId: submission.userId,
             submissionId: submission.id,
             type: 'PURCHASE_REWARD',
             points: pointsToAward,
+            balanceBefore,
             balanceAfter: newBalance,
+            referenceType: 'CSV_RECONCILIATION',
+            referenceId: submission.id,
+            idempotencyKey: `csv-rec-${submission.id}`,
             description: `Batch CSV Reconciled: ${submission.propFirm.name} - ${submission.accountType}`,
             createdById: adminId,
           },
@@ -713,13 +752,18 @@ export class PurchasesService {
       });
 
       if (status === 'APPROVED' && pointsToAward > 0) {
-        const lastTx = await tx.pointsLedger.findFirst({
-          where: { userId: dto.userId },
-          orderBy: { createdAt: 'desc' },
-          select: { balanceAfter: true },
+        await tx.$executeRaw`
+          UPDATE "User"
+          SET "pointsBalance" = "pointsBalance" + ${pointsToAward}
+          WHERE "id" = ${dto.userId}
+        `;
+
+        const updatedUser = await tx.user.findUnique({
+          where: { id: dto.userId },
+          select: { pointsBalance: true },
         });
-        const currentBalance = lastTx ? lastTx.balanceAfter : 0;
-        const newBalance = currentBalance + pointsToAward;
+        const newBalance = updatedUser?.pointsBalance ?? 0;
+        const balanceBefore = newBalance - pointsToAward;
 
         await tx.pointsLedger.create({
           data: {
@@ -727,7 +771,11 @@ export class PurchasesService {
             submissionId: created.id,
             type: 'PURCHASE_REWARD',
             points: pointsToAward,
+            balanceBefore,
             balanceAfter: newBalance,
+            referenceType: 'ADMIN_MANUAL_CREATE',
+            referenceId: created.id,
+            idempotencyKey: `sub-create-${created.id}`,
             description: `Admin Verified: ${propFirm.name} - ${dto.accountType}`,
             reason: 'Manual order entry by Admin',
             createdById: adminId,

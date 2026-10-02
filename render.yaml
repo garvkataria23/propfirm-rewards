@@ -13,16 +13,20 @@ services:
       - key: PORT
         value: 10000
       - key: DATABASE_URL
-        value: REDACTED_DATABASE_URL
+        sync: false
       - key: SUPABASE_URL
-        value: https://icqkfaurtrkqeqlcegvu.supabase.co
+        sync: false
       - key: SUPABASE_KEY
-        value: REDACTED_SUPABASE_KEY
+        sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
-        value: REDACTED_SERVICE_ROLE_KEY
+        sync: false
       - key: JWT_SECRET
-        value: REDACTED_JWT_SECRET
+        sync: false
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: CORS_ORIGIN
-        value: https://frontend-eta-beryl-ezh34u4upe.vercel.app,http://localhost:3000
+        sync: false
+      - key: WEBHOOK_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false

@@ -71,7 +71,9 @@ async function bootstrap() {
   // Apply rate limiter on sensitive endpoints (brute-force defense)
   app.use('/auth/login', rateLimiterMiddleware(10, 60 * 1000)); // max 10 login attempts / min
   app.use('/auth/register', rateLimiterMiddleware(5, 60 * 1000)); // max 5 registrations / min
-  app.use('/redemptions', rateLimiterMiddleware(20, 60 * 1000)); // max 20 redemption calls / min
+  app.use('/auth/google', rateLimiterMiddleware(10, 60 * 1000)); // max 10 google auth / min
+  app.use('/redemptions', rateLimiterMiddleware(15, 60 * 1000)); // max 15 redemption calls / min
+  app.use('/webhooks', rateLimiterMiddleware(60, 60 * 1000)); // max 60 webhook events / min
 
   // Enable CORS with secure origin checks
   app.enableCors({
@@ -94,11 +96,16 @@ async function bootstrap() {
         return callback(null, true);
       }
 
-      return callback(null, true); // Fallback to avoid breaking valid trader web clients
+      // In production, reject unallowed origins strictly
+      if (process.env.NODE_ENV === 'production') {
+        return callback(new Error(`Origin ${origin} not allowed by CORS security policy`));
+      }
+
+      return callback(null, true);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Signature', 'X-Webhook-Signature', 'X-Webhook-Timestamp'],
   });
 
   // Global validation pipe with whitelist stripping
@@ -117,23 +124,30 @@ async function bootstrap() {
   }
   app.use('/uploads', express.static(uploadDir));
 
-  // Swagger OpenAPI Documentation
-  const config = new DocumentBuilder()
-    .setTitle('PropFirm Affiliate Rewards API')
-    .setDescription(
-      'Complete production-ready backend API for PropFirm referral tracking, purchase verification, points ledger, and reward redemptions.',
-    )
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
-
   const port = process.env.PORT || 4000;
+  const isProd = process.env.NODE_ENV === 'production';
+  const enableSwagger = process.env.ENABLE_SWAGGER === 'true' || !isProd;
+
+  // Swagger OpenAPI Documentation (gated in production)
+  if (enableSwagger) {
+    const config = new DocumentBuilder()
+      .setTitle('PropFirm Affiliate Rewards API')
+      .setDescription(
+        'Complete production-ready backend API for PropFirm referral tracking, purchase verification, points ledger, and reward redemptions.',
+      )
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
+    logger.log(`📚 Swagger API Docs available at http://localhost:${port}/api/docs`);
+  } else {
+    logger.log('🔒 Swagger API Docs disabled in production environment for security hardening');
+  }
+
   await app.listen(port, '0.0.0.0');
   logger.log(`🚀 PropFirm Rewards Backend running on http://0.0.0.0:${port}`);
-  logger.log(`📚 Swagger API Docs available at http://localhost:${port}/api/docs`);
 }
 
 bootstrap();

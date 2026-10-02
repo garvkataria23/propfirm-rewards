@@ -60,7 +60,7 @@ export default function LoginPage() {
 
     try {
       const loggedUser = await login(email, password, rememberMe);
-      if (loggedUser.role === 'ADMIN') {
+      if (isAdminRole(loggedUser.role)) {
         router.push('/admin');
       } else {
         router.push('/dashboard');
@@ -72,11 +72,12 @@ export default function LoginPage() {
     }
   };
 
-  const handleQuickLogin = (demoEmail: string, demoPass: string) => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-    setError(null);
-  };
+  const showDevQuickFill =
+    process.env.NODE_ENV !== 'production' &&
+    process.env.NEXT_PUBLIC_ENABLE_DEV_FAST_FILL === 'true';
+
+  const isAdminRole = (role?: string) =>
+    ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER'].includes(role || '');
 
   if (autoRedirecting || (user && !authLoading)) {
     return (
@@ -133,38 +134,48 @@ export default function LoginPage() {
           <span>256-Bit SSL Encrypted • Rate-Limit &amp; Brute-Force Protected</span>
         </div>
 
-        {/* Demo Fast-Fill Box */}
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 p-3.5 space-y-2.5 shadow-xs">
-          <div className="text-[11px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 flex items-center justify-between">
-            <span>Instant Demo Quick-Fill</span>
-            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">Pre-seeded accounts</span>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => handleQuickLogin('trader@example.com', 'Trader@123456')}
-              className="text-left p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all text-xs cursor-pointer"
-            >
-              <div className="font-semibold text-slate-900 dark:text-white flex items-center gap-1">
-                <User className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                Demo Trader
-              </div>
-              <div className="text-[10px] text-slate-500 truncate">trader@example.com</div>
-            </button>
+        {/* Development Fast-Fill Box (Excluded in Production) */}
+        {showDevQuickFill && (
+          <div className="rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-500/5 p-3.5 space-y-2.5 shadow-xs">
+            <div className="text-[11px] uppercase tracking-wider font-bold text-amber-600 dark:text-amber-400 flex items-center justify-between">
+              <span>Dev Quick-Fill (Local Dev Only)</span>
+              <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">Development Only</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('trader@example.com');
+                  setPassword('Trader@123456');
+                  setError(null);
+                }}
+                className="text-left p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all text-xs cursor-pointer"
+              >
+                <div className="font-semibold text-slate-900 dark:text-white flex items-center gap-1">
+                  <User className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                  Demo Trader
+                </div>
+                <div className="text-[10px] text-slate-500 truncate">trader@example.com</div>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => handleQuickLogin('admin@propfirmrewards.com', 'Admin@123456')}
-              className="text-left p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-purple-500/50 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all text-xs cursor-pointer"
-            >
-              <div className="font-semibold text-purple-700 dark:text-purple-300 flex items-center gap-1">
-                <KeyRound className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
-                Platform Admin
-              </div>
-              <div className="text-[10px] text-slate-500 truncate">admin@propfirmrewards.com</div>
-            </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('admin@propfirmrewards.com');
+                  setPassword('Admin@123456');
+                  setError(null);
+                }}
+                className="text-left p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-purple-500/50 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all text-xs cursor-pointer"
+              >
+                <div className="font-semibold text-purple-700 dark:text-purple-300 flex items-center gap-1">
+                  <KeyRound className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+                  Platform Admin
+                </div>
+                <div className="text-[10px] text-slate-500 truncate">admin@propfirmrewards.com</div>
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Login Form Card */}
         <Card className="p-6 sm:p-7 space-y-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">

@@ -2,17 +2,17 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { api } from '@/lib/api';
-import { userDataStore } from '@/lib/userDataStore';
 
 export interface UserProfile {
   id: string;
   email: string;
   name: string;
-  role: 'USER' | 'ADMIN';
+  role: 'USER' | 'ADMIN' | 'SUPER_ADMIN' | 'SUPPORT_LEAD' | 'SUPPORT_AGENT' | 'FINANCE_OFFICER';
   status: 'ACTIVE' | 'SUSPENDED' | 'PENDING';
   phone?: string;
   country?: string;
   avatarUrl?: string;
+  department?: string;
   points?: {
     available: number;
     pending: number;
@@ -28,7 +28,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string, rememberLogin?: boolean) => Promise<UserProfile>;
   loginWithGoogle: (
-    googleData: { email: string; name: string; avatarUrl?: string },
+    googleData: { credential?: string; idToken?: string; email?: string; name?: string; avatarUrl?: string },
     rememberLogin?: boolean
   ) => Promise<UserProfile>;
   register: (data: { email: string; password: string; name: string; phone?: string; country?: string }) => Promise<UserProfile>;
@@ -43,35 +43,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const buildLocalProfile = useCallback((email: string, name?: string, avatarUrl?: string): UserProfile => {
-    const isAdmin = email.toLowerCase().includes('admin');
-    const available = userDataStore.calculateAvailablePoints(email);
-    const pending = userDataStore.calculatePendingPoints(email);
-    const redemptions = userDataStore.getUserRedemptions(email);
-
-    let displayName = name;
-    if (!displayName) {
-      if (email.toLowerCase().includes('trader')) displayName = 'Demo Trader';
-      else if (email.toLowerCase().includes('garv')) displayName = 'Garv Gautam Kataria';
-      else if (isAdmin) displayName = 'Platform Administrator';
-      else displayName = email.split('@')[0];
+  const clearAuthSession = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('propfirm_token');
+      localStorage.removeItem('propfirm_remember_login');
+      sessionStorage.removeItem('propfirm_token');
     }
-
-    return {
-      id: isAdmin ? 'admin-id' : `usr-${Math.abs(email.split('').reduce((a, b) => (a << 5) - a + b.charCodeAt(0), 0))}`,
-      email: email.toLowerCase().trim(),
-      name: displayName,
-      role: isAdmin ? 'ADMIN' : 'USER',
-      status: 'ACTIVE',
-      country: 'India',
-      phone: '+91 98765 43210',
-      avatarUrl: avatarUrl || undefined,
-      points: {
-        available: isAdmin ? 50000 : available,
-        pending: isAdmin ? 0 : pending,
-      },
-      activeRedemptionsCount: redemptions.filter((r) => r.status === 'SHIPPED' || r.status === 'PROCESSING').length,
-    };
+    setUser(null);
+    setToken(null);
   }, []);
 
   const refreshUser = useCallback(async () => {
@@ -80,39 +59,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         ? localStorage.getItem('propfirm_token') || sessionStorage.getItem('propfirm_token')
         : null;
 
-    const savedEmail =
-      typeof window !== 'undefined'
-        ? localStorage.getItem('propfirm_saved_email')
-        : null;
+    if (!savedToken) {
+      clearAuthSession();
+      setIsLoading(false);
+      return;
+    }
 
-    if (!savedToken && !savedEmail) {
-      setUser(null);
-      setToken(null);
+    // Reject known legacy demo or sample tokens immediately
+    if (savedToken.includes('demo_jwt_token') || savedToken.includes('google_auth_token_sample')) {
+      clearAuthSession();
       setIsLoading(false);
       return;
     }
 
     try {
-      if (savedToken && savedToken !== 'demo_jwt_token_sample' && savedToken !== 'google_auth_token_sample') {
-        const profile = await api.get<UserProfile>('/auth/me');
-        if (profile) {
-          setUser(profile);
-          setToken(savedToken);
-          return;
-        }
+      const profile = await api.get<UserProfile>('/auth/me');
+      if (profile && profile.id) {
+        setUser(profile);
+        setToken(savedToken);
+      } else {
+        clearAuthSession();
       }
-      // Fallback to local profile bound to saved email
-      const localProfile = buildLocalProfile(savedEmail || 'trader@example.com');
-      setUser(localProfile);
-      setToken(savedToken || 'demo_jwt_token_sample');
     } catch {
-      const localProfile = buildLocalProfile(savedEmail || 'trader@example.com');
-      setUser(localProfile);
-      setToken(savedToken || 'demo_jwt_token_sample');
+      // In production, an expired or invalid token clears authentication completely
+      clearAuthSession();
     } finally {
       setIsLoading(false);
     }
-  }, [buildLocalProfile]);
+  }, [clearAuthSession]);
 
   useEffect(() => {
     refreshUser();
@@ -128,6 +102,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
       });
 
+      if (!response?.token) {
+        throw new Error('Authentication failed: No token received from server');
+      }
+
       if (rememberLogin) {
         localStorage.setItem('propfirm_token', response.token);
         localStorage.setItem('propfirm_remember_login', 'true');
@@ -141,44 +119,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const profile = await api.get<UserProfile>('/auth/me');
       setUser(profile);
       return profile;
-    } catch {
-      // Local persistent profile fallback
-      const localProfile = buildLocalProfile(cleanEmail);
-
-      if (rememberLogin) {
-        localStorage.setItem('propfirm_token', 'demo_jwt_token_sample');
-        localStorage.setItem('propfirm_remember_login', 'true');
-        localStorage.setItem('propfirm_saved_email', cleanEmail);
-      } else {
-        sessionStorage.setItem('propfirm_token', 'demo_jwt_token_sample');
-        localStorage.removeItem('propfirm_remember_login');
-      }
-      setToken('demo_jwt_token_sample');
-      setUser(localProfile);
-      return localProfile;
+    } catch (err: any) {
+      clearAuthSession();
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        'Authentication failed. Please verify your credentials.';
+      throw new Error(message);
     } finally {
       setIsLoading(false);
     }
   };
 
   const loginWithGoogle = async (
-    googleData: { email: string; name: string; avatarUrl?: string },
+    googleData: { credential?: string; idToken?: string; email?: string; name?: string; avatarUrl?: string },
     rememberLogin: boolean = true
   ): Promise<UserProfile> => {
     setIsLoading(true);
-    const cleanEmail = googleData.email.toLowerCase().trim();
 
     try {
-      const response = await api.post<{ token: string; user: UserProfile }>('/auth/google', {
-        email: cleanEmail,
+      // Pass the cryptographic credential token to backend
+      const payload = {
+        credential: googleData.credential || googleData.idToken,
+        idToken: googleData.idToken || googleData.credential,
+        email: googleData.email,
         name: googleData.name,
         avatarUrl: googleData.avatarUrl,
-      });
+      };
+
+      const response = await api.post<{ token: string; user: UserProfile }>('/auth/google', payload);
+
+      if (!response?.token) {
+        throw new Error('Google authentication failed: No session token received');
+      }
 
       if (rememberLogin) {
         localStorage.setItem('propfirm_token', response.token);
         localStorage.setItem('propfirm_remember_login', 'true');
-        localStorage.setItem('propfirm_saved_email', cleanEmail);
+        if (response.user?.email) {
+          localStorage.setItem('propfirm_saved_email', response.user.email);
+        }
       } else {
         sessionStorage.setItem('propfirm_token', response.token);
         localStorage.removeItem('propfirm_remember_login');
@@ -188,21 +168,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const profile = await api.get<UserProfile>('/auth/me');
       setUser(profile);
       return profile;
-    } catch {
-      // Graceful local profile fallback for Google auth
-      const localProfile = buildLocalProfile(cleanEmail, googleData.name, googleData.avatarUrl);
-
-      if (rememberLogin) {
-        localStorage.setItem('propfirm_token', 'google_auth_token_sample');
-        localStorage.setItem('propfirm_remember_login', 'true');
-        localStorage.setItem('propfirm_saved_email', cleanEmail);
-      } else {
-        sessionStorage.setItem('propfirm_token', 'google_auth_token_sample');
-        localStorage.removeItem('propfirm_remember_login');
-      }
-      setToken('google_auth_token_sample');
-      setUser(localProfile);
-      return localProfile;
+    } catch (err: any) {
+      clearAuthSession();
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        'Google authentication failed. Please try again.';
+      throw new Error(message);
     } finally {
       setIsLoading(false);
     }
@@ -219,7 +191,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const cleanEmail = data.email.toLowerCase().trim();
 
     try {
-      const response = await api.post<{ token: string; user: UserProfile }>('/auth/register', data);
+      const response = await api.post<{ token: string; user: UserProfile }>('/auth/register', {
+        ...data,
+        email: cleanEmail,
+      });
+
+      if (!response?.token) {
+        throw new Error('Registration failed: No session token returned');
+      }
+
       localStorage.setItem('propfirm_token', response.token);
       localStorage.setItem('propfirm_remember_login', 'true');
       localStorage.setItem('propfirm_saved_email', cleanEmail);
@@ -228,27 +208,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const profile = await api.get<UserProfile>('/auth/me');
       setUser(profile);
       return profile;
-    } catch {
-      const localProfile = buildLocalProfile(cleanEmail, data.name);
-      localStorage.setItem('propfirm_token', 'demo_jwt_token_sample');
-      localStorage.setItem('propfirm_remember_login', 'true');
-      localStorage.setItem('propfirm_saved_email', cleanEmail);
-      setToken('demo_jwt_token_sample');
-      setUser(localProfile);
-      return localProfile;
+    } catch (err: any) {
+      clearAuthSession();
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        'Registration failed. Please check your details.';
+      throw new Error(message);
     } finally {
       setIsLoading(false);
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('propfirm_token');
-    localStorage.removeItem('propfirm_remember_login');
-    sessionStorage.removeItem('propfirm_token');
-    setUser(null);
-    setToken(null);
+    clearAuthSession();
     if (typeof window !== 'undefined') {
-      window.location.href = '/';
+      window.location.href = '/login';
     }
   };
 
