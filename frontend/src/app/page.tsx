@@ -760,55 +760,60 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             {/* Left: Fintech Wallet Card */}
-            <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 space-y-6 shadow-xs">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  Wallet Ledger Preview
-                </span>
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5" /> Synchronized
-                </span>
+            <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 space-y-6 shadow-xs flex flex-col justify-between h-full">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Wallet Ledger Preview
+                  </span>
+                  <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                    <CheckCircle2 className="h-3.5 w-3.5" /> Synchronized
+                  </span>
+                </div>
+
+                {/* Large points balance display */}
+                <div className="space-y-1">
+                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    Total Points Accumulated
+                  </div>
+                  <div className="text-4xl sm:text-5xl font-[900] text-slate-900 dark:text-white tracking-tight font-mono">
+                    12,500 <span className="text-lg text-emerald-600 dark:text-emerald-400 font-sans font-bold">POINTS</span>
+                  </div>
+                </div>
+
+                {/* Transaction list */}
+                <div className="space-y-2.5 pt-1">
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
+                    <div>
+                      <div className="font-semibold text-slate-800 dark:text-slate-200">Purchase Verified</div>
+                      <div className="text-[10px] text-slate-500">FundedNext $50K Challenge</div>
+                    </div>
+                    <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-sm">+2,500</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
+                    <div>
+                      <div className="font-semibold text-slate-800 dark:text-slate-200">Account Onboarding Bonus</div>
+                      <div className="text-[10px] text-slate-500">Early Member Tier</div>
+                    </div>
+                    <span className="font-mono font-bold text-blue-600 dark:text-blue-400 text-sm">+1,000</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
+                    <div>
+                      <div className="font-semibold text-slate-800 dark:text-slate-200">Reward Redemption</div>
+                      <div className="text-[10px] text-slate-500">Global Digital Gift Card</div>
+                    </div>
+                    <span className="font-mono font-bold text-rose-600 dark:text-rose-400 text-sm">-5,000</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Large points balance display */}
-              <div className="space-y-1">
-                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Total Points Accumulated
-                </div>
-                <div className="text-4xl sm:text-5xl font-[900] text-slate-900 dark:text-white tracking-tight font-mono">
-                  12,500 <span className="text-lg text-emerald-600 dark:text-emerald-400 font-sans font-bold">POINTS</span>
-                </div>
-              </div>
-
-              {/* Transaction list */}
-              <div className="space-y-2.5 pt-2">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
-                  <div>
-                    <div className="font-semibold text-slate-800 dark:text-slate-200">Purchase Verified</div>
-                    <div className="text-[10px] text-slate-500">FundedNext $50K Challenge</div>
-                  </div>
-                  <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-sm">+2,500</span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
-                  <div>
-                    <div className="font-semibold text-slate-800 dark:text-slate-200">Account Onboarding Bonus</div>
-                    <div className="text-[10px] text-slate-500">Early Member Tier</div>
-                  </div>
-                  <span className="font-mono font-bold text-blue-600 dark:text-blue-400 text-sm">+1,000</span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 text-xs">
-                  <div>
-                    <div className="font-semibold text-slate-800 dark:text-slate-200">Reward Redemption</div>
-                    <div className="text-[10px] text-slate-500">Global Digital Gift Card</div>
-                  </div>
-                  <span className="font-mono font-bold text-rose-600 dark:text-rose-400 text-sm">-5,000</span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-100/90 dark:bg-slate-950 border border-slate-300/80 dark:border-slate-700/80 text-xs">
+              {/* Bottom aligned balance bar */}
+              <div className="pt-2">
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-100/90 dark:bg-slate-950 border border-slate-300/80 dark:border-slate-700/80 text-xs">
                   <div>
                     <div className="font-bold text-slate-900 dark:text-white">Current Available Balance</div>
                     <div className="text-[10px] text-slate-500 dark:text-slate-400">Ready to redeem</div>
@@ -819,8 +824,8 @@ export default function HomePage() {
             </div>
 
             {/* Right: Reward Progress Card */}
-            <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 space-y-6 flex flex-col justify-between shadow-xs">
-              <div className="space-y-4">
+            <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 space-y-6 flex flex-col justify-between h-full shadow-xs">
+              <div className="space-y-6">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Goal Tracking
@@ -828,33 +833,33 @@ export default function HomePage() {
                   <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Target Item</span>
                 </div>
 
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-[900] text-slate-900 dark:text-white">You&apos;re getting closer.</h3>
+                <div className="space-y-1.5">
+                  <h3 className="text-2xl sm:text-3xl font-[900] text-slate-900 dark:text-white">You&apos;re getting closer.</h3>
                   <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                     Set personal reward goals and monitor your progress across all challenge purchases.
                   </p>
                 </div>
 
                 {/* Progress Box */}
-                <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-5 space-y-4">
+                <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-5 space-y-5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs">
-                        <Headphones className="h-5 w-5" />
+                      <div className="h-11 w-11 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs">
+                        <Headphones className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
                       </div>
                       <div>
-                        <div className="font-bold text-slate-900 dark:text-white text-sm">Wireless Headphones</div>
+                        <div className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Wireless Headphones</div>
                         <div className="text-xs text-slate-500">20,000 Points Goal</div>
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="text-xs text-slate-500">Your Points</div>
-                      <div className="font-mono font-bold text-slate-900 dark:text-white text-sm">12,500</div>
+                      <div className="font-mono font-bold text-slate-900 dark:text-white text-sm sm:text-base">12,500</div>
                     </div>
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     <div className="h-3 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[62.5%]" />
                     </div>
@@ -866,9 +871,10 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="pt-4">
-                <Link href="/rewards">
-                  <Button className="w-full bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-sm h-11 rounded-xl shadow-md shadow-emerald-600/10">
+              {/* Bottom aligned CTA button */}
+              <div className="pt-2">
+                <Link href="/rewards" className="block">
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-sm h-12 rounded-xl shadow-md shadow-emerald-600/10 transition-all">
                     Explore Rewards Catalog
                   </Button>
                 </Link>
