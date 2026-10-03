@@ -2,6 +2,7 @@ import { Injectable, BadRequestException, NotFoundException, ConflictException }
 import * as crypto from 'crypto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { CreateRewardDto, UpdateRewardDto, RedeemRewardDto, UpdateRedemptionStatusDto } from './dto/reward.dto';
 
 @Injectable()
@@ -9,6 +10,7 @@ export class RewardsService {
   constructor(
     private prisma: PrismaService,
     private emailService: EmailService,
+    private notificationsService: NotificationsService,
   ) {}
 
   private categoriesCache: { data: any; expiresAt: number } | null = null;
@@ -263,6 +265,17 @@ export class RewardsService {
     });
 
     this.invalidateCache();
+
+    // Trigger community broadcast to Discord, Telegram & on-site pulse
+    this.notificationsService.broadcastSocialAlert({
+      type: 'REDEMPTION',
+      traderName: user.name || 'Trader',
+      points: result.redemption.pointsSpent,
+      title: `Reward Redeemed: ${result.redemption.reward.name}`,
+      description: `Trader unlocked ${result.redemption.reward.name} for ${result.redemption.pointsSpent.toLocaleString()} PTS`,
+      propFirmOrItem: result.redemption.reward.name,
+    }).catch(() => {});
+
     return result;
   }
 

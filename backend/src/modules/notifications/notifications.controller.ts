@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Param, UseGuards, Header } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -6,6 +6,12 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 @Controller('notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
+
+  @Get('live-feed')
+  @Header('Cache-Control', 'public, max-age=10, s-maxage=20')
+  async getLiveFeed() {
+    return this.notificationsService.getPublicLiveFeed();
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get()

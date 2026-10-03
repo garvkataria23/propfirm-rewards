@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
 import { EmailService } from '../email/email.service';
 import { WhatsAppService } from '../whatsapp/whatsapp.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { SubmitPurchaseDto, ApprovePurchaseDto, RejectPurchaseDto, RequestInfoPurchaseDto, ResubmitPurchaseDto, AdminCreatePurchaseDto, AdminUpdatePurchaseDto } from './dto/purchase.dto';
 
 @Injectable()
@@ -12,6 +13,7 @@ export class PurchasesService {
     private storageService: StorageService,
     private emailService: EmailService,
     private whatsappService: WhatsAppService,
+    private notificationsService: NotificationsService,
   ) {}
 
   async submitPurchase(
@@ -357,14 +359,34 @@ export class PurchasesService {
       throw new BadRequestException('This purchase has already been approved and credited');
     }
 
-    // Calculate points: offer points or custom admin override points
-    const pointsToAward = dto.customPoints !== undefined && dto.customPoints !== null
+    // 1. Resolve Trader's VIP Tier Multiplier
+    const userEarnedAgg = await this.prisma.pointsLedger.aggregate({
+      where: { userId: submission.userId, points: { gt: 0 } },
+      _sum: { points: true },
+    });
+    const lifetimePoints = userEarnedAgg._sum.points || 0;
+    let multiplier = 1.0;
+    let tierName = 'Rookie Trader';
+    if (lifetimePoints >= 20000) {
+      multiplier = 1.50;
+      tierName = 'Prop Master';
+    } else if (lifetimePoints >= 5000) {
+      multiplier = 1.25;
+      tierName = 'Funded Trader';
+    }
+
+    // 2. Calculate base points: offer points or custom admin override points
+    const basePoints = dto.customPoints !== undefined && dto.customPoints !== null
       ? Number(dto.customPoints)
       : (submission.pointsAwarded || submission.offer?.rewardPoints || Math.round(Number(submission.purchaseAmountUsd) * 10));
 
-    if (pointsToAward <= 0) {
+    if (basePoints <= 0) {
       throw new BadRequestException('Points awarded must be greater than zero');
     }
+
+    // Apply VIP Tier Multiplier
+    const pointsToAward = Math.round(basePoints * multiplier);
+    const bonusPoints = pointsToAward - basePoints;
 
     // ATOMIC TRANSACTION: conditional update submission + record points in ledger
     const result = await this.prisma.$transaction(async (tx) => {
@@ -403,7 +425,11 @@ export class PurchasesService {
       const newBalance = updatedUser?.pointsBalance ?? 0;
       const balanceBefore = newBalance - pointsToAward;
 
-      // 3. Create PointsLedger entry
+      // 3. Create PointsLedger entry with VIP bonus breakdown
+      const ledgerDescription = multiplier > 1.0
+        ? `Verified ${submission.propFirm.name} challenge: ${submission.accountType} (${basePoints.toLocaleString()} Base + ${bonusPoints.toLocaleString()} VIP ${tierName} ${multiplier}x Boost)`
+        : `Verified ${submission.propFirm.name} purchase: ${submission.accountType} (Order: ${submission.orderId})`;
+
       const ledgerEntry = await tx.pointsLedger.create({
         data: {
           userId: submission.userId,
@@ -415,17 +441,21 @@ export class PurchasesService {
           referenceType: 'PURCHASE_APPROVAL',
           referenceId: submission.id,
           idempotencyKey: `sub-approve-${submission.id}`,
-          description: `Verified ${submission.propFirm.name} purchase: ${submission.accountType} (Order: ${submission.orderId})`,
+          description: ledgerDescription,
           createdById: adminId,
         },
       });
 
       // 4. Create Notification
+      const notifMessage = multiplier > 1.0
+        ? `Your ${submission.propFirm.name} purchase was approved. +${pointsToAward.toLocaleString()} points added (+${bonusPoints.toLocaleString()} VIP ${tierName} Bonus!).`
+        : `Your ${submission.propFirm.name} purchase was approved. +${pointsToAward.toLocaleString()} points added to your balance.`;
+
       await tx.notification.create({
         data: {
           userId: submission.userId,
           title: 'Purchase Approved! 🎉',
-          message: `Your ${submission.propFirm.name} purchase was approved. +${pointsToAward.toLocaleString()} points added to your balance.`,
+          message: notifMessage,
           type: 'POINTS',
           linkUrl: '/dashboard/points',
         },
@@ -439,8 +469,8 @@ export class PurchasesService {
           entity: 'PurchaseSubmission',
           entityId: id,
           previousValue: JSON.stringify({ status: submission.status }),
-          newValue: JSON.stringify({ status: 'APPROVED', pointsAwarded: pointsToAward }),
-          notes: dto.notes || `Approved by admin. Credited ${pointsToAward} points.`,
+          newValue: JSON.stringify({ status: 'APPROVED', pointsAwarded: pointsToAward, multiplier }),
+          notes: dto.notes || `Approved by admin. Credited ${pointsToAward} points (${multiplier}x).`,
         },
       });
 
@@ -472,6 +502,18 @@ export class PurchasesService {
         14,
       ).catch(() => {});
     }
+
+    // Trigger live community broadcast (Discord / Telegram / On-site Pulse)
+    const traderDisplay = (submission.user?.name || 'Trader').trim();
+    this.notificationsService.broadcastSocialAlert({
+      type: 'PURCHASE',
+      traderName: traderDisplay,
+      points: pointsToAward,
+      title: `Verified ${submission.propFirm.name} Challenge`,
+      description: `${submission.accountType || '$100K Challenge'} • +${pointsToAward.toLocaleString()} PTS${multiplier > 1.0 ? ` (${tierName} ${multiplier}x Boost)` : ''}`,
+      propFirmOrItem: submission.propFirm.name,
+      amountUsd: Number(submission.purchaseAmountUsd),
+    }).catch(() => {});
 
     return result;
   }

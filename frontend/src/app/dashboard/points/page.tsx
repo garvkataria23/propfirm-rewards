@@ -26,11 +26,14 @@ import {
   Zap,
 } from 'lucide-react';
 
+import { VipTierCard, VipTierInfo } from '@/components/tiers/vip-tier-card';
+
 interface PointsSummary {
   availablePoints: number;
   totalPointsEarned: number;
   totalPointsRedeemed: number;
   pendingPoints: number;
+  vip?: VipTierInfo;
 }
 
 interface PointsTransaction {
@@ -259,6 +262,9 @@ export default function PointsLedgerPage() {
           </Link>
         </div>
       </div>
+
+      {/* Gamified Trader VIP Tier Multiplier Card */}
+      <VipTierCard vip={summary?.vip} totalPointsEarned={earnedPts} />
 
       {/* 4 Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -33,6 +33,7 @@ export function Navbar() {
   const navLinks = [
     { label: 'How It Works', href: '/#how-it-works' },
     { label: 'Prop Firms', href: '/prop-firms' },
+    { label: 'Compare & Rules', href: '/compare' },
     { label: 'Rewards', href: '/rewards' },
     { label: 'FAQ', href: '/#faq' },
   ];

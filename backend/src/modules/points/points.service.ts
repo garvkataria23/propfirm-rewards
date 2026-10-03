@@ -61,6 +61,50 @@ export class PointsService {
       },
     });
 
+    // 7. VIP Tier and Multiplier computation
+    let tier: 'ROOKIE' | 'FUNDED' | 'MASTER' = 'ROOKIE';
+    let tierName = 'Rookie Trader';
+    let multiplier = 1.0;
+    let nextTier: 'FUNDED' | 'MASTER' | null = 'FUNDED';
+    let nextTierName: string | null = 'Funded Trader';
+    let pointsToNextTier = Math.max(0, 5000 - totalPointsEarned);
+    let tierProgress = Math.min(100, Math.round((totalPointsEarned / 5000) * 100));
+    let perks = [
+      'Standard 1.0x Reward Multiplier',
+      'Full Access to Reward Catalog',
+      'Community Ticket Support',
+    ];
+
+    if (totalPointsEarned >= 20000) {
+      tier = 'MASTER';
+      tierName = 'Prop Master';
+      multiplier = 1.5;
+      nextTier = null;
+      nextTierName = null;
+      pointsToNextTier = 0;
+      tierProgress = 100;
+      perks = [
+        '⚡ Maximum 1.50x Points Boost (+50% bonus points on all challenges)',
+        '👑 Exclusive VIP Lounge & Direct Support Hotline',
+        '🎁 Free PropNation Metal Card & Swag Box on milestone',
+        '⚡ Instant Express Verification (<1 hour priority processing)',
+      ];
+    } else if (totalPointsEarned >= 5000) {
+      tier = 'FUNDED';
+      tierName = 'Funded Trader';
+      multiplier = 1.25;
+      nextTier = 'MASTER';
+      nextTierName = 'Prop Master';
+      pointsToNextTier = Math.max(0, 20000 - totalPointsEarned);
+      tierProgress = Math.min(100, Math.round(((totalPointsEarned - 5000) / 15000) * 100));
+      perks = [
+        '🚀 1.25x Points Boost (+25% bonus points on all challenges)',
+        '⭐ Priority Verification Queue (<4 hours processing)',
+        '💬 Verified Funded Trader Role in Community Discord',
+        '🔥 Early Access to High-Demand Reward Drops',
+      ];
+    }
+
     return {
       availablePoints,
       totalPointsEarned,
@@ -69,6 +113,16 @@ export class PointsService {
       pendingPurchases,
       totalVerifiedPurchases: verifiedPurchases,
       activeRedemptions,
+      vip: {
+        tier,
+        tierName,
+        multiplier,
+        nextTier,
+        nextTierName,
+        pointsToNextTier,
+        tierProgress,
+        perks,
+      },
     };
   }
 
