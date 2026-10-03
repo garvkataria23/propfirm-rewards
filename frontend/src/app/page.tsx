@@ -1202,7 +1202,99 @@ export default function HomePage() {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
-            §9 · SOCIAL PROOF / TESTIMONIALS
+            §9 · TRADER DASHBOARD SHOWCASE: YOUR COMPLETE REWARDS HEADQUARTERS
+            ════════════════════════════════════════════════════════════════════ */}
+        <section id="terminal" className="w-full py-20 lg:py-28 border-t border-slate-900 relative overflow-hidden bg-[#04070a]">
+          <SectionBackground
+            imageUrl="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1920&auto=format&fit=crop&q=80"
+            opacity="opacity-15"
+            glowColor="#10b981"
+            glowPosition="center"
+          />
+
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div className="text-center space-y-3 max-w-3xl mx-auto">
+              <Reveal>
+                <Badge className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-xs">
+                  TRADER TERMINAL SHOWCASE
+                </Badge>
+              </Reveal>
+              <Reveal delay={100}>
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-[900] tracking-tight text-white">
+                  Your Complete Rewards <span className="gradient-text">Headquarters</span>
+                </h2>
+              </Reveal>
+              <Reveal delay={200}>
+                <p className="text-base sm:text-lg text-slate-400">
+                  Interactive preview of your trader profile, purchase submission queue, points wallet, and delivery status.
+                </p>
+              </Reveal>
+            </div>
+
+            {/* Interactive Live Browser Frame with REAL Dashboard Image */}
+            <Reveal delay={300}>
+              <div className="rounded-2xl bg-[#0b1110] border border-emerald-500/30 shadow-2xl shadow-emerald-950/50 overflow-hidden max-w-5xl mx-auto group">
+                {/* Browser Window Header */}
+                <div className="px-5 py-3.5 bg-[#080d0c] border-b border-slate-800/80 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="h-3 w-3 rounded-full bg-rose-500/90" />
+                    <div className="h-3 w-3 rounded-full bg-amber-500/90" />
+                    <div className="h-3 w-3 rounded-full bg-emerald-500/90" />
+                    <span className="font-mono text-xs text-slate-400 ml-2 px-3 py-1 rounded-md bg-slate-900/80 border border-slate-800">
+                      propnation.app/dashboard
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="tracking-wider">LIVE TERMINAL</span>
+                  </div>
+                </div>
+
+                {/* Real Dashboard Image */}
+                <div className="relative overflow-hidden bg-slate-950">
+                  <Link href="/dashboard" className="block relative cursor-pointer group/img">
+                    <img
+                      src="/dashboard-preview.png"
+                      alt="Prop Nation Trader Dashboard Portal"
+                      className="w-full h-auto object-cover transform transition-transform duration-500 group-hover/img:scale-[1.01]"
+                    />
+                    {/* Subtle Hover Overlay */}
+                    <div className="absolute inset-0 bg-emerald-950/20 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[1px]">
+                      <span className="px-6 py-3 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm shadow-xl flex items-center gap-2 transform translate-y-2 group-hover/img:translate-y-0 transition-transform">
+                        Launch Live Trader Portal <ArrowRight className="h-4 w-4" />
+                      </span>
+                    </div>
+                  </Link>
+                </div>
+
+                {/* Quick Interactive Terminal Stats Bar */}
+                <div className="px-6 py-4 bg-[#080d0c] border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Account Mode</span>
+                    <div className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> PRO TRADER
+                    </div>
+                  </div>
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Active Partner Code</span>
+                    <div className="text-xs font-bold font-mono text-white">NATION (100% Validated)</div>
+                  </div>
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Redemption Value</span>
+                    <div className="text-xs font-bold text-teal-400 font-mono">$0.01 / Point Guarantee</div>
+                  </div>
+                  <div className="space-y-0.5 sm:text-right">
+                    <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Global Payouts</span>
+                    <div className="text-xs font-bold text-purple-400">USDT &amp; Apple Gear</div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════════════════════════════
+            §10 · SOCIAL PROOF / TESTIMONIALS
             ════════════════════════════════════════════════════════════════════ */}
         <section className="w-full py-20 lg:py-28 border-t border-slate-900 relative overflow-hidden">
           <SectionBackground
