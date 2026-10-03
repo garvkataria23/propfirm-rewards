@@ -304,6 +304,12 @@ export function Footer() {
                 Restrictions: Services are not offered to residents of certain jurisdictions, including countries on the FATF and EU/UN sanctions lists, Vietnam, and UAE.
               </p>
               <p className="mt-3 text-slate-300 font-bold">
+                Head Office &amp; Operations:
+              </p>
+              <p className="text-slate-400 font-medium">
+                Guwahati, Assam, India
+              </p>
+              <p className="mt-3 text-slate-300 font-bold">
                 Registered Address of PropNation:
               </p>
               <p className="text-slate-400">
