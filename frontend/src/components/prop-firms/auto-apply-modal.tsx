@@ -64,11 +64,28 @@ const DEFAULT_TIERS: AccountTierOption[] = [
   { label: '$200K Account', size: '200K', price: 979 },
 ];
 
+const PIPSTONE_TIERS: AccountTierOption[] = [
+  { label: '$15K Pipstone', size: '15000', price: 120 },
+  { label: '$30K Pipstone', size: '30000', price: 220 },
+  { label: '$60K Pipstone', size: '60000', price: 380 },
+  { label: '$100K Pipstone', size: '100000', price: 520, popular: true },
+  { label: '$200K Pipstone', size: '200000', price: 980 },
+];
+
 const PLATFORMS = ['MetaTrader 5 (MT5)', 'cTrader', 'TradeLocker', 'DXtrade'];
 const CHALLENGE_TYPES = ['2-Step Standard', '1-Step Express', 'Instant Funding'];
 
 export function AutoApplyModal({ isOpen, onClose, firm }: AutoApplyModalProps) {
   const { user } = useAuth();
+
+  const isPipstone = Boolean(
+    firm?.slug === 'pipstone-capital' ||
+    firm?.name?.toLowerCase().includes('pipstone') ||
+    firm?.websiteUrl?.includes('pipstonecapital') ||
+    firm?.affiliateUrl?.includes('pipstonecapital')
+  );
+
+  const activeTiers = isPipstone ? PIPSTONE_TIERS : DEFAULT_TIERS;
 
   // Configurator state
   const [selectedTier, setSelectedTier] = useState<AccountTierOption>(DEFAULT_TIERS[3]); // $100K default
@@ -83,7 +100,7 @@ export function AutoApplyModal({ isOpen, onClose, firm }: AutoApplyModalProps) {
   const [hasLaunched, setHasLaunched] = useState(false);
   const [launchStep, setLaunchStep] = useState(0);
 
-  // Initialize tracking ID and pre-fill email
+  // Initialize tracking ID, tiers, and pre-fill email
   useEffect(() => {
     if (isOpen && firm) {
       setTrackingId(generateTrackingId());
@@ -91,6 +108,14 @@ export function AutoApplyModal({ isOpen, onClose, firm }: AutoApplyModalProps) {
       setIsLaunching(false);
       setLaunchStep(0);
       setCopied(false);
+      const isPip = Boolean(
+        firm.slug === 'pipstone-capital' ||
+        firm.name?.toLowerCase().includes('pipstone') ||
+        firm.websiteUrl?.includes('pipstonecapital') ||
+        firm.affiliateUrl?.includes('pipstonecapital')
+      );
+      const tiers = isPip ? PIPSTONE_TIERS : DEFAULT_TIERS;
+      setSelectedTier(tiers[3] || tiers[0]);
       if (user?.email) {
         setUserEmail(user.email);
       }
@@ -119,7 +144,9 @@ export function AutoApplyModal({ isOpen, onClose, firm }: AutoApplyModalProps) {
     email: userEmail || undefined,
   };
 
-  const destinationBase = firm.affiliateUrl || firm.websiteUrl || `https://${firm.slug}.com`;
+  const destinationBase = isPipstone
+    ? 'https://trader.pipstonecapital.com/guest-checkout'
+    : firm.affiliateUrl || firm.websiteUrl || `https://${firm.slug}.com`;
   const checkoutUrl = buildAutoApplyUrl(destinationBase, code, configParams);
 
   const handleProceedToCheckout = async () => {
@@ -257,7 +284,7 @@ export function AutoApplyModal({ isOpen, onClose, firm }: AutoApplyModalProps) {
                   </span>
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                  {DEFAULT_TIERS.map((tier) => (
+                  {activeTiers.map((tier) => (
                     <button
                       key={tier.size}
                       type="button"

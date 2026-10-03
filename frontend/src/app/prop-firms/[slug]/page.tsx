@@ -77,9 +77,9 @@ const FALLBACK_FIRMS: Record<string, PropFirm> = {
     slug: 'pipstone-capital',
     logoUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=120&auto=format&fit=crop&q=80',
     description: 'Premium prop trading firm offering raw ECN spreads, high drawdown limits, and bi-weekly revenue splits up to 90%.',
-    websiteUrl: 'https://pipstonecapital.com',
+    websiteUrl: 'https://trader.pipstonecapital.com/guest-checkout',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://pipstonecapital.com/?ref=nation',
+    affiliateUrl: 'https://trader.pipstonecapital.com/guest-checkout?model=2-step&balance=100000&type=standard&coupon=NATION&affId=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'CFD',
     offers: [

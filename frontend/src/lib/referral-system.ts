@@ -71,6 +71,40 @@ export function buildAutoApplyUrl(
   try {
     const url = new URL(rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`);
 
+    // Direct Handler for Pipstone Capital Guest Checkout Portal
+    if (url.hostname.includes('pipstonecapital.com')) {
+      url.hostname = 'trader.pipstonecapital.com';
+      url.pathname = '/guest-checkout';
+
+      // Pipstone reads: model, balance, type, coupon, email, affId
+      const model = config?.accountType?.toLowerCase().includes('1-step')
+        ? '1-step'
+        : config?.accountType?.toLowerCase().includes('instant')
+        ? 'instant'
+        : '2-step';
+      url.searchParams.set('model', model);
+
+      let balance = '100000';
+      if (config?.tier) {
+        const raw = config.tier.toLowerCase().replace(/[^0-9]/g, '');
+        const num = parseInt(raw, 10);
+        if (num) {
+          balance = config.tier.toLowerCase().includes('k') && num < 1000 ? (num * 1000).toString() : num.toString();
+        }
+      }
+      url.searchParams.set('balance', balance);
+      url.searchParams.set('type', 'standard');
+      url.searchParams.set('coupon', upperCode);
+      url.searchParams.set('affId', upperCode);
+      url.searchParams.set('ref', lowerCode);
+      url.searchParams.set('affiliate', lowerCode);
+
+      if (config?.email && config.email.includes('@')) {
+        url.searchParams.set('email', config.email.trim());
+      }
+      return url.toString();
+    }
+
     // 1. Universal affiliate referral tracking query parameters
     url.searchParams.set('ref', lowerCode);
     url.searchParams.set('aff', lowerCode);
@@ -127,6 +161,9 @@ export function buildAutoApplyUrl(
 
     return url.toString();
   } catch {
+    if (rawUrl.includes('pipstonecapital.com')) {
+      return `https://trader.pipstonecapital.com/guest-checkout?model=2-step&balance=100000&type=standard&coupon=${upperCode}&affId=${upperCode}&email=${encodeURIComponent(config?.email || '')}`;
+    }
     const delimiter = rawUrl.includes('?') ? '&' : '?';
     let base = `${rawUrl}${delimiter}ref=${lowerCode}&coupon=${upperCode}&aff=${lowerCode}&discount=${upperCode}&promo=${upperCode}&subid=${trackingId}`;
     if (config?.tier) base += `&tier=${encodeURIComponent(config.tier)}`;

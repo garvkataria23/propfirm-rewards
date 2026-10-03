@@ -81,11 +81,13 @@ const FALLBACK_PROP_FIRMS: PropFirm[] = [
     id: 'firm-2', name: 'Pipstone Capital', slug: 'pipstone-capital',
     logoUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=120&auto=format&fit=crop&q=80',
     description: 'Institutional-grade simulated funding with high drawdown flexibility and weekly payouts up to 90%.',
-    websiteUrl: 'https://pipstonecapital.com', affiliateCode: 'NATION', affiliateUrl: 'https://pipstonecapital.com/?ref=nation',
+    websiteUrl: 'https://trader.pipstonecapital.com/guest-checkout', affiliateCode: 'NATION', affiliateUrl: 'https://trader.pipstonecapital.com/guest-checkout?model=2-step&balance=100000&type=standard&coupon=NATION&affId=NATION',
     offers: [
-      { id: 'o-4', accountTierName: '$25K Account', purchasePriceUsd: 189, rewardPoints: 1890 },
-      { id: 'o-5', accountTierName: '$50K Account', purchasePriceUsd: 319, rewardPoints: 3190 },
-      { id: 'o-6', accountTierName: '$100K Account', purchasePriceUsd: 549, rewardPoints: 5490 },
+      { id: 'o-4', accountTierName: '$15K Account', purchasePriceUsd: 120, rewardPoints: 1200 },
+      { id: 'o-5', accountTierName: '$30K Account', purchasePriceUsd: 220, rewardPoints: 2200 },
+      { id: 'o-6', accountTierName: '$60K Account', purchasePriceUsd: 380, rewardPoints: 3800 },
+      { id: 'o-7', accountTierName: '$100K Account', purchasePriceUsd: 520, rewardPoints: 5200 },
+      { id: 'o-8', accountTierName: '$200K Account', purchasePriceUsd: 980, rewardPoints: 9800 },
     ],
   },
   {
