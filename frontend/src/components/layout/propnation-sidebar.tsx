@@ -53,7 +53,6 @@ const SIDEBAR_GROUPS: SidebarGroup[] = [
     items: [
       { label: 'Overview', href: '/dashboard', icon: LayoutGrid },
       { label: 'Trader Wallet', href: '/dashboard/wallet', icon: Wallet, badge: 'USD' },
-      { label: 'WhatsApp Alerts', href: '/dashboard/whatsapp', icon: MessageCircle, badge: 'AUTO' },
       { label: 'Activity', href: '/dashboard/activity', icon: Activity },
       { label: 'Notifications', href: '/dashboard/notifications', icon: Bell },
     ],

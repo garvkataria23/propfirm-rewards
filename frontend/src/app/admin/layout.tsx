@@ -19,6 +19,7 @@ import {
   LogOut,
   AlertTriangle,
   MessageSquare,
+  MessageCircle,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -97,6 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: 'Prop Firms & Offers', href: '/admin/prop-firms', icon: Layers },
     { label: 'Rewards Catalog', href: '/admin/rewards', icon: Gift },
     { label: 'Redemptions Pipeline', href: '/admin/redemptions', icon: Truck },
+    { label: 'WhatsApp Automation', href: '/admin/whatsapp', icon: MessageCircle, badge: 'Live' },
     { label: 'Audit Trail', href: '/admin/audit-logs', icon: ScrollText },
     { label: 'System Settings', href: '/admin/settings', icon: Settings },
   ];
