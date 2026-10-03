@@ -1,4 +1,5 @@
-import { Controller, Post, Get, Patch, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Body, UseGuards, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto, UpdateProfileDto, GoogleAuthDto } from './dto/auth.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -14,13 +15,25 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  async login(@Body() dto: LoginDto, @Req() req: Request) {
+    const ip = req.ip || (req.headers['x-forwarded-for'] as string);
+    const userAgent = req.headers['user-agent'] as string;
+    return this.authService.login(dto, ip, userAgent);
   }
 
   @Post('google')
-  async googleLogin(@Body() dto: GoogleAuthDto) {
-    return this.authService.googleLogin(dto);
+  async googleLogin(@Body() dto: GoogleAuthDto, @Req() req: Request) {
+    const ip = req.ip || (req.headers['x-forwarded-for'] as string);
+    const userAgent = req.headers['user-agent'] as string;
+    return this.authService.googleLogin(dto, ip, userAgent);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  async logout(@CurrentUser('id') userId: string, @Req() req: Request) {
+    const ip = req.ip || (req.headers['x-forwarded-for'] as string);
+    const userAgent = req.headers['user-agent'] as string;
+    return this.authService.logout(userId, ip, userAgent);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -35,3 +48,4 @@ export class AuthController {
     return this.authService.updateProfile(userId, dto);
   }
 }
+

@@ -81,27 +81,28 @@ async function bootstrap() {
       // Allow requests with no origin (like mobile apps, curl, or server-to-server)
       if (!origin) return callback(null, true);
 
-      const configured = process.env.CORS_ORIGIN;
-      if (!configured || configured === '*') {
+      const isProd = process.env.NODE_ENV === 'production';
+      const configured = process.env.CORS_ORIGIN || '';
+      const allowedSet = new Set(
+        configured
+          .split(',')
+          .map((o) => o.trim())
+          .filter(Boolean),
+      );
+
+      // In development only, allow standard local dev origins
+      if (!isProd) {
+        allowedSet.add('http://localhost:3000');
+        allowedSet.add('http://127.0.0.1:3000');
+        allowedSet.add('http://localhost:3001');
+      }
+
+      if (allowedSet.has(origin)) {
         return callback(null, true);
       }
 
-      const allowedList = configured.split(',').map((o) => o.trim());
-      if (
-        allowedList.includes(origin) ||
-        origin.endsWith('.vercel.app') ||
-        origin.endsWith('.onrender.com') ||
-        origin.includes('localhost')
-      ) {
-        return callback(null, true);
-      }
-
-      // In production, reject unallowed origins strictly
-      if (process.env.NODE_ENV === 'production') {
-        return callback(new Error(`Origin ${origin} not allowed by CORS security policy`));
-      }
-
-      return callback(null, true);
+      // Reject all unauthorized origins
+      return callback(new Error(`Origin ${origin} not allowed by CORS security policy`));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -122,7 +123,18 @@ async function bootstrap() {
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
   }
-  app.use('/uploads', express.static(uploadDir));
+  // Serve static files from /uploads with strict download & execution prevention headers
+  app.use(
+    '/uploads',
+    (req: express.Request, res: express.Response, next: express.NextFunction) => {
+      res.setHeader('Content-Disposition', 'attachment');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('Content-Security-Policy', "default-src 'none'");
+      res.setHeader('Cache-Control', 'private, max-age=3600');
+      next();
+    },
+    express.static(uploadDir),
+  );
 
   const port = process.env.PORT || 4000;
   const isProd = process.env.NODE_ENV === 'production';

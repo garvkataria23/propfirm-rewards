@@ -560,7 +560,7 @@ export default function LiveSupportPage() {
                 <div className="space-y-2 max-h-[520px] overflow-y-auto pr-1">
                   {tickets.length === 0 ? (
                     <div className="p-6 text-center text-xs text-slate-400 border border-dashed border-purple-100 dark:border-purple-900/40 rounded-2xl">
-                      No active inquiry tickets. Click "Create Support Ticket" above to start live chat.
+                      No active inquiry tickets. Click &quot;Create Support Ticket&quot; above to start live chat.
                     </div>
                   ) : (
                     tickets.map((t) => {

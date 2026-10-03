@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -38,7 +38,39 @@ export class StorageService {
     }
   }
 
+  private validateFileSignature(buffer: Buffer): boolean {
+    if (!buffer || buffer.length < 4) return false;
+    // PNG: 89 50 4E 47
+    const isPng = buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47;
+    // JPEG: FF D8 FF
+    const isJpg = buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF;
+    // PDF: 25 50 44 46 (%PDF)
+    const isPdf = buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46;
+    // WEBP: RIFF....WEBP
+    const isWebp =
+      buffer[0] === 0x52 &&
+      buffer[1] === 0x49 &&
+      buffer[2] === 0x46 &&
+      buffer[3] === 0x46 &&
+      buffer.length >= 12 &&
+      buffer[8] === 0x57 &&
+      buffer[9] === 0x45 &&
+      buffer[10] === 0x42 &&
+      buffer[11] === 0x50;
+
+    return isPng || isJpg || isPdf || isWebp;
+  }
+
   async uploadFile(file: Express.Multer.File, folder = 'proofs'): Promise<{ url: string; fileName: string; size: number; mimeType: string }> {
+    if (!file || !file.buffer) {
+      throw new BadRequestException('No file buffer provided for upload');
+    }
+
+    if (!this.validateFileSignature(file.buffer)) {
+      throw new BadRequestException(
+        'Security validation failed: File binary header does not match approved types (JPEG, PNG, WEBP, or PDF required).',
+      );
+    }
     const timestamp = Date.now();
     const cleanOriginalName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
     const key = `${folder}/${timestamp}-${cleanOriginalName}`;

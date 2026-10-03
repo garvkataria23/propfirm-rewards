@@ -315,7 +315,7 @@ export default function SubmitPurchasePage() {
     const fileName = files[0].name.toLowerCase();
 
     setTimeout(() => {
-      let matchedFirm =
+      const matchedFirm =
         propFirms.find(
           (f) => fileName.includes(f.slug.toLowerCase()) || fileName.includes(f.name.toLowerCase()),
         ) || activeFirm || propFirms[0];

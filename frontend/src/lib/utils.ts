@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPoints(points: number): string {
-  return points.toLocaleString();
+  return points.toLocaleString('en-US');
 }
 
 export function formatDate(dateString: string | Date): string {

@@ -164,4 +164,64 @@ describe('PurchasesService (Business Rules & Anti-Fraud)', () => {
       expect(prisma.notification.create).toHaveBeenCalled();
     });
   });
+
+  describe('Upload Security Filter (proofUploadOptions)', () => {
+    // Dynamic import or testing proofUploadOptions directly
+    const { proofUploadOptions } = require('./purchases.controller');
+
+    it('should accept valid PNG image', (done) => {
+      const mockFile = { originalname: 'receipt.png', mimetype: 'image/png' } as any;
+      proofUploadOptions.fileFilter(null, mockFile, (err: any, accept: boolean) => {
+        expect(err).toBeNull();
+        expect(accept).toBe(true);
+        done();
+      });
+    });
+
+    it('should accept valid PDF document', (done) => {
+      const mockFile = { originalname: 'invoice.pdf', mimetype: 'application/pdf' } as any;
+      proofUploadOptions.fileFilter(null, mockFile, (err: any, accept: boolean) => {
+        expect(err).toBeNull();
+        expect(accept).toBe(true);
+        done();
+      });
+    });
+
+    it('should reject dangerous executable .exe', (done) => {
+      const mockFile = { originalname: 'malware.exe', mimetype: 'application/x-msdownload' } as any;
+      proofUploadOptions.fileFilter(null, mockFile, (err: any, accept: boolean) => {
+        expect(err).toBeInstanceOf(BadRequestException);
+        expect(accept).toBe(false);
+        done();
+      });
+    });
+
+    it('should reject HTML files to prevent XSS payloads', (done) => {
+      const mockFile = { originalname: 'phish.html', mimetype: 'text/html' } as any;
+      proofUploadOptions.fileFilter(null, mockFile, (err: any, accept: boolean) => {
+        expect(err).toBeInstanceOf(BadRequestException);
+        expect(accept).toBe(false);
+        done();
+      });
+    });
+
+    it('should reject SVG files to prevent embedded script execution', (done) => {
+      const mockFile = { originalname: 'vector.svg', mimetype: 'image/svg+xml' } as any;
+      proofUploadOptions.fileFilter(null, mockFile, (err: any, accept: boolean) => {
+        expect(err).toBeInstanceOf(BadRequestException);
+        expect(accept).toBe(false);
+        done();
+      });
+    });
+
+    it('should reject spoofed mimetype with mismatched dangerous extension', (done) => {
+      const mockFile = { originalname: 'exploit.sh', mimetype: 'image/png' } as any;
+      proofUploadOptions.fileFilter(null, mockFile, (err: any, accept: boolean) => {
+        expect(err).toBeInstanceOf(BadRequestException);
+        expect(accept).toBe(false);
+        done();
+      });
+    });
+  });
 });
+

@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Resend } from 'resend';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class EmailService {
@@ -8,7 +9,7 @@ export class EmailService {
   private readonly fromEmail: string;
   private readonly frontendUrl: string;
 
-  constructor() {
+  constructor(private prisma: PrismaService) {
     const apiKey = process.env.RESEND_API_KEY;
     this.fromEmail = process.env.EMAIL_FROM || 'PropFirm Rewards <support@propfirmrewards.com>';
     this.frontendUrl = (process.env.FRONTEND_URL || 'https://propfirmrewards.com').replace(/\/$/, '');
@@ -22,6 +23,18 @@ export class EmailService {
   }
 
   async sendEmail(to: string, subject: string, htmlContent: string) {
+    // Record into outbox
+    const outbox = await this.prisma.notificationOutbox.create({
+      data: {
+        channel: 'EMAIL',
+        recipient: to,
+        subject,
+        content: htmlContent.slice(0, 2000),
+        status: 'PENDING',
+        attempts: 1,
+      },
+    }).catch(() => null);
+
     if (this.resend) {
       try {
         const response = await this.resend.emails.send({
@@ -31,12 +44,47 @@ export class EmailService {
           html: htmlContent,
         });
         this.logger.log(`Email sent via Resend to ${to}: ${subject} (ID: ${response.data?.id})`);
+
+        if (outbox) {
+          await this.prisma.notificationOutbox.update({
+            where: { id: outbox.id },
+            data: {
+              status: 'SENT',
+              sentAt: new Date(),
+              metadata: JSON.stringify({ resendId: response.data?.id }),
+            },
+          }).catch(() => {});
+        }
+
         return response;
-      } catch (err) {
+      } catch (err: any) {
         this.logger.error(`Failed to send email via Resend to ${to}`, err);
+
+        if (outbox) {
+          await this.prisma.notificationOutbox.update({
+            where: { id: outbox.id },
+            data: {
+              status: 'FAILED',
+              error: err?.message || String(err),
+            },
+          }).catch(() => {});
+        }
+
+        throw err;
       }
     } else {
       this.logger.log(`\n📧 [DEV EMAIL SIMULATOR]\nTo: ${to}\nSubject: ${subject}\n---\n${htmlContent.replace(/<[^>]*>?/gm, ' ').substring(0, 300)}...\n`);
+      if (outbox) {
+        await this.prisma.notificationOutbox.update({
+          where: { id: outbox.id },
+          data: {
+            status: 'SENT',
+            sentAt: new Date(),
+            metadata: JSON.stringify({ simulated: true }),
+          },
+        }).catch(() => {});
+      }
+      return { data: { id: 'simulated_' + Date.now() } };
     }
   }
 

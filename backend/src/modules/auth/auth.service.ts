@@ -67,23 +67,67 @@ export class AuthService {
     };
   }
 
-  async login(dto: LoginDto) {
+  async login(dto: LoginDto, ipAddress?: string, userAgent?: string) {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase().trim() },
     });
 
     if (!user) {
+      await this.prisma.auditLog?.create({
+        data: {
+          action: 'LOGIN_FAILURE',
+          entity: 'User',
+          entityId: 'unknown',
+          ipAddress: ipAddress || null,
+          userAgent: userAgent || null,
+          notes: `Failed login attempt: user not found (${dto.email.toLowerCase().trim()})`,
+        },
+      }).catch(() => {});
       throw new UnauthorizedException('Invalid email or password');
     }
 
     const isMatch = await bcrypt.compare(dto.password, user.passwordHash);
     if (!isMatch) {
+      await this.prisma.auditLog?.create({
+        data: {
+          adminId: user.id,
+          action: 'LOGIN_FAILURE',
+          entity: 'User',
+          entityId: user.id,
+          ipAddress: ipAddress || null,
+          userAgent: userAgent || null,
+          notes: `Failed login attempt: incorrect password (${dto.email.toLowerCase().trim()})`,
+        },
+      }).catch(() => {});
       throw new UnauthorizedException('Invalid email or password');
     }
 
     if (user.status === 'SUSPENDED') {
+      await this.prisma.auditLog?.create({
+        data: {
+          adminId: user.id,
+          action: 'LOGIN_BLOCKED_SUSPENDED',
+          entity: 'User',
+          entityId: user.id,
+          ipAddress: ipAddress || null,
+          userAgent: userAgent || null,
+          notes: `Login blocked: account is suspended`,
+        },
+      }).catch(() => {});
       throw new UnauthorizedException('Your account has been suspended. Please contact support.');
     }
+
+    await this.prisma.auditLog.create({
+      data: {
+        adminId: user.id,
+        action: 'LOGIN_SUCCESS',
+        entity: 'User',
+        entityId: user.id,
+        ipAddress: ipAddress || null,
+        userAgent: userAgent || null,
+        notes: `Successful email/password login`,
+      },
+    }).catch(() => {});
 
     const token = this.generateToken(user);
 
@@ -103,7 +147,7 @@ export class AuthService {
 
   private googleOAuthClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-  async googleLogin(dto: GoogleAuthDto) {
+  async googleLogin(dto: GoogleAuthDto, ipAddress?: string, userAgent?: string) {
     const rawToken = dto.credential || dto.idToken;
     if (!rawToken || typeof rawToken !== 'string') {
       throw new BadRequestException('A valid Google ID token / credential is required');
@@ -182,6 +226,18 @@ export class AuthService {
 
       this.emailService.sendWelcomeEmail(user.email, user.name).catch(() => {});
     }
+
+    await this.prisma.auditLog.create({
+      data: {
+        adminId: user.id,
+        action: 'LOGIN_GOOGLE_SUCCESS',
+        entity: 'User',
+        entityId: user.id,
+        ipAddress: ipAddress || null,
+        userAgent: userAgent || null,
+        notes: `Successful Google OAuth login`,
+      },
+    }).catch(() => {});
 
     const token = this.generateToken(user);
 
@@ -277,11 +333,33 @@ export class AuthService {
     return updated;
   }
 
-  private generateToken(user: { id: string; email: string; role: string }) {
+  async logout(userId: string, ipAddress?: string, userAgent?: string) {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { tokenVersion: { increment: 1 } },
+    });
+
+    await this.prisma.auditLog.create({
+      data: {
+        adminId: userId,
+        action: 'LOGOUT',
+        entity: 'User',
+        entityId: userId,
+        ipAddress: ipAddress || null,
+        userAgent: userAgent || null,
+        notes: 'User logged out and session revoked',
+      },
+    }).catch(() => {});
+
+    return { success: true, message: 'Logged out successfully and session revoked' };
+  }
+
+  private generateToken(user: { id: string; email: string; role: string; tokenVersion?: number }) {
     return this.jwtService.sign({
       sub: user.id,
       email: user.email,
       role: user.role,
+      tokenVersion: user.tokenVersion ?? 0,
     });
   }
 }

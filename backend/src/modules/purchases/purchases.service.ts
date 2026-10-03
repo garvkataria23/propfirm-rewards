@@ -240,34 +240,52 @@ export class PurchasesService {
     propFirmId?: string;
     userId?: string;
     search?: string;
+    limit?: number | string;
+    offset?: number | string;
   }) {
     const { status, propFirmId, userId, search } = query;
+    const limit = Math.min(Math.max(Number(query.limit) || 50, 1), 100);
+    const offset = Math.max(Number(query.offset) || 0, 0);
 
-    return this.prisma.purchaseSubmission.findMany({
-      where: {
-        ...(status && { status }),
-        ...(propFirmId && { propFirmId }),
-        ...(userId && { userId }),
-        ...(search && {
-          OR: [
-            { submissionCode: { contains: search } },
-            { orderId: { contains: search } },
-            { accountId: { contains: search } },
-            { emailUsed: { contains: search } },
-            { user: { name: { contains: search } } },
-            { user: { email: { contains: search } } },
-          ],
-        }),
-      },
-      include: {
-        user: { select: { id: true, name: true, email: true, phone: true } },
-        propFirm: true,
-        offer: true,
-        proofs: true,
-        reviewedBy: { select: { id: true, name: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+    const where = {
+      ...(status && { status }),
+      ...(propFirmId && { propFirmId }),
+      ...(userId && { userId }),
+      ...(search && {
+        OR: [
+          { submissionCode: { contains: search, mode: 'insensitive' as const } },
+          { orderId: { contains: search, mode: 'insensitive' as const } },
+          { accountId: { contains: search, mode: 'insensitive' as const } },
+          { emailUsed: { contains: search, mode: 'insensitive' as const } },
+          { user: { name: { contains: search, mode: 'insensitive' as const } } },
+          { user: { email: { contains: search, mode: 'insensitive' as const } } },
+        ],
+      }),
+    };
+
+    const [purchases, total] = await Promise.all([
+      this.prisma.purchaseSubmission.findMany({
+        where,
+        include: {
+          user: { select: { id: true, name: true, email: true, phone: true } },
+          propFirm: true,
+          offer: true,
+          proofs: true,
+          reviewedBy: { select: { id: true, name: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        skip: offset,
+      }),
+      this.prisma.purchaseSubmission.count({ where }),
+    ]);
+
+    return {
+      purchases,
+      total,
+      limit,
+      offset,
+    };
   }
 
   async getAdminPurchaseById(id: string) {
@@ -475,9 +493,18 @@ export class PurchasesService {
       if (!row.orderId) continue;
       const cleanOrderId = String(row.orderId).trim();
 
+      let firmId: string | undefined;
+      if (row.propFirmSlug) {
+        const firm = await this.prisma.propFirm.findFirst({
+          where: { slug: row.propFirmSlug.toLowerCase().trim() },
+        });
+        firmId = firm?.id;
+      }
+
       const submission = await this.prisma.purchaseSubmission.findFirst({
         where: {
           orderId: { equals: cleanOrderId, mode: 'insensitive' },
+          ...(firmId && { propFirmId: firmId }),
         },
         include: {
           user: true,

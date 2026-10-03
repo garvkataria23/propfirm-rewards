@@ -321,10 +321,11 @@ export default function AdminUsersPage() {
         search: search || undefined,
       });
 
-      if (data && Array.isArray(data) && data.length > 0) {
-        setUsers(data);
+      const userList = Array.isArray(data) ? data : (data as any)?.users || [];
+      if (userList && userList.length > 0) {
+        setUsers(userList);
         if (typeof window !== 'undefined') {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(userList));
         }
       } else {
         loadFallbackUsers();

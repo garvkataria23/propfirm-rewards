@@ -207,9 +207,10 @@ export default function AdminRedemptionsPage() {
         status: statusFilter === 'ALL' ? undefined : statusFilter,
         search: search || undefined,
       })
-      .then((data) => {
-        if (data && data.length > 0) {
-          setRedemptions(data);
+      .then((data: any) => {
+        const list = Array.isArray(data) ? data : data?.redemptions || [];
+        if (list && list.length > 0) {
+          setRedemptions(list);
         } else {
           setRedemptions(
             DEFAULT_ADMIN_REDEMPTIONS.filter(

@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
 
 export interface WhatsAppMessagePayload {
   to: string; // E.164 formatted number e.g. +14155552671
@@ -15,7 +16,7 @@ export class WhatsAppService {
   private readonly phoneNumberId: string | undefined;
   private readonly isConfigured: boolean;
 
-  constructor() {
+  constructor(private prisma: PrismaService) {
     this.apiToken = process.env.WHATSAPP_API_TOKEN;
     this.phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
     this.isConfigured = Boolean(this.apiToken && this.phoneNumberId);
@@ -51,6 +52,17 @@ export class WhatsAppService {
       this.logger.warn(`WhatsApp send skipped: invalid phone number "${payload.to}"`);
       return { success: false, simulated: false };
     }
+
+    const contentPreview = payload.text || payload.templateName || 'WhatsApp notification';
+    const outbox = await this.prisma.notificationOutbox.create({
+      data: {
+        channel: 'WHATSAPP',
+        recipient: formattedRecipient,
+        content: contentPreview,
+        status: 'PENDING',
+        attempts: 1,
+      },
+    }).catch(() => null);
 
     if (this.isConfigured) {
       try {
@@ -100,13 +112,41 @@ export class WhatsAppService {
         if (res.ok) {
           const msgId = data?.messages?.[0]?.id;
           this.logger.log(`📱 WhatsApp sent to ${formattedRecipient} (MsgID: ${msgId})`);
+          if (outbox) {
+            await this.prisma.notificationOutbox.update({
+              where: { id: outbox.id },
+              data: {
+                status: 'SENT',
+                sentAt: new Date(),
+                metadata: JSON.stringify({ messageId: msgId }),
+              },
+            }).catch(() => {});
+          }
           return { success: true, messageId: msgId, simulated: false };
         } else {
           this.logger.error(`Meta WhatsApp API error: ${JSON.stringify(data)}`);
+          if (outbox) {
+            await this.prisma.notificationOutbox.update({
+              where: { id: outbox.id },
+              data: {
+                status: 'FAILED',
+                error: JSON.stringify(data),
+              },
+            }).catch(() => {});
+          }
           return { success: false, simulated: false };
         }
       } catch (err: any) {
         this.logger.error(`Failed to send WhatsApp message via Meta Cloud API: ${err.message}`);
+        if (outbox) {
+          await this.prisma.notificationOutbox.update({
+            where: { id: outbox.id },
+            data: {
+              status: 'FAILED',
+              error: err?.message || String(err),
+            },
+          }).catch(() => {});
+        }
         return { success: false, simulated: false };
       }
     } else {
@@ -118,6 +158,16 @@ export class WhatsAppService {
         `├─ Type: ${payload.type.toUpperCase()}${payload.templateName ? ` (${payload.templateName})` : ''}\n` +
         `└─ Content: ${previewText}\n`
       );
+      if (outbox) {
+        await this.prisma.notificationOutbox.update({
+          where: { id: outbox.id },
+          data: {
+            status: 'SENT',
+            sentAt: new Date(),
+            metadata: JSON.stringify({ simulated: true }),
+          },
+        }).catch(() => {});
+      }
       return { success: true, messageId: `SIM_WA_${Date.now()}`, simulated: true };
     }
   }

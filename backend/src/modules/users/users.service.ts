@@ -55,57 +55,62 @@ export class UsersService {
   }
 
   // Admin user management
-  async adminGetUsers(query: { search?: string; status?: string; role?: string }) {
+  async adminGetUsers(query: { search?: string; status?: string; role?: string; limit?: number | string; offset?: number | string }) {
     const { search, status, role } = query;
+    const limit = Math.min(Math.max(Number(query.limit) || 50, 1), 100);
+    const offset = Math.max(Number(query.offset) || 0, 0);
 
-    const users = await this.prisma.user.findMany({
-      where: {
-        ...(status && { status }),
-        ...(role && { role }),
-        ...(search && {
-          OR: [
-            { name: { contains: search } },
-            { email: { contains: search } },
-            { country: { contains: search } },
-          ],
-        }),
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        phone: true,
-        country: true,
-        role: true,
-        status: true,
-        emailVerified: true,
-        createdAt: true,
-        _count: {
-          select: {
-            submissions: true,
-            redemptions: true,
+    const where = {
+      ...(status && { status }),
+      ...(role && { role }),
+      ...(search && {
+        OR: [
+          { name: { contains: search, mode: 'insensitive' as const } },
+          { email: { contains: search, mode: 'insensitive' as const } },
+          { country: { contains: search, mode: 'insensitive' as const } },
+        ],
+      }),
+    };
+
+    const [users, total] = await Promise.all([
+      this.prisma.user.findMany({
+        where,
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          phone: true,
+          country: true,
+          role: true,
+          status: true,
+          pointsBalance: true, // Materialized balance: eliminates N+1 query loop!
+          emailVerified: true,
+          createdAt: true,
+          _count: {
+            select: {
+              submissions: true,
+              redemptions: true,
+            },
           },
         },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    // Attach latest balance for each user
-    const usersWithBalance = await Promise.all(
-      users.map(async (u) => {
-        const lastTx = await this.prisma.pointsLedger.findFirst({
-          where: { userId: u.id },
-          orderBy: { createdAt: 'desc' },
-          select: { balanceAfter: true },
-        });
-        return {
-          ...u,
-          availablePoints: lastTx ? lastTx.balanceAfter : 0,
-        };
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        skip: offset,
       }),
-    );
+      this.prisma.user.count({ where }),
+    ]);
 
-    return usersWithBalance;
+    const usersWithBalance = users.map((u) => ({
+      ...u,
+      availablePoints: u.pointsBalance ?? 0,
+    }));
+
+    return {
+      users: usersWithBalance,
+      total,
+      limit,
+      offset,
+    };
   }
 
   async adminGetUserById(id: string) {

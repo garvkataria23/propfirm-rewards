@@ -1,0 +1,97 @@
+name: Quarterly Disaster Recovery & Financial Invariant Rehearsal
+
+on:
+  schedule:
+    # Runs at 00:00 UTC on the 1st day of every 3rd month (Quarterly)
+    - cron: '0 0 1 */3 *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run rehearsal mode'
+        required: false
+        default: 'false'
+        type: boolean
+
+concurrency:
+  group: disaster-recovery-rehearsal
+  cancel-in-progress: false
+
+jobs:
+  dr-drill:
+    name: Cold Restore & Financial Invariant Rehearsal
+    runs-on: ubuntu-latest
+
+    services:
+      postgres-dr:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: drpassword
+          POSTGRES_DB: propnation_dr_scratch
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Initialize Isolated DR Target Database
+        run: npx prisma db push --skip-generate
+        env:
+          DATABASE_URL: "postgresql://postgres:drpassword@localhost:5432/propnation_dr_scratch"
+
+      - name: Populate Deterministic Financial State Seed
+        run: |
+          npx ts-node -e '
+            import { PrismaClient } from "@prisma/client";
+            const prisma = new PrismaClient({ datasources: { db: { url: "postgresql://postgres:drpassword@localhost:5432/propnation_dr_scratch" } } });
+            async function seed() {
+              const u = await prisma.user.create({
+                data: {
+                  email: "dr_trader@example.com",
+                  passwordHash: "hash",
+                  name: "DR Trader",
+                  pointsBalance: 5000,
+                  role: "USER"
+                }
+              });
+              await prisma.pointsLedger.create({
+                data: {
+                  userId: u.id,
+                  type: "PURCHASE_VERIFIED",
+                  points: 5000,
+                  balanceBefore: 0,
+                  balanceAfter: 5000,
+                  description: "DR Seed Verified Purchase"
+                }
+              });
+            }
+            seed().then(() => prisma.$disconnect());
+          '
+        env:
+          DATABASE_URL: "postgresql://postgres:drpassword@localhost:5432/propnation_dr_scratch"
+
+      - name: Execute Automated Disaster Recovery Rehearsal & Integrity Audit
+        run: npm run dr:rehearsal
+        env:
+          DATABASE_URL: "postgresql://postgres:drpassword@localhost:5432/propnation_dr_scratch"
+          DR_TARGET_DATABASE_URL: "postgresql://postgres:drpassword@localhost:5432/propnation_dr_scratch"

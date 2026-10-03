@@ -15,6 +15,7 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:seed": "ts-node prisma/seed.ts",
+    "dr:rehearsal": "node scripts/dr-rehearsal.js",
     "test": "jest"
   },
   "prisma": {

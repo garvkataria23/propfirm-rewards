@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Put, Delete, Patch, Param, Body, UseGuards, Query, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Patch, Param, Body, UseGuards, Query, UseInterceptors, UploadedFiles, BadRequestException } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import * as path from 'path';
 import { PurchasesService } from './purchases.service';
 import { SubmitPurchaseDto, ApprovePurchaseDto, RejectPurchaseDto, RequestInfoPurchaseDto, ResubmitPurchaseDto, AdminCreatePurchaseDto, AdminUpdatePurchaseDto } from './dto/purchase.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -7,13 +8,32 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
+const ALLOWED_PROOF_MIMES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']);
+const ALLOWED_PROOF_EXTS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.pdf']);
+
+export const proofUploadOptions = {
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: (req: any, file: Express.Multer.File, callback: any) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (!ALLOWED_PROOF_MIMES.has(file.mimetype) || !ALLOWED_PROOF_EXTS.has(ext)) {
+      return callback(
+        new BadRequestException(
+          `Invalid file format: "${file.mimetype}" (${ext}). Only JPEG, PNG, WEBP, and PDF documents are allowed.`,
+        ),
+        false,
+      );
+    }
+    callback(null, true);
+  },
+};
+
 @Controller('purchases')
 export class PurchasesController {
   constructor(private readonly purchasesService: PurchasesService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  @UseInterceptors(FilesInterceptor('proofs', 5, { limits: { fileSize: 10 * 1024 * 1024 } }))
+  @UseInterceptors(FilesInterceptor('proofs', 5, proofUploadOptions))
   async submitPurchase(
     @CurrentUser('id') userId: string,
     @Body() dto: SubmitPurchaseDto,
@@ -40,7 +60,7 @@ export class PurchasesController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id/resubmit')
-  @UseInterceptors(FilesInterceptor('proofs', 5, { limits: { fileSize: 10 * 1024 * 1024 } }))
+  @UseInterceptors(FilesInterceptor('proofs', 5, proofUploadOptions))
   async resubmitPurchase(
     @CurrentUser('id') userId: string,
     @Param('id') id: string,

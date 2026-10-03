@@ -341,9 +341,10 @@ export default function AdminPurchasesPage() {
         status: statusFilter === 'ALL' ? undefined : statusFilter,
         search: search || undefined,
       })
-      .then((data) => {
-        if (data && data.length > 0) {
-          setSubmissions(data);
+      .then((data: any) => {
+        const list = Array.isArray(data) ? data : data?.purchases || [];
+        if (list && list.length > 0) {
+          setSubmissions(list);
         } else {
           setSubmissions(
             DEFAULT_ADMIN_SUBMISSIONS.filter(

@@ -30,19 +30,26 @@ const STAFF_ROLES = ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'F
 @WebSocketGateway({
   cors: {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-      // Allow local and configured domains
       if (!origin) return callback(null, true);
+      const isProd = process.env.NODE_ENV === 'production';
       const configured = process.env.CORS_ORIGIN || '';
-      const allowed = configured.split(',').map((s) => s.trim());
-      if (
-        allowed.includes(origin) ||
-        origin.endsWith('.vercel.app') ||
-        origin.endsWith('.onrender.com') ||
-        origin.includes('localhost')
-      ) {
+      const allowedSet = new Set(
+        configured
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
+      );
+
+      if (!isProd) {
+        allowedSet.add('http://localhost:3000');
+        allowedSet.add('http://127.0.0.1:3000');
+        allowedSet.add('http://localhost:3001');
+      }
+
+      if (allowedSet.has(origin)) {
         return callback(null, true);
       }
-      return callback(null, true);
+      return callback(new Error(`Origin ${origin} not allowed by WebSocket CORS policy`));
     },
     credentials: true,
   },

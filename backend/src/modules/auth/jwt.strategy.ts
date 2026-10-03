@@ -14,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { sub: string; email: string; role: string }) {
+  async validate(payload: { sub: string; email: string; role: string; tokenVersion?: number }) {
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
       select: {
@@ -26,6 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         phone: true,
         country: true,
         avatarUrl: true,
+        tokenVersion: true,
       },
     });
 
@@ -35,6 +36,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     if (user.status === 'SUSPENDED') {
       throw new UnauthorizedException('Account suspended');
+    }
+
+    if (payload.tokenVersion !== undefined && user.tokenVersion !== payload.tokenVersion) {
+      throw new UnauthorizedException('Session has been revoked or invalidated. Please log in again.');
     }
 
     return user;

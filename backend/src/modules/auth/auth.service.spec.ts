@@ -21,6 +21,9 @@ describe('AuthService (Google Token Cryptographic Verification & RBAC)', () => {
       notification: {
         create: jest.fn(),
       },
+      auditLog: {
+        create: jest.fn().mockResolvedValue({}),
+      },
     };
 
     jwtService = {

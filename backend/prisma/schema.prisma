@@ -24,6 +24,7 @@ model User {
   permissions   String?   // JSON array of granular permissions
   emailVerified Boolean   @default(false)
   pointsBalance Int       @default(0)
+  tokenVersion  Int       @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -178,7 +179,7 @@ model PointsLedger {
   createdById    String?
   createdAt      DateTime            @default(now())
 
-  user         User                @relation("UserPoints", fields: [userId], references: [id], onDelete: Cascade)
+  user         User                @relation("UserPoints", fields: [userId], references: [id], onDelete: Restrict)
   submission   PurchaseSubmission? @relation(fields: [submissionId], references: [id])
   redemption   Redemption?         @relation(fields: [redemptionId], references: [id])
   createdBy    User?               @relation("AdminCreatedPoints", fields: [createdById], references: [id])
@@ -355,6 +356,25 @@ model WebhookEvent {
   createdAt   DateTime @default(now())
 
   @@index([provider, eventId])
+  @@index([createdAt])
+}
+
+model NotificationOutbox {
+  id           String    @id @default(uuid())
+  channel      String    // EMAIL, WHATSAPP, IN_APP
+  recipient    String
+  subject      String?
+  content      String
+  status       String    @default("PENDING") // PENDING, SENT, FAILED
+  error        String?
+  metadata     String?   // JSON string
+  sentAt       DateTime?
+  attempts     Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([status])
+  @@index([channel])
   @@index([createdAt])
 }
 

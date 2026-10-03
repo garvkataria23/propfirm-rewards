@@ -177,28 +177,6 @@ export default function PointsLedgerPage() {
     }
   };
 
-  const handleExportCSV = () => {
-    const headers = ['Transaction ID', 'Date', 'Type', 'Description', 'Points (+/-)', 'USD Value', 'Balance After'];
-    const rows = filteredTransactions.map((tx) => [
-      tx.id,
-      new Date(tx.createdAt).toISOString(),
-      tx.type,
-      `"${tx.description.replace(/"/g, '""')}"`,
-      tx.points,
-      `$${(Math.abs(tx.points) / 10).toFixed(2)}`,
-      tx.balanceAfter,
-    ]);
-
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `PropNation_Points_Statement_${Date.now()}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const filteredTransactions = transactions.filter((tx) => {
     const matchesFilter =
       filterType === 'ALL' ||
@@ -215,6 +193,28 @@ export default function PointsLedgerPage() {
 
     return matchesFilter && matchesSearch;
   });
+
+  const handleExportCSV = () => {
+    const headers = ['Transaction ID', 'Date', 'Type', 'Description', 'Points (+/-)', 'USD Value', 'Balance After'];
+    const rows = filteredTransactions.map((tx) => [
+      tx.id,
+      new Date(tx.createdAt).toISOString(),
+      tx.type,
+      `"${tx.description.replace(/"/g, '""')}"`,
+      tx.points,
+      `$${(Math.abs(tx.points) / 10).toFixed(2)}`,
+      tx.balanceAfter,
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `PropNation_Points_Statement_${new Date().getTime()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const availablePts = summary?.availablePoints || 15700;
   const earnedPts = summary?.totalPointsEarned || 37700;

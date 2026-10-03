@@ -4,6 +4,16 @@ import { EmailService } from '../email/email.service';
 import { WhatsAppService } from '../whatsapp/whatsapp.service';
 import { UpdateRedemptionStatusDto } from '../rewards/dto/reward.dto';
 
+export const ALLOWED_REDEMPTION_TRANSITIONS: Record<string, string[]> = {
+  PENDING: ['CONFIRMED', 'CANCELLED', 'REJECTED'],
+  CONFIRMED: ['PROCESSING', 'CANCELLED'],
+  PROCESSING: ['SHIPPED', 'CANCELLED'],
+  SHIPPED: ['DELIVERED'],
+  DELIVERED: [],
+  CANCELLED: [],
+  REJECTED: [],
+};
+
 @Injectable()
 export class RedemptionsService {
   constructor(
@@ -44,30 +54,48 @@ export class RedemptionsService {
     status?: string;
     userId?: string;
     search?: string;
+    limit?: number | string;
+    offset?: number | string;
   }) {
     const { status, userId, search } = query;
+    const limit = Math.min(Math.max(Number(query.limit) || 50, 1), 100);
+    const offset = Math.max(Number(query.offset) || 0, 0);
 
-    return this.prisma.redemption.findMany({
-      where: {
-        ...(status && { status }),
-        ...(userId && { userId }),
-        ...(search && {
-          OR: [
-            { redemptionCode: { contains: search } },
-            { trackingNumber: { contains: search } },
-            { user: { name: { contains: search } } },
-            { user: { email: { contains: search } } },
-            { reward: { name: { contains: search } } },
-          ],
-        }),
-      },
-      include: {
-        user: { select: { id: true, name: true, email: true, phone: true, country: true } },
-        reward: true,
-        shippingAddress: true,
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+    const where = {
+      ...(status && { status }),
+      ...(userId && { userId }),
+      ...(search && {
+        OR: [
+          { redemptionCode: { contains: search, mode: 'insensitive' as const } },
+          { trackingNumber: { contains: search, mode: 'insensitive' as const } },
+          { user: { name: { contains: search, mode: 'insensitive' as const } } },
+          { user: { email: { contains: search, mode: 'insensitive' as const } } },
+          { reward: { name: { contains: search, mode: 'insensitive' as const } } },
+        ],
+      }),
+    };
+
+    const [redemptions, total] = await Promise.all([
+      this.prisma.redemption.findMany({
+        where,
+        include: {
+          user: { select: { id: true, name: true, email: true, phone: true, country: true } },
+          reward: true,
+          shippingAddress: true,
+        },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        skip: offset,
+      }),
+      this.prisma.redemption.count({ where }),
+    ]);
+
+    return {
+      redemptions,
+      total,
+      limit,
+      offset,
+    };
   }
 
   async getAdminRedemptionById(id: string) {
@@ -103,12 +131,22 @@ export class RedemptionsService {
     const previousStatus = redemption.status;
     const newStatus = dto.status.toUpperCase();
 
-    // If cancelling or rejecting an order that spent points, safely refund points and restore stock
+    if (previousStatus === newStatus) {
+      return redemption;
+    }
+
+    const allowedNext = ALLOWED_REDEMPTION_TRANSITIONS[previousStatus] || [];
+    if (!allowedNext.includes(newStatus)) {
+      throw new BadRequestException(
+        `Invalid state transition: Cannot change redemption from "${previousStatus}" to "${newStatus}".`,
+      );
+    }
+
+    // Only allow refunds for pre-shipment states
     let refundProcessed = false;
     if (
       (newStatus === 'CANCELLED' || newStatus === 'REJECTED') &&
-      previousStatus !== 'CANCELLED' &&
-      previousStatus !== 'REJECTED'
+      ['PENDING', 'CONFIRMED', 'PROCESSING'].includes(previousStatus)
     ) {
       refundProcessed = true;
     }
