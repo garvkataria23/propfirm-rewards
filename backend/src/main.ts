@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger, BadRequestException } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as express from 'express';
+import * as compression from 'compression';
 import * as path from 'path';
 import * as fs from 'fs';
 import { AppModule } from './app.module';
@@ -63,6 +64,9 @@ async function bootstrap() {
     res.removeHeader('X-Powered-By');
     next();
   });
+
+  // Enable HTTP response compression (Gzip/Deflate) to reduce network payload by ~80%
+  app.use(compression());
 
   // Body parser limits to prevent memory exhaustion attacks
   app.use(express.json({ limit: '5mb' }));

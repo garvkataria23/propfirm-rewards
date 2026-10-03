@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Query, Header } from '@nestjs/common';
 import { RewardsService } from './rewards.service';
 import { CreateRewardDto, UpdateRewardDto, RedeemRewardDto } from './dto/reward.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -11,11 +11,13 @@ export class RewardsController {
   constructor(private readonly rewardsService: RewardsService) {}
 
   @Get('categories')
+  @Header('Cache-Control', 'public, max-age=60, s-maxage=120, stale-while-revalidate=300')
   async getCategories() {
     return this.rewardsService.getCategories();
   }
 
   @Get()
+  @Header('Cache-Control', 'public, max-age=30, s-maxage=60, stale-while-revalidate=120')
   async findAll(
     @Query('category') categorySlug?: string,
     @Query('search') search?: string,
@@ -29,6 +31,7 @@ export class RewardsController {
   }
 
   @Get(':identifier')
+  @Header('Cache-Control', 'public, max-age=30, s-maxage=60, stale-while-revalidate=120')
   async findOne(@Param('identifier') identifier: string) {
     return this.rewardsService.findBySlugOrId(identifier);
   }

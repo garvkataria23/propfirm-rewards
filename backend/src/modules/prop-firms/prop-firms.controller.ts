@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Query, Header } from '@nestjs/common';
 import { PropFirmsService } from './prop-firms.service';
 import { CreatePropFirmDto, UpdatePropFirmDto, CreateOfferDto, UpdateOfferDto } from './dto/prop-firm.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -11,11 +11,13 @@ export class PropFirmsController {
   constructor(private readonly propFirmsService: PropFirmsService) {}
 
   @Get()
+  @Header('Cache-Control', 'public, max-age=30, s-maxage=60, stale-while-revalidate=120')
   async findAll(@Query('includeInactive') includeInactive?: string) {
     return this.propFirmsService.findAll(includeInactive === 'true');
   }
 
   @Get(':identifier')
+  @Header('Cache-Control', 'public, max-age=30, s-maxage=60, stale-while-revalidate=120')
   async findOne(@Param('identifier') identifier: string, @Query('includeInactive') includeInactive?: string) {
     return this.propFirmsService.findBySlugOrId(identifier, includeInactive === 'true');
   }
