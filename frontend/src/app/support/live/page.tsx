@@ -388,8 +388,8 @@ export default function LiveSupportPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#070913] dark:text-slate-100 transition-colors py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="w-full text-slate-900 dark:text-slate-100 transition-colors">
+      <div className="w-full space-y-8">
         {/* ======================================================== */}
         {/* TOP HERO BANNER */}
         {/* ======================================================== */}
@@ -969,7 +969,7 @@ export default function LiveSupportPage() {
         {/* CHANNEL VIEW 4: HELP CENTER & FAQS */}
         {/* ======================================================== */}
         {activeChannel === 'FAQ' && (
-          <div className="space-y-8 text-left max-w-4xl mx-auto">
+          <div className="space-y-8 text-left w-full">
             <div className="text-center space-y-3">
               <h2 className="text-3xl font-[900] text-slate-900 dark:text-white">
                 Frequently Asked Questions &amp; Knowledge Base

@@ -206,7 +206,7 @@ export default function ReviewsPage() {
   });
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 pb-16">
+    <div className="w-full space-y-8 pb-12">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200 dark:border-slate-800">
         <div>

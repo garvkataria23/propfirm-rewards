@@ -48,7 +48,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="w-full space-y-8">
       {/* Header */}
       <div>
         <div className="flex items-center gap-2">

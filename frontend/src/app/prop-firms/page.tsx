@@ -142,6 +142,59 @@ const FALLBACK_FIRMS: PropFirm[] = [
       { id: 'o-24', accountTierName: '$100K Evaluation 2-Step', purchasePriceUsd: 399, rewardPoints: 3990 },
     ],
   },
+  {
+    id: 'firm-6',
+    name: 'Apex Trader Funding',
+    slug: 'apex-trader-funding',
+    logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
+    description: 'Leading CME Futures evaluation firm with 100% profit on your first $25,000, up to 20 simultaneous accounts, and zero daily drawdown rules.',
+    websiteUrl: 'https://apextraderfunding.com',
+    affiliateCode: 'NATION',
+    affiliateUrl: 'https://apextraderfunding.com/?c=NATION',
+    eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
+    category: 'FUTURES',
+    offers: [
+      { id: 'o-25', accountTierName: '$25K Full Futures Account', purchasePriceUsd: 147, rewardPoints: 1470 },
+      { id: 'o-26', accountTierName: '$50K Full Futures Account', purchasePriceUsd: 167, rewardPoints: 1670 },
+      { id: 'o-27', accountTierName: '$100K Full Futures Account', purchasePriceUsd: 207, rewardPoints: 2070 },
+      { id: 'o-28', accountTierName: '$150K Full Futures Account', purchasePriceUsd: 297, rewardPoints: 2970 },
+      { id: 'o-29', accountTierName: '$300K Full Futures Account', purchasePriceUsd: 657, rewardPoints: 6570 },
+    ],
+  },
+  {
+    id: 'firm-7',
+    name: 'Topstep',
+    slug: 'topstep',
+    logoUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=120&auto=format&fit=crop&q=80',
+    description: 'The original futures prop firm on TopstepX. Trade CME E-mini NQ, ES, Gold & Crude Oil with 1-step Trading Combine and daily payouts.',
+    websiteUrl: 'https://topstep.com',
+    affiliateCode: 'NATION',
+    affiliateUrl: 'https://topstep.com/?ref=nation',
+    eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
+    category: 'FUTURES',
+    offers: [
+      { id: 'o-30', accountTierName: '$50K Trading Combine', purchasePriceUsd: 49, rewardPoints: 490 },
+      { id: 'o-31', accountTierName: '$100K Trading Combine', purchasePriceUsd: 99, rewardPoints: 990 },
+      { id: 'o-32', accountTierName: '$150K Trading Combine', purchasePriceUsd: 149, rewardPoints: 1490 },
+    ],
+  },
+  {
+    id: 'firm-8',
+    name: 'MyFundedFutures',
+    slug: 'myfundedfutures',
+    logoUrl: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
+    description: 'Next-generation futures prop trading with 1-day pass capability, end-of-day trailing drawdown, and zero activation fee expert plans.',
+    websiteUrl: 'https://myfundedfutures.com',
+    affiliateCode: 'NATION',
+    affiliateUrl: 'https://myfundedfutures.com/?ref=nation',
+    eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
+    category: 'FUTURES',
+    offers: [
+      { id: 'o-33', accountTierName: '$50K Starter Futures', purchasePriceUsd: 80, rewardPoints: 800 },
+      { id: 'o-34', accountTierName: '$100K Expert Futures', purchasePriceUsd: 265, rewardPoints: 2650 },
+      { id: 'o-35', accountTierName: '$150K Expert Futures', purchasePriceUsd: 375, rewardPoints: 3750 },
+    ],
+  },
 ];
 
 function PropFirmsContent() {
@@ -150,6 +203,7 @@ function PropFirmsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const typeParam = searchParams.get('type')?.toLowerCase();
+  const isDashboard = pathname?.startsWith('/dashboard');
 
   // Redirect signed-in users to in-dashboard prop-firms
   useEffect(() => {
@@ -172,6 +226,8 @@ function PropFirmsContent() {
       setSelectedType('CFD');
     } else if (typeParam === 'futures') {
       setSelectedType('FUTURES');
+    } else if (!typeParam) {
+      setSelectedType('ALL');
     }
   }, [typeParam]);
 
@@ -186,7 +242,7 @@ function PropFirmsContent() {
             const isFutures =
               nameLower.includes('topstep') ||
               nameLower.includes('apex') ||
-              descLower.includes('futures');
+              nameLower.includes('futures');
 
             return {
               ...firm,
@@ -194,7 +250,9 @@ function PropFirmsContent() {
               category: (isFutures ? 'FUTURES' : 'CFD') as 'CFD' | 'FUTURES',
             };
           });
-          setPropFirms(enhanced);
+          const hasFutures = enhanced.some((f) => f.category === 'FUTURES');
+          const fallbackFutures = FALLBACK_FIRMS.filter((f) => f.category === 'FUTURES');
+          setPropFirms(hasFutures ? enhanced : [...enhanced, ...fallbackFutures]);
         }
       })
       .catch((err) => {
@@ -238,7 +296,7 @@ function PropFirmsContent() {
   });
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 space-y-10">
+    <div className={isDashboard ? 'w-full space-y-8' : 'mx-auto w-full max-w-[1600px] px-4 py-10 sm:px-6 lg:px-10 space-y-10'}>
       {/* ======================================================== */}
       {/* 1. UNIVERSAL CODE NATION HERO BANNER (Clean White & Light Purple) */}
       {/* ======================================================== */}
@@ -256,7 +314,7 @@ function PropFirmsContent() {
               Eligible Prop Firms &amp; Cash Rewards
             </h1>
             <p className="text-sm sm:text-base text-purple-100 font-normal leading-relaxed">
-              Use code <strong className="font-mono bg-white/20 px-2 py-0.5 rounded text-white font-bold">NATION</strong> on any of our 5 partner prop firms. Get exclusive checkout discounts and earn <strong>10 Reward Points per $1 spent</strong> redeemable for luxury gadgets or instant USDT.
+              Use code <strong className="font-mono bg-white/20 px-2 py-0.5 rounded text-white font-bold">NATION</strong> on any of our {propFirms.length} partner prop firms. Get exclusive checkout discounts and earn <strong>10 Reward Points per $1 spent</strong> redeemable for luxury gadgets or instant USDT.
             </p>
           </div>
 
@@ -298,11 +356,11 @@ function PropFirmsContent() {
       {/* ======================================================== */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-purple-100 dark:border-purple-950/40">
         {/* Type Filter Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {[
-            { key: 'ALL', label: 'All 5 Prop Firms', icon: Layers },
-            { key: 'CFD', label: 'CFD Challenges', icon: Landmark },
-            { key: 'FUTURES', label: 'Futures Challenges', icon: TrendingUp },
+            { key: 'ALL', label: `All ${propFirms.length} Prop Firms`, icon: Layers },
+            { key: 'CFD', label: `CFD Challenges (${propFirms.filter((f) => f.category === 'CFD').length})`, icon: Landmark },
+            { key: 'FUTURES', label: `Futures Challenges (${propFirms.filter((f) => f.category === 'FUTURES').length})`, icon: TrendingUp },
           ].map((tab) => {
             const Icon = tab.icon;
             return (

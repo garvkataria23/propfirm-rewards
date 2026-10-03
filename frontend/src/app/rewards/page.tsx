@@ -642,9 +642,10 @@ export default function RewardsStorePage() {
   };
 
   const userBalance = user?.points?.available || 0;
+  const isDashboard = pathname?.startsWith('/dashboard');
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 space-y-12">
+    <div className={isDashboard ? 'w-full space-y-8' : 'mx-auto w-full max-w-[1600px] px-4 py-10 sm:px-6 lg:px-10 space-y-12'}>
       {/* Header Banner */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200 dark:border-slate-800/80">
         <div>

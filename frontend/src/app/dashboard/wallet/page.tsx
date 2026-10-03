@@ -237,7 +237,7 @@ export default function TraderWalletPage() {
   });
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-12">
+    <div className="w-full space-y-8 pb-12">
       {/* Page Title & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

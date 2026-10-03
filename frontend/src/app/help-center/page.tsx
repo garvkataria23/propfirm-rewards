@@ -87,7 +87,7 @@ export default function HelpCenterPage() {
   );
 
   return (
-    <div className="space-y-12 max-w-5xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div className="w-full space-y-10">
       {/* Search Header Banner */}
       <div className="text-center space-y-4 py-6">
         <Badge variant="purple">Documentation & Knowledge Base</Badge>

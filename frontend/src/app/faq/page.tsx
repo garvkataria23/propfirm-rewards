@@ -54,7 +54,7 @@ export default function FAQPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 space-y-12">
+    <div className="w-full space-y-10">
       <div className="text-center space-y-3">
         <Badge variant="outline">Knowledge Base & FAQ</Badge>
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">

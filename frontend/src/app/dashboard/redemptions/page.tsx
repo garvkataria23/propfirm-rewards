@@ -242,7 +242,7 @@ export default function RedemptionsTrackingPage() {
   const totalPointsSpent = redemptions.reduce((acc, r) => acc + r.pointsSpent, 0);
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-12">
+    <div className="w-full space-y-8 pb-12">
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs transition-colors">
         <div>

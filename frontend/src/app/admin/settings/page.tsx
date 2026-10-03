@@ -49,7 +49,7 @@ export default function AdminSettingsPage() {
   };
 
   return (
-    <div className="max-w-4xl space-y-6">
+    <div className="w-full space-y-6">
       <div>
         <h1 className="text-2xl font-black text-white tracking-tight">System Settings</h1>
         <p className="text-xs text-slate-400">

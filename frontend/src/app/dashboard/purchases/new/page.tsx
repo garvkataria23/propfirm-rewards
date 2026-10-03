@@ -541,7 +541,7 @@ export default function SubmitPurchasePage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 pb-12">
+    <div className="w-full space-y-8 pb-12">
       <div>
         <Link
           href="/dashboard/purchases"

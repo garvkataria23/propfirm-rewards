@@ -135,7 +135,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="max-w-4xl space-y-8">
+    <div className="w-full space-y-8">
       <div>
         <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Trader Profile & Addresses</h2>
         <p className="text-xs text-slate-500 dark:text-slate-400">

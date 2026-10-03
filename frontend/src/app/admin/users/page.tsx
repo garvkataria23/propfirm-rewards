@@ -721,7 +721,7 @@ export default function AdminUsersPage() {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-16">
+    <div className="w-full space-y-6 pb-16">
       {/* Success Banner */}
       {successBanner && (
         <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-between shadow-lg animate-in fade-in duration-300">

@@ -203,7 +203,7 @@ export function PropFirmCalculator() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto py-12 px-4">
+    <div className="w-full max-w-[1600px] mx-auto py-8 px-4 sm:px-6 lg:px-10">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-10">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-4">
