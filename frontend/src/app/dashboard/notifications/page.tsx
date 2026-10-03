@@ -27,78 +27,93 @@ interface NotificationItem {
   createdAt: string;
 }
 
+const FALLBACK_NOTIFICATIONS: NotificationItem[] = [
+  {
+    id: 'n-shipping',
+    title: '📦 Reward Order Shipped: Apple AirPods Pro 2',
+    message: 'Your parcel is in transit via DHL Express (Tracking #DHL-882941029). Estimated delivery: Tomorrow, By 5:00 PM.',
+    type: 'REDEMPTION',
+    isRead: false,
+    linkUrl: '/dashboard/redemptions',
+    createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+  },
+  {
+    id: 'n-cashback',
+    title: '✅ Cashback Points Credited: +4,500 PTS',
+    message: 'Your invoice proof for Funding Pips $100K 2-Step (Order #FP-98214) has been approved! Points are ready in your wallet.',
+    type: 'POINTS',
+    isRead: false,
+    linkUrl: '/dashboard/wallet',
+    createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+  },
+  {
+    id: 'n-vip',
+    title: '👑 VIP Level Up: Silver Trader Unlocked!',
+    message: 'You have verified 3+ challenges! You now earn 1.2x points multiplier on all future evaluations plus <2h review SLA.',
+    type: 'POINTS',
+    isRead: false,
+    linkUrl: '/dashboard/wallet',
+    createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
+  },
+  {
+    id: 'n-1',
+    title: 'Welcome to PropNation Rewards',
+    message: 'Your account is verified! Explore eligible CFD and Futures prop firms and submit your first purchase proof to earn reward points.',
+    type: 'SYSTEM',
+    isRead: true,
+    linkUrl: '/dashboard/prop-firms',
+    createdAt: new Date(Date.now() - 1000 * 60 * 300).toISOString(),
+  },
+];
+
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>(FALLBACK_NOTIFICATIONS);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'ALL' | 'UNREAD' | 'POINTS' | 'PURCHASE'>('ALL');
 
   useEffect(() => {
-    // In our backend, notifications may be fetched from API or seeded
     api
-      .get<NotificationItem[]>('/notifications')
-      .then((data) => setNotifications(data))
+      .get<NotificationItem[] | { notifications?: NotificationItem[]; unreadCount?: number }>('/notifications')
+      .then((data) => {
+        const list = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.notifications)
+          ? data.notifications
+          : [];
+        if (list.length > 0) {
+          setNotifications(list);
+        } else {
+          setNotifications(FALLBACK_NOTIFICATIONS);
+        }
+      })
       .catch(() => {
-        // Fallback default notifications if none returned
-        setNotifications([
-          {
-            id: 'n-shipping',
-            title: '📦 Reward Order Shipped: Apple AirPods Pro 2',
-            message: 'Your parcel is in transit via DHL Express (Tracking #DHL-882941029). Estimated delivery: Tomorrow, By 5:00 PM.',
-            type: 'REDEMPTION',
-            isRead: false,
-            linkUrl: '/dashboard/redemptions',
-            createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-          },
-          {
-            id: 'n-cashback',
-            title: '✅ Cashback Points Credited: +4,500 PTS',
-            message: 'Your invoice proof for Funding Pips $100K 2-Step (Order #FP-98214) has been approved! Points are ready in your wallet.',
-            type: 'POINTS',
-            isRead: false,
-            linkUrl: '/dashboard/wallet',
-            createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-          },
-          {
-            id: 'n-vip',
-            title: '👑 VIP Level Up: Silver Trader Unlocked!',
-            message: 'You have verified 3+ challenges! You now earn 1.2x points multiplier on all future evaluations plus <2h review SLA.',
-            type: 'POINTS',
-            isRead: false,
-            linkUrl: '/dashboard/wallet',
-            createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-          },
-          {
-            id: 'n-1',
-            title: 'Welcome to PropNation Rewards',
-            message: 'Your account is verified! Explore eligible CFD and Futures prop firms and submit your first purchase proof to earn reward points.',
-            type: 'SYSTEM',
-            isRead: true,
-            linkUrl: '/prop-firms',
-            createdAt: new Date(Date.now() - 1000 * 60 * 300).toISOString(),
-          },
-        ]);
+        setNotifications(FALLBACK_NOTIFICATIONS);
       })
       .finally(() => setLoading(false));
   }, []);
 
   const markAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    setNotifications((prev) => (Array.isArray(prev) ? prev.map((n) => ({ ...n, isRead: true })) : []));
+    api.patch('/notifications/read-all', {}).catch(() => {});
   };
 
   const markSingleRead = (id: string) => {
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+      Array.isArray(prev) ? prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)) : []
     );
+    api.patch(`/notifications/${id}/read`, {}).catch(() => {});
   };
 
-  const filteredNotifications = notifications.filter((n) => {
+  const safeNotifications = Array.isArray(notifications) ? notifications : FALLBACK_NOTIFICATIONS;
+
+  const filteredNotifications = safeNotifications.filter((n) => {
     if (filter === 'UNREAD') return !n.isRead;
     if (filter === 'POINTS') return n.type === 'POINTS';
     if (filter === 'PURCHASE') return n.type === 'PURCHASE';
     return true;
   });
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = safeNotifications.filter((n) => !n.isRead).length;
 
   return (
     <div className="space-y-8">

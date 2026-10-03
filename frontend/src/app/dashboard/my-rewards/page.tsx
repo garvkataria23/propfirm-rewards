@@ -48,8 +48,8 @@ export default function MyRewardsPage() {
 
   useEffect(() => {
     api
-      .get<Redemption[]>('/redemptions/my')
-      .then((data) => setRedemptions(data))
+      .get<Redemption[]>('/redemptions')
+      .then((data) => setRedemptions(Array.isArray(data) ? data : []))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);

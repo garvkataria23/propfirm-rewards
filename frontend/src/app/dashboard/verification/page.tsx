@@ -45,17 +45,18 @@ export default function VerificationPage() {
 
   useEffect(() => {
     api
-      .get<PurchaseSubmission[]>('/purchases/my')
-      .then((data) => setSubmissions(data))
+      .get<PurchaseSubmission[]>('/purchases')
+      .then((data) => setSubmissions(Array.isArray(data) ? data : []))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
-  const pendingCount = submissions.filter(
+  const safeSubmissions = Array.isArray(submissions) ? submissions : [];
+  const pendingCount = safeSubmissions.filter(
     (s) => s.status === 'PENDING' || s.status === 'UNDER_REVIEW'
   ).length;
-  const approvedCount = submissions.filter((s) => s.status === 'APPROVED').length;
-  const actionRequiredCount = submissions.filter(
+  const approvedCount = safeSubmissions.filter((s) => s.status === 'APPROVED').length;
+  const actionRequiredCount = safeSubmissions.filter(
     (s) => s.status === 'MORE_INFO_REQUIRED'
   ).length;
 

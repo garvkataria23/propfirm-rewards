@@ -40,15 +40,22 @@ export default function ActivityPage() {
   useEffect(() => {
     // Fetch ledger and submissions to create real-time activity events
     Promise.all([
-      api.get<any[]>('/points/ledger').catch(() => []),
-      api.get<any[]>('/purchases/my').catch(() => []),
-      api.get<any[]>('/redemptions/my').catch(() => []),
+      api.get<any>('/points/ledger').catch(() => []),
+      api.get<any>('/purchases').catch(() => []),
+      api.get<any>('/redemptions').catch(() => []),
     ])
-      .then(([ledger, purchases, redemptions]) => {
+      .then(([ledgerRes, purchasesRes, redemptionsRes]) => {
         const combined: ActivityEvent[] = [];
+        const ledger = Array.isArray(ledgerRes)
+          ? ledgerRes
+          : Array.isArray(ledgerRes?.transactions)
+          ? ledgerRes.transactions
+          : [];
+        const purchases = Array.isArray(purchasesRes) ? purchasesRes : [];
+        const redemptions = Array.isArray(redemptionsRes) ? redemptionsRes : [];
 
         // Add ledger transactions
-        ledger.forEach((item) => {
+        ledger.forEach((item: any) => {
           combined.push({
             id: `ledger-${item.id}`,
             type: 'POINTS',
@@ -61,7 +68,7 @@ export default function ActivityPage() {
         });
 
         // Add purchase submissions
-        purchases.forEach((p) => {
+        purchases.forEach((p: any) => {
           combined.push({
             id: `purchase-${p.id}`,
             type: 'PURCHASE',
@@ -74,12 +81,12 @@ export default function ActivityPage() {
         });
 
         // Add redemptions
-        redemptions.forEach((r) => {
+        redemptions.forEach((r: any) => {
           combined.push({
             id: `redemption-${r.id}`,
             type: 'REDEMPTION',
             title: `Redeemed: ${r.reward?.name || 'Reward Item'}`,
-            description: `Spent ${r.pointsSpent.toLocaleString()} PTS • Status: ${r.status}`,
+            description: `Spent ${(r.pointsSpent || 0).toLocaleString()} PTS • Status: ${r.status}`,
             timestamp: r.createdAt,
             status: r.status,
             link: '/dashboard/redemptions',
