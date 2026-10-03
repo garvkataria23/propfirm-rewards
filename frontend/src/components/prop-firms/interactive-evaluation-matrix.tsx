@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { AutoApplyModal, AutoApplyFirmData } from '@/components/prop-firms/auto-apply-modal';
 
 export interface EvaluationModel {
   id: string;
@@ -171,6 +172,7 @@ export function InteractiveEvaluationMatrix({
   const effectiveNetCostUsd = (challengeCost - cashbackPoints / 100).toFixed(2);
 
   const destinationUrl = affiliateUrl || websiteUrl || '#';
+  const [isAutoApplyOpen, setIsAutoApplyOpen] = useState(false);
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(affiliateCode);
@@ -178,11 +180,8 @@ export function InteractiveEvaluationMatrix({
     setTimeout(() => setCopiedCode(false), 2200);
   };
 
-  const handleCopyAndVisit = () => {
-    navigator.clipboard.writeText(affiliateCode);
-    setCopiedCode(true);
-    window.open(destinationUrl, '_blank', 'noopener,noreferrer');
-    setTimeout(() => setCopiedCode(false), 2200);
+  const handleTriggerAutoApply = () => {
+    setIsAutoApplyOpen(true);
   };
 
   return (
@@ -484,10 +483,11 @@ export function InteractiveEvaluationMatrix({
             <Button
               type="button"
               size="lg"
-              onClick={handleCopyAndVisit}
+              onClick={handleTriggerAutoApply}
               className="w-full sm:flex-1 h-12 bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-purple-600/30 rounded-2xl cursor-pointer"
             >
-              <span>Buy {activeTier.label} Challenge &amp; Claim Points</span>
+              <Sparkles className="h-4 w-4 mr-2 text-yellow-300" />
+              <span>Buy {activeTier.label} Challenge &amp; Auto-Apply Code</span>
               <ExternalLink className="h-4 w-4 ml-2 shrink-0" />
             </Button>
 
@@ -509,11 +509,27 @@ export function InteractiveEvaluationMatrix({
           </div>
 
           <p className="text-[11px] text-center text-slate-500 dark:text-slate-400">
-            Clicking &ldquo;Buy Challenge&rdquo; copies referral code{' '}
-            <strong className="font-mono text-purple-600 dark:text-purple-400">{affiliateCode}</strong> and opens {firmName}&apos;s official checkout.
+            Clicking &ldquo;Buy Challenge&rdquo; auto-applies code{' '}
+            <strong className="font-mono text-purple-600 dark:text-purple-400">{affiliateCode}</strong> to checkout and syncs to your clipboard.
           </p>
         </div>
       </div>
+
+      {/* 1-Click Referral Auto-Apply Modal */}
+      <AutoApplyModal
+        isOpen={isAutoApplyOpen}
+        onClose={() => setIsAutoApplyOpen(false)}
+        firm={{
+          id: firmId || 'custom-firm',
+          name: firmName,
+          slug: firmName.toLowerCase().replace(/\s+/g, '-'),
+          affiliateCode: affiliateCode || 'NATION',
+          affiliateUrl,
+          websiteUrl,
+          tierName: activeTier.label,
+          tierPrice: challengeCost,
+        }}
+      />
     </section>
   );
 }

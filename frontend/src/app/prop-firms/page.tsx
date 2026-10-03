@@ -24,6 +24,7 @@ import {
   Globe,
   Tag,
 } from 'lucide-react';
+import { AutoApplyModal, AutoApplyFirmData } from '@/components/prop-firms/auto-apply-modal';
 
 interface PropFirmOffer {
   id: string;
@@ -201,17 +202,26 @@ function PropFirmsContent() {
       });
   }, []);
 
+  const [activeAutoApplyFirm, setActiveAutoApplyFirm] = useState<AutoApplyFirmData | null>(null);
+  const [isAutoApplyModalOpen, setIsAutoApplyModalOpen] = useState(false);
+
   const handleCopyCode = (code: string) => {
     navigator.clipboard.writeText(code);
     setCopiedCode(code);
     setTimeout(() => setCopiedCode(null), 2500);
   };
 
-  const handleCopyAndVisit = (code: string, url: string) => {
-    navigator.clipboard.writeText(code);
-    setCopiedCode(code);
-    window.open(url, '_blank', 'noopener,noreferrer');
-    setTimeout(() => setCopiedCode(null), 2500);
+  const handleTriggerAutoApply = (firm: PropFirm) => {
+    setActiveAutoApplyFirm({
+      id: firm.id,
+      name: firm.name,
+      slug: firm.slug,
+      logoUrl: firm.logoUrl,
+      affiliateCode: firm.affiliateCode || 'NATION',
+      affiliateUrl: firm.affiliateUrl,
+      websiteUrl: firm.websiteUrl,
+    });
+    setIsAutoApplyModalOpen(true);
   };
 
   const filteredFirms = propFirms.filter((f) => {
@@ -441,11 +451,12 @@ function PropFirmsContent() {
                       <Button
                         variant="primary"
                         size="sm"
-                        className="w-full sm:w-auto text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white shadow-sm"
-                        onClick={() => handleCopyAndVisit(firm.affiliateCode || 'NATION', firm.affiliateUrl || firm.websiteUrl)}
+                        className="w-full sm:w-auto text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white shadow-sm flex items-center justify-center gap-1.5"
+                        onClick={() => handleTriggerAutoApply(firm)}
                       >
-                        <span>Copy &amp; Open Site</span>
-                        <ExternalLink className="h-3.5 w-3.5 ml-1" />
+                        <Sparkles className="h-3.5 w-3.5 text-yellow-300" />
+                        <span>Auto-Apply &amp; Open</span>
+                        <ExternalLink className="h-3.5 w-3.5 ml-0.5" />
                       </Button>
                     </div>
                   </div>
@@ -488,17 +499,15 @@ function PropFirmsContent() {
 
                 {/* Bottom Actions */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-4 border-t border-purple-100 dark:border-purple-950/50">
-                  <a
-                    href={firm.affiliateUrl || firm.websiteUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-xs font-bold border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-950/50"
+                    onClick={() => handleTriggerAutoApply(firm)}
                   >
-                    <Button variant="outline" size="sm" className="w-full text-xs font-bold border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-950/50">
-                      Visit {firm.name}
-                      <ExternalLink className="h-3.5 w-3.5 ml-1" />
-                    </Button>
-                  </a>
+                    <span>Visit &amp; Auto-Apply</span>
+                    <ExternalLink className="h-3.5 w-3.5 ml-1" />
+                  </Button>
                   <Link href={`/prop-firms/${firm.slug}`} className="block">
                     <Button variant="outline" size="sm" className="w-full text-xs font-bold border-slate-200 dark:border-slate-800">
                       Offer Details
@@ -519,6 +528,13 @@ function PropFirmsContent() {
           })}
         </div>
       )}
+
+      {/* 1-Click Referral Code Auto-Apply Modal */}
+      <AutoApplyModal
+        isOpen={isAutoApplyModalOpen}
+        onClose={() => setIsAutoApplyModalOpen(false)}
+        firm={activeAutoApplyFirm}
+      />
     </div>
   );
 }

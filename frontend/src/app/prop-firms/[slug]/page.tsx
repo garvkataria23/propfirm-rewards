@@ -28,6 +28,7 @@ import {
   TrendingUp,
   Percent,
 } from 'lucide-react';
+import { AutoApplyModal } from '@/components/prop-firms/auto-apply-modal';
 
 interface PropFirmOffer {
   id: string;
@@ -194,6 +195,8 @@ export default function PropFirmDetailPage() {
     }
   }, [normalizedSlug]);
 
+  const [isAutoApplyOpen, setIsAutoApplyOpen] = useState(false);
+
   const handleCopyCode = () => {
     if (firm) {
       navigator.clipboard.writeText(firm.affiliateCode || 'NATION');
@@ -202,12 +205,9 @@ export default function PropFirmDetailPage() {
     }
   };
 
-  const handleCopyAndVisit = () => {
+  const handleTriggerAutoApply = () => {
     if (firm) {
-      navigator.clipboard.writeText(firm.affiliateCode || 'NATION');
-      setCopiedCode(true);
-      window.open(firm.affiliateUrl || firm.websiteUrl, '_blank', 'noopener,noreferrer');
-      setTimeout(() => setCopiedCode(false), 2200);
+      setIsAutoApplyOpen(true);
     }
   };
 
@@ -294,11 +294,12 @@ export default function PropFirmDetailPage() {
           <div className="flex flex-col xs:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
             <Button
               size="lg"
-              onClick={handleCopyAndVisit}
-              className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-purple-600/25 h-11"
+              onClick={handleTriggerAutoApply}
+              className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-purple-600/25 h-11 flex items-center justify-center gap-1.5"
             >
-              <span>Purchase on {firm.name}</span>
-              <ExternalLink className="h-4 w-4 ml-2 shrink-0" />
+              <Sparkles className="h-4 w-4 text-yellow-300" />
+              <span>Purchase on {firm.name} (Auto-Apply)</span>
+              <ExternalLink className="h-4 w-4 ml-1 shrink-0" />
             </Button>
             <Link href={`/dashboard/purchases/new?propFirmId=${firm.id}`} className="w-full xs:w-auto">
               <Button
@@ -537,14 +538,22 @@ export default function PropFirmDetailPage() {
         <div className="flex flex-col xs:flex-row items-center gap-3 w-full sm:w-auto">
           <Button
             size="lg"
-            onClick={handleCopyAndVisit}
-            className="w-full sm:w-auto bg-white hover:bg-slate-100 text-purple-950 font-black text-xs sm:text-sm h-12 px-6 rounded-2xl shadow-lg"
+            onClick={handleTriggerAutoApply}
+            className="w-full sm:w-auto bg-white hover:bg-slate-100 text-purple-950 font-black text-xs sm:text-sm h-12 px-6 rounded-2xl shadow-lg flex items-center justify-center gap-1.5"
           >
-            <span>Visit {firm.name} Checkout</span>
-            <ExternalLink className="h-4 w-4 ml-2" />
+            <Sparkles className="h-4 w-4 text-purple-600" />
+            <span>Visit {firm.name} (Auto-Apply Code)</span>
+            <ExternalLink className="h-4 w-4 ml-1" />
           </Button>
         </div>
       </div>
+
+      {/* 1-Click Referral Code Auto-Apply Modal */}
+      <AutoApplyModal
+        isOpen={isAutoApplyOpen}
+        onClose={() => setIsAutoApplyOpen(false)}
+        firm={firm}
+      />
     </div>
   );
 }

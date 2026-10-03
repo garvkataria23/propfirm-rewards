@@ -38,6 +38,11 @@ import {
 import { SearchableCombobox, ComboboxOption } from '@/components/ui/searchable-combobox';
 import { useAuth } from '@/context/auth-context';
 import { userDataStore, UserPurchaseRecord } from '@/lib/userDataStore';
+import {
+  getActiveCheckoutIntent,
+  clearActiveCheckoutIntent,
+  ActiveCheckoutSession,
+} from '@/lib/referral-system';
 
 interface PropFirmOffer {
   id: string;
@@ -175,27 +180,50 @@ export default function SubmitPurchasePage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeIntent, setActiveIntent] = useState<ActiveCheckoutSession | null>(null);
 
   useEffect(() => {
+    const intent = getActiveCheckoutIntent();
+    if (intent) {
+      setActiveIntent(intent);
+    }
+
     api.get<PropFirm[]>('/prop-firms').then((data) => {
       setPropFirms(data);
-      if (data.length > 0 && !selectedFirmId) {
-        setSelectedFirmId(data[0].id);
-        setReferralCodeUsed(data[0].affiliateCode);
-        if (data[0].offers?.length > 0) {
-          setSelectedOfferId(data[0].offers[0].id);
-          setPurchaseAmountUsd(data[0].offers[0].purchasePriceUsd);
-        }
-      } else if (preSelectedFirmId) {
+
+      // Priority 1: URL Query parameter ?propFirmId=...
+      if (preSelectedFirmId) {
         const found = data.find((f) => f.id === preSelectedFirmId);
         if (found) {
-          setReferralCodeUsed(found.affiliateCode);
+          setSelectedFirmId(found.id);
+          setReferralCodeUsed(found.affiliateCode || 'NATION');
           if (preSelectedOfferId) {
             const offer = found.offers?.find((o) => o.id === preSelectedOfferId);
             if (offer) {
               setPurchaseAmountUsd(offer.purchasePriceUsd);
             }
           }
+        }
+      }
+      // Priority 2: 1-Click Referral Auto-Apply Intent Session (clicked prop firm link recently)
+      else if (intent) {
+        const found = data.find((f) => f.id === intent.firmId || f.slug === intent.firmSlug);
+        if (found) {
+          setSelectedFirmId(found.id);
+          setReferralCodeUsed(intent.affiliateCode || found.affiliateCode || 'NATION');
+          if (found.offers && found.offers.length > 0) {
+            setSelectedOfferId(found.offers[0].id);
+            setPurchaseAmountUsd(found.offers[0].purchasePriceUsd);
+          }
+        }
+      }
+      // Priority 3: Default to first firm
+      else if (data.length > 0 && !selectedFirmId) {
+        setSelectedFirmId(data[0].id);
+        setReferralCodeUsed(data[0].affiliateCode || 'NATION');
+        if (data[0].offers?.length > 0) {
+          setSelectedOfferId(data[0].offers[0].id);
+          setPurchaseAmountUsd(data[0].offers[0].purchasePriceUsd);
         }
       }
     }).catch(console.error);
@@ -502,6 +530,8 @@ export default function SubmitPurchasePage() {
       pointsAwarded: points,
       firmName,
     });
+    clearActiveCheckoutIntent();
+    setActiveIntent(null);
     setIsLoading(false);
   };
 
@@ -536,6 +566,40 @@ export default function SubmitPurchasePage() {
           Upload your billing invoice screenshot, email confirmation, or screen recording. Our system supports <strong>PDF, PNG, JPEG, and Video formats (up to 10MB)</strong> with automatic AI OCR data extraction.
         </p>
       </div>
+
+      {/* Active 1-Click Referral Intent Notification Banner */}
+      {activeIntent && (
+        <div className="rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-950/40 via-[#071310] to-slate-950 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg shadow-emerald-500/5">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black uppercase tracking-wider text-emerald-400">
+                  Active 1-Click Checkout Session Detected
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
+                  Auto-Selected
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-0.5">
+                We pre-selected <strong>{activeIntent.firmName}</strong> and referral code <strong className="font-mono text-emerald-400">{activeIntent.affiliateCode}</strong> from your recent 1-click checkout session.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              clearActiveCheckoutIntent();
+              setActiveIntent(null);
+            }}
+            className="text-xs text-slate-400 hover:text-white underline underline-offset-2 shrink-0 cursor-pointer"
+          >
+            Clear Pre-Fill
+          </button>
+        </div>
+      )}
 
       {/* ======================================================== */}
       {/* 📸 INTERACTIVE DEMO SHOWCASE: "What Proof Do You Need to Submit?" */}

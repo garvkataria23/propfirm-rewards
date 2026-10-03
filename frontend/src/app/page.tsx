@@ -26,6 +26,7 @@ import {
   Activity,
   Building2,
 } from 'lucide-react';
+import { AutoApplyModal, AutoApplyFirmData } from '@/components/prop-firms/auto-apply-modal';
 
 interface PropFirmOffer {
   id: string;
@@ -193,6 +194,23 @@ export default function HomePage() {
 
   // "Reward Unlock" Interactive Simulator State
   const [simulatedUnlocked, setSimulatedUnlocked] = useState(false);
+
+  // 1-Click Referral Code Auto-Apply State
+  const [activeAutoApplyFirm, setActiveAutoApplyFirm] = useState<AutoApplyFirmData | null>(null);
+  const [isAutoApplyModalOpen, setIsAutoApplyModalOpen] = useState(false);
+
+  const handleTriggerAutoApply = (firm: PropFirm) => {
+    setActiveAutoApplyFirm({
+      id: firm.id,
+      name: firm.name,
+      slug: firm.slug,
+      logoUrl: firm.logoUrl,
+      affiliateCode: firm.affiliateCode || 'NATION',
+      affiliateUrl: firm.affiliateUrl,
+      websiteUrl: firm.websiteUrl,
+    });
+    setIsAutoApplyModalOpen(true);
+  };
 
   // Interactive Trader Dashboard Tab
   const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'propfirms' | 'wallet' | 'rewards'>('overview');
@@ -871,13 +889,23 @@ export default function HomePage() {
                     </button>
                   </div>
 
-                  <Link
-                    href={`/prop-firms/${firm.slug}`}
-                    className="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1 transition-all"
-                  >
-                    <span>View Offer</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleTriggerAutoApply(firm)}
+                      className="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm shadow-emerald-500/20"
+                    >
+                      <Sparkles className="h-3 w-3 text-slate-950" />
+                      <span>Auto-Apply</span>
+                    </button>
+                    <Link
+                      href={`/prop-firms/${firm.slug}`}
+                      className="w-full py-2.5 rounded-lg border border-slate-700 bg-slate-900/60 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1 transition-all"
+                    >
+                      <span>Offer Info</span>
+                      <ArrowRight className="h-3.5 w-3.5 text-emerald-400" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
@@ -888,6 +916,13 @@ export default function HomePage() {
             Disclaimer: Prop Nation is an independent affiliate rewards portal and not a broker or proprietary trading firm. All challenge purchases are made directly with the respective prop firm and subject to their affiliate terms.
           </div>
         </div>
+
+        {/* 1-Click Referral Code Auto-Apply Modal */}
+        <AutoApplyModal
+          isOpen={isAutoApplyModalOpen}
+          onClose={() => setIsAutoApplyModalOpen(false)}
+          firm={activeAutoApplyFirm}
+        />
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
