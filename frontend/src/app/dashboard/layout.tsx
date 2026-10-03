@@ -132,14 +132,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Theme Toggle (Light / Dark) */}
             <ThemeToggle />
 
-            {user.role === 'ADMIN' && (
+            {['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER'].includes(user.role) && (
               <Link href="/admin">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 dark:border-purple-500/30 dark:bg-purple-950/40 dark:text-purple-300"
+                  className="border-purple-300 dark:border-purple-500/40 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-bold"
                 >
-                  <ShieldCheck className="h-3.5 w-3.5 mr-1" />
+                  <ShieldCheck className="h-3.5 w-3.5 mr-1.5 text-purple-600 dark:text-purple-400" />
                   Admin Panel
                 </Button>
               </Link>

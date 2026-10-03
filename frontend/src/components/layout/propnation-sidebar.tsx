@@ -174,6 +174,7 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
   };
 
   // User details fallback for display
+  const isStaff = user && ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER'].includes(user.role);
   const displayName = user?.name || 'Garv Gautam Kataria';
   const displayPoints = user?.points?.available ?? 0;
   const initial = displayName.charAt(0).toUpperCase() || 'G';
@@ -337,6 +338,23 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
           );
         })}
       </div>
+
+      {/* Admin Panel Quick Switch (Staff only) */}
+      {isStaff && (
+        <div className={`px-2.5 pb-2 transition-all ${isExpanded ? 'block' : 'flex justify-center'}`}>
+          <Link
+            href="/admin"
+            onClick={onClose}
+            title="Switch to Admin Control Panel"
+            className={`flex items-center gap-2.5 rounded-xl border border-purple-300/80 dark:border-purple-500/30 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-bold transition-all shadow-xs ${
+              isExpanded ? 'px-3 py-2 w-full text-xs' : 'p-2 justify-center'
+            }`}
+          >
+            <ShieldCheck className="h-4 w-4 text-purple-600 dark:text-purple-400 shrink-0" />
+            {isExpanded && <span>Admin Control Center</span>}
+          </Link>
+        </div>
+      )}
 
       {/* User Profile Footer */}
       <div
