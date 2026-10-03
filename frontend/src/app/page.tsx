@@ -830,13 +830,24 @@ export default function HomePage() {
               </p>
             </div>
 
-            <Link
-              href="/prop-firms"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#101716] text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-semibold shrink-0"
-            >
-              <span>View All 12+ Firms</span>
-              <ArrowRight className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-            </Link>
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => handleTriggerAutoApply(propFirms[0])}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm shadow-md shadow-emerald-500/20 cursor-pointer transition-all hover:scale-105 active:scale-95"
+              >
+                <Sparkles className="h-4 w-4 text-slate-950" />
+                <span>1-Click Challenge Configurator</span>
+              </button>
+
+              <Link
+                href="/prop-firms"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#101716] text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-semibold"
+              >
+                <span>View All 12+ Firms</span>
+                <ArrowRight className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              </Link>
+            </div>
           </div>
 
           {/* Cards styled as high-yield trading opportunities */}
@@ -919,7 +930,7 @@ export default function HomePage() {
                       className="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm shadow-emerald-500/20"
                     >
                       <Sparkles className="h-3 w-3 text-slate-950" />
-                      <span>Auto-Apply</span>
+                      <span>Configure &amp; Buy</span>
                     </button>
                     <Link
                       href={`/prop-firms/${firm.slug}`}

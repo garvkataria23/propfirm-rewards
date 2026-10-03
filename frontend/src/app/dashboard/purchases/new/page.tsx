@@ -211,9 +211,14 @@ export default function SubmitPurchasePage() {
         if (found) {
           setSelectedFirmId(found.id);
           setReferralCodeUsed(intent.affiliateCode || found.affiliateCode || 'NATION');
-          if (found.offers && found.offers.length > 0) {
+          if (intent.discountedPrice || intent.tierPrice) {
+            setPurchaseAmountUsd(intent.discountedPrice || intent.tierPrice || '');
+          } else if (found.offers && found.offers.length > 0) {
             setSelectedOfferId(found.offers[0].id);
             setPurchaseAmountUsd(found.offers[0].purchasePriceUsd);
+          }
+          if (intent.platform) {
+            setPlatform(intent.platform);
           }
         }
       }
@@ -575,16 +580,26 @@ export default function SubmitPurchasePage() {
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs font-black uppercase tracking-wider text-emerald-400">
                   Active 1-Click Checkout Session Detected
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
-                  Auto-Selected
-                </span>
+                {activeIntent.trackingId && (
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                    ID: {activeIntent.trackingId}
+                  </span>
+                )}
+                {activeIntent.tierName && (
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-200">
+                    Tier: {activeIntent.tierName}
+                  </span>
+                )}
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                We pre-selected <strong>{activeIntent.firmName}</strong> and referral code <strong className="font-mono text-emerald-400">{activeIntent.affiliateCode}</strong> from your recent 1-click checkout session.
+                Pre-selected <strong>{activeIntent.firmName}</strong> with code <strong className="font-mono text-emerald-400">{activeIntent.affiliateCode}</strong>
+                {activeIntent.expectedPoints && (
+                  <span> &bull; Awaiting claim: <strong className="text-emerald-400 font-mono">+{activeIntent.expectedPoints.toLocaleString()} PTS</strong></span>
+                )}
               </p>
             </div>
           </div>
