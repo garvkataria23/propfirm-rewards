@@ -109,19 +109,19 @@ export function LiveActivityTicker() {
   const marqueeItems = [...items, ...items];
 
   return (
-    <div className="relative w-full overflow-hidden border-y border-emerald-500/20 bg-[#070b0e]/95 backdrop-blur-md py-2.5 z-20">
+    <div className="relative w-full overflow-hidden border-y border-slate-200 dark:border-emerald-500/20 bg-white/95 dark:bg-[#070b0e]/95 backdrop-blur-md py-2.5 z-20 transition-colors">
       {/* Glow lines */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-4 flex items-center gap-4">
         {/* Fixed Header Label */}
-        <div className="flex-shrink-0 flex items-center gap-2 pr-4 border-r border-slate-800">
+        <div className="flex-shrink-0 flex items-center gap-2 pr-4 border-r border-slate-200 dark:border-slate-800">
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
           </span>
-          <span className="text-[11px] font-mono font-bold tracking-wider text-emerald-400 uppercase">
+          <span className="text-[11px] font-mono font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">
             Live Stream
           </span>
         </div>
@@ -132,42 +132,42 @@ export function LiveActivityTicker() {
             {marqueeItems.map((item, idx) => (
               <div
                 key={`${item.id}-${idx}`}
-                className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs text-slate-300 shadow-sm"
+                className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 shadow-xs"
               >
                 {item.type === 'PURCHASE' ? (
-                  <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                     {item.traderName}
                   </span>
                 ) : item.type === 'REDEMPTION' ? (
-                  <span className="inline-flex items-center gap-1 text-amber-400 font-semibold">
-                    <Gift className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold">
+                    <Gift className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                     {item.traderName}
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 text-cyan-400 font-semibold">
-                    <Trophy className="w-3.5 h-3.5 text-cyan-400" />
+                  <span className="inline-flex items-center gap-1 text-cyan-600 dark:text-cyan-400 font-semibold">
+                    <Trophy className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
                     {item.traderName}
                   </span>
                 )}
 
-                <span className="text-slate-400 font-normal">
+                <span className="text-slate-600 dark:text-slate-400 font-normal">
                   {item.title}
                 </span>
 
                 <span
                   className={`font-mono font-bold text-[11px] px-1.5 py-0.5 rounded ${
                     item.type === 'PURCHASE'
-                      ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                      ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30'
                       : item.type === 'REDEMPTION'
-                      ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
-                      : 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30'
+                      ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                      : 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30'
                   }`}
                 >
                   +{item.points.toLocaleString()} PTS
                 </span>
 
-                <span className="text-[10px] text-slate-400 font-mono">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
                   {item.timeAgo}
                 </span>
               </div>
