@@ -10,6 +10,7 @@ import { useAuth } from '@/context/auth-context';
 import { db } from '@/lib/firebase';
 import {
   getOrCreateActiveUserTicket,
+  getOrCreateGuestVisitor,
   createNewLiveChatTicket,
   sendLiveChatMessage,
   setLiveTypingStatus,
@@ -58,6 +59,35 @@ export default function LiveSupportPage() {
   const { user, isLoading } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
+  const [guestVisitor, setGuestVisitor] = useState<{
+    id: string;
+    name: string;
+    email: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      setGuestVisitor(getOrCreateGuestVisitor());
+    }
+  }, [user]);
+
+  const activeChatUser = user
+    ? {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        avatarUrl: user.avatarUrl,
+        country: user.country,
+      }
+    : guestVisitor
+    ? {
+        id: guestVisitor.id,
+        name: guestVisitor.name,
+        email: guestVisitor.email,
+        avatarUrl: '',
+        country: 'Website Visitor',
+      }
+    : null;
 
   useEffect(() => {
     if (!isLoading && user && pathname === '/support/live') {
@@ -116,20 +146,20 @@ export default function LiveSupportPage() {
 
   // Subscribe to user's tickets in real-time
   useEffect(() => {
-    if (!user) return;
+    if (!activeChatUser?.id) return;
 
     let unsubTickets: (() => void) | null = null;
 
     getOrCreateActiveUserTicket({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      avatarUrl: user.avatarUrl,
-      country: user.country,
+      id: activeChatUser.id,
+      name: activeChatUser.name,
+      email: activeChatUser.email,
+      avatarUrl: activeChatUser.avatarUrl,
+      country: activeChatUser.country,
     }).then((defaultTicket) => {
       setActiveTicketId((prev) => prev || defaultTicket.id);
 
-      const q = query(collection(db, 'supportTickets'), where('userId', '==', user.id));
+      const q = query(collection(db, 'supportTickets'), where('userId', '==', activeChatUser.id));
       unsubTickets = onSnapshot(
         q,
         (snap) => {
@@ -153,7 +183,7 @@ export default function LiveSupportPage() {
     return () => {
       if (unsubTickets) unsubTickets();
     };
-  }, [user]);
+  }, [activeChatUser?.id]);
 
   // Subscribe to active ticket's messages in real-time
   useEffect(() => {
@@ -213,22 +243,22 @@ export default function LiveSupportPage() {
     const val = e.target.value;
     setInputMessage(val);
 
-    if (activeTicketId && user) {
+    if (activeTicketId && activeChatUser) {
       setLiveTypingStatus({
         ticketId: activeTicketId,
-        userId: user.id,
-        userName: user.name,
+        userId: activeChatUser.id,
+        userName: activeChatUser.name,
         userRole: 'USER',
         isTyping: val.trim().length > 0,
       });
 
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       typingTimeoutRef.current = setTimeout(() => {
-        if (activeTicketId && user) {
+        if (activeTicketId && activeChatUser) {
           setLiveTypingStatus({
             ticketId: activeTicketId,
-            userId: user.id,
-            userName: user.name,
+            userId: activeChatUser.id,
+            userName: activeChatUser.name,
             userRole: 'USER',
             isTyping: false,
           });
@@ -265,7 +295,7 @@ export default function LiveSupportPage() {
 
   const handleSendMessage = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if ((!inputMessage.trim() && pendingAttachments.length === 0) || !activeTicketId || !user || isSending) return;
+    if ((!inputMessage.trim() && pendingAttachments.length === 0) || !activeTicketId || !activeChatUser || isSending) return;
 
     const messageText = inputMessage.trim();
     const atts = [...pendingAttachments];
@@ -277,8 +307,8 @@ export default function LiveSupportPage() {
     try {
       await sendLiveChatMessage({
         ticketId: activeTicketId,
-        senderId: user.id,
-        senderName: user.name,
+        senderId: activeChatUser.id,
+        senderName: activeChatUser.name,
         senderRole: 'USER',
         message: messageText,
         attachments: atts,
@@ -292,7 +322,7 @@ export default function LiveSupportPage() {
 
   const handleCreateNewTicket = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newSubject.trim() || !newInitialMsg.trim() || !user) return;
+    if (!newSubject.trim() || !newInitialMsg.trim() || !activeChatUser) return;
 
     setIsCreatingTicket(true);
     try {
@@ -302,11 +332,11 @@ export default function LiveSupportPage() {
 
       const created = await createNewLiveChatTicket(
         {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          avatarUrl: user.avatarUrl,
-          country: user.country,
+          id: activeChatUser.id,
+          name: activeChatUser.name,
+          email: activeChatUser.email,
+          avatarUrl: activeChatUser.avatarUrl,
+          country: activeChatUser.country,
         },
         {
           subject: subjectWithTracking,

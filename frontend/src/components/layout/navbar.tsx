@@ -15,6 +15,7 @@ import {
   LogOut,
   LayoutDashboard,
   ArrowRight,
+  MessageSquare,
 } from 'lucide-react';
 
 export function Navbar() {
@@ -47,8 +48,14 @@ export function Navbar() {
     { label: 'Prop Firms', href: '/prop-firms' },
     { label: 'Compare & Rules', href: '/compare' },
     { label: 'Rewards', href: '/rewards' },
-    { label: 'FAQ', href: '/#faq' },
+    { label: 'Live Support', href: '/support/live' },
   ];
+
+  const openFloatingLiveChat = () => {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('propnation-open-live-chat'));
+    }
+  };
 
   return (
     <header
@@ -78,7 +85,7 @@ export function Navbar() {
         </Link>
 
         {/* Center: Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6 lg:gap-7" aria-label="Main Navigation">
+        <nav className="hidden md:flex items-center gap-5 lg:gap-6" aria-label="Main Navigation">
           {navLinks.map((link) => {
             const active = isActive(link.href);
             return (
@@ -101,7 +108,21 @@ export function Navbar() {
         </nav>
 
         {/* Right: Actions */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={openFloatingLiveChat}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition-all cursor-pointer"
+            title="Open Instant Live Support Chat"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            <MessageSquare className="h-3.5 w-3.5" />
+            <span>Live Chat</span>
+          </button>
+
           <ThemeToggle />
 
           {user ? (

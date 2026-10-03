@@ -280,6 +280,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </span>
               </Link>
             )}
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(
+                    new CustomEvent('propnation-open-live-chat', { detail: { mode: 'ADMIN' } })
+                  );
+                }
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-50 hover:bg-purple-100 dark:bg-purple-500/15 dark:hover:bg-purple-500/25 border border-purple-200 dark:border-purple-500/30 text-purple-700 dark:text-purple-300 text-xs font-bold transition-all cursor-pointer"
+            >
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <MessageSquare className="h-3.5 w-3.5" />
+              <span>Floating Live Chat</span>
+            </button>
             <ThemeToggle />
             <Link href="/dashboard">
               <Button variant="outline" size="sm">
