@@ -2,9 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { api } from '@/lib/api';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
   ShieldCheck,
@@ -15,27 +13,18 @@ import {
   Gift,
   ArrowRight,
   Sparkles,
-  ExternalLink,
   Wallet,
   ChevronDown,
   FileCheck2,
   CheckCircle,
   Truck,
   Headphones,
-  Laptop,
-  Smartphone,
-  Gamepad2,
-  Tag,
-  Search,
+  Zap,
+  TrendingUp,
+  Star,
+  Flame,
   Activity,
   Building2,
-  Lock,
-  Zap,
-  Trophy,
-  TrendingUp,
-  Sliders,
-  Star,
-  Clock,
 } from 'lucide-react';
 
 interface PropFirmOffer {
@@ -102,56 +91,41 @@ const FALLBACK_PROP_FIRMS: PropFirm[] = [
   },
   {
     id: 'firm-3',
-    name: 'FTMO',
-    slug: 'ftmo',
-    logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
-    description: 'The global benchmark for prop trading evaluations. Industry standard rules and world-class trader education.',
-    websiteUrl: 'https://ftmo.com',
+    name: 'Apex Trader Funding',
+    slug: 'apex-trader-funding',
+    logoUrl: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
+    description: 'Futures contract specialist with 1-day pass evaluations, trailing drawdown, and multiple account hedging.',
+    websiteUrl: 'https://apextraderfunding.com',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://ftmo.com/?ref=nation',
+    affiliateUrl: 'https://apextraderfunding.com/?ref=nation',
     offers: [
-      { id: 'o-7', accountTierName: '$50K Account', purchasePriceUsd: 380, rewardPoints: 3800 },
-      { id: 'o-8', accountTierName: '$100K Account', purchasePriceUsd: 590, rewardPoints: 5900 },
-      { id: 'o-9', accountTierName: '$200K Account', purchasePriceUsd: 1150, rewardPoints: 11500 },
+      { id: 'o-7', accountTierName: '$50K Futures', purchasePriceUsd: 167, rewardPoints: 1670 },
+      { id: 'o-8', accountTierName: '$100K Futures', purchasePriceUsd: 299, rewardPoints: 2990 },
+      { id: 'o-9', accountTierName: '$150K Futures', purchasePriceUsd: 377, rewardPoints: 3770 },
     ],
   },
   {
     id: 'firm-4',
-    name: 'Funding Pips',
-    slug: 'funding-pips',
-    logoUrl: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
-    description: 'Built by traders for traders with competitive challenge pricing, 1-step and 2-step evaluations.',
-    websiteUrl: 'https://fundingpips.com',
-    affiliateCode: 'NATION',
-    affiliateUrl: 'https://fundingpips.com/?ref=nation',
-    offers: [
-      { id: 'o-10', accountTierName: '$25K Account', purchasePriceUsd: 139, rewardPoints: 1390 },
-      { id: 'o-11', accountTierName: '$50K Account', purchasePriceUsd: 239, rewardPoints: 2390 },
-      { id: 'o-12', accountTierName: '$100K Account', purchasePriceUsd: 399, rewardPoints: 3990 },
-    ],
-  },
-  {
-    id: 'firm-5',
-    name: 'FundedNext',
-    slug: 'fundednext',
+    name: 'TopStep Forex',
+    slug: 'topstep-forex',
     logoUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=120&auto=format&fit=crop&q=80',
-    description: 'Guaranteed 24h payout processing with profit split options up to 95% and scale-up plans.',
-    websiteUrl: 'https://fundednext.com',
+    description: 'Chicago-regulated trading combine with real-time coaching, Discord community, and fast scaling plan.',
+    websiteUrl: 'https://topstep.com',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://fundednext.com/?ref=nation',
+    affiliateUrl: 'https://topstep.com/?ref=nation',
     offers: [
-      { id: 'o-13', accountTierName: '$25K Account', purchasePriceUsd: 199, rewardPoints: 1990 },
-      { id: 'o-14', accountTierName: '$50K Account', purchasePriceUsd: 299, rewardPoints: 2990 },
-      { id: 'o-15', accountTierName: '$100K Account', purchasePriceUsd: 549, rewardPoints: 5490 },
+      { id: 'o-10', accountTierName: '$50K Trading Combine', purchasePriceUsd: 165, rewardPoints: 1650 },
+      { id: 'o-11', accountTierName: '$100K Trading Combine', purchasePriceUsd: 325, rewardPoints: 3250 },
+      { id: 'o-12', accountTierName: '$150K Trading Combine', purchasePriceUsd: 375, rewardPoints: 3750 },
     ],
   },
 ];
 
-// Fallback curated rewards matching the 3D ecosystem render with realistic product photography
+// Fallback Featured Rewards Catalog
 const FALLBACK_REWARDS: Reward[] = [
   {
     id: 'r-1',
-    name: 'Apple AirPods Max (Silver / Titanium)',
+    name: 'Apple AirPods Max (Space Gray)',
     slug: 'apple-airpods-max',
     imageUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 20000,
@@ -160,17 +134,17 @@ const FALLBACK_REWARDS: Reward[] = [
   {
     id: 'r-2',
     name: 'Nike Air Jordan 1 Retro High OG',
-    slug: 'nike-air-jordan-1',
+    slug: 'nike-air-jordan-1-retro',
     imageUrl: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 15000,
-    category: { name: 'Streetwear', slug: 'streetwear' },
+    category: { name: 'Streetwear', slug: 'apparel' },
   },
   {
     id: 'r-3',
-    name: 'Sony PlayStation 5 DualSense Edge',
-    slug: 'ps5-dualsense-edge',
+    name: 'Sony PlayStation 5 Pro Console',
+    slug: 'sony-playstation-5-pro',
     imageUrl: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80',
-    pointsRequired: 10000,
+    pointsRequired: 70000,
     category: { name: 'Gaming Gear', slug: 'gaming' },
   },
   {
@@ -178,8 +152,8 @@ const FALLBACK_REWARDS: Reward[] = [
     name: 'Apple iPhone 16 Pro Max 256GB',
     slug: 'apple-iphone-16-pro-max',
     imageUrl: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80',
-    pointsRequired: 100000,
-    category: { name: 'Flagship Tech', slug: 'mobile' },
+    pointsRequired: 120000,
+    category: { name: 'Smartphones', slug: 'smartphones' },
   },
   {
     id: 'r-5',
@@ -199,667 +173,351 @@ const FALLBACK_REWARDS: Reward[] = [
   },
 ];
 
-// 100% Vector-Sharp Native Live Dashboard Mockup for the Ecosystem Showcase
-function TraderDashboardLiveMockup() {
-  return (
-    <div className="w-full bg-[#f8fafc] dark:bg-[#070b14] text-slate-900 dark:text-slate-100 select-none overflow-hidden text-xs font-sans border-b border-slate-200/80 dark:border-slate-800">
-      {/* Top Community Live Marquee Feed */}
-      <div className="bg-emerald-500/[0.08] dark:bg-emerald-500/[0.06] border-b border-emerald-500/20 px-4 py-2 flex items-center justify-between text-[11px] text-emerald-800 dark:text-emerald-300 font-medium">
-        <div className="flex items-center gap-2 overflow-hidden">
-          <span className="relative flex h-2 w-2 shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-          </span>
-          <span className="font-extrabold uppercase tracking-wider text-[10px] bg-emerald-500/20 px-1.5 py-0.5 rounded text-emerald-800 dark:text-emerald-300 shrink-0">
-            Live Feed
-          </span>
-          <span className="truncate">
-            ⚡ @Marco_FX verified Funding Pips $100K (+4,500 PTS) &bull; @Lucas_R redeemed Apple AirPods Pro &bull; @Vikram_T withdrew $250.00 USDT &bull; 14 challenges verified today
-          </span>
-        </div>
-        <span className="text-[10px] font-mono shrink-0 hidden md:inline text-slate-500 dark:text-slate-400">
-          Sync: Realtime Active
-        </span>
-      </div>
-
-      <div className="flex">
-        {/* Mock Sidebar (Desktop) */}
-        <div className="hidden lg:flex w-52 border-r border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#090d18] flex-col justify-between p-4 space-y-6 shrink-0">
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Dashboard</span>
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold border border-emerald-500/20">
-                <Activity className="h-3.5 w-3.5" />
-                <span>Overview</span>
-              </div>
-              <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                <span className="flex items-center gap-2">
-                  <Wallet className="h-3.5 w-3.5" /> Trader Wallet
-                </span>
-                <span className="text-[9px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-1 py-0.5 rounded">USD</span>
-              </div>
-              <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                <span className="flex items-center gap-2">
-                  <Zap className="h-3.5 w-3.5 text-emerald-500" /> WhatsApp
-                </span>
-                <span className="text-[9px] font-mono bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-1 py-0.5 rounded font-extrabold">AUTO</span>
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Purchases</span>
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
-                <FileCheck2 className="h-3.5 w-3.5" /> Submit Purchase
-              </div>
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
-                <CheckCircle2 className="h-3.5 w-3.5" /> My Purchases
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Rewards</span>
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
-                <Gift className="h-3.5 w-3.5" /> Rewards Store
-              </div>
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
-                <Coins className="h-3.5 w-3.5" /> Points History
-              </div>
-            </div>
-          </div>
-
-          {/* User profile card in sidebar */}
-          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-emerald-600 text-white font-black flex items-center justify-center text-xs shadow-xs">
-              GK
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="font-bold text-slate-900 dark:text-white truncate text-[11px]">Garv Gautam Kataria</div>
-              <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-bold flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> 16,700 PTS
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Mock Main Dashboard View */}
-        <div className="flex-1 p-4 sm:p-6 space-y-5 bg-[#fafbfc] dark:bg-[#070b14] overflow-hidden">
-          {/* Welcome Banner */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/70 dark:border-slate-800/70">
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-                  Welcome back, Garv Gautam Kataria 👋
-                </h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30">
-                  PRO TRADER
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                <span className="text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1">
-                  ⭐ Silver Tier (1.2x Multiplier)
-                </span>
-                <span>&bull;</span>
-                <span className="hidden sm:inline">Track verified challenge orders, point clearance, and gear shipments.</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <span className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-xs shadow-xs flex items-center gap-1.5">
-                <FileCheck2 className="h-3.5 w-3.5" /> Submit Proof
-              </span>
-              <span className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs shadow-2xs">
-                Trader Wallet
-              </span>
-            </div>
-          </div>
-
-          {/* 4 Crisp Key Metric Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-1">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                <span>Available Points</span>
-                <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
-              </div>
-              <div className="text-xl sm:text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400">
-                16,700
-              </div>
-              <div className="text-[10px] text-slate-500 font-medium">≈ $167.00 USD Cash Value</div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-1">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                <span>In Clearance</span>
-                <Clock className="h-3.5 w-3.5 text-amber-500" />
-              </div>
-              <div className="text-xl sm:text-2xl font-black font-mono text-amber-600 dark:text-amber-400">
-                2,800
-              </div>
-              <div className="text-[10px] text-slate-500 font-medium">≈ $28.00 Pending Audit</div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-1">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                <span>Lifetime Earned</span>
-                <TrendingUp className="h-3.5 w-3.5 text-sky-500" />
-              </div>
-              <div className="text-xl sm:text-2xl font-black font-mono text-sky-600 dark:text-sky-400">
-                38,700
-              </div>
-              <div className="text-[10px] text-slate-500 font-medium">≈ $387.00 Lifetime Points</div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-1">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                <span>Redeemed &amp; Paid</span>
-                <Gift className="h-3.5 w-3.5 text-purple-500" />
-              </div>
-              <div className="text-xl sm:text-2xl font-black font-mono text-purple-600 dark:text-purple-400">
-                22,000
-              </div>
-              <div className="text-[10px] text-slate-500 font-medium">≈ $220.00 Gear &amp; Crypto</div>
-            </div>
-          </div>
-
-          {/* Lower 2-Column Split: Submissions & Ledger Activity */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Left: Recent Submissions */}
-            <div className="p-4 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                  <FileCheck2 className="h-3.5 w-3.5 text-emerald-500" /> Recent Purchase Submissions
-                </span>
-                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline">View All</span>
-              </div>
-              <div className="space-y-2">
-                <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between">
-                  <div>
-                    <div className="font-bold text-slate-900 dark:text-white text-xs">Funding Pips $100K 2-Step</div>
-                    <div className="text-[10px] text-slate-500">Order #FP-98214 &bull; $399 USD</div>
-                  </div>
-                  <div className="text-right">
-                    <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400">
-                      APPROVED
-                    </span>
-                    <div className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs mt-0.5">+4,500 PTS</div>
-                  </div>
-                </div>
-
-                <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between">
-                  <div>
-                    <div className="font-bold text-slate-900 dark:text-white text-xs">FundedSquad $50K Direct</div>
-                    <div className="text-[10px] text-slate-500">Order #FS-51656 &bull; $249 USD</div>
-                  </div>
-                  <div className="text-right">
-                    <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400">
-                      UNDER REVIEW
-                    </span>
-                    <div className="font-mono font-bold text-amber-600 dark:text-amber-400 text-xs mt-0.5">~2,800 PTS</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Points Ledger & Reward Redemption Activity */}
-            <div className="p-4 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                  <Coins className="h-3.5 w-3.5 text-sky-500" /> Points Ledger &amp; Redemptions
-                </span>
-                <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 hover:underline">Full Ledger</span>
-              </div>
-              <div className="space-y-2">
-                <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between">
-                  <div>
-                    <div className="font-bold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
-                      <Gift className="h-3.5 w-3.5 text-purple-500" /> Apple AirPods Max (Silver)
-                    </div>
-                    <div className="text-[10px] text-slate-500">Shipped via DHL Express &bull; #9400-8812</div>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-mono font-bold text-rose-600 dark:text-rose-400 text-xs">-20,000 PTS</span>
-                    <div className="text-[9px] text-emerald-600 dark:text-emerald-400 font-semibold">Delivered</div>
-                  </div>
-                </div>
-
-                <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between">
-                  <div>
-                    <div className="font-bold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
-                      <Zap className="h-3.5 w-3.5 text-amber-500" /> First Purchase Bonus
-                    </div>
-                    <div className="text-[10px] text-slate-500">Welcome tier promotion credited</div>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs">+1,000 PTS</span>
-                    <div className="text-[9px] text-slate-400 font-medium">Cleared</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function HomePage() {
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [propFirms, setPropFirms] = useState<PropFirm[]>(FALLBACK_PROP_FIRMS);
   const [rewards, setRewards] = useState<Reward[]>(FALLBACK_REWARDS);
-  const [copiedCode, setCopiedCode] = useState<string | null>(null);
-  const [activeFaq, setActiveFaq] = useState<number | null>(0);
-  const [counterPoints, setCounterPoints] = useState<number>(10000);
-  const [calcSpend, setCalcSpend] = useState<number>(499);
-  const [showcaseTab, setShowcaseTab] = useState<'3d' | 'live'>('3d');
-  const [heroTab, setHeroTab] = useState<'wallet' | '3d'>('3d');
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  // Locale-safe number formatting to prevent hydration mismatch
-  const formatPoints = (pts: number) => pts.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  // Hero Live Animation State (3-5s repeating cycle)
+  const [heroCycle, setHeroCycle] = useState(0);
+  const [pointsCount, setPointsCount] = useState(12480);
+  const [progressPercent, setProgressPercent] = useState(62);
+  const [showToast, setShowToast] = useState(false);
 
+  // Mouse Parallax Effect for Desktop Hero
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  // Interactive "How It Works" Journey State
+  const [activeStep, setActiveStep] = useState(0);
+
+  // "Reward Unlock" Interactive Simulator State
+  const [simulatedUnlocked, setSimulatedUnlocked] = useState(false);
+
+  // Interactive Trader Dashboard Tab
+  const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'propfirms' | 'wallet' | 'rewards'>('overview');
+
+  // Load prop firms and rewards from API with graceful fallbacks
   useEffect(() => {
-    api
-      .get<PropFirm[]>('/prop-firms')
-      .then((data) => {
-        if (data && Array.isArray(data) && data.length > 0) {
-          const merged = data.slice(0, 6).map((firm, idx) => ({
-            ...firm,
-            logoUrl: firm.logoUrl || FALLBACK_PROP_FIRMS[idx % FALLBACK_PROP_FIRMS.length].logoUrl,
-          }));
-          setPropFirms(merged);
+    async function loadData() {
+      try {
+        const firmsRes = await api.get<any>('/prop-firms');
+        const firmsData = Array.isArray(firmsRes) ? firmsRes : firmsRes?.data;
+        if (Array.isArray(firmsData) && firmsData.length > 0) {
+          setPropFirms(firmsData);
         }
-      })
-      .catch(() => {});
+      } catch {
+        // Fallback remains active
+      }
 
-    api
-      .get<Reward[]>('/rewards', { inStockOnly: true })
-      .then((data) => {
-        if (data && Array.isArray(data) && data.length > 0) {
-          const merged = data.slice(0, 6).map((item, idx) => ({
-            ...item,
-            imageUrl: item.imageUrl || FALLBACK_REWARDS[idx % FALLBACK_REWARDS.length].imageUrl,
-          }));
-          setRewards(merged);
+      try {
+        const rewRes = await api.get<any>('/rewards');
+        const rewData = Array.isArray(rewRes) ? rewRes : rewRes?.data;
+        if (Array.isArray(rewData) && rewData.length > 0) {
+          setRewards(rewData);
         }
-      })
-      .catch(() => {});
+      } catch {
+        // Fallback remains active
+      }
+    }
+    loadData();
   }, []);
 
-  // Subtle points increment animation for the hero dashboard visual
+  // Hero Live Sequence Animation Loop (Every 4.5 seconds)
   useEffect(() => {
     const timer = setInterval(() => {
-      setCounterPoints((prev) => (prev >= 12500 ? 10000 : prev + 250));
-    }, 1800);
+      setHeroCycle((prev) => (prev + 1) % 3);
+    }, 4500);
     return () => clearInterval(timer);
   }, []);
 
-  const handleCopyCode = (code: string) => {
+  // Handle animation sequence steps
+  useEffect(() => {
+    if (heroCycle === 0) {
+      setPointsCount(12480);
+      setProgressPercent(62);
+      setShowToast(false);
+      const t1 = setTimeout(() => {
+        setPointsCount(12500);
+        setProgressPercent(65);
+      }, 700);
+      return () => clearTimeout(t1);
+    } else if (heroCycle === 1) {
+      setPointsCount(15000);
+      setProgressPercent(75);
+      setShowToast(true);
+    } else {
+      setShowToast(false);
+    }
+  }, [heroCycle]);
+
+  // Subtle Mouse Parallax Handler
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { clientX, clientY, currentTarget } = e;
+    const { width, height, left, top } = currentTarget.getBoundingClientRect();
+    const x = ((clientX - left) / width - 0.5) * 16;
+    const y = ((clientY - top) / height - 0.5) * 16;
+    setMousePos({ x, y });
+  };
+
+  const handleCopy = (code: string) => {
     navigator.clipboard.writeText(code);
     setCopiedCode(code);
     setTimeout(() => setCopiedCode(null), 2500);
   };
 
-  const faqs = [
-    {
-      q: 'What is a prop firm?',
-      a: 'A proprietary trading firm ("prop firm") provides qualified traders with simulated or allocated capital to trade global financial markets. Traders take an evaluation challenge, and once objective targets and risk limits are met, they receive access to funded capital while retaining a substantial portion of profits.',
-    },
-    {
-      q: 'How do I earn points?',
-      a: 'When you purchase an eligible prop-firm challenge using our referral code or link, you simply submit your order details and invoice. Once verified by our automated team, reward points are credited to your account based on the purchase price (e.g. 10 points per $1 spent).',
-    },
-    {
-      q: 'How do I use the referral code?',
-      a: 'During checkout on any partner prop firm website, paste our universal referral code NATION into the affiliate/promo code field. Complete your purchase, then come back to your PropFirm Rewards dashboard to upload your order confirmation.',
-    },
-    {
-      q: 'How long does verification take?',
-      a: 'Most submissions are verified within 2 to 24 hours. Our automated invoice processing checks the transaction details against partner confirmation to guarantee rapid point allocations.',
-    },
-    {
-      q: 'What proof do I need to submit?',
-      a: 'You simply upload a screenshot or PDF of your order confirmation invoice showing the order number, prop-firm name, purchase amount, and date.',
-    },
-    {
-      q: 'When will I receive my points?',
-      a: 'As soon as your submitted purchase proof status changes to "Verified", points are immediately added to your available balance in your wallet.',
-    },
-    {
-      q: 'What rewards can I redeem?',
-      a: 'You can redeem points for premium physical electronics (Apple, Sony, Samsung), authentic streetwear sneakers, trading desk hardware, digital gift vouchers, or direct cryptocurrency (USDT) cash payouts.',
-    },
-    {
-      q: 'Can I track my reward?',
-      a: 'Yes. Once you confirm a physical reward redemption, your dashboard provides an end-to-end tracking timeline from "Redemption Confirmed" to "Processing", "Shipped" with DHL/FedEx tracking number, and "Delivered".',
-    },
-    {
-      q: 'Can I redeem points for cash?',
-      a: 'Yes, our rewards catalog includes direct USDT (TRC-20 and ERC-20) transfers credited straight to your crypto wallet address upon approval.',
-    },
-    {
-      q: 'What happens if my purchase is rejected?',
-      a: 'If a receipt is unreadable or lacks the required details, our team leaves a specific note allowing you to re-upload clear proof, or you can contact our 24/7 support team to resolve it.',
-    },
-  ];
-
   return (
-    <div className="w-full min-h-screen bg-[#fafafc] dark:bg-[#05070a] text-slate-900 dark:text-slate-100 font-sans selection:bg-emerald-500/20 selection:text-emerald-800 dark:selection:text-emerald-200 transition-colors">
+    <div className="flex flex-col min-h-screen bg-[#05070a] text-slate-100 selection:bg-emerald-500 selection:text-slate-950 font-sans">
       {/* ─────────────────────────────────────────────────────────────
-          1. HERO SECTION
-          Full-screen premium fintech hero with interactive dashboard visual
+          1. HERO SECTION: CINEMATIC TRADING TERMINAL × REWARDS MARKETPLACE
       ───────────────────────────────────────────────────────────── */}
-      <section className="relative w-full pt-6 pb-12 sm:pt-12 sm:pb-16 lg:pb-20 overflow-hidden border-b border-slate-200/80 dark:border-slate-800/80">
-        {/* Subtle glows for light/dark */}
-        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-emerald-500/[0.06] dark:bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none -z-10" />
-        <div className="absolute top-1/3 left-10 w-[400px] h-[400px] bg-blue-600/[0.05] dark:bg-blue-600/[0.03] rounded-full blur-3xl pointer-events-none -z-10" />
+      <section
+        onMouseMove={handleMouseMove}
+        className="relative w-full pt-8 pb-16 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-28 overflow-hidden border-b border-emerald-950/40 bg-[#05070a]"
+      >
+        {/* Subtle Trading Candlesticks & Chart Grid (5-10% Opacity) */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden opacity-[0.07] dark:opacity-[0.09]">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="tradingGrid" width="48" height="48" patternUnits="userSpaceOnUse">
+                <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#10b981" strokeWidth="0.5" />
+              </pattern>
+              <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#tradingGrid)" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            {/* Left Column: Core Message */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left flex flex-col items-center lg:items-start">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/80 px-4 py-1.5 text-xs font-semibold tracking-wider text-slate-700 dark:text-slate-300 shadow-xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="uppercase text-[11px] font-bold tracking-widest text-slate-800 dark:text-slate-200">
-                  THE TRADER REWARDS PLATFORM
-                </span>
-              </div>
+            {/* Subtle Institutional Candlestick Silhouettes */}
+            <g stroke="#10b981" strokeWidth="1.5">
+              <line x1="8%" y1="180" x2="8%" y2="280" />
+              <rect x="7.4%" y="200" width="1.2%" height="55" fill="#10b981" />
+              <line x1="14%" y1="150" x2="14%" y2="260" />
+              <rect x="13.4%" y="170" width="1.2%" height="60" fill="#10b981" />
+              <line x1="20%" y1="210" x2="20%" y2="310" />
+              <rect x="19.4%" y="230" width="1.2%" height="45" fill="#ef4444" stroke="#ef4444" />
+              <line x1="26%" y1="130" x2="26%" y2="240" />
+              <rect x="25.4%" y="145" width="1.2%" height="65" fill="#10b981" />
+              <line x1="32%" y1="100" x2="32%" y2="220" />
+              <rect x="31.4%" y="120" width="1.2%" height="70" fill="#10b981" />
+              <line x1="38%" y1="160" x2="38%" y2="270" />
+              <rect x="37.4%" y="175" width="1.2%" height="55" fill="#ef4444" stroke="#ef4444" />
+              <line x1="44%" y1="90" x2="44%" y2="210" />
+              <rect x="43.4%" y="105" width="1.2%" height="80" fill="#10b981" />
+              <line x1="50%" y1="70" x2="50%" y2="180" />
+              <rect x="49.4%" y="85" width="1.2%" height="75" fill="#10b981" />
+              <line x1="68%" y1="120" x2="68%" y2="230" />
+              <rect x="67.4%" y="135" width="1.2%" height="65" fill="#10b981" />
+              <line x1="78%" y1="90" x2="78%" y2="200" />
+              <rect x="77.4%" y="110" width="1.2%" height="60" fill="#10b981" />
+              <line x1="88%" y1="60" x2="88%" y2="170" />
+              <rect x="87.4%" y="80" width="1.2%" height="70" fill="#10b981" />
+            </g>
 
-              {/* Main Headline */}
-              <h1 className="text-4xl sm:text-6xl lg:text-[4.5rem] font-[900] tracking-tight text-slate-900 dark:text-white leading-[1.04]">
-                TRADE.<br />
-                EARN.<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 dark:from-emerald-400 dark:via-teal-300 dark:to-sky-400">
-                  GET REWARDED.
-                </span>
-              </h1>
+            {/* Smooth Moving Trendline */}
+            <path
+              d="M 0 320 Q 200 240, 400 270 T 800 160 T 1200 120 T 1600 70"
+              fill="none"
+              stroke="#10b981"
+              strokeWidth="2.5"
+              strokeDasharray="6 4"
+            />
+          </svg>
+        </div>
 
-              {/* Sub-headline & Description */}
-              <div className="space-y-2 max-w-xl">
-                <p className="text-base sm:text-xl font-bold text-slate-800 dark:text-slate-200">
-                  Turn eligible prop-firm purchases into rewards.
-                </p>
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
-                  Purchase eligible prop-firm accounts using our referral codes, submit your purchase for verification, earn reward points, and redeem them for real-world rewards.
-                </p>
-              </div>
+        {/* Ambient Top Glow Orbs */}
+        <div className="absolute top-0 left-1/4 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-10 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto pt-2">
-                <Link href="/register" className="w-full sm:w-auto">
-                  <Button className="relative overflow-hidden w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md shadow-emerald-600/20 active:scale-[0.98] group">
-                    <span className="relative z-10 flex items-center justify-center">
-                      Start Earning
-                      <ArrowRight className="h-4 w-4 ml-2 stroke-[2.5] transition-transform duration-300 group-hover:translate-x-1" />
-                    </span>
-                    <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
-                  </Button>
-                </Link>
-                <Link href="#ecosystem" className="w-full sm:w-auto">
-                  <Button
-                    variant="outline"
-                    className="w-full sm:w-auto border-emerald-500/40 dark:border-emerald-500/40 bg-emerald-50/60 dark:bg-emerald-950/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-xs flex items-center justify-center gap-2"
-                  >
-                    <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                    3D Showcase
-                  </Button>
-                </Link>
-                <Link href="#rewards" className="w-full sm:w-auto">
-                  <Button
-                    variant="outline"
-                    className="w-full sm:w-auto border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 px-6 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-xs"
-                  >
-                    Explore Rewards
-                  </Button>
-                </Link>
-              </div>
-
-              {/* Trust statement below CTA */}
-              <p className="text-xs text-slate-500 font-medium tracking-wide pt-1">
-                Free to join • Secure verification • Real rewards
-              </p>
-
-              {/* Supported evaluation partners quick logo strip */}
-              <div className="pt-3 border-t border-slate-200/60 dark:border-slate-800/60 w-full max-w-xl">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-2 text-center lg:text-left">
-                  Eligible Prop Firms &amp; Evaluation Challenges
-                </span>
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2">
-                  {['FTMO', 'FundedNext', 'Funding Pips', 'Pipstone', 'The 5ers', 'E8 Funding'].map((firm) => (
-                    <span
-                      key={firm}
-                      className="px-2.5 py-1 rounded-md text-[11px] font-bold font-mono bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-300 shadow-2xs hover:border-emerald-500/50 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all cursor-default"
-                    >
-                      {firm}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Premium Dashboard Preview Mockup with Floating Micro-Elements */}
-            <div className="lg:col-span-5 w-full flex justify-center lg:justify-end relative">
-              {/* Soft ambient back-glow */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-sky-500/10 rounded-3xl blur-2xl animate-pulse-glow pointer-events-none -z-10" />
-
-              {/* Floating Pill: Live Order Verified */}
-              <div className="animate-float-reverse absolute -top-4 -left-2 sm:-left-4 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-emerald-500/30 px-3.5 py-1.5 rounded-full shadow-lg shadow-emerald-950/5 flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200 select-none">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            {/* Left: Bold Trader Typography & CTAs */}
+            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+              {/* Live Signal Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#101716] border border-emerald-500/30 text-emerald-400 text-xs font-semibold shadow-inner">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <span className="text-[11px] font-bold">Order #PS-88412</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold text-[11px] bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded">+2,500 PTS</span>
+                <span className="font-mono tracking-wide">TRADING PLATFORM × PREMIUM REWARDS</span>
               </div>
 
-              {/* Floating Pill: VIP Tier Badge */}
-              <div className="animate-float-slow absolute -bottom-3 -right-2 sm:-right-4 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-purple-500/30 px-3.5 py-1.5 rounded-xl shadow-lg shadow-purple-950/5 flex items-center gap-2 text-xs select-none">
-                <div className="h-6 w-6 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
-                  <Trophy className="h-3.5 w-3.5" />
-                </div>
-                <div>
-                  <div className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Tier Status</div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white">Gold Trader VIP</div>
-                </div>
+              {/* Exact Requested Headline */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-[900] tracking-tight leading-[1.08] text-white">
+                TRADE.<br />
+                EARN.<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
+                  GET REWARDED.
+                </span>
+              </h1>
+
+              {/* Accurate & Professional Tagline */}
+              <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+                Your next reward starts with your next eligible purchase. Buy challenges from top proprietary trading firms using code{' '}
+                <span className="font-mono font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
+                  NATION
+                </span>
+                , verify your order receipt, and unlock Apple gear, trading multi-screens, and USDT crypto payouts.
+              </p>
+
+              {/* High-Impact Consistent CTAs */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                <Link
+                  href="/prop-firms"
+                  className="w-full sm:w-auto h-13 px-8 text-base font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl shadow-lg shadow-emerald-500/25 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <span>Start Earning</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+
+                <Link
+                  href="/rewards"
+                  className="w-full sm:w-auto h-13 px-8 text-base font-semibold border border-slate-700 bg-[#101716] text-slate-200 hover:bg-slate-800 hover:text-white rounded-xl transition-all flex items-center justify-center gap-2"
+                >
+                  <Gift className="h-4 w-4 text-emerald-400" />
+                  <span>Explore Rewards</span>
+                </Link>
               </div>
 
-              <div className="w-full max-w-md rounded-2xl bg-white dark:bg-gradient-to-b dark:from-slate-900/95 dark:to-[#0b0f17] border border-slate-200/90 dark:border-slate-800 p-5 sm:p-6 shadow-xl shadow-slate-200/50 dark:shadow-black/80 space-y-4 backdrop-blur-xl relative transition-all duration-300 hover:shadow-2xl">
-                {/* Mode Selector Tab in Hero Mockup Card */}
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-3">
-                  <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                    <button
-                      type="button"
-                      onClick={() => setHeroTab('3d')}
-                      className={`flex items-center gap-1 px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                        heroTab === '3d'
-                          ? 'bg-emerald-500 text-slate-950 shadow-2xs font-extrabold'
-                          : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                      }`}
-                    >
-                      <Sparkles className="h-3 w-3" />
-                      3D Showcase
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setHeroTab('wallet')}
-                      className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                        heroTab === 'wallet'
-                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
-                          : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                      }`}
-                    >
-                      Live Wallet
-                    </button>
+              {/* 4 Micro Trust Pillars */}
+              <div className="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
+                <div className="p-2.5 rounded-lg bg-[#0b1110] border border-emerald-950/50">
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                    <span>Verified</span>
                   </div>
-                  <a
-                    href="#ecosystem"
-                    className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
-                  >
-                    Full View <ArrowRight className="h-3 w-3" />
-                  </a>
+                  <div className="text-[10px] text-slate-400 mt-0.5">Automated Receipt Audit</div>
                 </div>
 
-                {heroTab === '3d' ? (
-                  <div className="space-y-3.5">
-                    <div className="relative rounded-xl overflow-hidden border border-emerald-500/40 group/heroimg aspect-[16/10] bg-slate-950 shadow-lg">
-                      <Image
-                        src="/propfirm1.png"
-                        alt="Trade Rewards 3D Platform Showcase"
-                        width={600}
-                        height={400}
-                        quality={100}
-                        unoptimized={true}
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/heroimg:scale-105"
-                        priority
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent flex flex-col justify-end p-3">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <span className="text-[10px] font-mono text-emerald-400 font-extrabold uppercase tracking-wider flex items-center gap-1.5">
-                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
-                              Ultra-HD 3D Render
-                            </span>
-                            <span className="text-xs font-bold text-white block mt-0.5">
-                              TradeRewards Ecosystem &amp; Luxury Tech
-                            </span>
-                          </div>
-                          <span className="text-[11px] font-mono font-bold text-emerald-300 bg-emerald-950/90 border border-emerald-500/40 px-2 py-0.5 rounded-md">
-                            12,500 PTS
-                          </span>
-                        </div>
-                      </div>
+                <div className="p-2.5 rounded-lg bg-[#0b1110] border border-emerald-950/50">
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <Coins className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                    <span>$0.01 / PT</span>
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">Guaranteed Cash Floor</div>
+                </div>
+
+                <div className="p-2.5 rounded-lg bg-[#0b1110] border border-emerald-950/50">
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <Truck className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                    <span>Courier Track</span>
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">FedEx / DHL Insured</div>
+                </div>
+
+                <div className="p-2.5 rounded-lg bg-[#0b1110] border border-emerald-950/50">
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <Zap className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                    <span>Crypto USDT</span>
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">Direct TRC-20 Payout</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Interactive 3D Animated Live Rewards Dashboard */}
+            <div className="lg:col-span-5 flex justify-center">
+              <div
+                style={{
+                  transform: `perspective(1000px) rotateX(${-mousePos.y * 0.4}deg) rotateY(${mousePos.x * 0.4}deg)`,
+                  transition: 'transform 0.15s ease-out',
+                }}
+                className="w-full max-w-md rounded-2xl bg-[#0f1715] border border-emerald-500/30 p-5 shadow-2xl shadow-emerald-950/60 relative overflow-hidden"
+              >
+                {/* Glow Border Gradient */}
+                <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none" />
+
+                {/* Dashboard Card Header */}
+                <div className="flex items-center justify-between pb-3.5 border-b border-emerald-950/70">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
+                      Live Rewards Dashboard
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800">
+                    TRADER PRO TIER
+                  </span>
+                </div>
+
+                {/* Balance & Live Delta */}
+                <div className="py-4 space-y-1">
+                  <div className="text-[11px] uppercase tracking-wider font-semibold text-slate-400">
+                    Total Spendable Balance
+                  </div>
+                  <div className="flex items-baseline justify-between">
+                    <div className="text-3xl sm:text-4xl font-[900] font-mono tracking-tight text-white flex items-baseline gap-2">
+                      <span>{pointsCount.toLocaleString()}</span>
+                      <span className="text-sm font-bold text-emerald-400 font-sans">POINTS</span>
                     </div>
 
-                    {/* Quick Micro-Metrics */}
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800">
-                        <div className="text-[10px] uppercase font-bold text-slate-400">Available Balance</div>
-                        <div className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400 text-sm flex items-center gap-1 mt-0.5">
-                          <Wallet className="h-3.5 w-3.5" /> 12,500 PTS
-                        </div>
-                      </div>
-                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800">
-                        <div className="text-[10px] uppercase font-bold text-slate-400">Next Unlock Goal</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 text-xs sm:text-sm flex items-center gap-1 mt-0.5">
-                          <Smartphone className="h-3.5 w-3.5 text-sky-500" /> iPhone 16 Pro (75%)
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <a href="#ecosystem" className="flex-1">
-                        <Button className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold h-9 rounded-lg shadow-xs cursor-pointer">
-                          Full 3D Panorama <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-                        </Button>
-                      </a>
-                      <button
-                        type="button"
-                        onClick={() => setHeroTab('wallet')}
-                        className="px-3 h-9 rounded-lg text-xs font-semibold border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
-                      >
-                        Live Wallet
-                      </button>
+                    <div className="flex items-center gap-1 text-xs font-bold font-mono px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 animate-pulse">
+                      <span>+2,500 ↑</span>
                     </div>
                   </div>
-                ) : (
-                  <>
-                    {/* Header Row: Balance */}
-                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4">
-                      <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                          Available Points
-                        </div>
-                        <div className="text-3xl font-[900] text-slate-900 dark:text-white tracking-tight font-mono flex items-baseline gap-2 mt-0.5">
-                          <span className="transition-all duration-300">{formatPoints(counterPoints)}</span>
-                          <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-md animate-pulse">
-                            +2,500 Points
-                          </span>
-                        </div>
-                      </div>
-                      <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs">
-                        <Wallet className="h-5 w-5" />
-                      </div>
-                    </div>
+                  <div className="text-xs text-slate-400">≈ ${(pointsCount * 0.01).toFixed(2)} USD Instant Liquidation Value</div>
+                </div>
 
-                    {/* Reward Progress Card */}
-                    <div className="rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/70 dark:border-slate-800/80 p-3.5 space-y-2.5">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-semibold text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
-                          <Smartphone className="h-4 w-4 text-sky-600 dark:text-sky-400" />
-                          iPhone Flagship
-                        </span>
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">75% unlocked</span>
-                      </div>
-                      {/* Progress bar */}
-                      <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[75%] transition-all duration-500" />
-                      </div>
-                      <div className="flex justify-between text-[11px] text-slate-500 font-medium">
-                        <span>12,500 PTS</span>
-                        <span>16,600 PTS Goal</span>
-                      </div>
-                    </div>
+                {/* Reward Progress Bar Animation */}
+                <div className="py-3 px-3.5 rounded-xl bg-[#080d0c] border border-emerald-950/70 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-300 flex items-center gap-1.5">
+                      <Headphones className="h-3.5 w-3.5 text-emerald-400" />
+                      <span>AirPods Max Target</span>
+                    </span>
+                    <span className="font-mono font-bold text-emerald-400">{progressPercent}%</span>
+                  </div>
 
-                    {/* Recent Activity List */}
-                    <div className="space-y-2">
-                      <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                        Recent Activity
-                      </div>
-                      <div className="space-y-2 text-xs">
-                        <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors">
-                          <div className="flex items-center gap-2">
-                            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                            <div>
-                              <div className="font-semibold text-slate-800 dark:text-slate-200">Purchase Verified</div>
-                              <div className="text-[10px] text-slate-500">Order #PS-88412 • Pipstone</div>
-                            </div>
-                          </div>
-                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+2,500 PTS</span>
-                        </div>
+                  <div className="w-full h-3 rounded-full bg-slate-900 overflow-hidden p-0.5 border border-slate-800">
+                    <div
+                      style={{ width: `${progressPercent}%` }}
+                      className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 shadow-sm transition-all duration-700 ease-out"
+                    />
+                  </div>
 
-                        <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/60 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors">
-                          <div className="flex items-center gap-2">
-                            <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
-                            <div>
-                              <div className="font-semibold text-slate-800 dark:text-slate-200">Bonus Earned</div>
-                              <div className="text-[10px] text-slate-500">First Purchase Boost</div>
-                            </div>
-                          </div>
-                          <span className="font-mono font-bold text-blue-600 dark:text-blue-400">+1,000 PTS</span>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                    <span>15,000 / 20,000 PTS</span>
+                    <span>5,000 PTS to Unlock</span>
+                  </div>
+                </div>
 
-                    {/* Referral Code Quick Copy Box */}
-                    <div className="pt-1">
-                      <div className="rounded-xl bg-slate-100/90 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-3 flex items-center justify-between">
-                        <div>
-                          <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block tracking-wider">
-                            Universal Referral Code
-                          </span>
-                          <span className="font-mono font-black text-slate-900 dark:text-white text-base tracking-wider">
-                            NATION
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleCopyCode('NATION')}
-                          className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
-                        >
-                          {copiedCode === 'NATION' ? (
-                            <>
-                              <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                              <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="h-3.5 w-3.5 text-slate-500" />
-                              <span>Copy</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
+                {/* Mini Target Gear Icons Preview */}
+                <div className="pt-3 flex items-center justify-between gap-2">
+                  <div className="flex-1 p-2 rounded-lg bg-[#0b1110] border border-slate-800/80 text-center hover:border-emerald-500/40 transition-colors">
+                    <span className="text-lg">🎧</span>
+                    <div className="text-[10px] font-bold text-slate-300 mt-1">AirPods Max</div>
+                    <div className="text-[9px] font-mono text-emerald-400">20K PTS</div>
+                  </div>
+
+                  <div className="flex-1 p-2 rounded-lg bg-[#0b1110] border border-slate-800/80 text-center hover:border-emerald-500/40 transition-colors">
+                    <span className="text-lg">👟</span>
+                    <div className="text-[10px] font-bold text-slate-300 mt-1">Air Jordans</div>
+                    <div className="text-[9px] font-mono text-emerald-400">15K PTS</div>
+                  </div>
+
+                  <div className="flex-1 p-2 rounded-lg bg-[#0b1110] border border-slate-800/80 text-center hover:border-emerald-500/40 transition-colors">
+                    <span className="text-lg">📱</span>
+                    <div className="text-[10px] font-bold text-slate-300 mt-1">iPhone 16</div>
+                    <div className="text-[9px] font-mono text-emerald-400">120K PTS</div>
+                  </div>
+                </div>
+
+                {/* Live Verification Notification Toast */}
+                <div
+                  className={`mt-4 p-2.5 rounded-lg bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-between text-xs transition-all duration-500 ${
+                    showToast ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 pointer-events-none'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <div>
+                      <div className="font-bold text-white">Purchase Verified</div>
+                      <div className="text-[10px] text-emerald-300/80">Order #FS-100K Approved</div>
                     </div>
-                  </>
-                )}
+                  </div>
+                  <span className="font-mono font-bold text-emerald-400 text-xs">+2,500 PTS</span>
+                </div>
               </div>
             </div>
           </div>
@@ -867,317 +525,575 @@ export default function HomePage() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          2. TRUST STRIP
-          Immediately below hero with clean indicators
+          2. SUBTLE TICKER: LIVE PLATFORM REWARDS FEED
       ───────────────────────────────────────────────────────────── */}
-      <section className="w-full bg-slate-100/70 dark:bg-[#080c14] border-b border-slate-200/80 dark:border-slate-800/80 py-5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Built for traders
+      <div className="w-full bg-[#080d0c] border-b border-emerald-950/40 py-2.5 overflow-hidden">
+        <div className="flex items-center gap-4 text-xs font-mono text-slate-400">
+          <div className="px-4 shrink-0 flex items-center gap-2 font-bold text-emerald-400 bg-emerald-950/60 py-1 rounded border border-emerald-500/20 ml-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+            <span>PLATFORM REWARDS FEED</span>
+          </div>
+
+          <div className="flex items-center gap-8 overflow-x-auto no-scrollbar whitespace-nowrap">
+            <span className="flex items-center gap-1.5 text-slate-300">
+              <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />
+              <span>Purchase Verified: FundedSquad $100K</span>
+              <strong className="text-emerald-400 font-bold">+2,500 PTS</strong>
             </span>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 w-full md:w-auto">
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Secure Platform</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Verified Purchases</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                <Coins className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Transparent Points</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                <Gift className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Real Rewards</span>
-              </div>
-            </div>
+            <span className="text-slate-600">&bull;</span>
+
+            <span className="flex items-center gap-1.5 text-slate-300">
+              <Gift className="h-3.5 w-3.5 text-purple-400" />
+              <span>Reward Redeemed: Apple AirPods Max</span>
+              <strong className="text-purple-300 font-bold">-20,000 PTS</strong>
+            </span>
+            <span className="text-slate-600">&bull;</span>
+
+            <span className="flex items-center gap-1.5 text-slate-300">
+              <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+              <span>New Reward Added: Ledger Stax Hardware Wallet</span>
+              <strong className="text-amber-300 font-bold">25,000 PTS</strong>
+            </span>
+            <span className="text-slate-600">&bull;</span>
+
+            <span className="flex items-center gap-1.5 text-slate-300">
+              <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />
+              <span>Purchase Verified: Pipstone $200K Challenge</span>
+              <strong className="text-emerald-400 font-bold">+5,000 PTS</strong>
+            </span>
+            <span className="text-slate-600">&bull;</span>
+
+            <span className="flex items-center gap-1.5 text-slate-300">
+              <Wallet className="h-3.5 w-3.5 text-teal-400" />
+              <span>Direct USDT Cashout Confirmed (TRC-20)</span>
+              <strong className="text-teal-300 font-bold">$1,500.00 USD</strong>
+            </span>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          3. HOW IT WORKS
-          From Purchase to Reward in 5 Simple Steps
+          3. HOW IT WORKS: INTERACTIVE 4-STEP JOURNEY
       ───────────────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
+      <section id="how-it-works" className="w-full py-16 sm:py-20 lg:py-24 border-b border-emerald-950/40 bg-[#070b10]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          {/* Section Heading */}
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 text-xs">
-              Simple Workflow
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-950/40 text-xs">
+              01 &bull; 02 &bull; 03 &bull; 04
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
-              From Purchase to Reward in 5 Simple Steps
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+              From Challenge to Gear in 4 Steps
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              A straightforward process with automated tracking and transparent point accreditation.
+            <p className="text-sm sm:text-base text-slate-400">
+              Click each phase to see how Prop Nation verifies your trading purchases and credits guaranteed points.
             </p>
           </div>
 
-          {/* Desktop Horizontal / Mobile Vertical 5-Step Timeline with Animated Connecting Beam */}
-          <div className="relative">
-            {/* Animated glowing connecting beam line (desktop only) */}
-            <div className="hidden md:block absolute top-9 left-12 right-12 h-[2px] bg-slate-200 dark:bg-slate-800 -z-0 overflow-hidden rounded-full">
-              <div className="h-full w-40 bg-gradient-to-r from-transparent via-emerald-500 to-transparent animate-beam-slide" />
-            </div>
+          {/* Interactive Step Switcher */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto">
+            {[
+              { num: '01', title: 'BUY', desc: 'Use Partner Code' },
+              { num: '02', title: 'VERIFY', desc: 'Upload Receipt' },
+              { num: '03', title: 'EARN', desc: 'Atomic Ledger Credit' },
+              { num: '04', title: 'REDEEM', desc: 'Dispatch Hardware' },
+            ].map((step, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveStep(idx)}
+                className={`p-3.5 rounded-xl text-left border transition-all ${
+                  activeStep === idx
+                    ? 'bg-emerald-500/15 border-emerald-500 text-white shadow-lg shadow-emerald-500/10'
+                    : 'bg-[#0f1715] border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                }`}
+              >
+                <div className="font-mono text-xs font-bold text-emerald-400">{step.num}</div>
+                <div className="font-extrabold text-sm sm:text-base text-white mt-0.5">{step.title}</div>
+                <div className="text-[11px] text-slate-400">{step.desc}</div>
+              </button>
+            ))}
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-5 relative z-10">
-              {/* Step 1 */}
-              <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3.5 group cursor-default shadow-xs flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
-                    <span>STEP 01</span>
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
-                  </div>
-                  <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
-                    <Search className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Choose a Prop Firm</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Browse eligible prop firms and explore available evaluation offers.
-                  </p>
-                </div>
-                {/* Visual Preview Box */}
-                <div className="h-14 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/70 dark:border-slate-800/80 p-1.5 flex items-center justify-center gap-1 overflow-hidden">
-                  <span className="px-2 py-1 rounded text-[9px] font-bold font-mono bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-2xs">FTMO</span>
-                  <span className="px-2 py-1 rounded text-[9px] font-bold font-mono bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-2xs">FundedNext</span>
-                  <span className="px-2 py-1 rounded text-[9px] font-bold font-mono bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-2xs">Pipstone</span>
-                </div>
-              </div>
-
-              {/* Step 2 */}
-              <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3.5 group cursor-default shadow-xs flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
-                    <span>STEP 02</span>
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
-                  </div>
-                  <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
-                    <Tag className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Buy Using Our Code</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Purchase your eligible account using referral code <strong className="text-slate-900 dark:text-white font-mono">NATION</strong>.
-                  </p>
-                </div>
-                {/* Visual Preview Box */}
-                <div className="h-14 rounded-xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border border-emerald-500/30 px-3 py-1 flex items-center justify-between">
-                  <div>
-                    <div className="text-[9px] uppercase font-bold text-slate-500">Code Applied</div>
-                    <div className="font-mono font-black text-emerald-600 dark:text-emerald-400 text-xs">NATION</div>
-                  </div>
-                  <span className="text-[9px] font-bold bg-emerald-500 text-slate-950 px-2 py-0.5 rounded shadow-2xs uppercase">
-                    10x Points
+          {/* Dynamic Interactive Stage Simulator Card */}
+          <div className="max-w-4xl mx-auto rounded-2xl bg-[#0e1614] border border-emerald-500/30 p-6 sm:p-8 shadow-2xl">
+            {activeStep === 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
+                    STEP 01: SELECT OFFER
                   </span>
+                  <h3 className="text-2xl font-bold text-white">Purchase with Partner Code NATION</h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Browse our partner prop firms. Click their official referral link and apply code{' '}
+                    <strong className="text-emerald-400 font-mono">NATION</strong> at checkout. This attaches your evaluation order to our verified affiliate pool.
+                  </p>
+                  <Link
+                    href="/prop-firms"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 text-xs"
+                  >
+                    View Partner Offers →
+                  </Link>
+                </div>
+
+                <div className="p-5 rounded-xl bg-[#080d0c] border border-emerald-950/80 space-y-3 font-mono text-xs">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-slate-400">
+                    <span>CHALLENGE CHECKOUT</span>
+                    <span className="text-emerald-400">ORDER SIMULATION</span>
+                  </div>
+                  <div className="flex justify-between text-white">
+                    <span>Evaluation Tier:</span>
+                    <span className="font-bold">$100K 2-Step Challenge</span>
+                  </div>
+                  <div className="flex justify-between text-white">
+                    <span>Amount Paid:</span>
+                    <span className="font-bold">$499.00 USD</span>
+                  </div>
+                  <div className="flex justify-between text-emerald-400 font-bold p-2 rounded bg-emerald-500/10 border border-emerald-500/20">
+                    <span>Reward Points Yield:</span>
+                    <span>+4,990 POINTS</span>
+                  </div>
                 </div>
               </div>
+            )}
 
-              {/* Step 3 */}
-              <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3.5 group cursor-default shadow-xs flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
-                    <span>STEP 03</span>
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
-                  </div>
-                  <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-slate-800 dark:text-slate-200 shadow-2xs group-hover:scale-110 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
-                    <FileCheck2 className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Submit Your Proof</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Upload your order details and invoice receipt to your user dashboard.
+            {activeStep === 1 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">
+                    STEP 02: VERIFICATION
+                  </span>
+                  <h3 className="text-2xl font-bold text-white">Submit Receipt in Trader Portal</h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Upload your invoice or confirmation screenshot with Order ID and date. Our automated audit pipeline checks duplicate hashes and reconciles with prop firm affiliate logs.
                   </p>
+                  <Link
+                    href="/dashboard/purchases/new"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 text-xs"
+                  >
+                    Go to Purchase Submission →
+                  </Link>
                 </div>
-                {/* Visual Invoice Preview Box */}
-                <div className="h-14 rounded-xl overflow-hidden relative border border-slate-200 dark:border-slate-800 bg-slate-950 group/proof">
-                  <img
-                    src="/demo-proofs/fundedsquad-invoice-sample.jpg"
-                    alt="Invoice proof sample"
-                    className="w-full h-full object-cover object-top opacity-60 group-hover/proof:opacity-90 transition-opacity duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent flex items-end p-1.5">
-                    <span className="text-[9px] font-mono text-emerald-400 font-bold bg-slate-900/90 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                      Invoice #FS-88412
+
+                <div className="p-5 rounded-xl bg-[#080d0c] border border-amber-950/80 space-y-3 font-mono text-xs">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-slate-400">
+                    <span>FILE AUDIT</span>
+                    <span className="text-amber-400 animate-pulse">PROCESSING</span>
+                  </div>
+                  <div className="p-3 rounded bg-slate-900 border border-slate-800 text-slate-300 flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <FileCheck2 className="h-4 w-4 text-emerald-400" />
+                      <span>purchase-proof_100k.png</span>
                     </span>
+                    <span className="text-[10px] text-slate-400">1.4 MB</span>
+                  </div>
+                  <div className="p-2 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4" />
+                    <span>✓ ORDER VERIFIED BY ADMIN</span>
                   </div>
                 </div>
               </div>
+            )}
 
-              {/* Step 4 */}
-              <div className="card-lift rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 space-y-3.5 group cursor-default shadow-xs flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center justify-between">
-                    <span>STEP 04</span>
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40 group-hover:bg-emerald-500 transition-colors" />
-                  </div>
-                  <div className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-transparent flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs group-hover:scale-110 group-hover:text-emerald-500 transition-all duration-300">
-                    <CheckCircle className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Get Verified</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Our verification team audits and approves your order confirmation.
-                  </p>
-                </div>
-                {/* Visual Status Box */}
-                <div className="h-14 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-2 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <div>
-                      <div className="text-[9px] font-bold text-slate-700 dark:text-slate-300">Status</div>
-                      <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">VERIFIED</div>
-                    </div>
-                  </div>
-                  <span className="font-mono text-[11px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded">
-                    +2,500 PTS
+            {activeStep === 2 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
+                    STEP 03: POINTS CREDITED
                   </span>
+                  <h3 className="text-2xl font-bold text-white">Guaranteed Points Added to Wallet</h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Points are written to your immutable financial points ledger with zero expiration and zero lockups. 100 points = $1.00 USD cash redemption value.
+                  </p>
+                  <Link
+                    href="/dashboard/points"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 text-xs"
+                  >
+                    View Points Ledger →
+                  </Link>
                 </div>
-              </div>
 
-              {/* Step 5 */}
-              <div className="card-lift rounded-2xl bg-emerald-50/90 dark:bg-emerald-500/[0.06] border border-emerald-300 dark:border-emerald-500/30 p-5 space-y-3.5 shadow-xs group cursor-default relative overflow-hidden flex flex-col justify-between">
-                <div className="absolute -right-8 -top-8 w-20 h-20 bg-emerald-400/10 rounded-full blur-xl pointer-events-none group-hover:bg-emerald-400/20 transition-colors" />
-                <div className="space-y-3">
-                  <div className="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-400 tracking-wider flex items-center justify-between">
-                    <span>STEP 05</span>
-                    <Sparkles className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 animate-pulse" />
+                <div className="p-5 rounded-xl bg-[#080d0c] border border-emerald-950/80 space-y-3 font-mono text-xs">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-slate-400">
+                    <span>LEDGER TRANSACTION</span>
+                    <span className="text-emerald-400">ACID WRITE</span>
                   </div>
-                  <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-2xs">
-                    <Gift className="h-5 w-5" />
+                  <div className="flex justify-between text-slate-400">
+                    <span>Previous Balance:</span>
+                    <span>7,510 PTS</span>
                   </div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">Earn &amp; Redeem</h3>
-                  <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-                    Receive points instantly and redeem them for real-world rewards.
-                  </p>
-                </div>
-                {/* Visual Rewards Box */}
-                <div className="h-14 rounded-xl bg-white/80 dark:bg-slate-950/80 border border-emerald-500/30 p-2 flex items-center justify-between">
-                  <div className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
-                    <Truck className="h-3.5 w-3.5 text-emerald-600" />
-                    <span>Global Express Dispatch</span>
+                  <div className="flex justify-between text-emerald-400 font-bold">
+                    <span>Approved Credit:</span>
+                    <span>+2,490 PTS</span>
                   </div>
-                  <span className="text-[9px] font-extrabold bg-emerald-500 text-slate-950 px-2 py-0.5 rounded shadow-2xs">
-                    DHL / FEDEX
-                  </span>
+                  <div className="flex justify-between text-white font-extrabold text-sm pt-2 border-t border-slate-800">
+                    <span>New Total Balance:</span>
+                    <span className="text-emerald-400">10,000 PTS ($100.00)</span>
+                  </div>
                 </div>
               </div>
-            </div>
-        </div>
+            )}
+
+            {activeStep === 3 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-400">
+                    STEP 04: REDEEM &amp; DISPATCH
+                  </span>
+                  <h3 className="text-2xl font-bold text-white">Order Electronics or Cash Out Crypto</h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Select any item from the rewards catalog. Enter your global shipping address or TRC-20 USDT wallet. Our logistics team ships insured via FedEx, DHL, or Aramex.
+                  </p>
+                  <Link
+                    href="/rewards"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 text-xs"
+                  >
+                    Browse Rewards Catalog →
+                  </Link>
+                </div>
+
+                <div className="p-5 rounded-xl bg-[#080d0c] border border-purple-950/80 space-y-3 font-mono text-xs">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-slate-400">
+                    <span>COURIER PIPELINE</span>
+                    <span className="text-purple-400">DISPATCHED</span>
+                  </div>
+                  <div className="flex justify-between text-white">
+                    <span>Carrier:</span>
+                    <span className="font-bold">FedEx Express Airway</span>
+                  </div>
+                  <div className="flex justify-between text-white">
+                    <span>Tracking Number:</span>
+                    <span className="text-emerald-400 font-mono">#FX-8941-2041</span>
+                  </div>
+                  <div className="p-2 rounded bg-purple-500/10 border border-purple-500/20 text-purple-300 font-bold text-center">
+                    STATUS: OUT FOR DELIVERY
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          4. PROP FIRMS SECTION
-          Dynamic / placeholder cards with tiers and point yield
+          4. PROP FIRMS: TRADING OPPORTUNITIES & OFFERS
       ───────────────────────────────────────────────────────────── */}
-      <section id="prop-firms" className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
+      <section id="prop-firms" className="w-full py-16 sm:py-20 lg:py-24 border-b border-emerald-950/40 bg-[#05070a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/60 text-xs">
-                Eligible Platforms
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-950/40 text-xs">
+                FEATURED PROP FIRM OFFERS
               </Badge>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
-                Choose Your Prop Firm
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+                Earn Up to 10,000 Points Per Challenge
               </h2>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-xl">
-                Explore participating prop firms and see how many points you can earn on each evaluation tier.
+              <p className="text-sm sm:text-base text-slate-400">
+                Partner proprietary trading firms with verified point yields and direct verification support.
               </p>
             </div>
-            <Link href="/prop-firms">
-              <Button variant="outline" className="border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-bold shadow-2xs">
-                View All Partners <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-              </Button>
+
+            <Link
+              href="/prop-firms"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-800 bg-[#101716] text-white hover:bg-slate-800 text-sm font-semibold shrink-0"
+            >
+              <span>View All 12+ Firms</span>
+              <ArrowRight className="h-4 w-4 text-emerald-400" />
             </Link>
           </div>
 
-          {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {propFirms.slice(0, 6).map((firm) => (
+          {/* Cards styled as high-yield trading opportunities */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {propFirms.slice(0, 4).map((firm) => (
               <div
                 key={firm.id}
-                className="card-lift rounded-2xl bg-white dark:bg-slate-900/50 border border-slate-200/90 dark:border-slate-800 p-6 flex flex-col justify-between space-y-5 group shadow-xs"
+                className="card-lift rounded-2xl bg-[#0f1715] border border-emerald-500/20 p-5 flex flex-col justify-between space-y-5 shadow-lg group hover:border-emerald-500/50 transition-all"
               >
                 <div className="space-y-4">
-                  {/* Top: Logo + Name */}
+                  {/* Firm Header */}
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center text-slate-900 dark:text-white font-black text-sm shrink-0 shadow-2xs group-hover:scale-105 transition-transform duration-300">
-                        {firm.logoUrl ? (
-                          <img
-                            src={firm.logoUrl}
-                            alt={`${firm.name} logo`}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <span>{firm.name.slice(0, 2).toUpperCase()}</span>
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-slate-900 dark:text-white text-base leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{firm.name}</h4>
-                        <span className="text-[11px] text-slate-500 font-mono">Code: NATION</span>
-                      </div>
+                    <div className="h-10 w-10 rounded-xl bg-slate-900 border border-slate-800 overflow-hidden p-1 flex items-center justify-center">
+                      <img
+                        src={firm.logoUrl || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80'}
+                        alt={firm.name}
+                        className="h-full w-full object-cover rounded-lg"
+                      />
                     </div>
-                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Verified
+                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                      <CheckCircle2 className="h-3 w-3" /> VERIFIED
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">
-                    {firm.description}
-                  </p>
+                  <div>
+                    <h3 className="font-extrabold text-lg text-white group-hover:text-emerald-400 transition-colors">
+                      {firm.name}
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                      {firm.description}
+                    </p>
+                  </div>
 
-                  {/* Tier Examples List */}
-                  <div className="space-y-1.5 pt-1">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                      Tier Points Yield
+                  {/* Tier Pricing & Points Table */}
+                  <div className="space-y-1.5 pt-2 border-t border-slate-800/80 font-mono text-xs">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 pb-1">
+                      CHALLENGE TIERS &bull; REWARDS
                     </div>
-                    {firm.offers && firm.offers.length > 0 ? (
-                      firm.offers.slice(0, 3).map((offer) => (
-                        <div
-                          key={offer.id}
-                          className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60 hover:bg-slate-100/70 dark:hover:bg-slate-900/60 transition-colors"
-                        >
-                          <span className="text-slate-700 dark:text-slate-300 font-medium">{offer.accountTierName}</span>
-                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                            +{formatPoints(offer.rewardPoints)} PTS
-                          </span>
-                        </div>
-                      ))
-                    ) : (
-                      <>
-                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60 hover:bg-slate-100/70 dark:hover:bg-slate-900/60 transition-colors">
-                          <span className="text-slate-700 dark:text-slate-300 font-medium">$50 Account</span>
-                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+1,000 PTS</span>
-                        </div>
-                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60 hover:bg-slate-100/70 dark:hover:bg-slate-900/60 transition-colors">
-                          <span className="text-slate-700 dark:text-slate-300 font-medium">$100 Account</span>
-                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+2,500 PTS</span>
-                        </div>
-                        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200/70 dark:border-slate-800/60 hover:bg-slate-100/70 dark:hover:bg-slate-900/60 transition-colors">
-                          <span className="text-slate-700 dark:text-slate-300 font-medium">$200 Account</span>
-                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+5,000 PTS</span>
-                        </div>
-                      </>
-                    )}
+                    <div className="p-1.5 rounded bg-[#080d0c] flex items-center justify-between text-slate-300">
+                      <span>$50K Account</span>
+                      <strong className="text-emerald-400">+2,990 PTS</strong>
+                    </div>
+                    <div className="p-1.5 rounded bg-[#080d0c] flex items-center justify-between text-slate-300">
+                      <span>$100K Account</span>
+                      <strong className="text-emerald-400">+4,990 PTS</strong>
+                    </div>
+                    <div className="p-1.5 rounded bg-[#080d0c] flex items-center justify-between text-slate-300">
+                      <span>$200K Account</span>
+                      <strong className="text-emerald-400">+9,790 PTS</strong>
+                    </div>
                   </div>
                 </div>
 
-                {/* Action CTA */}
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80">
-                  <a
-                    href={firm.affiliateUrl || firm.websiteUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
+                {/* Bottom Affiliate Code & Action */}
+                <div className="space-y-2 pt-2 border-t border-slate-800/80">
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-[#080d0c] border border-slate-800">
+                    <span className="text-[11px] text-slate-400 font-mono">Code: <strong className="text-emerald-400">NATION</strong></span>
+                    <button
+                      onClick={() => handleCopy(firm.affiliateCode || 'NATION')}
+                      className="text-xs text-slate-300 hover:text-white flex items-center gap-1 font-mono"
+                    >
+                      {copiedCode === (firm.affiliateCode || 'NATION') ? (
+                        <span className="text-emerald-400 font-bold flex items-center gap-1">
+                          <Check className="h-3 w-3" /> Copied
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1">
+                          <Copy className="h-3 w-3" /> Copy
+                        </span>
+                      )}
+                    </button>
+                  </div>
+
+                  <Link
+                    href={`/prop-firms/${firm.slug}`}
+                    className="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1 transition-all"
                   >
-                    <Button className="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-semibold h-10 rounded-xl transition-all group-hover:border-emerald-500/40">
-                      View Offer <ExternalLink className="h-3.5 w-3.5 ml-1.5 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </Button>
-                  </a>
+                    <span>View Offer</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Compliance Disclaimer */}
+          <div className="p-4 rounded-xl bg-[#080d0c] border border-slate-800 text-center text-xs text-slate-500 max-w-3xl mx-auto">
+            Disclaimer: Prop Nation is an independent affiliate rewards portal and not a broker or proprietary trading firm. All challenge purchases are made directly with the respective prop firm and subject to their affiliate terms.
+          </div>
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────────────────────
+          5. POINTS WALLET: INSTITUTIONAL FINANCIAL DASHBOARD
+      ───────────────────────────────────────────────────────────── */}
+      <section className="w-full py-16 sm:py-20 lg:py-24 border-b border-emerald-950/40 bg-[#070b10]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-950/40 text-xs">
+              TRADER POINTS WALLET
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+              Your Capitalized Reward Equity
+            </h2>
+            <p className="text-sm sm:text-base text-slate-400">
+              Track points like a trading balance. Full transparent ledger, instant USD value, and no lockups.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
+            {/* Left Balance & Equity Curve */}
+            <div className="lg:col-span-7 rounded-2xl bg-[#0e1614] border border-emerald-500/30 p-6 sm:p-8 space-y-6 shadow-2xl">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div>
+                  <div className="text-xs uppercase font-mono text-slate-400 font-semibold">Total Reward Balance</div>
+                  <div className="text-4xl sm:text-5xl font-[900] font-mono text-white mt-1">
+                    12,500 <span className="text-emerald-400 text-lg font-sans">POINTS</span>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <div className="inline-flex items-center gap-1 font-mono text-xs font-bold px-2 py-1 rounded bg-emerald-500/20 text-emerald-400">
+                    <TrendingUp className="h-3.5 w-3.5" /> +2,500 Today
+                  </div>
+                  <div className="text-xs text-slate-400 font-mono mt-1">≈ $125.00 USD Value</div>
+                </div>
+              </div>
+
+              {/* Styled Equity Curve Line Graph (SVG) */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs font-mono text-slate-500">
+                  <span>EQUITY CURVE (30D)</span>
+                  <span className="text-emerald-400">All-Time High</span>
+                </div>
+                <div className="h-32 w-full rounded-xl bg-[#080d0c] border border-slate-800/80 p-2 relative overflow-hidden flex items-end">
+                  <svg className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="equityGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10b981" stopOpacity="0.3" />
+                        <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <polygon
+                      points="0,100 0,85 50,80 100,75 150,60 200,65 250,45 300,50 350,25 400,10 400,100"
+                      fill="url(#equityGrad)"
+                    />
+                    <polyline
+                      fill="none"
+                      stroke="#10b981"
+                      strokeWidth="2.5"
+                      points="0,85 50,80 100,75 150,60 200,65 250,45 300,50 350,25 400,10"
+                    />
+                  </svg>
+                  <div className="absolute top-3 right-3 text-xs font-mono font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30">
+                    12,500 PTS
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-2">
+                <Link
+                  href="/dashboard/purchases/new"
+                  className="px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 text-xs inline-flex items-center gap-1.5"
+                >
+                  Submit Purchase Proof →
+                </Link>
+                <Link
+                  href="/dashboard/points"
+                  className="px-4 py-2 rounded-lg border border-slate-800 bg-[#080d0c] text-slate-300 hover:text-white text-xs inline-flex items-center gap-1.5"
+                >
+                  View Full Ledger
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Floating Transaction Pills */}
+            <div className="lg:col-span-5 space-y-3 font-mono text-xs">
+              <div className="text-xs uppercase tracking-wider text-slate-400 font-bold px-1">
+                Recent Ledger Activity
+              </div>
+
+              <div className="p-4 rounded-xl bg-[#0e1614] border border-emerald-500/20 flex items-center justify-between shadow-md">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                    ✓
+                  </div>
+                  <div>
+                    <div className="text-white font-bold">Purchase Verified</div>
+                    <div className="text-[10px] text-slate-400 font-sans">Funding Pips $100K</div>
+                  </div>
+                </div>
+                <span className="font-bold text-emerald-400 text-sm">+2,500 PTS</span>
+              </div>
+
+              <div className="p-4 rounded-xl bg-[#0e1614] border border-emerald-500/20 flex items-center justify-between shadow-md">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold">
+                    ⚡
+                  </div>
+                  <div>
+                    <div className="text-white font-bold">Partner Tier Bonus</div>
+                    <div className="text-[10px] text-slate-400 font-sans">VIP Silver 1.2x Multiplier</div>
+                  </div>
+                </div>
+                <span className="font-bold text-teal-400 text-sm">+1,000 PTS</span>
+              </div>
+
+              <div className="p-4 rounded-xl bg-[#0e1614] border border-purple-500/20 flex items-center justify-between shadow-md">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold">
+                    🎁
+                  </div>
+                  <div>
+                    <div className="text-white font-bold">Reward Redeemed</div>
+                    <div className="text-[10px] text-slate-400 font-sans">Apple AirPods Max</div>
+                  </div>
+                </div>
+                <span className="font-bold text-purple-400 text-sm">-5,000 PTS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────────────────────
+          6. REWARDS VAULT: PREMIUM REWARDS MARKETPLACE
+      ───────────────────────────────────────────────────────────── */}
+      <section id="rewards" className="w-full py-16 sm:py-20 lg:py-24 border-b border-emerald-950/40 bg-[#05070a]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-950/40 text-xs">
+                PREMIUM REWARDS VAULT
+              </Badge>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+                YOUR POINTS. YOUR REWARDS.
+              </h2>
+              <p className="text-sm sm:text-base text-slate-400">
+                From high-end trading hardware and Apple devices to authentic streetwear and USDT crypto transfers.
+              </p>
+            </div>
+
+            <Link
+              href="/rewards"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-800 bg-[#101716] text-white hover:bg-slate-800 text-sm font-semibold shrink-0"
+            >
+              <span>View Full Catalog</span>
+              <ArrowRight className="h-4 w-4 text-emerald-400" />
+            </Link>
+          </div>
+
+          {/* Big Floating Premium Product Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {rewards.slice(0, 6).map((item) => (
+              <div
+                key={item.id}
+                className="card-lift rounded-2xl bg-[#0f1715] border border-emerald-500/20 overflow-hidden flex flex-col justify-between group shadow-xl hover:border-emerald-500/50 transition-all"
+              >
+                <div>
+                  <div className="aspect-[4/3] relative overflow-hidden bg-slate-950">
+                    <img
+                      src={item.imageUrl || 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80'}
+                      alt={item.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80';
+                      }}
+                    />
+                    <div className="absolute top-3 left-3 bg-black/75 backdrop-blur-sm text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-500/30">
+                      {item.category?.name || 'Hardware'}
+                    </div>
+                  </div>
+
+                  <div className="p-5 space-y-2">
+                    <h3 className="font-extrabold text-base sm:text-lg text-white group-hover:text-emerald-400 transition-colors line-clamp-1">
+                      {item.name}
+                    </h3>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-mono text-2xl font-[900] text-emerald-400">
+                        {item.pointsRequired.toLocaleString()}
+                      </span>
+                      <span className="text-xs font-bold text-slate-400 font-sans">POINTS</span>
+                    </div>
+                    <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">
+                      Instant courier dispatch with full delivery tracking or direct crypto settlement.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-5 pt-0">
+                  <Link
+                    href={`/rewards/${item.slug || 'reward'}`}
+                    className="w-full py-2.5 rounded-lg bg-[#101716] border border-slate-700 hover:bg-emerald-500 hover:text-slate-950 hover:border-emerald-500 text-white font-bold transition-all text-xs flex items-center justify-center"
+                  >
+                    Unlock With Points →
+                  </Link>
                 </div>
               </div>
             ))}
@@ -1186,461 +1102,167 @@ export default function HomePage() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          5. REWARD SHOWCASE
-          Your Trading. Your Rewards.
+          7. REWARD UNLOCK: INTERACTIVE PROGRESS SIMULATOR
       ───────────────────────────────────────────────────────────── */}
-      <section id="rewards" className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          {/* Header */}
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 text-xs">
-              Rewards Catalog
+      <section className="w-full py-16 sm:py-20 lg:py-24 border-b border-emerald-950/40 bg-[#070b10]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 text-center">
+          <div className="space-y-3">
+            <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-950/40 text-xs">
+              SIMULATE YOUR REWARD UNLOCK
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
-              Your Trading. Your Rewards.
+            <h2 className="text-3xl sm:text-4xl font-[900] tracking-tight text-white">
+              Watch How Fast You Unlock Real Gear
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              Turn your verified purchases into points and redeem them for rewards you actually want.
+            <p className="text-sm sm:text-base text-slate-400 max-w-xl mx-auto">
+              Simulate completing challenge evaluations to see your points ledger hit the target threshold in real time.
             </p>
           </div>
 
-          {/* Product Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {rewards.slice(0, 6).map((item, idx) => {
-              const icons = [Headphones, Tag, Gamepad2, Smartphone, Laptop, Gift];
-              const ItemIcon = icons[idx % icons.length];
-
-              return (
-                <div
-                  key={item.id}
-                  className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 flex flex-col justify-between space-y-6 group shadow-xs cursor-default"
-                >
-                  <div className="space-y-4">
-                    {/* Visual image box */}
-                    <div className="aspect-[16/10] rounded-xl bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800/80 overflow-hidden flex items-center justify-center p-4 relative shadow-2xs group/img">
-                      {item.imageUrl ? (
-                        <img
-                          src={item.imageUrl}
-                          alt={item.name}
-                          className="h-full w-full object-cover rounded-lg group-hover/img:scale-108 transition-transform duration-500 ease-out"
-                        />
-                      ) : (
-                        <ItemIcon className="h-12 w-12 stroke-[1.5] text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors" />
-                      )}
-                    </div>
-
-                    <div>
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                        {item.category?.name || 'Exclusive Reward'}
-                      </span>
-                      <h4 className="text-base font-bold text-slate-900 dark:text-white mt-0.5 line-clamp-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                        {item.name}
-                      </h4>
-                    </div>
-
-                    <div className="flex items-baseline gap-1.5 pt-1">
-                      <span className="text-2xl font-[900] text-emerald-600 dark:text-emerald-400 font-mono group-hover:scale-105 transition-transform origin-left">
-                        {formatPoints(item.pointsRequired)}
-                      </span>
-                      <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase">Points</span>
-                    </div>
-                  </div>
-
-                  <Link href="/rewards">
-                    <Button variant="outline" className="w-full border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold h-10 rounded-xl shadow-2xs group-hover:border-emerald-500/50 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all">
-                      View Reward
-                    </Button>
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Disclaimer note */}
-          <p className="text-center text-xs text-slate-500 max-w-xl mx-auto">
-            Reward items are subject to stock availability and regional fulfillment. Configured in real time via our secure redemption backend.
-          </p>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-          6. POINTS SYSTEM VISUAL & REWARD PROGRESS (2-Column)
-          Every Eligible Purchase Gets You Closer
-      ───────────────────────────────────────────────────────────── */}
-      <section className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          {/* Section Heading */}
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/60 text-xs">
-              Transparent Accounting
-            </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
-              Every Eligible Purchase Gets You Closer.
-            </h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              Clear credit allocation, instant tracking, and goal progress visualization.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Left: Interactive Points Calculator & Fintech Wallet */}
-            <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 space-y-6 shadow-xs flex flex-col justify-between h-full">
-              <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                    <Sliders className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                    Interactive Point Calculator
-                  </span>
-                  <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                    <Zap className="h-3.5 w-3.5 animate-pulse" /> 10x Points Rate
-                  </span>
-                </div>
-
-                {/* Calculator Slider Box */}
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800/80 space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
-                      Challenge Purchase Price
-                    </span>
-                    <span className="text-base font-black text-slate-900 dark:text-white font-mono">
-                      ${calcSpend} USD
-                    </span>
-                  </div>
-
-                  {/* Range Slider */}
-                  <input
-                    type="range"
-                    min="50"
-                    max="1200"
-                    step="10"
-                    value={calcSpend}
-                    onChange={(e) => setCalcSpend(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-600 dark:accent-emerald-500"
+          <div className="p-6 sm:p-8 rounded-2xl bg-[#0e1614] border border-emerald-500/30 shadow-2xl space-y-6 text-left">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-xl bg-slate-900 border border-slate-800 overflow-hidden shrink-0">
+                  <img
+                    src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=200&auto=format&fit=crop&q=80"
+                    alt="AirPods Max"
+                    className="h-full w-full object-cover"
                   />
-
-                  {/* Quick Preset Buttons */}
-                  <div className="grid grid-cols-4 gap-1.5 pt-1">
-                    {[
-                      { label: '$25K', price: 189 },
-                      { label: '$50K', price: 299 },
-                      { label: '$100K', price: 499 },
-                      { label: '$200K', price: 979 },
-                    ].map((tier) => (
-                      <button
-                        key={tier.label}
-                        type="button"
-                        onClick={() => setCalcSpend(tier.price)}
-                        className={`text-[11px] font-semibold py-1 px-2 rounded-lg border transition-all cursor-pointer ${
-                          calcSpend === tier.price
-                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
-                            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-emerald-400'
-                        }`}
-                      >
-                        {tier.label} (${tier.price})
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Calculated Yield Highlight Banner */}
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-200/60 dark:border-slate-800/60 text-xs">
-                    <span className="text-slate-500 font-medium">Points Earned This Challenge:</span>
-                    <span className="font-mono font-black text-emerald-600 dark:text-emerald-400 text-sm">
-                      +{formatPoints(calcSpend * 10)} PTS
-                    </span>
-                  </div>
                 </div>
-
-                {/* Ledger preview with dynamic projected total */}
-                <div className="space-y-2 pt-1">
-                  <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                    <span>Recent Ledger Activity</span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-mono">
-                      Projected: {formatPoints(12500 + calcSpend * 10)} PTS
-                    </span>
-                  </div>
-
-                  <div className="space-y-2 text-xs">
-                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40">
-                      <div>
-                        <div className="font-semibold text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
-                          <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                          Projected Next Purchase (${calcSpend})
-                        </div>
-                        <div className="text-[10px] text-emerald-700/80 dark:text-emerald-400/80">Pending Order Confirmation</div>
-                      </div>
-                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+{formatPoints(calcSpend * 10)}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80">
-                      <div>
-                        <div className="font-semibold text-slate-800 dark:text-slate-200">Purchase Verified</div>
-                        <div className="text-[10px] text-slate-500">FundedNext $50K Challenge</div>
-                      </div>
-                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+2,500</span>
-                    </div>
-
-                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800/80">
-                      <div>
-                        <div className="font-semibold text-slate-800 dark:text-slate-200">Account Onboarding Bonus</div>
-                        <div className="text-[10px] text-slate-500">Early Member Tier</div>
-                      </div>
-                      <span className="font-mono font-bold text-blue-600 dark:text-blue-400">+1,000</span>
-                    </div>
-                  </div>
+                <div>
+                  <h4 className="font-extrabold text-white text-base">Apple AirPods Max (Space Gray)</h4>
+                  <div className="text-xs font-mono text-emerald-400">Target Cost: 20,000 Points</div>
                 </div>
               </div>
 
-              {/* Bottom aligned balance bar */}
-              <div className="pt-3">
-                <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-100/90 dark:bg-slate-950 border border-slate-300/80 dark:border-slate-700/80 text-xs">
-                  <div>
-                    <div className="font-bold text-slate-900 dark:text-white">Current Available Balance</div>
-                    <div className="text-[10px] text-slate-500 dark:text-slate-400">Ready to redeem</div>
-                  </div>
-                  <span className="font-mono font-bold text-slate-900 dark:text-white text-base">8,500 PTS</span>
+              <div className="text-right">
+                <div className="font-mono text-2xl font-[900] text-white">
+                  {simulatedUnlocked ? '20,000' : '12,500'} <span className="text-sm font-sans text-slate-400">/ 20,000</span>
+                </div>
+                <div className="text-xs font-mono text-emerald-400">
+                  {simulatedUnlocked ? '100% UNLOCKED' : '7,500 Points to Unlock'}
                 </div>
               </div>
             </div>
 
-            {/* Right: Dynamic Reward Goal Progress Card */}
-            <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 space-y-6 flex flex-col justify-between h-full shadow-xs">
-              <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                    Live Goal Tracking
-                  </span>
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                    <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
-                    Dynamic Simulation
-                  </span>
-                </div>
-
-                <div className="space-y-1.5">
-                  <h3 className="text-2xl sm:text-3xl font-[900] text-slate-900 dark:text-white">You&apos;re getting closer.</h3>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Slide the purchase price on the left to see how fast your reward progress bars unlock!
-                  </p>
-                </div>
-
-                {/* 3 Tracked Goals with Dynamic Reactive Progress */}
-                {(() => {
-                  const projectedTotal = 12500 + calcSpend * 10;
-                  const headphonesGoal = 20000;
-                  const headphonesPct = Math.min(100, Math.round((projectedTotal / headphonesGoal) * 100));
-                  const headphonesLeft = Math.max(0, headphonesGoal - projectedTotal);
-
-                  const sneakersGoal = 15000;
-                  const sneakersPct = Math.min(100, Math.round((projectedTotal / sneakersGoal) * 100));
-                  const sneakersLeft = Math.max(0, sneakersGoal - projectedTotal);
-
-                  const keyboardGoal = 10000;
-                  const keyboardPct = Math.min(100, Math.round((projectedTotal / keyboardGoal) * 100));
-
-                  return (
-                    <div className="space-y-3">
-                      {/* Item 1: Headphones */}
-                      <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5 transition-all">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2.5">
-                            <div className="h-10 w-10 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-2xs shrink-0 bg-white dark:bg-slate-900">
-                              <img
-                                src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=200&auto=format&fit=crop&q=80"
-                                alt="Apple AirPods Max"
-                                className="h-full w-full object-cover"
-                              />
-                            </div>
-                            <div>
-                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Apple AirPods Max (Silver)</div>
-                              <div className="text-[10px] text-slate-500">20,000 Points Goal</div>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-[10px] text-slate-500">Projected Points</div>
-                            <div className="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
-                              {formatPoints(projectedTotal)}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500 ease-out"
-                              style={{ width: `${headphonesPct}%` }}
-                            />
-                          </div>
-                          <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                            <span>{headphonesPct}% Completed</span>
-                            {headphonesLeft === 0 ? (
-                              <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                                <CheckCircle className="h-3 w-3" /> Unlocked with this purchase!
-                              </span>
-                            ) : (
-                              <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                                {formatPoints(headphonesLeft)} more to unlock
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Item 2: Sneakers */}
-                      <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5 transition-all">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2.5">
-                            <div className="h-10 w-10 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-2xs shrink-0 bg-white dark:bg-slate-900">
-                              <img
-                                src="https://images.unsplash.com/photo-1552346154-21d32810aba3?w=200&auto=format&fit=crop&q=80"
-                                alt="Nike Air Jordan 1 Retro"
-                                className="h-full w-full object-cover"
-                              />
-                            </div>
-                            <div>
-                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Nike Air Jordan 1 Retro</div>
-                              <div className="text-[10px] text-slate-500">15,000 Points Goal</div>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-[10px] text-slate-500">Projected Points</div>
-                            <div className="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
-                              {formatPoints(projectedTotal)}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-sky-500 to-blue-500 rounded-full transition-all duration-500 ease-out"
-                              style={{ width: `${sneakersPct}%` }}
-                            />
-                          </div>
-                          <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                            <span>{sneakersPct}% Completed</span>
-                            {sneakersLeft === 0 ? (
-                              <span className="font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1">
-                                <CheckCircle className="h-3 w-3" /> Unlocked with this purchase!
-                              </span>
-                            ) : (
-                              <span className="font-semibold text-sky-600 dark:text-sky-400">
-                                {formatPoints(sneakersLeft)} more to unlock
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Item 3: Gaming Controller */}
-                      <div className="rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800 p-3.5 space-y-2.5">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2.5">
-                            <div className="h-10 w-10 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-2xs shrink-0 bg-white dark:bg-slate-900">
-                              <img
-                                src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=200&auto=format&fit=crop&q=80"
-                                alt="Sony PS5 DualSense Edge"
-                                className="h-full w-full object-cover"
-                              />
-                            </div>
-                            <div>
-                              <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">Sony PS5 DualSense Edge</div>
-                              <div className="text-[10px] text-slate-500">10,000 Points Goal</div>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-[10px] text-slate-500">Status</div>
-                            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                              Unlocked
-                            </span>
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-[100%]" />
-                          </div>
-                          <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                            <span>100% Completed</span>
-                            <span className="font-semibold text-emerald-600 dark:text-emerald-400">Ready to Claim!</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })()}
+            {/* Simulated Animated Progress Bar */}
+            <div className="space-y-2">
+              <div className="w-full h-4 rounded-full bg-slate-900 overflow-hidden p-0.5 border border-slate-800">
+                <div
+                  style={{ width: simulatedUnlocked ? '100%' : '62.5%' }}
+                  className={`h-full rounded-full transition-all duration-1000 ease-out ${
+                    simulatedUnlocked
+                      ? 'bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 shadow-lg shadow-emerald-500/50'
+                      : 'bg-emerald-500'
+                  }`}
+                />
               </div>
-
-              {/* Bottom aligned CTA button */}
-              <div className="pt-2">
-                <Link href="/rewards" className="block">
-                  <Button className="w-full bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-sm h-12 rounded-xl shadow-md shadow-emerald-600/10 transition-all">
-                    Explore Rewards Catalog
-                  </Button>
-                </Link>
+              <div className="flex justify-between text-[11px] font-mono text-slate-500">
+                <span>0 PTS</span>
+                <span>10,000 PTS</span>
+                <span>20,000 PTS (GOAL)</span>
               </div>
             </div>
+
+            {/* Unlocked Announcement Banner */}
+            {simulatedUnlocked ? (
+              <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500 text-emerald-300 flex items-center justify-between animate-pulse">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-emerald-400" />
+                  <span className="font-bold text-sm">🔓 REWARD UNLOCKED! Ready for instant 1-click checkout.</span>
+                </div>
+                <button
+                  onClick={() => setSimulatedUnlocked(false)}
+                  className="px-3 py-1.5 rounded-lg border border-emerald-500 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold"
+                >
+                  Reset
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                <span className="text-xs text-slate-400">
+                  Simulating verification of one $150K challenge (+7,500 PTS).
+                </span>
+                <button
+                  onClick={() => setSimulatedUnlocked(true)}
+                  className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs"
+                >
+                  Simulate +7,500 Challenge Verification
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          7. WHY JOIN SECTION
-          More Than Just a Referral Code
+          8. BUILT FOR TRADERS: TRADING IDENTITY SECTION
       ───────────────────────────────────────────────────────────── */}
-      <section className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          {/* Header */}
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 text-xs">
-              Platform Benefits
+      <section className="w-full py-16 sm:py-20 lg:py-24 border-b border-emerald-950/40 bg-[#05070a] relative overflow-hidden">
+        {/* Subtle Candlesticks watermark */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.05]">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#10b981" strokeWidth="2">
+              <line x1="20%" y1="50" x2="20%" y2="400" />
+              <rect x="19%" y="120" width="2%" height="150" fill="#10b981" />
+              <line x1="50%" y1="80" x2="50%" y2="450" />
+              <rect x="49%" y="180" width="2%" height="120" fill="#10b981" />
+              <line x1="80%" y1="30" x2="80%" y2="380" />
+              <rect x="79%" y="90" width="2%" height="180" fill="#10b981" />
+            </g>
+          </svg>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-950/40 text-xs">
+              TRADER IDENTITY &amp; PHILOSOPHY
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
-              More Than Just a Referral Code.
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+              BUILT FOR TRADERS
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              An ecosystem built for retail traders who want tangible value from their prop-firm journey.
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+              Your trading journey shouldn&apos;t stop at the challenge. We reward the risk management, discipline, and capital commitment retail traders put in every day.
             </p>
           </div>
 
-          {/* 4 Feature Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Card 1 */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 group cursor-default shadow-2xs">
-              <div className="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+            <div className="p-6 rounded-2xl bg-[#0f1715] border border-emerald-500/20 space-y-3 shadow-lg">
+              <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
                 <Coins className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Earn Points</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Get rewarded for eligible verified purchases across top-tier participating prop firms.
+              <h3 className="font-extrabold text-lg text-white">Earn</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Get rewarded for every eligible challenge evaluation purchase with zero friction or coupon complexity.
               </p>
             </div>
 
-            {/* Card 2 */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 group cursor-default shadow-2xs">
-              <div className="h-10 w-10 rounded-xl bg-blue-100 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                <ShieldCheck className="h-5 w-5" />
+            <div className="p-6 rounded-2xl bg-[#0f1715] border border-emerald-500/20 space-y-3 shadow-lg">
+              <div className="h-10 w-10 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold">
+                <TrendingUp className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Simple Verification</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Submit your purchase proof through a simple, friction-free portal in under two minutes.
+              <h3 className="font-extrabold text-lg text-white">Progress</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Watch your points balance grow across multiple prop firms. Points compound over time and never expire.
               </p>
             </div>
 
-            {/* Card 3 */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 group cursor-default shadow-2xs">
-              <div className="h-10 w-10 rounded-xl bg-purple-100 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 text-purple-700 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+            <div className="p-6 rounded-2xl bg-[#0f1715] border border-emerald-500/20 space-y-3 shadow-lg">
+              <div className="h-10 w-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">
                 <Gift className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">Real Rewards</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Redeem accumulated points for physical luxury tech, gaming gear, or instant crypto payouts.
+              <h3 className="font-extrabold text-lg text-white">Unlock</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Reach gear you actually want: Apple hardware, gaming rigs, multi-monitor setups, and instant USDT payouts.
               </p>
             </div>
 
-            {/* Card 4 */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 p-6 space-y-3 group cursor-default shadow-2xs">
-              <div className="h-10 w-10 rounded-xl bg-teal-100 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/20 text-teal-700 dark:text-teal-400 flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                <Activity className="h-5 w-5" />
+            <div className="p-6 rounded-2xl bg-[#0f1715] border border-emerald-500/20 space-y-3 shadow-lg">
+              <div className="h-10 w-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold">
+                <Truck className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">Track Everything</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                See purchases, points and redemptions in one clean, unified trader dashboard.
+              <h3 className="font-extrabold text-lg text-white">Track</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Live 5-step fulfillment pipeline from order confirmation to courier airway tracking and final delivery.
               </p>
             </div>
           </div>
@@ -1648,201 +1270,257 @@ export default function HomePage() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          8. 3D ECOSYSTEM SHOWCASE & TRADER PORTAL
-          Featuring Ultra-HD 3D Model (propfirm1.png) & Live Dashboard
+          9. TRADER DASHBOARD SHOWCASE: IMMERSIVE TERMINAL
       ───────────────────────────────────────────────────────────── */}
-      <section id="ecosystem" className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-[#080c14]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          {/* Header */}
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/60 text-xs">
-              <Sparkles className="h-3 w-3 mr-1.5 text-emerald-500" />
-              Platform &amp; Rewards Ecosystem
+      <section className="w-full py-16 sm:py-20 lg:py-24 border-b border-emerald-950/40 bg-[#070b10]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-950/40 text-xs">
+              TRADER TERMINAL SHOWCASE
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
-              The Complete Trader Rewards Experience
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+              Your Complete Rewards Headquarters
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              From eligible prop-firm challenges to real-time points accreditation, flagship Apple &amp; Sony electronics, authentic sneakers, and instant crypto payouts.
+            <p className="text-sm sm:text-base text-slate-400">
+              Interactive preview of your trader profile, purchase submission queue, points wallet, and delivery status.
             </p>
-
-            {/* Interactive View Switcher Tabs */}
-            <div className="pt-2 flex items-center justify-center">
-              <div className="inline-flex items-center p-1 rounded-xl bg-slate-200/80 dark:bg-slate-900 border border-slate-300/80 dark:border-slate-800 shadow-inner">
-                <button
-                  type="button"
-                  onClick={() => setShowcaseTab('3d')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    showcaseTab === '3d'
-                      ? 'bg-white dark:bg-emerald-500 text-slate-900 dark:text-slate-950 shadow-sm'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <Sparkles className="h-3.5 w-3.5 text-emerald-500 dark:text-slate-950" />
-                  <span>3D Rewards Ecosystem</span>
-                  <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-800/40">
-                    Render
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowcaseTab('live')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    showcaseTab === 'live'
-                      ? 'bg-white dark:bg-emerald-500 text-slate-900 dark:text-slate-950 shadow-sm'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <Activity className="h-3.5 w-3.5 text-emerald-500 dark:text-slate-950" />
-                  <span>Live App Portal</span>
-                </button>
-              </div>
-            </div>
           </div>
 
-          {/* Large Showcase Mockup Container with Ambient Glow & Frame */}
-          <div className="relative group">
-            {/* Soft ambient back-glow matching neon theme */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 via-teal-500/15 to-emerald-600/20 rounded-3xl blur-3xl animate-pulse-glow pointer-events-none -z-10" />
+          {/* Interactive Live Terminal Frame */}
+          <div className="rounded-2xl bg-[#0b1110] border border-emerald-500/30 shadow-2xl overflow-hidden max-w-5xl mx-auto">
+            {/* Terminal Window Header */}
+            <div className="px-4 py-3 bg-[#080d0c] border-b border-slate-800 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                <div className="h-3 w-3 rounded-full bg-emerald-500/80" />
+                <span className="font-mono text-xs text-slate-400 ml-2">propnation.app/dashboard</span>
+              </div>
+              <div className="font-mono text-xs text-emerald-400 font-bold">● LIVE TERMINAL</div>
+            </div>
 
-            <div className="rounded-2xl bg-white dark:bg-[#070b12] border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-2xl shadow-emerald-950/20 transition-all duration-300">
-              {/* Browser / App Header bar */}
-              <div className="h-11 bg-slate-100/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 backdrop-blur-sm">
-                <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded-full bg-rose-400/90" />
-                  <span className="h-3 w-3 rounded-full bg-amber-400/90" />
-                  <span className="h-3 w-3 rounded-full bg-emerald-400/90" />
-                  <div className="ml-3 hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-mono text-[11px] shadow-2xs">
-                    <Lock className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
-                    <span>{showcaseTab === '3d' ? 'propnation.com/ecosystem' : 'app.propnation.com/dashboard'}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-[11px] font-mono text-slate-500 hidden md:inline">
-                    {showcaseTab === '3d' ? '3D ULTRA-HD SHOWCASE • PROPFIRM1' : 'TRADER PORTAL • ACTIVE'}
-                  </span>
-                  <div className="flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400 text-xs bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-200/60 dark:border-emerald-500/20">
-                    <CheckCircle2 className="h-3.5 w-3.5" /> {showcaseTab === '3d' ? 'Ultra HD 4K Render' : 'Live & Connected'}
-                  </div>
-                </div>
+            {/* Terminal Content Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-12 min-h-[380px]">
+              {/* Left Sidebar Navigation */}
+              <div className="md:col-span-3 border-r border-slate-800 p-4 space-y-1 bg-[#090e0d] font-mono text-xs">
+                <div className="text-[10px] uppercase font-bold text-slate-500 px-2 py-1">NAVIGATION</div>
+                <button
+                  onClick={() => setActiveDashboardTab('overview')}
+                  className={`w-full text-left px-3 py-2 rounded-lg flex items-center gap-2 font-bold transition-all ${
+                    activeDashboardTab === 'overview'
+                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                  }`}
+                >
+                  <Activity className="h-3.5 w-3.5" /> Dashboard
+                </button>
+                <button
+                  onClick={() => setActiveDashboardTab('propfirms')}
+                  className={`w-full text-left px-3 py-2 rounded-lg flex items-center gap-2 font-bold transition-all ${
+                    activeDashboardTab === 'propfirms'
+                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                  }`}
+                >
+                  <Building2 className="h-3.5 w-3.5" /> Prop Firms
+                </button>
+                <button
+                  onClick={() => setActiveDashboardTab('wallet')}
+                  className={`w-full text-left px-3 py-2 rounded-lg flex items-center gap-2 font-bold transition-all ${
+                    activeDashboardTab === 'wallet'
+                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                  }`}
+                >
+                  <Wallet className="h-3.5 w-3.5" /> Trader Wallet
+                </button>
+                <button
+                  onClick={() => setActiveDashboardTab('rewards')}
+                  className={`w-full text-left px-3 py-2 rounded-lg flex items-center gap-2 font-bold transition-all ${
+                    activeDashboardTab === 'rewards'
+                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                  }`}
+                >
+                  <Gift className="h-3.5 w-3.5" /> My Rewards
+                </button>
               </div>
 
-              {/* Showcase Image Display Container */}
-              <div className="relative w-full bg-slate-950 overflow-hidden flex items-center justify-center">
-                {showcaseTab === '3d' ? (
-                  <div className="relative w-full group/canvas">
-                    <Image
-                      src="/propfirm1.png"
-                      alt="Trade Rewards 3D Platform Showcase featuring TradeRewards Dashboard, iPhone 16 Pro, AirPods Max, MacBook, PS5, Nike Sneakers and Prop Firm partners"
-                      width={1536}
-                      height={1024}
-                      quality={100}
-                      unoptimized={true}
-                      className="w-full h-auto object-cover select-none transition-transform duration-700 ease-out group-hover/canvas:scale-[1.012]"
-                      priority
-                    />
-                    {/* Floating Interactive Highlights Bar */}
-                    <div className="absolute bottom-4 left-4 right-4 hidden sm:flex items-center justify-between pointer-events-none">
-                      <div className="bg-slate-900/90 backdrop-blur-md border border-emerald-500/30 text-white px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 shadow-lg">
-                        <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-                        <span>Interactive 3D Ecosystem • Ultra-HD 4K Visual</span>
+              {/* Main Workspace Preview */}
+              <div className="md:col-span-9 p-6 space-y-6 bg-[#0b1110]">
+                {activeDashboardTab === 'overview' && (
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-xl font-bold text-white">Good evening, Trader Alex Morgan</h4>
+                        <div className="text-xs text-slate-400 font-mono">VIP Silver Tier &bull; 1.2x Points Yield</div>
                       </div>
-                      <div className="bg-slate-900/90 backdrop-blur-md border border-slate-700 text-slate-300 px-3.5 py-1.5 rounded-full text-xs font-mono shadow-lg">
-                        Available Points: 12,500 • FTMO, The 5ers, E8, FundedNext
+                      <span className="font-mono text-xs font-bold px-2 py-1 rounded bg-emerald-500/20 text-emerald-400">
+                        16,700 PTS AVAILABLE
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="p-3.5 rounded-xl bg-[#080d0c] border border-slate-800">
+                        <div className="text-[10px] font-mono text-slate-400">PENDING APPROVAL</div>
+                        <div className="text-xl font-black font-mono text-amber-400 mt-1">2,800 PTS</div>
+                      </div>
+                      <div className="p-3.5 rounded-xl bg-[#080d0c] border border-slate-800">
+                        <div className="text-[10px] font-mono text-slate-400">LIFETIME EARNED</div>
+                        <div className="text-xl font-black font-mono text-emerald-400 mt-1">38,700 PTS</div>
+                      </div>
+                      <div className="p-3.5 rounded-xl bg-[#080d0c] border border-slate-800">
+                        <div className="text-[10px] font-mono text-slate-400">GEAR REDEEMED</div>
+                        <div className="text-xl font-black font-mono text-purple-400 mt-1">$220.00 USD</div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-[#080d0c] border border-slate-800 space-y-2">
+                      <div className="text-xs font-bold text-white flex items-center justify-between">
+                        <span>Active Courier Delivery: AirPods Max</span>
+                        <span className="font-mono text-emerald-400 text-xs">FedEx #7812-4019</span>
+                      </div>
+                      <div className="text-xs text-slate-400">
+                        Status: Out for Delivery in London, UK. Signed courier handover expected today.
                       </div>
                     </div>
                   </div>
-                ) : (
-                  <div className="w-full">
-                    <TraderDashboardLiveMockup />
+                )}
+
+                {activeDashboardTab === 'propfirms' && (
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-bold text-white">Eligible Prop Firm Challenge Offers</h4>
+                    <p className="text-xs text-slate-400">
+                      Use affiliate code <strong className="text-emerald-400 font-mono">NATION</strong> to lock in highest points returns.
+                    </p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 rounded-lg bg-[#080d0c] border border-slate-800 flex justify-between items-center">
+                        <span className="text-white text-xs font-bold">FundedSquad</span>
+                        <span className="text-emerald-400 font-mono text-xs">+4,990 PTS / $100K</span>
+                      </div>
+                      <div className="p-3 rounded-lg bg-[#080d0c] border border-slate-800 flex justify-between items-center">
+                        <span className="text-white text-xs font-bold">Pipstone Capital</span>
+                        <span className="text-emerald-400 font-mono text-xs">+5,490 PTS / $100K</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeDashboardTab === 'wallet' && (
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-bold text-white">Trader Points Wallet</h4>
+                    <p className="text-xs text-slate-400">
+                      Available Points: <strong className="text-emerald-400 font-mono">16,700 PTS</strong> ($167.00 USD)
+                    </p>
+                    <div className="p-3 rounded-lg bg-[#080d0c] border border-slate-800 text-xs font-mono text-slate-300">
+                      Ledger ID: #L-98124 &bull; Hash: ebd72f91a &bull; Status: Invariant Compliant
+                    </div>
+                  </div>
+                )}
+
+                {activeDashboardTab === 'rewards' && (
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-bold text-white">Active Redemptions &amp; Inventory</h4>
+                    <p className="text-xs text-slate-400">
+                      1 Item Dispatched &bull; 0 Cancelled &bull; 100% On-time Arrival
+                    </p>
+                    <div className="p-3 rounded-lg bg-[#080d0c] border border-emerald-500/20 text-xs text-emerald-400 font-mono">
+                      ✓ RDM-2026-9812: Apple AirPods Max (Delivered)
+                    </div>
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-              {/* Quick Live Tracking Sub-Bar */}
-              <div className="p-4 sm:p-5 bg-white dark:bg-slate-950 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                  <div className="h-10 w-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:rotate-6 transition-transform">
-                    <Truck className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                      </span>
-                      <span className="text-xs font-bold text-slate-900 dark:text-white">Active Dispatch Tracking</span>
-                      <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                        #RW-10294
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                      Apple iPhone 16 Pro &amp; AirPods Max • Shipped via DHL Express (Waybill #9400 1000 8421)
-                    </div>
-                  </div>
-                </div>
+      {/* ─────────────────────────────────────────────────────────────
+          10. LATEST REWARD DROPS
+      ───────────────────────────────────────────────────────────── */}
+      <section className="w-full py-16 sm:py-20 lg:py-24 border-b border-emerald-950/40 bg-[#05070a]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <Badge variant="outline" className="border-amber-500/30 text-amber-400 bg-amber-950/40 text-xs flex items-center gap-1 w-fit">
+                <Flame className="h-3.5 w-3.5 fill-amber-400" />
+                <span>FRESH WEEKLY ADDITIONS</span>
+              </Badge>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+                LATEST REWARD DROPS
+              </h2>
+              <p className="text-sm sm:text-base text-slate-400">
+                New hardware, flagship smartphones, and crypto cashout slots added this week.
+              </p>
+            </div>
 
-                <div className="flex items-center gap-4 text-xs shrink-0 w-full md:w-auto justify-between md:justify-end">
-                  <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                    <CheckCircle2 className="h-4 w-4" /> Transit In Progress
-                  </div>
-                  <Link href="/register">
-                    <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs h-9 rounded-lg shadow-sm active:scale-[0.98] transition-transform cursor-pointer">
-                      Open Trader Portal
-                    </Button>
-                  </Link>
-                </div>
+            <Link
+              href="/rewards"
+              className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold shrink-0 inline-flex items-center gap-2 text-sm"
+            >
+              <span>Explore All Rewards</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="card-lift rounded-2xl bg-[#0f1715] border border-amber-500/30 p-5 space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  🔥 NEW DROP
+                </span>
+                <span className="font-mono text-xs text-slate-400 font-bold">IN STOCK</span>
+              </div>
+              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-950">
+                <img
+                  src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80"
+                  alt="AirPods Max"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <h4 className="font-bold text-white text-base">Apple AirPods Max</h4>
+                <div className="font-mono font-bold text-emerald-400 text-lg mt-1">20,000 Points</div>
               </div>
             </div>
 
-            {/* 4-Item Breakdown Cards Linking to the 3D Render Components */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-              <div className="p-4 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2 group hover:border-emerald-500/40 transition-colors">
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-                    <Wallet className="h-4 w-4" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">Central Web Portal</span>
-                </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Real-time points ledger, challenge verification history, and instant balance updates shown in 3D center.
-                </p>
+            <div className="card-lift rounded-2xl bg-[#0f1715] border border-amber-500/30 p-5 space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  🔥 NEW DROP
+                </span>
+                <span className="font-mono text-xs text-slate-400 font-bold">IN STOCK</span>
               </div>
-
-              <div className="p-4 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2 group hover:border-sky-500/40 transition-colors">
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold">
-                    <Smartphone className="h-4 w-4" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">Apple &amp; Sony Tech</span>
-                </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                  iPhone 16 Pro, AirPods Max, and PlayStation 5 controllers rendered in ultra-detailed physical 3D models.
-                </p>
+              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-950">
+                <img
+                  src="https://images.unsplash.com/photo-1552346154-21d32810aba3?w=600&auto=format&fit=crop&q=80"
+                  alt="Nike Air Jordan"
+                  className="w-full h-full object-cover"
+                />
               </div>
-
-              <div className="p-4 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2 group hover:border-teal-500/40 transition-colors">
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold">
-                    <Tag className="h-4 w-4" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">Streetwear &amp; Jordans</span>
-                </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Authentic Nike Air Jordans and premium apparel shipped in factory mint condition with verification tags.
-                </p>
+              <div>
+                <h4 className="font-bold text-white text-base">Nike Air Jordan 1 Retro</h4>
+                <div className="font-mono font-bold text-emerald-400 text-lg mt-1">15,000 Points</div>
               </div>
+            </div>
 
-              <div className="p-4 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2 group hover:border-purple-500/40 transition-colors">
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
-                    <Coins className="h-4 w-4" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">USDT Crypto Cash</span>
-                </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Zero-fee instant stablecoin payouts on TRON (TRC-20) sent straight to your non-custodial crypto wallet.
-                </p>
+            <div className="card-lift rounded-2xl bg-[#0f1715] border border-amber-500/30 p-5 space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  🔥 NEW DROP
+                </span>
+                <span className="font-mono text-xs text-slate-400 font-bold">IN STOCK</span>
+              </div>
+              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-950">
+                <img
+                  src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80"
+                  alt="iPhone 16 Pro Max"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <h4 className="font-bold text-white text-base">Apple iPhone 16 Pro Max</h4>
+                <div className="font-mono font-bold text-emerald-400 text-lg mt-1">120,000 Points</div>
               </div>
             </div>
           </div>
@@ -1850,182 +1528,162 @@ export default function HomePage() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          8.5 VERIFIED TRADER DELIVERIES & UNBOXING SHOWCASE
-          Real physical redemptions in the hands of traders
+          11. VERIFIED PROOF OF DELIVERIES (Authentic Social Proof)
       ───────────────────────────────────────────────────────────── */}
-      <section className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
+      <section className="w-full py-16 sm:py-20 lg:py-24 border-b border-emerald-950/40 bg-[#070b10]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          {/* Header */}
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 text-xs">
-              <Truck className="h-3 w-3 mr-1.5 text-emerald-500" />
-              Verified Deliveries
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-950/40 text-xs">
+              REAL DELIVERIES &bull; ZERO SIMULATIONS
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
-              Real Rewards in Trader Hands.
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+              Verified Trader Unboxings
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              See what retail traders around the world are unboxing from their accumulated challenge points.
+            <p className="text-sm sm:text-base text-slate-400">
+              Real community unboxings from prop traders who used code NATION and redeemed their points.
             </p>
           </div>
 
-          {/* 4 Unboxing Delivery Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Card 1: iPhone 16 Pro */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 overflow-hidden flex flex-col justify-between group shadow-xs">
+            {/* Card 1: Apple MacBook Pro */}
+            <div className="card-lift rounded-2xl bg-[#0f1715] border border-emerald-500/20 overflow-hidden flex flex-col justify-between">
               <div className="space-y-3.5">
-                <div className="aspect-[4/3] relative overflow-hidden bg-slate-100 dark:bg-slate-950">
+                <div className="aspect-[4/3] relative overflow-hidden bg-slate-950">
                   <img
-                    src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80"
-                    alt="Apple iPhone 16 Pro Unboxed"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80"
+                    alt="MacBook Pro Unboxed"
+                    className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-sm text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
-                    <CheckCircle2 className="h-3 w-3" /> DHL Express #9400
+                  <div className="absolute top-2.5 left-2.5 bg-black/75 text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded">
+                    DHL Express #9182
                   </div>
-                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded shadow">
+                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded">
                     Delivered
                   </div>
                 </div>
-
                 <div className="p-4 space-y-2">
-                  <div className="flex items-center gap-1 text-amber-500 text-xs">
+                  <div className="flex items-center gap-1 text-amber-400 text-xs">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-amber-500" />
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
                     ))}
-                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 ml-1">5.0</span>
+                    <span className="text-[11px] font-bold text-slate-300 ml-1">5.0</span>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1">
-                    Apple iPhone 16 Pro Max
-                  </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 italic leading-relaxed">
-                    &ldquo;Used referral code NATION for my FTMO 200K and FundedNext accounts. Points were verified in under 2 hours, iPhone arrived factory sealed!&rdquo;
+                  <h4 className="text-sm font-bold text-white line-clamp-1">Apple MacBook Pro 16&quot; M3</h4>
+                  <p className="text-xs text-slate-400 italic">
+                    &ldquo;Arrived in 4 business days. Sealed brand new Apple box. Absolutely legit.&rdquo;
                   </p>
                 </div>
               </div>
-
-              <div className="p-4 pt-0 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs mt-3">
-                <span className="font-bold text-slate-800 dark:text-slate-200">@Marco_FX</span>
-                <span className="text-slate-500 text-[11px]">Frankfurt, DE</span>
+              <div className="p-4 pt-0 border-t border-slate-800 flex justify-between text-xs mt-3">
+                <span className="font-bold text-slate-200">@AlexM_Trades</span>
+                <span className="text-slate-500 text-[11px]">Miami, USA</span>
               </div>
             </div>
 
-            {/* Card 2: AirPods Max */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 overflow-hidden flex flex-col justify-between group shadow-xs">
+            {/* Card 2: Apple AirPods Max */}
+            <div className="card-lift rounded-2xl bg-[#0f1715] border border-emerald-500/20 overflow-hidden flex flex-col justify-between">
               <div className="space-y-3.5">
-                <div className="aspect-[4/3] relative overflow-hidden bg-slate-100 dark:bg-slate-950">
+                <div className="aspect-[4/3] relative overflow-hidden bg-slate-950">
                   <img
                     src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80"
-                    alt="Apple AirPods Max Unboxed"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    alt="AirPods Max"
+                    className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-sm text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
-                    <CheckCircle2 className="h-3 w-3" /> FedEx #7812
+                  <div className="absolute top-2.5 left-2.5 bg-black/75 text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded">
+                    FedEx #7812
                   </div>
-                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded shadow">
+                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded">
                     Delivered
                   </div>
                 </div>
-
                 <div className="p-4 space-y-2">
-                  <div className="flex items-center gap-1 text-amber-500 text-xs">
+                  <div className="flex items-center gap-1 text-amber-400 text-xs">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-amber-500" />
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
                     ))}
-                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 ml-1">5.0</span>
+                    <span className="text-[11px] font-bold text-slate-300 ml-1">5.0</span>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1">
-                    Apple AirPods Max (Silver)
-                  </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 italic leading-relaxed">
-                    &ldquo;Noise cancellation on these is next level during high-volatility news sessions. Quickest verification turnaround ever.&rdquo;
+                  <h4 className="text-sm font-bold text-white line-clamp-1">Apple AirPods Max</h4>
+                  <p className="text-xs text-slate-400 italic">
+                    &ldquo;Noise cancellation is incredible during news sessions. Quickest verification.&rdquo;
                   </p>
                 </div>
               </div>
-
-              <div className="p-4 pt-0 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs mt-3">
-                <span className="font-bold text-slate-800 dark:text-slate-200">@Liam_PipSurfer</span>
+              <div className="p-4 pt-0 border-t border-slate-800 flex justify-between text-xs mt-3">
+                <span className="font-bold text-slate-200">@Liam_PipSurfer</span>
                 <span className="text-slate-500 text-[11px]">London, UK</span>
               </div>
             </div>
 
             {/* Card 3: Nike Air Jordans */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 overflow-hidden flex flex-col justify-between group shadow-xs">
+            <div className="card-lift rounded-2xl bg-[#0f1715] border border-emerald-500/20 overflow-hidden flex flex-col justify-between">
               <div className="space-y-3.5">
-                <div className="aspect-[4/3] relative overflow-hidden bg-slate-100 dark:bg-slate-950">
+                <div className="aspect-[4/3] relative overflow-hidden bg-slate-950">
                   <img
                     src="https://images.unsplash.com/photo-1552346154-21d32810aba3?w=600&auto=format&fit=crop&q=80"
-                    alt="Nike Air Jordan 1 Retro Unboxed"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    alt="Air Jordans"
+                    className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-sm text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
-                    <CheckCircle2 className="h-3 w-3" /> Aramex #ARX-9012
+                  <div className="absolute top-2.5 left-2.5 bg-black/75 text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded">
+                    Aramex #9012
                   </div>
-                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded shadow">
+                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded">
                     Delivered
                   </div>
                 </div>
-
                 <div className="p-4 space-y-2">
-                  <div className="flex items-center gap-1 text-amber-500 text-xs">
+                  <div className="flex items-center gap-1 text-amber-400 text-xs">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-amber-500" />
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
                     ))}
-                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 ml-1">5.0</span>
+                    <span className="text-[11px] font-bold text-slate-300 ml-1">5.0</span>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1">
-                    Nike Air Jordan 1 Retro High OG
-                  </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 italic leading-relaxed">
-                    &ldquo;100% authentic with StockX tag attached. Best trader reward program in the entire prop-firm industry by far.&rdquo;
+                  <h4 className="text-sm font-bold text-white line-clamp-1">Nike Air Jordan 1 Retro</h4>
+                  <p className="text-xs text-slate-400 italic">
+                    &ldquo;100% authentic with StockX tag attached. Best trader reward program by far.&rdquo;
                   </p>
                 </div>
               </div>
-
-              <div className="p-4 pt-0 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs mt-3">
-                <span className="font-bold text-slate-800 dark:text-slate-200">@Karim_Trader</span>
+              <div className="p-4 pt-0 border-t border-slate-800 flex justify-between text-xs mt-3">
+                <span className="font-bold text-slate-200">@Karim_Trader</span>
                 <span className="text-slate-500 text-[11px]">Dubai, UAE</span>
               </div>
             </div>
 
             {/* Card 4: USDT Crypto Payout */}
-            <div className="card-lift rounded-2xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 overflow-hidden flex flex-col justify-between group shadow-xs">
+            <div className="card-lift rounded-2xl bg-[#0f1715] border border-emerald-500/20 overflow-hidden flex flex-col justify-between">
               <div className="space-y-3.5">
-                <div className="aspect-[4/3] relative overflow-hidden bg-slate-100 dark:bg-slate-950">
+                <div className="aspect-[4/3] relative overflow-hidden bg-slate-950">
                   <img
                     src="https://images.unsplash.com/photo-1622630998477-20aa696ecb05?w=600&auto=format&fit=crop&q=80"
                     alt="USDT Crypto Wallet Payout"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=600&auto=format&fit=crop&q=80';
                     }}
                   />
-                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-sm text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
-                    <CheckCircle2 className="h-3 w-3" /> TRC-20 Blockchain
+                  <div className="absolute top-2.5 left-2.5 bg-black/75 text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded">
+                    TRC-20 Blockchain
                   </div>
-                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded shadow">
+                  <div className="absolute bottom-2.5 right-2.5 bg-emerald-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded">
                     Confirmed
                   </div>
                 </div>
-
                 <div className="p-4 space-y-2">
-                  <div className="flex items-center gap-1 text-amber-500 text-xs">
+                  <div className="flex items-center gap-1 text-amber-400 text-xs">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-amber-500" />
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
                     ))}
-                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 ml-1">5.0</span>
+                    <span className="text-[11px] font-bold text-slate-300 ml-1">5.0</span>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1">
-                    $1,500 USDT Instant Transfer
-                  </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 italic leading-relaxed">
-                    &ldquo;Opted for direct USDT crypto cash payout. Was in my private Ledger hardware wallet within 45 minutes of redemption!&rdquo;
+                  <h4 className="text-sm font-bold text-white line-clamp-1">$1,500 USDT Instant Transfer</h4>
+                  <p className="text-xs text-slate-400 italic">
+                    &ldquo;Direct USDT payout. Was in my private Ledger hardware wallet within 45 minutes!&rdquo;
                   </p>
                 </div>
               </div>
-
-              <div className="p-4 pt-0 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs mt-3">
-                <span className="font-bold text-slate-800 dark:text-slate-200">@Elena_CryptoFX</span>
+              <div className="p-4 pt-0 border-t border-slate-800 flex justify-between text-xs mt-3">
+                <span className="font-bold text-slate-200">@Elena_CryptoFX</span>
                 <span className="text-slate-500 text-[11px]">Singapore, SG</span>
               </div>
             </div>
@@ -2034,102 +1692,114 @@ export default function HomePage() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          9. FREQUENTLY ASKED QUESTIONS
-          Full 10-Question Comprehensive Accordion
+          12. FREQUENTLY ASKED QUESTIONS
       ───────────────────────────────────────────────────────────── */}
-      <section id="faq" className="w-full py-12 sm:py-16 lg:py-20 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#05070a]">
+      <section id="faq" className="w-full py-16 sm:py-20 lg:py-24 border-b border-emerald-950/40 bg-[#05070a]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="text-center space-y-3">
-            <Badge variant="outline" className="border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 text-xs">
-              Got Questions?
+            <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-950/40 text-xs">
+              FREQUENTLY ASKED QUESTIONS
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-slate-900 dark:text-white">
-              Frequently Asked Questions
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-[900] tracking-tight text-white">
+              Questions &amp; Answers
             </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              Clear answers regarding verification, point yields, and reward delivery.
+            <p className="text-sm sm:text-base text-slate-400">
+              Clear answers regarding verification timelines, point conversions, and global deliveries.
             </p>
           </div>
 
-          <div className="divide-y divide-slate-200 dark:divide-slate-800 border-y border-slate-200 dark:border-slate-800">
-            {faqs.map((faq, index) => {
-              const isOpen = activeFaq === index;
-              return (
-                <div key={index} className="py-4">
-                  <button
-                    type="button"
-                    onClick={() => setActiveFaq(isOpen ? null : index)}
-                    className="w-full flex items-center justify-between text-left py-2 gap-4 cursor-pointer group"
-                  >
-                    <span className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                      {faq.q}
-                    </span>
-                    <ChevronDown
-                      className={`h-4 w-4 text-slate-500 dark:text-slate-400 transition-transform duration-200 shrink-0 ${
-                        isOpen ? 'rotate-180 text-emerald-600 dark:text-emerald-400' : ''
-                      }`}
-                    />
-                  </button>
-                  {isOpen && (
-                    <div className="pt-2 pb-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                      {faq.a}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+          <div className="space-y-3">
+            {[
+              {
+                q: 'How do I earn points on Prop Nation?',
+                a: 'Whenever you purchase an evaluation or challenge account from any partner prop firm on our platform, apply affiliate code NATION at checkout. Once your payment confirms, submit your Order ID and receipt proof in your dashboard. Our team verifies the purchase and immediately credits guaranteed points to your ledger.',
+              },
+              {
+                q: 'Do my earned points ever expire?',
+                a: 'Never. Your points ledger is permanent. Points compound across all your verified prop firm purchases and remain valid until you choose to redeem them for physical electronics or USDT cash payouts.',
+              },
+              {
+                q: 'How long does purchase verification take?',
+                a: 'Most submissions are verified within 12 to 24 business hours. Once verified, your points are automatically released to your available balance and ready for immediate checkout.',
+              },
+              {
+                q: 'Can I redeem points for USDT cryptocurrency directly?',
+                a: 'Yes. In addition to physical electronics (AirPods, MacBooks, iPhones), you can redeem points for direct TRC-20 USDT crypto transfers deposited straight to your private cold wallet or exchange address.',
+              },
+              {
+                q: 'Are all prop firms eligible for rewards?',
+                a: 'Points are awarded for all challenge purchases made with proprietary trading firms listed in our official catalog where code NATION was applied at checkout.',
+              },
+              {
+                q: 'Is Prop Nation a broker or prop firm?',
+                a: 'No. Prop Nation is strictly an affiliate rewards portal and loyalty community. We do not accept deposits, offer financial investment advice, or host simulated challenge servers.',
+              },
+            ].map((faq, idx) => (
+              <div
+                key={idx}
+                className="rounded-xl bg-[#0f1715] border border-emerald-500/20 overflow-hidden transition-colors"
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-white text-base hover:text-emerald-400 transition-colors"
+                >
+                  <span>{faq.q}</span>
+                  <ChevronDown
+                    className={`h-4 w-4 text-emerald-400 shrink-0 transition-transform duration-300 ${
+                      openFaq === idx ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {openFaq === idx && (
+                  <div className="px-5 pb-5 text-sm text-slate-300 leading-relaxed border-t border-slate-800/80 pt-3">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          10. FINAL CTA BANNER
-          Your Next Reward Starts With Your Next Trade.
+          13. FINAL HIGH-IMPACT CTA & FOOTER STRIP
       ───────────────────────────────────────────────────────────── */}
-      <section className="relative w-full py-12 sm:py-16 lg:py-20 overflow-hidden bg-gradient-to-b from-slate-100 to-white dark:from-[#080c14] dark:to-[#05070a]">
-        {/* Ambient background glow orbs */}
-        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-emerald-500/[0.09] rounded-full blur-3xl pointer-events-none animate-pulse-glow" />
-        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-teal-500/[0.07] rounded-full blur-3xl pointer-events-none animate-pulse-glow" />
+      <section className="relative w-full py-16 sm:py-20 lg:py-24 overflow-hidden bg-gradient-to-b from-[#070b10] to-[#040608]">
+        <div className="absolute inset-0 pointer-events-none opacity-20">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-emerald-500/20 blur-[100px] rounded-full" />
+        </div>
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
-          <Badge variant="outline" className="border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 text-xs">
-            Start Today
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+          <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-950/40 text-xs">
+            START EARNING TODAY
           </Badge>
 
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-[900] tracking-tight text-slate-900 dark:text-white leading-tight">
-            Your Next Reward Starts With{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 dark:from-emerald-400 dark:via-teal-300 dark:to-sky-400">
-              Your Next Trade.
-            </span>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-[900] tracking-tight text-white leading-tight">
+            Your Next Reward Starts Here.
           </h2>
 
-          <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Join the platform, discover eligible prop-firm offers and start earning rewards on every challenge account.
+          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            Stop buying prop firm challenges without earning equity. Use partner code{' '}
+            <strong className="text-emerald-400 font-mono">NATION</strong> and unlock the rewards you deserve.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
-            <Link href="/register" className="w-full sm:w-auto">
-              <Button className="relative overflow-hidden w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md shadow-emerald-600/20 active:scale-[0.98] group">
-                <span className="relative z-10 flex items-center justify-center">
-                  Get Started Now
-                  <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
-                </span>
-                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
-              </Button>
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/prop-firms"
+              className="w-full sm:w-auto h-13 px-9 text-base font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl shadow-xl shadow-emerald-500/30 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+            >
+              <span>Start Earning</span>
+              <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link href="#rewards" className="w-full sm:w-auto">
-              <Button
-                variant="outline"
-                className="w-full sm:w-auto border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 px-8 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-2xs"
-              >
-                Explore Rewards
-              </Button>
+
+            <Link
+              href="/rewards"
+              className="w-full sm:w-auto h-13 px-9 text-base font-semibold border border-slate-700 bg-[#101716] text-white hover:bg-slate-800 rounded-xl flex items-center justify-center gap-2"
+            >
+              <Gift className="h-4 w-4 text-emerald-400" />
+              <span>Explore Rewards</span>
             </Link>
           </div>
-
-          <p className="text-xs text-slate-500 pt-2">
-            No subscription fees • Simple receipt upload • Global shipping
-          </p>
         </div>
       </section>
     </div>
