@@ -193,7 +193,7 @@ const FALLBACK_REWARDS: Reward[] = [
     id: 'r-6',
     name: 'Ledger Stax Crypto Hardware Wallet',
     slug: 'ledger-stax',
-    imageUrl: 'https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?w=800&auto=format&fit=crop&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1622630998477-20aa696ecb05?w=800&auto=format&fit=crop&q=80',
     pointsRequired: 25000,
     category: { name: 'Crypto Security', slug: 'crypto' },
   },
@@ -1993,9 +1993,12 @@ export default function HomePage() {
               <div className="space-y-3.5">
                 <div className="aspect-[4/3] relative overflow-hidden bg-slate-100 dark:bg-slate-950">
                   <img
-                    src="https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?w=600&auto=format&fit=crop&q=80"
+                    src="https://images.unsplash.com/photo-1622630998477-20aa696ecb05?w=600&auto=format&fit=crop&q=80"
                     alt="USDT Crypto Wallet Payout"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=600&auto=format&fit=crop&q=80';
+                    }}
                   />
                   <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-sm text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
                     <CheckCircle2 className="h-3 w-3" /> TRC-20 Blockchain

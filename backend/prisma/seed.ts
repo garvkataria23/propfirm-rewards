@@ -748,7 +748,7 @@ async function main() {
       slug: 'herman-miller-aeron-chair',
       description: 'The quintessential Wall Street executive trading chair. Pellicle 8Z elastomeric suspension distributes weight evenly, relieving lower back pressure during long sessions.',
       specifications: 'Size: Size B (Medium) | Finish: Mineral/Satin Aluminum | Features: PostureFit SL & Forward Tilt',
-      imageUrl: 'https://images.unsplash.com/photo-1580481077195-c3288b506090?w=800&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1505797149-43b0069ec26b?w=800&auto=format&fit=crop&q=80',
       pointsRequired: 16950,
       stock: 4,
       sortOrder: 32,
