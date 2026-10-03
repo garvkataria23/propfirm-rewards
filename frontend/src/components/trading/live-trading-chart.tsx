@@ -138,41 +138,41 @@ export function LiveTradingChart() {
   const timeframes = ['1M', '5M', '15M', '1H', '4H', '1D'];
 
   return (
-    <div className="w-full rounded-2xl bg-[#090e13]/95 border-2 border-emerald-500/30 p-4 sm:p-5 shadow-2xl shadow-emerald-950/40 relative overflow-hidden backdrop-blur-xl transition-all">
+    <div className="w-full rounded-2xl bg-white/95 dark:bg-[#090e13]/95 border-2 border-slate-200 dark:border-emerald-500/30 p-4 sm:p-5 shadow-xl dark:shadow-2xl shadow-slate-300/40 dark:shadow-emerald-950/40 relative overflow-hidden backdrop-blur-xl transition-all">
       {/* Background trading grid texture */}
       <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
 
       {/* Top Header Controls with Asset Dropdown & Timeframes */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-slate-800 relative z-20">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-slate-200 dark:border-slate-800 relative z-20">
         {/* Asset Selector */}
         <div className="relative">
           <button
             onClick={() => setShowAssetMenu(!showAssetMenu)}
-            className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-800/80 transition-all border border-transparent hover:border-slate-700"
+            className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all border border-transparent hover:border-slate-200 dark:hover:border-slate-700 cursor-pointer"
           >
-            <div className="h-9 w-9 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold">
+            <div className="h-9 w-9 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500 dark:text-emerald-400 font-bold">
               <BarChart2 className="h-5 w-5" />
             </div>
             <div className="text-left">
               <div className="flex items-center gap-1.5">
-                <span className="font-mono text-xs sm:text-sm font-black text-white">
+                <span className="font-mono text-xs sm:text-sm font-black text-slate-900 dark:text-white">
                   {asset.symbol}
                 </span>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                   {asset.change}
                 </span>
               </div>
-              <div className="text-[11px] font-mono font-bold text-emerald-400">
-                {asset.price} <span className="text-slate-400 font-normal">({asset.name})</span>
+              <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                {asset.price} <span className="text-slate-500 dark:text-slate-400 font-normal">({asset.name})</span>
               </div>
             </div>
           </button>
 
           {/* Asset Dropdown Menu */}
           {showAssetMenu && (
-            <div className="absolute top-full left-0 mt-2 w-64 rounded-xl bg-[#0b1116] border border-slate-800 shadow-2xl p-1.5 z-50">
-              <div className="text-[10px] font-mono uppercase text-slate-400 px-2 py-1">
+            <div className="absolute top-full left-0 mt-2 w-64 rounded-xl bg-white dark:bg-[#0b1116] border border-slate-200 dark:border-slate-800 shadow-2xl p-1.5 z-50">
+              <div className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 px-2 py-1">
                 Select Active Asset
               </div>
               {ASSETS.map((item, idx) => (
@@ -182,17 +182,17 @@ export function LiveTradingChart() {
                     setSelectedAssetIdx(idx);
                     setShowAssetMenu(false);
                   }}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono transition-all text-left ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono transition-all text-left cursor-pointer ${
                     selectedAssetIdx === idx
-                      ? 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30'
-                      : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
+                      ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-bold border border-emerald-500/30'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-950 dark:hover:text-white'
                   }`}
                 >
                   <div>
                     <span className="font-bold block">{item.symbol}</span>
-                    <span className="text-[10px] text-slate-400">{item.name}</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">{item.name}</span>
                   </div>
-                  <span className="text-emerald-400 font-semibold">{item.price}</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{item.price}</span>
                 </button>
               ))}
             </div>
@@ -200,7 +200,7 @@ export function LiveTradingChart() {
         </div>
 
         {/* Timeframe Buttons */}
-        <div className="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 self-start sm:self-auto">
+        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200 dark:border-slate-800 self-start sm:self-auto">
           {timeframes.map((tf) => (
             <button
               key={tf}
@@ -208,7 +208,7 @@ export function LiveTradingChart() {
               className={`px-2 py-1 text-[11px] font-mono font-bold rounded-lg transition-colors cursor-pointer ${
                 activeTf === tf
                   ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
               }`}
             >
               {tf}
@@ -349,36 +349,36 @@ export function LiveTradingChart() {
       </div>
 
       {/* Live Trade Execution Feed Bar */}
-      <div className="mb-3 py-1.5 px-3 rounded-lg bg-emerald-950/30 border border-emerald-500/20 flex items-center justify-between text-[11px] font-mono">
-        <div className="flex items-center gap-2 text-emerald-400">
-          <Zap className="w-3.5 h-3.5 fill-emerald-400 animate-pulse" />
+      <div className="mb-3 py-1.5 px-3 rounded-lg bg-emerald-500/10 dark:bg-emerald-950/30 border border-emerald-500/20 flex items-center justify-between text-[11px] font-mono">
+        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+          <Zap className="w-3.5 h-3.5 fill-emerald-500 dark:fill-emerald-400 animate-pulse" />
           <span className="font-semibold truncate">{lastExecutedTrade}</span>
         </div>
-        <span className="text-[10px] text-slate-400 shrink-0 font-bold">100% REAL-TIME</span>
+        <span className="text-[10px] text-slate-500 dark:text-slate-400 shrink-0 font-bold">100% REAL-TIME</span>
       </div>
 
       {/* Bottom Trading Orderbook & Sentiment Status Bar */}
-      <div className="pt-3 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5 font-mono text-[11px] text-slate-300">
+          <div className="flex items-center gap-1.5 font-mono text-[11px] text-slate-700 dark:text-slate-300">
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping shrink-0" />
             <span>ORDERBOOK:</span>
-            <strong className="text-emerald-400 font-bold">+10 PTS / $1.00</strong>
+            <strong className="text-emerald-600 dark:text-emerald-400 font-bold">+10 PTS / $1.00</strong>
           </div>
-          <div className="hidden sm:block text-slate-700">|</div>
-          <div className="text-[11px] text-slate-400 font-mono">
-            SPREAD: <strong className="text-white">{asset.spread}</strong>
+          <div className="hidden sm:block text-slate-300 dark:text-slate-700">|</div>
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+            SPREAD: <strong className="text-slate-900 dark:text-white">{asset.spread}</strong>
           </div>
         </div>
 
         {/* Sentiment Bar */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono text-slate-400">MARKET DEPTH:</span>
-          <div className="h-2 w-28 bg-slate-800 rounded-full overflow-hidden flex">
+          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">MARKET DEPTH:</span>
+          <div className="h-2 w-28 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden flex">
             <div className="h-full bg-emerald-500 w-[86%]" title="86% Buy Volume" />
             <div className="h-full bg-rose-500 w-[14%]" title="14% Sell Volume" />
           </div>
-          <span className="font-mono text-[10px] font-extrabold text-emerald-400">
+          <span className="font-mono text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400">
             86% BULLS
           </span>
         </div>
