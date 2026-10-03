@@ -358,7 +358,7 @@ export function GoogleTranslate({
   };
 
   return (
-    <div id={id} ref={rootRef} className={`relative inline-block ${className}`}>
+    <div id={id} ref={rootRef} className={`relative inline-block ${open ? 'z-[9999]' : ''} ${className}`}>
       {/* Globe Language Button */}
       <button
         type="button"
@@ -503,7 +503,7 @@ export function GoogleTranslate({
           {/* ======================================================== */}
           {/* 2. Desktop Floating Dropdown (Screens >= 640px) */}
           {/* ======================================================== */}
-          <div className="hidden sm:block absolute right-0 rtl:right-auto rtl:left-0 top-full mt-2 w-80 z-[9999] rounded-2xl border border-purple-100 dark:border-purple-900/50 bg-white dark:bg-slate-950 p-2.5 shadow-2xl backdrop-blur-xl animate-in fade-in-0 zoom-in-95 duration-150">
+          <div className="hidden sm:block absolute right-0 rtl:right-auto rtl:left-0 top-full mt-2 w-80 z-[9999] rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2.5 shadow-2xl ring-1 ring-black/10 animate-in fade-in-0 zoom-in-95 duration-150">
             {/* Header & Instant Search Box */}
             <div className="space-y-2 pb-2 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center justify-between px-1">
@@ -511,7 +511,7 @@ export function GoogleTranslate({
                   <Globe2 className="h-3 w-3" />
                   <span>100+ Languages</span>
                 </span>
-                <span className="text-[10px] text-slate-400 font-medium">Instant AI Translation</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Instant AI Translation</span>
               </div>
 
               <div className="relative">
@@ -521,15 +521,15 @@ export function GoogleTranslate({
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search language (e.g. Hindi, Spanish, Arabic)..."
-                  className="h-9 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 pl-8.5 pr-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-purple-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
+                  placeholder="Search language (Hindi, Spanish, Arabic)..."
+                  className="h-9 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 pl-8.5 pr-3 text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:border-purple-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
                 />
               </div>
             </div>
 
             {/* Languages Scrollable List */}
             <div
-              className="max-h-72 overflow-y-auto pt-1 space-y-0.5 overscroll-contain scrollbar-thin"
+              className="max-h-72 overflow-y-auto pt-1 space-y-1 overscroll-contain scrollbar-thin"
               role="listbox"
             >
               {filteredLanguages.length === 0 ? (
@@ -546,16 +546,18 @@ export function GoogleTranslate({
                       role="option"
                       aria-selected={isActive}
                       onClick={() => handleSelectLanguage(item.code)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-colors cursor-pointer text-xs ${
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-colors cursor-pointer ${
                         isActive
-                          ? 'bg-purple-100/80 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200 font-bold border border-purple-200 dark:border-purple-800'
-                          : 'text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900 hover:text-purple-700 dark:hover:text-purple-300'
+                          ? 'bg-purple-100/90 dark:bg-purple-950/80 text-purple-950 dark:text-purple-100 font-bold border border-purple-300 dark:border-purple-700 shadow-xs'
+                          : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-purple-700 dark:hover:text-purple-300'
                       }`}
                     >
                       <div className="flex flex-col min-w-0">
-                        <span className="font-bold truncate text-[13px]">{item.nativeName}</span>
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
-                          {item.label} ({item.code})
+                        <span className="font-extrabold truncate text-sm text-slate-900 dark:text-white leading-tight">
+                          {item.nativeName}
+                        </span>
+                        <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                          {item.label} ({item.code.toUpperCase()})
                         </span>
                       </div>
 

@@ -111,7 +111,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Main Content Pane */}
       <div className="flex-1 flex flex-col min-w-0 bg-[#f8fafc] dark:bg-[#060b18] transition-colors">
         {/* Top Desktop Appbar */}
-        <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-slate-200/90 dark:border-slate-800 bg-white/90 dark:bg-[#070e20]/90 backdrop-blur-md shrink-0 shadow-xs transition-colors">
+        <header className="hidden lg:flex relative z-50 items-center justify-between px-8 py-3.5 border-b border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#070e20] shrink-0 shadow-xs transition-colors">
           <div className="flex items-center gap-3">
             <span className="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
               Trader Portal
