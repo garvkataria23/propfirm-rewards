@@ -6,8 +6,19 @@ import { CreatePropFirmDto, UpdatePropFirmDto, CreateOfferDto, UpdateOfferDto } 
 export class PropFirmsService {
   constructor(private prisma: PrismaService) {}
 
+  private cache: { data: any; expiresAt: number } | null = null;
+  private readonly CACHE_TTL_MS = 60 * 1000; // 60 seconds in-memory cache for ultra-fast throughput
+
+  private invalidateCache() {
+    this.cache = null;
+  }
+
   async findAll(includeInactive = false) {
-    return this.prisma.propFirm.findMany({
+    if (!includeInactive && this.cache && Date.now() < this.cache.expiresAt) {
+      return this.cache.data;
+    }
+
+    const result = await this.prisma.propFirm.findMany({
       where: includeInactive ? {} : { isActive: true },
       include: {
         offers: {
@@ -17,6 +28,12 @@ export class PropFirmsService {
       },
       orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
     });
+
+    if (!includeInactive) {
+      this.cache = { data: result, expiresAt: Date.now() + this.CACHE_TTL_MS };
+    }
+
+    return result;
   }
 
   async findBySlugOrId(identifier: string, includeInactive = false) {
@@ -77,6 +94,7 @@ export class PropFirmsService {
       },
     });
 
+    this.invalidateCache();
     return created;
   }
 
@@ -122,6 +140,7 @@ export class PropFirmsService {
       },
     });
 
+    this.invalidateCache();
     return updated;
   }
 
@@ -150,6 +169,7 @@ export class PropFirmsService {
         },
       });
 
+      this.invalidateCache();
       return { message: 'Prop firm has historical submissions so it was deactivated rather than permanently deleted', propFirm: disabled };
     }
 
@@ -167,6 +187,7 @@ export class PropFirmsService {
       },
     });
 
+    this.invalidateCache();
     return { message: 'Prop firm and offers deleted successfully' };
   }
 
@@ -200,6 +221,7 @@ export class PropFirmsService {
       },
     });
 
+    this.invalidateCache();
     return offer;
   }
 
@@ -233,6 +255,7 @@ export class PropFirmsService {
       },
     });
 
+    this.invalidateCache();
     return updated;
   }
 
@@ -255,6 +278,7 @@ export class PropFirmsService {
       },
     });
 
+    this.invalidateCache();
     return { message: 'Offer deleted successfully' };
   }
 }

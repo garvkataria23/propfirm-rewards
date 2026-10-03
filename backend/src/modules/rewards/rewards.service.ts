@@ -11,17 +11,37 @@ export class RewardsService {
     private emailService: EmailService,
   ) {}
 
+  private categoriesCache: { data: any; expiresAt: number } | null = null;
+  private cache: Map<string, { data: any; expiresAt: number }> = new Map();
+  private readonly CACHE_TTL_MS = 60 * 1000; // 60 seconds
+
+  private invalidateCache() {
+    this.categoriesCache = null;
+    this.cache.clear();
+  }
+
   async getCategories() {
-    return this.prisma.rewardCategory.findMany({
+    if (this.categoriesCache && Date.now() < this.categoriesCache.expiresAt) {
+      return this.categoriesCache.data;
+    }
+    const result = await this.prisma.rewardCategory.findMany({
       where: { isActive: true },
       orderBy: { sortOrder: 'asc' },
     });
+    this.categoriesCache = { data: result, expiresAt: Date.now() + this.CACHE_TTL_MS };
+    return result;
   }
 
   async findAll(query: { categorySlug?: string; search?: string; inStockOnly?: boolean }) {
+    const cacheKey = JSON.stringify(query);
+    const cached = this.cache.get(cacheKey);
+    if (cached && Date.now() < cached.expiresAt) {
+      return cached.data;
+    }
+
     const { categorySlug, search, inStockOnly } = query;
 
-    return this.prisma.reward.findMany({
+    const result = await this.prisma.reward.findMany({
       where: {
         isActive: true,
         ...(categorySlug && { category: { slug: categorySlug } }),
@@ -38,6 +58,9 @@ export class RewardsService {
       include: { category: true },
       orderBy: [{ sortOrder: 'asc' }, { pointsRequired: 'asc' }],
     });
+
+    this.cache.set(cacheKey, { data: result, expiresAt: Date.now() + this.CACHE_TTL_MS });
+    return result;
   }
 
   async findBySlugOrId(identifier: string) {
@@ -239,6 +262,7 @@ export class RewardsService {
       };
     });
 
+    this.invalidateCache();
     return result;
   }
 
@@ -287,6 +311,7 @@ export class RewardsService {
       },
     });
 
+    this.invalidateCache();
     return reward;
   }
 
@@ -326,6 +351,7 @@ export class RewardsService {
       },
     });
 
+    this.invalidateCache();
     return updated;
   }
 
@@ -352,6 +378,7 @@ export class RewardsService {
         },
       });
 
+      this.invalidateCache();
       return { message: 'Reward has historical redemptions, so it has been deactivated rather than deleted', reward: disabled };
     }
 
@@ -368,6 +395,7 @@ export class RewardsService {
       },
     });
 
+    this.invalidateCache();
     return { message: 'Reward deleted successfully' };
   }
 }
