@@ -19,6 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AutoApplyModal, AutoApplyFirmData } from '@/components/prop-firms/auto-apply-modal';
+import { buildAutoApplyUrl } from '@/lib/referral-system';
 
 export interface EvaluationModel {
   id: string;
@@ -181,6 +182,10 @@ export function InteractiveEvaluationMatrix({
   };
 
   const handleTriggerAutoApply = () => {
+    const code = affiliateCode || 'NATION';
+    navigator.clipboard?.writeText(code).catch(() => {});
+    const directUrl = buildAutoApplyUrl(affiliateUrl || websiteUrl || firmName, code);
+    window.open(directUrl, '_blank', 'noopener,noreferrer');
     setIsAutoApplyOpen(true);
   };
 

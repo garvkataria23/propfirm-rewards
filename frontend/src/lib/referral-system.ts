@@ -67,109 +67,44 @@ export function buildAutoApplyUrl(
   const lowerCode = cleanCode.toLowerCase();
   const upperCode = cleanCode.toUpperCase();
   const trackingId = config?.trackingId || generateTrackingId();
+  const lowerRaw = rawUrl.toLowerCase();
+
+  // Direct Checkout / Account Creation Portal Mapping for Partner Prop Firms
+  if (lowerRaw.includes('pipstone')) {
+    return `https://trader.pipstonecapital.com/guest-checkout?coupon=${upperCode}&affId=${upperCode}&ref=${lowerCode}&subid=${trackingId}`;
+  }
+  if (lowerRaw.includes('ftmo')) {
+    return `https://trader.ftmo.com/register?ref=${lowerCode}&coupon=${upperCode}&subid=${trackingId}`;
+  }
+  if (lowerRaw.includes('fundednext')) {
+    return `https://app.fundednext.com/register?ref=${lowerCode}&coupon=${upperCode}&subid=${trackingId}`;
+  }
+  if (lowerRaw.includes('fundingpips') || lowerRaw.includes('funding-pips')) {
+    return `https://app.fundingpips.com/register?ref=${lowerCode}&coupon=${upperCode}&subid=${trackingId}`;
+  }
+  if (lowerRaw.includes('fundedsquad')) {
+    return `https://my.fundedsquad.com/register?ref=${lowerCode}&coupon=${upperCode}&subid=${trackingId}`;
+  }
+  if (lowerRaw.includes('apex')) {
+    return `https://dashboard.apextraderfunding.com/register?c=${upperCode}&coupon=${upperCode}&ref=${lowerCode}&subid=${trackingId}`;
+  }
+  if (lowerRaw.includes('topstep')) {
+    return `https://app.topstep.com/register?ref=${lowerCode}&coupon=${upperCode}&subid=${trackingId}`;
+  }
+  if (lowerRaw.includes('myfundedfutures')) {
+    return `https://myfundedfutures.com/register?ref=${lowerCode}&coupon=${upperCode}&subid=${trackingId}`;
+  }
 
   try {
     const url = new URL(rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`);
-
-    // Direct Handler for Pipstone Capital Guest Checkout Portal
-    if (url.hostname.includes('pipstonecapital.com')) {
-      url.hostname = 'trader.pipstonecapital.com';
-      url.pathname = '/guest-checkout';
-
-      // Pipstone reads: model, balance, type, coupon, email, affId
-      const model = config?.accountType?.toLowerCase().includes('1-step')
-        ? '1-step'
-        : config?.accountType?.toLowerCase().includes('instant')
-        ? 'instant'
-        : '2-step';
-      url.searchParams.set('model', model);
-
-      let balance = '100000';
-      if (config?.tier) {
-        const raw = config.tier.toLowerCase().replace(/[^0-9]/g, '');
-        const num = parseInt(raw, 10);
-        if (num) {
-          balance = config.tier.toLowerCase().includes('k') && num < 1000 ? (num * 1000).toString() : num.toString();
-        }
-      }
-      url.searchParams.set('balance', balance);
-      url.searchParams.set('type', 'standard');
-      url.searchParams.set('coupon', upperCode);
-      url.searchParams.set('affId', upperCode);
-      url.searchParams.set('ref', lowerCode);
-      url.searchParams.set('affiliate', lowerCode);
-
-      if (config?.email && config.email.includes('@')) {
-        url.searchParams.set('email', config.email.trim());
-      }
-      return url.toString();
-    }
-
-    // 1. Universal affiliate referral tracking query parameters
     url.searchParams.set('ref', lowerCode);
-    url.searchParams.set('aff', lowerCode);
-    url.searchParams.set('affiliate', lowerCode);
-
-    // 2. Universal SubID / ClickID attribution
-    url.searchParams.set('subid', trackingId);
-    url.searchParams.set('clickid', trackingId);
-    url.searchParams.set('campaign', trackingId);
-
-    // 3. Universal checkout cart coupon & discount auto-apply query parameters
     url.searchParams.set('coupon', upperCode);
-    url.searchParams.set('discount', upperCode);
-    url.searchParams.set('promo', upperCode);
-    url.searchParams.set('code', upperCode);
-
-    // 4. Challenge Tier & Account Size Pre-filling
-    if (config?.tier) {
-      const cleanTier = config.tier.replace(/[^0-9kK]/g, '').toLowerCase();
-      url.searchParams.set('tier', cleanTier || config.tier);
-      url.searchParams.set('plan', cleanTier || config.tier);
-      url.searchParams.set('account_size', cleanTier || config.tier);
-      url.searchParams.set('product', config.tier);
-    }
-
-    // 5. Trading Platform Pre-filling (MT5, cTrader, etc.)
-    if (config?.platform) {
-      const platformCode = config.platform.toLowerCase().includes('mt5')
-        ? 'mt5'
-        : config.platform.toLowerCase().includes('ctrader')
-        ? 'ctrader'
-        : config.platform.toLowerCase().includes('tradelocker')
-        ? 'tradelocker'
-        : 'mt5';
-      url.searchParams.set('platform', platformCode);
-    }
-
-    // 6. Challenge Evaluation Model (2-step, 1-step, instant)
-    if (config?.accountType) {
-      const typeCode = config.accountType.toLowerCase().includes('1-step')
-        ? '1-step'
-        : config.accountType.toLowerCase().includes('instant')
-        ? 'instant'
-        : '2-step';
-      url.searchParams.set('challenge_type', typeCode);
-      url.searchParams.set('step', typeCode);
-    }
-
-    // 7. Customer Email Pre-filling for checkout carts
-    if (config?.email && config.email.includes('@')) {
-      url.searchParams.set('email', config.email.trim());
-      url.searchParams.set('checkout[email]', config.email.trim());
-    }
-
+    url.searchParams.set('affId', upperCode);
+    url.searchParams.set('subid', trackingId);
     return url.toString();
   } catch {
-    if (rawUrl.includes('pipstonecapital.com')) {
-      return `https://trader.pipstonecapital.com/guest-checkout?model=2-step&balance=100000&type=standard&coupon=${upperCode}&affId=${upperCode}&email=${encodeURIComponent(config?.email || '')}`;
-    }
     const delimiter = rawUrl.includes('?') ? '&' : '?';
-    let base = `${rawUrl}${delimiter}ref=${lowerCode}&coupon=${upperCode}&aff=${lowerCode}&discount=${upperCode}&promo=${upperCode}&subid=${trackingId}`;
-    if (config?.tier) base += `&tier=${encodeURIComponent(config.tier)}`;
-    if (config?.platform) base += `&platform=${encodeURIComponent(config.platform)}`;
-    if (config?.email) base += `&email=${encodeURIComponent(config.email)}`;
-    return base;
+    return `${rawUrl}${delimiter}ref=${lowerCode}&coupon=${upperCode}&affId=${upperCode}&subid=${trackingId}`;
   }
 }
 

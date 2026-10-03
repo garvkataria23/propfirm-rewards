@@ -29,6 +29,7 @@ import {
   Percent,
 } from 'lucide-react';
 import { AutoApplyModal } from '@/components/prop-firms/auto-apply-modal';
+import { buildAutoApplyUrl } from '@/lib/referral-system';
 
 interface PropFirmOffer {
   id: string;
@@ -58,9 +59,9 @@ const FALLBACK_FIRMS: Record<string, PropFirm> = {
     slug: 'fundedsquad',
     logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
     description: 'Elite proprietary firm with instant evaluation pass options, scaling plans up to $1,000,000, and weekly payouts.',
-    websiteUrl: 'https://fundedsquad.com',
+    websiteUrl: 'https://my.fundedsquad.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://fundedsquad.com/?ref=nation',
+    affiliateUrl: 'https://my.fundedsquad.com/register?ref=nation&coupon=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'CFD',
     offers: [
@@ -79,7 +80,7 @@ const FALLBACK_FIRMS: Record<string, PropFirm> = {
     description: 'Premium prop trading firm offering raw ECN spreads, high drawdown limits, and bi-weekly revenue splits up to 90%.',
     websiteUrl: 'https://trader.pipstonecapital.com/guest-checkout',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://trader.pipstonecapital.com/guest-checkout?model=2-step&balance=100000&type=standard&coupon=NATION&affId=NATION',
+    affiliateUrl: 'https://trader.pipstonecapital.com/guest-checkout?coupon=NATION&affId=NATION&ref=nation',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'CFD',
     offers: [
@@ -96,9 +97,9 @@ const FALLBACK_FIRMS: Record<string, PropFirm> = {
     slug: 'ftmo',
     logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
     description: 'The global benchmark for proprietary trading. Up to $200,000 initial balance, up to 90% profit split, and world-class trader education.',
-    websiteUrl: 'https://ftmo.com',
+    websiteUrl: 'https://trader.ftmo.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://ftmo.com/?ref=nation',
+    affiliateUrl: 'https://trader.ftmo.com/register?ref=nation&coupon=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'CFD',
     offers: [
@@ -115,9 +116,9 @@ const FALLBACK_FIRMS: Record<string, PropFirm> = {
     slug: 'fundednext',
     logoUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=120&auto=format&fit=crop&q=80',
     description: '15% profit sharing during challenge phases, up to 95% profit split, and guaranteed 24-hour payout processing.',
-    websiteUrl: 'https://fundednext.com',
+    websiteUrl: 'https://app.fundednext.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://fundednext.com/?ref=nation',
+    affiliateUrl: 'https://app.fundednext.com/register?ref=nation&coupon=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'CFD',
     offers: [
@@ -134,9 +135,9 @@ const FALLBACK_FIRMS: Record<string, PropFirm> = {
     slug: 'funding-pips',
     logoUrl: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
     description: 'Built by traders for traders. Tight spreads, fast weekly payouts, and zero time limit evaluation phases.',
-    websiteUrl: 'https://fundingpips.com',
+    websiteUrl: 'https://app.fundingpips.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://fundingpips.com/?ref=nation',
+    affiliateUrl: 'https://app.fundingpips.com/register?ref=nation&coupon=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'CFD',
     offers: [
@@ -144,6 +145,58 @@ const FALLBACK_FIRMS: Record<string, PropFirm> = {
       { id: 'o-22', accountTierName: '$25K Evaluation 2-Step', purchasePriceUsd: 139, rewardPoints: 1390 },
       { id: 'o-23', accountTierName: '$50K Evaluation 2-Step', purchasePriceUsd: 239, rewardPoints: 2390 },
       { id: 'o-24', accountTierName: '$100K Evaluation 2-Step', purchasePriceUsd: 399, rewardPoints: 3990 },
+    ],
+  },
+  'apex-trader-funding': {
+    id: 'firm-6',
+    name: 'Apex Trader Funding',
+    slug: 'apex-trader-funding',
+    logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
+    description: 'World #1 Futures prop trading firm. Keep 100% of your first $25,000 in profits, trade up to 20 accounts simultaneously on Tradovate, NinjaTrader & Rithmic.',
+    websiteUrl: 'https://dashboard.apextraderfunding.com/register',
+    affiliateCode: 'NATION',
+    affiliateUrl: 'https://dashboard.apextraderfunding.com/register?c=NATION&coupon=NATION&ref=nation',
+    eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
+    category: 'FUTURES',
+    offers: [
+      { id: 'o-25', accountTierName: '$25K Full Futures', purchasePriceUsd: 147, rewardPoints: 1470 },
+      { id: 'o-26', accountTierName: '$50K Full Futures', purchasePriceUsd: 167, rewardPoints: 1670 },
+      { id: 'o-27', accountTierName: '$100K Full Futures', purchasePriceUsd: 207, rewardPoints: 2070 },
+      { id: 'o-28', accountTierName: '$150K Full Futures', purchasePriceUsd: 297, rewardPoints: 2970 },
+    ],
+  },
+  'topstep': {
+    id: 'firm-7',
+    name: 'Topstep',
+    slug: 'topstep',
+    logoUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=120&auto=format&fit=crop&q=80',
+    description: 'The original CME Futures prop firm. Simple 1-step Trading Combine, TopstepX zero-commission platform, and daily payout processing.',
+    websiteUrl: 'https://app.topstep.com/register',
+    affiliateCode: 'NATION',
+    affiliateUrl: 'https://app.topstep.com/register?ref=nation&coupon=NATION',
+    eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
+    category: 'FUTURES',
+    offers: [
+      { id: 'o-29', accountTierName: '$50K Trading Combine', purchasePriceUsd: 49, rewardPoints: 490 },
+      { id: 'o-30', accountTierName: '$100K Trading Combine', purchasePriceUsd: 99, rewardPoints: 990 },
+      { id: 'o-31', accountTierName: '$150K Trading Combine', purchasePriceUsd: 149, rewardPoints: 1490 },
+    ],
+  },
+  'myfundedfutures': {
+    id: 'firm-8',
+    name: 'MyFundedFutures',
+    slug: 'myfundedfutures',
+    logoUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=120&auto=format&fit=crop&q=80',
+    description: '1-Day to pass Futures evaluations, zero activation fees on Expert plans, EOD trailing drawdown, and rapid payout approvals.',
+    websiteUrl: 'https://myfundedfutures.com/register',
+    affiliateCode: 'NATION',
+    affiliateUrl: 'https://myfundedfutures.com/register?ref=nation&coupon=NATION',
+    eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
+    category: 'FUTURES',
+    offers: [
+      { id: 'o-32', accountTierName: '$50K Starter Plan', purchasePriceUsd: 80, rewardPoints: 800 },
+      { id: 'o-33', accountTierName: '$100K Starter Plan', purchasePriceUsd: 150, rewardPoints: 1500 },
+      { id: 'o-34', accountTierName: '$150K Expert Plan', purchasePriceUsd: 375, rewardPoints: 3750 },
     ],
   },
 };
@@ -183,7 +236,15 @@ export default function PropFirmDetailPage() {
         .get<PropFirm>(`/prop-firms/${normalizedSlug}`)
         .then((data) => {
           if (data && data.name) {
-            setFirm(data);
+            const directPortalUrl = buildAutoApplyUrl(
+              data.affiliateUrl || data.websiteUrl || data.slug || data.name,
+              data.affiliateCode || 'NATION'
+            );
+            setFirm({
+              ...data,
+              websiteUrl: directPortalUrl.split('?')[0],
+              affiliateUrl: directPortalUrl,
+            });
           }
         })
         .catch((err) => {
@@ -207,6 +268,13 @@ export default function PropFirmDetailPage() {
 
   const handleTriggerAutoApply = () => {
     if (firm) {
+      const code = firm.affiliateCode || 'NATION';
+      navigator.clipboard?.writeText(code).catch(() => {});
+      const directUrl = buildAutoApplyUrl(
+        firm.affiliateUrl || firm.websiteUrl || firm.slug || firm.name,
+        code
+      );
+      window.open(directUrl, '_blank', 'noopener,noreferrer');
       setIsAutoApplyOpen(true);
     }
   };

@@ -18,6 +18,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { AutoApplyModal, AutoApplyFirmData } from '@/components/prop-firms/auto-apply-modal';
+import { buildAutoApplyUrl } from '@/lib/referral-system';
 
 interface PropFirmRuleData {
   id: string;
@@ -43,13 +44,40 @@ interface PropFirmRuleData {
 
 const FIRMS_DATA: PropFirmRuleData[] = [
   {
+    id: 'pipstone-capital',
+    name: 'Pipstone Capital',
+    slug: 'pipstone-capital',
+    logo: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=120&auto=format&fit=crop&q=80',
+    websiteUrl: 'https://trader.pipstonecapital.com/guest-checkout',
+    affiliateCode: 'NATION',
+    affiliateUrl: 'https://trader.pipstonecapital.com/guest-checkout?coupon=NATION&affId=NATION&ref=nation',
+    drawdownType: 'Static (Balance-based)',
+    dailyLossPercent: 5,
+    maxLossPercent: 10,
+    profitTargetPhase1: 8,
+    profitTargetPhase2: 5,
+    weekendHolding: true,
+    newsTrading: true,
+    eaAllowed: true,
+    payoutSpeed: 'Bi-weekly (Fast)',
+    profitSplit: '80% – 90%',
+    pricing: {
+      10000: 120,
+      25000: 220,
+      50000: 380,
+      100000: 520,
+      200000: 980,
+    },
+    pointsPerDollar: 10,
+  },
+  {
     id: 'ftmo',
     name: 'FTMO',
     slug: 'ftmo',
     logo: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
-    websiteUrl: 'https://ftmo.com',
+    websiteUrl: 'https://trader.ftmo.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://ftmo.com/?ref=nation',
+    affiliateUrl: 'https://trader.ftmo.com/register?ref=nation&coupon=NATION',
     drawdownType: 'Static (Balance-based)',
     dailyLossPercent: 5,
     maxLossPercent: 10,
@@ -74,9 +102,9 @@ const FIRMS_DATA: PropFirmRuleData[] = [
     name: 'FundedNext',
     slug: 'fundednext',
     logo: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=120&auto=format&fit=crop&q=80',
-    websiteUrl: 'https://fundednext.com',
+    websiteUrl: 'https://app.fundednext.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://fundednext.com/?ref=nation',
+    affiliateUrl: 'https://app.fundednext.com/register?ref=nation&coupon=NATION',
     drawdownType: 'Static (Balance-based)',
     dailyLossPercent: 5,
     maxLossPercent: 10,
@@ -101,9 +129,9 @@ const FIRMS_DATA: PropFirmRuleData[] = [
     name: 'Funding Pips',
     slug: 'funding-pips',
     logo: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
-    websiteUrl: 'https://fundingpips.com',
+    websiteUrl: 'https://app.fundingpips.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://fundingpips.com/?ref=nation',
+    affiliateUrl: 'https://app.fundingpips.com/register?ref=nation&coupon=NATION',
     drawdownType: 'Trailing (Equity-based)',
     dailyLossPercent: 5,
     maxLossPercent: 10,
@@ -128,9 +156,9 @@ const FIRMS_DATA: PropFirmRuleData[] = [
     name: 'FundedSquad',
     slug: 'fundedsquad',
     logo: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
-    websiteUrl: 'https://fundedsquad.com',
+    websiteUrl: 'https://my.fundedsquad.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://fundedsquad.com/?ref=nation',
+    affiliateUrl: 'https://my.fundedsquad.com/register?ref=nation&coupon=NATION',
     drawdownType: 'Static (Balance-based)',
     dailyLossPercent: 4,
     maxLossPercent: 8,
@@ -156,7 +184,7 @@ const SIZES = [10000, 25000, 50000, 100000, 200000];
 
 export function PropFirmCalculator() {
   const [activeTab, setActiveTab] = useState<'calculator' | 'matrix'>('calculator');
-  const [selectedFirmId, setSelectedFirmId] = useState<string>('ftmo');
+  const [selectedFirmId, setSelectedFirmId] = useState<string>('pipstone-capital');
   const [accountSize, setAccountSize] = useState<number>(100000);
   const [vipTier, setVipTier] = useState<number>(1.0); // 1.0 = Rookie, 1.25 = Funded, 1.5 = Master
   const [filterStyle, setFilterStyle] = useState<string>('all');
@@ -188,6 +216,10 @@ export function PropFirmCalculator() {
   });
 
   const handleLaunchModal = (firm: PropFirmRuleData) => {
+    const code = firm.affiliateCode || 'NATION';
+    navigator.clipboard?.writeText(code).catch(() => {});
+    const directUrl = buildAutoApplyUrl(firm.affiliateUrl || firm.websiteUrl || firm.slug, code);
+    window.open(directUrl, '_blank', 'noopener,noreferrer');
     setModalFirmData({
       id: firm.id,
       name: firm.name,
@@ -195,7 +227,7 @@ export function PropFirmCalculator() {
       logoUrl: firm.logo,
       websiteUrl: firm.websiteUrl,
       affiliateCode: firm.affiliateCode,
-      affiliateUrl: firm.affiliateUrl,
+      affiliateUrl: directUrl,
       tierName: `$${(accountSize / 1000).toFixed(0)}K Evaluation Challenge`,
       tierPrice: firm.pricing[accountSize] || 250,
     });

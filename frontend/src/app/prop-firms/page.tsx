@@ -25,6 +25,7 @@ import {
   Tag,
 } from 'lucide-react';
 import { AutoApplyModal, AutoApplyFirmData } from '@/components/prop-firms/auto-apply-modal';
+import { buildAutoApplyUrl, activateReferralIntent } from '@/lib/referral-system';
 
 interface PropFirmOffer {
   id: string;
@@ -54,9 +55,9 @@ const FALLBACK_FIRMS: PropFirm[] = [
     slug: 'fundedsquad',
     logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
     description: 'Elite proprietary firm with instant evaluation pass options, scaling plans up to $1,000,000, and weekly payouts.',
-    websiteUrl: 'https://fundedsquad.com',
+    websiteUrl: 'https://my.fundedsquad.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://fundedsquad.com/?ref=nation',
+    affiliateUrl: 'https://my.fundedsquad.com/register?ref=nation&coupon=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'CFD',
     offers: [
@@ -75,7 +76,7 @@ const FALLBACK_FIRMS: PropFirm[] = [
     description: 'Premium prop trading firm offering raw ECN spreads, high drawdown limits, and bi-weekly revenue splits up to 90%.',
     websiteUrl: 'https://trader.pipstonecapital.com/guest-checkout',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://trader.pipstonecapital.com/guest-checkout?model=2-step&balance=100000&type=standard&coupon=NATION&affId=NATION',
+    affiliateUrl: 'https://trader.pipstonecapital.com/guest-checkout?coupon=NATION&affId=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'CFD',
     offers: [
@@ -92,9 +93,9 @@ const FALLBACK_FIRMS: PropFirm[] = [
     slug: 'ftmo',
     logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
     description: 'The global benchmark for proprietary trading. Up to $200,000 initial balance, up to 90% profit split, and world-class trader education.',
-    websiteUrl: 'https://ftmo.com',
+    websiteUrl: 'https://trader.ftmo.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://ftmo.com/?ref=nation',
+    affiliateUrl: 'https://trader.ftmo.com/register?ref=nation&coupon=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'CFD',
     offers: [
@@ -111,9 +112,9 @@ const FALLBACK_FIRMS: PropFirm[] = [
     slug: 'fundednext',
     logoUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=120&auto=format&fit=crop&q=80',
     description: '15% profit sharing during challenge phases, up to 95% profit split, and guaranteed 24-hour payout processing.',
-    websiteUrl: 'https://fundednext.com',
+    websiteUrl: 'https://app.fundednext.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://fundednext.com/?ref=nation',
+    affiliateUrl: 'https://app.fundednext.com/register?ref=nation&coupon=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'CFD',
     offers: [
@@ -130,9 +131,9 @@ const FALLBACK_FIRMS: PropFirm[] = [
     slug: 'funding-pips',
     logoUrl: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
     description: 'Built by traders for traders. Tight spreads, fast weekly payouts, and zero time limit evaluation phases.',
-    websiteUrl: 'https://fundingpips.com',
+    websiteUrl: 'https://app.fundingpips.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://fundingpips.com/?ref=nation',
+    affiliateUrl: 'https://app.fundingpips.com/register?ref=nation&coupon=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'CFD',
     offers: [
@@ -148,9 +149,9 @@ const FALLBACK_FIRMS: PropFirm[] = [
     slug: 'apex-trader-funding',
     logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
     description: 'Leading CME Futures evaluation firm with 100% profit on your first $25,000, up to 20 simultaneous accounts, and zero daily drawdown rules.',
-    websiteUrl: 'https://apextraderfunding.com',
+    websiteUrl: 'https://dashboard.apextraderfunding.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://apextraderfunding.com/?c=NATION',
+    affiliateUrl: 'https://dashboard.apextraderfunding.com/register?c=NATION&coupon=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'FUTURES',
     offers: [
@@ -167,9 +168,9 @@ const FALLBACK_FIRMS: PropFirm[] = [
     slug: 'topstep',
     logoUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=120&auto=format&fit=crop&q=80',
     description: 'The original futures prop firm on TopstepX. Trade CME E-mini NQ, ES, Gold & Crude Oil with 1-step Trading Combine and daily payouts.',
-    websiteUrl: 'https://topstep.com',
+    websiteUrl: 'https://app.topstep.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://topstep.com/?ref=nation',
+    affiliateUrl: 'https://app.topstep.com/register?ref=nation&coupon=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'FUTURES',
     offers: [
@@ -184,9 +185,9 @@ const FALLBACK_FIRMS: PropFirm[] = [
     slug: 'myfundedfutures',
     logoUrl: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
     description: 'Next-generation futures prop trading with 1-day pass capability, end-of-day trailing drawdown, and zero activation fee expert plans.',
-    websiteUrl: 'https://myfundedfutures.com',
+    websiteUrl: 'https://myfundedfutures.com/register',
     affiliateCode: 'NATION',
-    affiliateUrl: 'https://myfundedfutures.com/?ref=nation',
+    affiliateUrl: 'https://myfundedfutures.com/register?ref=nation&coupon=NATION',
     eligibilityTerms: 'Apply referral code NATION at checkout. 1$ purchase equals 10 Reward Points.',
     category: 'FUTURES',
     offers: [
@@ -238,15 +239,18 @@ function PropFirmsContent() {
         if (data && data.length > 0) {
           const enhanced = data.map((firm) => {
             const nameLower = firm.name.toLowerCase();
-            const descLower = firm.description.toLowerCase();
             const isFutures =
               nameLower.includes('topstep') ||
               nameLower.includes('apex') ||
               nameLower.includes('futures');
+            const code = firm.affiliateCode || 'NATION';
+            const directCheckout = buildAutoApplyUrl(firm.websiteUrl || firm.slug || firm.name, code);
 
             return {
               ...firm,
-              affiliateCode: firm.affiliateCode || 'NATION',
+              websiteUrl: directCheckout.split('?')[0],
+              affiliateUrl: directCheckout,
+              affiliateCode: code,
               category: (isFutures ? 'FUTURES' : 'CFD') as 'CFD' | 'FUTURES',
             };
           });
@@ -270,14 +274,30 @@ function PropFirmsContent() {
   };
 
   const handleTriggerAutoApply = (firm: PropFirm) => {
+    const code = firm.affiliateCode || 'NATION';
+    const directCheckoutUrl = buildAutoApplyUrl(firm.affiliateUrl || firm.websiteUrl || firm.slug, code);
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(code).catch(() => {});
+    }
+    activateReferralIntent({
+      id: firm.id,
+      name: firm.name,
+      slug: firm.slug,
+      affiliateCode: code,
+      affiliateUrl: directCheckoutUrl,
+      websiteUrl: directCheckoutUrl.split('?')[0],
+    });
+    if (typeof window !== 'undefined') {
+      window.open(directCheckoutUrl, '_blank', 'noopener,noreferrer');
+    }
     setActiveAutoApplyFirm({
       id: firm.id,
       name: firm.name,
       slug: firm.slug,
       logoUrl: firm.logoUrl,
-      affiliateCode: firm.affiliateCode || 'NATION',
-      affiliateUrl: firm.affiliateUrl,
-      websiteUrl: firm.websiteUrl,
+      affiliateCode: code,
+      affiliateUrl: directCheckoutUrl,
+      websiteUrl: directCheckoutUrl.split('?')[0],
     });
     setIsAutoApplyModalOpen(true);
   };
