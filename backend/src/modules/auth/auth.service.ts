@@ -256,48 +256,46 @@ export class AuthService {
   }
 
   async getMe(userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        phone: true,
-        country: true,
-        role: true,
-        status: true,
-        avatarUrl: true,
-        createdAt: true,
-      },
-    });
+    const [user, latestTx, pendingSubmissions, activeRedemptionsCount] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          phone: true,
+          country: true,
+          role: true,
+          status: true,
+          avatarUrl: true,
+          createdAt: true,
+        },
+      }),
+      this.prisma.pointsLedger.findFirst({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        select: { balanceAfter: true },
+      }),
+      this.prisma.purchaseSubmission.findMany({
+        where: {
+          userId,
+          status: { in: ['PENDING', 'UNDER_REVIEW'] },
+        },
+        select: { pointsAwarded: true },
+      }),
+      this.prisma.redemption.count({
+        where: {
+          userId,
+          status: { in: ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED'] },
+        },
+      }),
+    ]);
 
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
-    // Calculate balance and pending points
-    const latestTx = await this.prisma.pointsLedger.findFirst({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      select: { balanceAfter: true },
-    });
-
-    const pendingSubmissions = await this.prisma.purchaseSubmission.findMany({
-      where: {
-        userId,
-        status: { in: ['PENDING', 'UNDER_REVIEW'] },
-      },
-      select: { pointsAwarded: true },
-    });
-
     const pendingPoints = pendingSubmissions.reduce((acc, curr) => acc + (curr.pointsAwarded || 0), 0);
-
-    const activeRedemptionsCount = await this.prisma.redemption.count({
-      where: {
-        userId,
-        status: { in: ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED'] },
-      },
-    });
 
     return {
       ...user,

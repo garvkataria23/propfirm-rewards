@@ -45,15 +45,16 @@ interface StatsResponse {
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<StatsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [days, setDays] = useState(30);
 
   useEffect(() => {
-    setLoading(true);
     api
       .get<StatsResponse>('/admin/stats', { days })
-      .then((data) => setStats(data))
-      .catch(console.error)
+      .then((data) => {
+        if (data) setStats(data);
+      })
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, [days]);
 

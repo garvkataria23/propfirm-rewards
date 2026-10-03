@@ -58,7 +58,7 @@ import { userDataStore } from '@/lib/userDataStore';
 export default function PurchasesListPage() {
   const { user } = useAuth();
   const [purchases, setPurchases] = useState<PurchaseSubmission[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -70,14 +70,17 @@ export default function PurchasesListPage() {
   const [resubmitError, setResubmitError] = useState<string | null>(null);
 
   const fetchPurchases = () => {
-    setLoading(true);
     const userEmail = user?.email || (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) || 'trader@example.com';
     const localPurchases = userDataStore.getUserPurchases(userEmail);
+
+    // Hydrate immediately in 0ms
+    setPurchases((prev) => (prev.length > 0 ? prev : (localPurchases as any)));
+    setLoading(false);
 
     api
       .get<PurchaseSubmission[]>('/purchases')
       .then((data) => {
-        if (data && data.length > 0) {
+        if (Array.isArray(data) && data.length > 0) {
           const merged = [...data];
           localPurchases.forEach((lp) => {
             if (!merged.some((m) => m.orderId === lp.orderId || m.submissionCode === lp.submissionCode)) {
@@ -85,14 +88,9 @@ export default function PurchasesListPage() {
             }
           });
           setPurchases(merged);
-        } else {
-          setPurchases(localPurchases as any);
         }
       })
-      .catch(() => {
-        setPurchases(localPurchases as any);
-      })
-      .finally(() => setLoading(false));
+      .catch(() => {});
   };
 
   useEffect(() => {

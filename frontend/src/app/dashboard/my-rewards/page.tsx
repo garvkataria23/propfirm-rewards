@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { useAuth } from '@/context/auth-context';
+import { userDataStore } from '@/lib/userDataStore';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -43,16 +45,28 @@ interface Redemption {
 }
 
 export default function MyRewardsPage() {
+  const { user } = useAuth();
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const userEmail =
+      user?.email ||
+      (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) ||
+      'trader@example.com';
+    const localRedemptions = userDataStore.getUserRedemptions(userEmail);
+    setRedemptions((prev) => (prev.length > 0 ? prev : (localRedemptions as any)));
+    setLoading(false);
+
     api
       .get<Redemption[]>('/redemptions')
-      .then((data) => setRedemptions(Array.isArray(data) ? data : []))
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setRedemptions(data);
+        }
+      })
+      .catch(() => {});
+  }, [user]);
 
   const getStatusStep = (status: string) => {
     switch (status) {

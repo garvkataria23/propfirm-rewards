@@ -3,24 +3,90 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 interface CacheItem<T> {
   data: T;
   expiresAt: number;
+  staleUntil: number;
 }
+
+const STORAGE_CACHE_PREFIX = 'propfirm_cache_v2:';
+const DEFAULT_FRESH_TTL_MS = 60_000; // 60 seconds fresh
+const DEFAULT_STALE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours stale-while-revalidate
+const GET_TIMEOUT_MS = 5_000; // 5 seconds max wait for GET before falling back
 
 class ApiClient {
   private cache = new Map<string, CacheItem<any>>();
   private inFlight = new Map<string, Promise<any>>();
+  private warmedUp = false;
+
+  constructor() {
+    if (typeof window !== 'undefined') {
+      this.hydrateFromStorage();
+      this.warmUpBackend();
+    }
+  }
+
+  private warmUpBackend() {
+    if (this.warmedUp || typeof window === 'undefined') return;
+    this.warmedUp = true;
+    // Non-blocking ping to wake up Render / backend instance immediately
+    fetch(`${API_BASE_URL}/health`, { method: 'GET', mode: 'cors' }).catch(() => {});
+  }
+
+  private hydrateFromStorage() {
+    try {
+      const now = Date.now();
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(STORAGE_CACHE_PREFIX)) {
+          const raw = localStorage.getItem(key);
+          if (!raw) continue;
+          const parsed = JSON.parse(raw) as CacheItem<any>;
+          if (parsed && parsed.staleUntil > now) {
+            const cacheKey = key.slice(STORAGE_CACHE_PREFIX.length);
+            this.cache.set(cacheKey, parsed);
+          } else {
+            localStorage.removeItem(key);
+          }
+        }
+      }
+    } catch {
+      // Ignore storage quota or private browsing errors
+    }
+  }
+
+  private saveToStorage(cacheKey: string, item: CacheItem<any>) {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(`${STORAGE_CACHE_PREFIX}${cacheKey}`, JSON.stringify(item));
+    } catch {
+      // Ignore storage quota errors
+    }
+  }
 
   private getToken(): string | null {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('propfirm_token');
+      return localStorage.getItem('propfirm_token') || sessionStorage.getItem('propfirm_token');
     }
     return null;
   }
 
-  private clearCache() {
+  public clearCache() {
     this.cache.clear();
+    if (typeof window !== 'undefined') {
+      try {
+        const keysToRemove: string[] = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith(STORAGE_CACHE_PREFIX)) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach((k) => localStorage.removeItem(k));
+      } catch {
+        // Ignore
+      }
+    }
   }
 
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  private async request<T>(endpoint: string, options: RequestInit = {}, timeoutMs?: number): Promise<T> {
     const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
     const token = this.getToken();
 
@@ -37,36 +103,60 @@ class ApiClient {
       headers['Content-Type'] = 'application/json';
     }
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timer =
+      controller && timeoutMs
+        ? setTimeout(() => {
+            controller.abort();
+          }, timeoutMs)
+        : null;
 
-    if (!response.ok) {
-      let errorMessage = 'An error occurred';
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.message || (Array.isArray(errorData.message) ? errorData.message.join(', ') : errorData.error) || errorMessage;
-      } catch {
-        errorMessage = response.statusText || `HTTP Error ${response.status}`;
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+        signal: controller ? controller.signal : options.signal,
+      });
+
+      if (!response.ok) {
+        let errorMessage = 'An error occurred';
+        try {
+          const errorData = await response.json();
+          errorMessage =
+            errorData.message ||
+            (Array.isArray(errorData.message) ? errorData.message.join(', ') : errorData.error) ||
+            errorMessage;
+        } catch {
+          errorMessage = response.statusText || `HTTP Error ${response.status}`;
+        }
+        const error: any = new Error(errorMessage);
+        error.status = response.status;
+        throw error;
       }
-      throw new Error(errorMessage);
-    }
 
-    // Handle 204 No Content
-    if (response.status === 204) {
-      return null as T;
-    }
+      // Handle 204 No Content
+      if (response.status === 204) {
+        return null as T;
+      }
 
-    return response.json();
+      return response.json();
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
   }
 
   /**
-   * High-concurrency GET with:
-   * 1. 15-second client memory cache (skips duplicate network roundtrips)
-   * 2. In-flight promise deduplication (simultaneous requests share 1 network call)
+   * Instant Stale-While-Revalidate GET:
+   * 1. Returns fresh cached data in 0ms.
+   * 2. If cached data is stale (up to 24h), returns stale data immediately in 0ms AND refreshes in background!
+   * 3. Deduplicates simultaneous in-flight network requests.
+   * 4. Enforces a fast 5s timeout so cold-starting servers never block the UI.
    */
-  async get<T>(endpoint: string, query?: Record<string, any>, options: { bypassCache?: boolean; ttlMs?: number } = {}): Promise<T> {
+  async get<T>(
+    endpoint: string,
+    query?: Record<string, any>,
+    options: { bypassCache?: boolean; ttlMs?: number; timeoutMs?: number } = {}
+  ): Promise<T> {
     let url = endpoint;
     if (query) {
       const searchParams = new URLSearchParams();
@@ -82,41 +172,50 @@ class ApiClient {
     }
 
     const token = this.getToken();
-    const cacheKey = `${token ? `auth:` : 'anon:'}${url}`;
+    const cacheKey = `${token ? `auth:${token.slice(-12)}:` : 'anon:'}${url}`;
     const now = Date.now();
-    const ttl = options.ttlMs ?? 15_000; // 15 seconds default
+    const ttl = options.ttlMs ?? DEFAULT_FRESH_TTL_MS;
+    const timeoutMs = options.timeoutMs ?? GET_TIMEOUT_MS;
 
-    // 1. Check in-memory cache if not bypassed
+    const performNetworkFetch = (): Promise<T> => {
+      const existing = this.inFlight.get(cacheKey);
+      if (existing) return existing as Promise<T>;
+
+      const promise = this.request<T>(url, { method: 'GET' }, timeoutMs)
+        .then((data) => {
+          const item: CacheItem<T> = {
+            data,
+            expiresAt: Date.now() + ttl,
+            staleUntil: Date.now() + DEFAULT_STALE_TTL_MS,
+          };
+          this.cache.set(cacheKey, item);
+          this.saveToStorage(cacheKey, item);
+          return data;
+        })
+        .finally(() => {
+          this.inFlight.delete(cacheKey);
+        });
+
+      this.inFlight.set(cacheKey, promise);
+      return promise;
+    };
+
     if (!options.bypassCache) {
       const cached = this.cache.get(cacheKey);
-      if (cached && cached.expiresAt > now) {
-        return cached.data as T;
+      if (cached) {
+        if (cached.expiresAt > now) {
+          // Fresh hit -> 0ms return
+          return cached.data as T;
+        }
+        if (cached.staleUntil > now) {
+          // Stale hit -> 0ms instant return + silent background revalidation
+          performNetworkFetch().catch(() => {});
+          return cached.data as T;
+        }
       }
     }
 
-    // 2. Check in-flight promise deduplication
-    const activePromise = this.inFlight.get(cacheKey);
-    if (activePromise) {
-      return activePromise as Promise<T>;
-    }
-
-    // 3. Initiate request with promise deduplication
-    const fetchPromise = this.request<T>(url, { method: 'GET' })
-      .then((data) => {
-        if (!options.bypassCache) {
-          this.cache.set(cacheKey, {
-            data,
-            expiresAt: Date.now() + ttl,
-          });
-        }
-        return data;
-      })
-      .finally(() => {
-        this.inFlight.delete(cacheKey);
-      });
-
-    this.inFlight.set(cacheKey, fetchPromise);
-    return fetchPromise;
+    return performNetworkFetch();
   }
 
   async post<T>(endpoint: string, data?: any): Promise<T> {
@@ -161,3 +260,4 @@ class ApiClient {
 }
 
 export const api = new ApiClient();
+

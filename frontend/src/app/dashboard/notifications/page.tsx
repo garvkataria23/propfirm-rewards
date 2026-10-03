@@ -68,7 +68,7 @@ const FALLBACK_NOTIFICATIONS: NotificationItem[] = [
 
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<NotificationItem[]>(FALLBACK_NOTIFICATIONS);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<'ALL' | 'UNREAD' | 'POINTS' | 'PURCHASE'>('ALL');
 
   useEffect(() => {

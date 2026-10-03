@@ -71,7 +71,7 @@ export default function RewardsStorePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [inStockOnly, setInStockOnly] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Redemption Modal state
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
@@ -94,29 +94,19 @@ export default function RewardsStorePage() {
   const [redemptionError, setRedemptionError] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([
-      api.get<Reward[]>('/rewards'),
-      api.get<Category[]>('/rewards/categories'),
-    ])
-      .then(([rewardsData, categoriesData]) => {
-        setRewards(rewardsData);
-        setCategories(categoriesData);
-      })
-      .catch((err) => {
-        console.warn('Backend unavailable, using rewards catalog fallback:', err);
-        const fallbackCats: Category[] = [
-          { id: 'c-1', name: 'Smartphones & Tablets', slug: 'smartphones-tablets' },
-          { id: 'c-2', name: 'Laptops & Workstations', slug: 'laptops-workstations' },
-          { id: 'c-3', name: 'Luxury Watches & Wearables', slug: 'watches-wearables' },
-          { id: 'c-4', name: 'Sneakers & Footwear', slug: 'sneakers-footwear' },
-          { id: 'c-5', name: 'Trading Displays & Hardware', slug: 'trading-hardware' },
-          { id: 'c-6', name: 'Audio & Studio Sound', slug: 'audio-sound' },
-          { id: 'c-7', name: 'Crypto & Security Hardware', slug: 'crypto-security' },
-          { id: 'c-8', name: 'Gift Cards & Vouchers', slug: 'gift-cards' },
-          { id: 'c-9', name: 'Trader Ergonomics & Desk', slug: 'trader-ergonomics' },
-        ];
-        const fallbackRews: Reward[] = [
-          // Smartphones & Tablets
+    const fallbackCats: Category[] = [
+      { id: 'c-1', name: 'Smartphones & Tablets', slug: 'smartphones-tablets' },
+      { id: 'c-2', name: 'Laptops & Workstations', slug: 'laptops-workstations' },
+      { id: 'c-3', name: 'Luxury Watches & Wearables', slug: 'watches-wearables' },
+      { id: 'c-4', name: 'Sneakers & Footwear', slug: 'sneakers-footwear' },
+      { id: 'c-5', name: 'Trading Displays & Hardware', slug: 'trading-hardware' },
+      { id: 'c-6', name: 'Audio & Studio Sound', slug: 'audio-sound' },
+      { id: 'c-7', name: 'Crypto & Security Hardware', slug: 'crypto-security' },
+      { id: 'c-8', name: 'Gift Cards & Vouchers', slug: 'gift-cards' },
+      { id: 'c-9', name: 'Trader Ergonomics & Desk', slug: 'trader-ergonomics' },
+    ];
+    const fallbackRews: Reward[] = [
+      // Smartphones & Tablets
           {
             id: 'rew-1',
             name: 'Apple iPhone 18 Pro Max (1TB - Cosmic Titanium)',
@@ -570,10 +560,23 @@ export default function RewardsStorePage() {
             category: fallbackCats[7],
           },
         ];
-        setCategories(fallbackCats);
-        setRewards(fallbackRews);
-      })
-      .finally(() => setLoading(false));
+
+    // Hydrate immediately in 0ms so user sees full catalog right away
+    setCategories((prev) => (prev.length > 0 ? prev : fallbackCats));
+    setRewards((prev) => (prev.length > 0 ? prev : fallbackRews));
+    setLoading(false);
+
+    Promise.all([
+      api.get<Reward[]>('/rewards').catch(() => null),
+      api.get<Category[]>('/rewards/categories').catch(() => null),
+    ]).then(([rewardsData, categoriesData]) => {
+      if (Array.isArray(rewardsData) && rewardsData.length > 0) {
+        setRewards(rewardsData);
+      }
+      if (Array.isArray(categoriesData) && categoriesData.length > 0) {
+        setCategories(categoriesData);
+      }
+    });
   }, []);
 
   useEffect(() => {

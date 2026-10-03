@@ -58,9 +58,6 @@ interface PointsTransaction {
 }
 
 export default function PointsLedgerPage() {
-  const [summary, setSummary] = useState<PointsSummary | null>(null);
-  const [transactions, setTransactions] = useState<PointsTransaction[]>([]);
-  const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<'ALL' | 'EARNED' | 'REDEEMED' | 'VIP' | 'ADMIN'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -114,6 +111,10 @@ export default function PointsLedgerPage() {
     pendingPoints: 4500,
   };
 
+  const [summary, setSummary] = useState<PointsSummary | null>(DEFAULT_SUMMARY);
+  const [transactions, setTransactions] = useState<PointsTransaction[]>(DEFAULT_TRANSACTIONS);
+  const [loading, setLoading] = useState(false);
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -129,23 +130,19 @@ export default function PointsLedgerPage() {
       pendingPoints: pending,
     };
 
+    // Hydrate immediately in 0ms
+    setSummary(userSummary);
+    setTransactions(localLedger as any);
+
     Promise.all([
-      api.get<PointsSummary>('/points/summary'),
-      api.get<{ transactions: PointsTransaction[] }>('/points/ledger', { limit: 100 }),
-    ])
-      .then(([sum, ledger]) => {
-        setSummary(sum || userSummary);
-        if (ledger.transactions && ledger.transactions.length > 0) {
-          setTransactions(ledger.transactions);
-        } else {
-          setTransactions(localLedger as any);
-        }
-      })
-      .catch(() => {
-        setSummary(userSummary);
-        setTransactions(localLedger as any);
-      })
-      .finally(() => setLoading(false));
+      api.get<PointsSummary>('/points/summary').catch(() => null),
+      api.get<{ transactions: PointsTransaction[] }>('/points/ledger', { limit: 100 }).catch(() => null),
+    ]).then(([sum, ledger]) => {
+      if (sum) setSummary(sum);
+      if (ledger?.transactions && ledger.transactions.length > 0) {
+        setTransactions(ledger.transactions);
+      }
+    });
   }, [user]);
 
   const getTypeBadge = (type: string) => {

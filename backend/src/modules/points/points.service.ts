@@ -7,59 +7,52 @@ export class PointsService {
   constructor(private prisma: PrismaService) {}
 
   async getUserSummary(userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { pointsBalance: true },
-    });
+    const [user, positiveCredits, redemptionsSum, pendingSubs, verifiedPurchases, activeRedemptions] =
+      await Promise.all([
+        this.prisma.user.findUnique({
+          where: { id: userId },
+          select: { pointsBalance: true },
+        }),
+        this.prisma.pointsLedger.aggregate({
+          where: {
+            userId,
+            points: { gt: 0 },
+          },
+          _sum: { points: true },
+        }),
+        this.prisma.pointsLedger.aggregate({
+          where: {
+            userId,
+            points: { lt: 0 },
+          },
+          _sum: { points: true },
+        }),
+        this.prisma.purchaseSubmission.findMany({
+          where: {
+            userId,
+            status: { in: ['PENDING', 'UNDER_REVIEW'] },
+          },
+          select: { pointsAwarded: true },
+        }),
+        this.prisma.purchaseSubmission.count({
+          where: {
+            userId,
+            status: 'APPROVED',
+          },
+        }),
+        this.prisma.redemption.count({
+          where: {
+            userId,
+            status: { in: ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED'] },
+          },
+        }),
+      ]);
 
     const availablePoints = user?.pointsBalance ?? 0;
-
-    // 2. Total Earned (sum of all positive ledger credits)
-    const positiveCredits = await this.prisma.pointsLedger.aggregate({
-      where: {
-        userId,
-        points: { gt: 0 },
-      },
-      _sum: { points: true },
-    });
     const totalPointsEarned = positiveCredits._sum.points || 0;
-
-    // 3. Total Redeemed (sum of negative points spent on rewards)
-    const redemptionsSum = await this.prisma.pointsLedger.aggregate({
-      where: {
-        userId,
-        points: { lt: 0 },
-      },
-      _sum: { points: true },
-    });
     const totalPointsRedeemed = Math.abs(redemptionsSum._sum.points || 0);
-
-    // 4. Pending Points (from submissions in PENDING or UNDER_REVIEW)
-    const pendingSubs = await this.prisma.purchaseSubmission.findMany({
-      where: {
-        userId,
-        status: { in: ['PENDING', 'UNDER_REVIEW'] },
-      },
-      select: { pointsAwarded: true },
-    });
     const pendingPoints = pendingSubs.reduce((acc, curr) => acc + (curr.pointsAwarded || 0), 0);
     const pendingPurchases = pendingSubs.length;
-
-    // 5. Total Verified Purchases
-    const verifiedPurchases = await this.prisma.purchaseSubmission.count({
-      where: {
-        userId,
-        status: 'APPROVED',
-      },
-    });
-
-    // 6. Active Redemptions
-    const activeRedemptions = await this.prisma.redemption.count({
-      where: {
-        userId,
-        status: { in: ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED'] },
-      },
-    });
 
     // 7. VIP Tier and Multiplier computation
     let tier: 'ROOKIE' | 'FUNDED' | 'MASTER' = 'ROOKIE';

@@ -3,9 +3,18 @@ import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class AdminService {
+  private statsCache = new Map<number, { data: any; expiresAt: number }>();
+  private readonly STATS_TTL_MS = 30_000; // 30s cache
+
   constructor(private prisma: PrismaService) {}
 
   async getDashboardStats(days = 30) {
+    const now = Date.now();
+    const cached = this.statsCache.get(days);
+    if (cached && cached.expiresAt > now) {
+      return cached.data;
+    }
+
     const sinceDate = new Date();
     sinceDate.setDate(sinceDate.getDate() - days);
 
@@ -71,11 +80,10 @@ export class AdminService {
       this.prisma.propFirm.count({ where: { isActive: true } }),
     ]);
 
-    // Trend chart data (last 7 or 14 points)
     const pointsIssued = pointsIssuedAgg._sum.points || 0;
     const pointsRedeemed = Math.abs(pointsRedeemedAgg._sum.points || 0);
 
-    return {
+    const result = {
       metrics: {
         totalUsers,
         newUsers,
@@ -96,6 +104,9 @@ export class AdminService {
       recentSubmissions,
       recentRedemptions,
     };
+
+    this.statsCache.set(days, { data: result, expiresAt: Date.now() + this.STATS_TTL_MS });
+    return result;
   }
 
   async getAuditLogs(query: {

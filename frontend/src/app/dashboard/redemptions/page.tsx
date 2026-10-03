@@ -70,8 +70,6 @@ interface Redemption {
 }
 
 export default function RedemptionsTrackingPage() {
-  const [redemptions, setRedemptions] = useState<Redemption[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState<'ALL' | 'IN_TRANSIT' | 'DELIVERED' | 'DIGITAL'>('ALL');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
@@ -168,21 +166,18 @@ export default function RedemptionsTrackingPage() {
     },
   ];
 
+  const [redemptions, setRedemptions] = useState<Redemption[]>(DEFAULT_REDEMPTIONS);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    setLoading(true);
     api
       .get<Redemption[]>('/redemptions')
       .then((data) => {
-        if (data && data.length > 0) {
+        if (Array.isArray(data) && data.length > 0) {
           setRedemptions(data);
-        } else {
-          setRedemptions(DEFAULT_REDEMPTIONS);
         }
       })
-      .catch(() => {
-        setRedemptions(DEFAULT_REDEMPTIONS);
-      })
-      .finally(() => setLoading(false));
+      .catch(() => {});
   }, []);
 
   const handleCopyCode = (text: string) => {

@@ -46,9 +46,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (user && STAFF_ROLES.includes(user.role)) {
-      api.get<{ metrics: { pendingVerification: number } }>('/admin/stats')
+      api.get<{ metrics: { pendingVerification: number } }>('/admin/stats', { days: 30 })
         .then((res) => {
-          setPendingCount(res.metrics?.pendingVerification || 0);
+          setPendingCount(res?.metrics?.pendingVerification || 0);
         })
         .catch(() => {});
     }

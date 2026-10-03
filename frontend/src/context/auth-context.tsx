@@ -38,15 +38,62 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const CACHED_USER_KEY = 'propfirm_cached_user_v1';
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<UserProfile | null>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedToken = localStorage.getItem('propfirm_token') || sessionStorage.getItem('propfirm_token');
+        const cachedUserRaw = localStorage.getItem(CACHED_USER_KEY);
+        if (savedToken && cachedUserRaw) {
+          const parsed = JSON.parse(cachedUserRaw);
+          if (parsed && parsed.id) return parsed;
+        }
+      } catch {
+        // Ignore parse error
+      }
+    }
+    return null;
+  });
+
+  const [token, setToken] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('propfirm_token') || sessionStorage.getItem('propfirm_token');
+    }
+    return null;
+  });
+
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const savedToken = localStorage.getItem('propfirm_token') || sessionStorage.getItem('propfirm_token');
+      if (!savedToken) return false;
+      const cachedUserRaw = localStorage.getItem(CACHED_USER_KEY);
+      if (cachedUserRaw) return false; // Instant 0ms hydration when cached user is present
+    }
+    return true;
+  });
+
+  const persistUser = useCallback((profile: UserProfile | null) => {
+    setUser(profile);
+    if (typeof window !== 'undefined') {
+      try {
+        if (profile) {
+          localStorage.setItem(CACHED_USER_KEY, JSON.stringify(profile));
+        } else {
+          localStorage.removeItem(CACHED_USER_KEY);
+        }
+      } catch {
+        // Ignore
+      }
+    }
+  }, []);
 
   const clearAuthSession = useCallback(() => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('propfirm_token');
       localStorage.removeItem('propfirm_remember_login');
+      localStorage.removeItem(CACHED_USER_KEY);
       sessionStorage.removeItem('propfirm_token');
     }
     setUser(null);
@@ -75,18 +122,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const profile = await api.get<UserProfile>('/auth/me');
       if (profile && profile.id) {
-        setUser(profile);
+        persistUser(profile);
         setToken(savedToken);
       } else {
         clearAuthSession();
       }
-    } catch {
-      // In production, an expired or invalid token clears authentication completely
-      clearAuthSession();
+    } catch (err: any) {
+      // Only clear session if backend explicitly returned 401 Unauthorized
+      if (err?.status === 401) {
+        clearAuthSession();
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [clearAuthSession]);
+  }, [clearAuthSession, persistUser]);
 
   useEffect(() => {
     refreshUser();
@@ -116,8 +165,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       setToken(response.token);
 
-      const profile = await api.get<UserProfile>('/auth/me');
-      setUser(profile);
+      // Immediately hydrate user from login response for 0ms redirect, and refresh full profile in background
+      if (response.user && response.user.id) {
+        persistUser(response.user);
+        api
+          .get<UserProfile>('/auth/me', undefined, { bypassCache: true })
+          .then((fullProfile) => {
+            if (fullProfile && fullProfile.id) persistUser(fullProfile);
+          })
+          .catch(() => {});
+        return response.user;
+      }
+
+      const profile = await api.get<UserProfile>('/auth/me', undefined, { bypassCache: true });
+      persistUser(profile);
       return profile;
     } catch (err: any) {
       clearAuthSession();
@@ -165,8 +226,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       setToken(response.token);
 
-      const profile = await api.get<UserProfile>('/auth/me');
-      setUser(profile);
+      if (response.user && response.user.id) {
+        persistUser(response.user);
+        api
+          .get<UserProfile>('/auth/me', undefined, { bypassCache: true })
+          .then((fullProfile) => {
+            if (fullProfile && fullProfile.id) persistUser(fullProfile);
+          })
+          .catch(() => {});
+        return response.user;
+      }
+
+      const profile = await api.get<UserProfile>('/auth/me', undefined, { bypassCache: true });
+      persistUser(profile);
       return profile;
     } catch (err: any) {
       clearAuthSession();
@@ -205,8 +277,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('propfirm_saved_email', cleanEmail);
       setToken(response.token);
 
-      const profile = await api.get<UserProfile>('/auth/me');
-      setUser(profile);
+      if (response.user && response.user.id) {
+        persistUser(response.user);
+        api
+          .get<UserProfile>('/auth/me', undefined, { bypassCache: true })
+          .then((fullProfile) => {
+            if (fullProfile && fullProfile.id) persistUser(fullProfile);
+          })
+          .catch(() => {});
+        return response.user;
+      }
+
+      const profile = await api.get<UserProfile>('/auth/me', undefined, { bypassCache: true });
+      persistUser(profile);
       return profile;
     } catch (err: any) {
       clearAuthSession();
@@ -221,6 +304,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
+    api.clearCache();
     clearAuthSession();
     if (typeof window !== 'undefined') {
       window.location.href = '/login';

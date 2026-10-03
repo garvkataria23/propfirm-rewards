@@ -60,7 +60,7 @@ export default function TraderWalletPage() {
   const { user } = useAuth();
   const [summary, setSummary] = useState<PointsSummary | null>(null);
   const [transactions, setTransactions] = useState<LedgerTx[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('ALL');
 
@@ -77,42 +77,36 @@ export default function TraderWalletPage() {
   const [payoutLoading, setPayoutLoading] = useState(false);
 
   const fetchWalletData = () => {
-    setLoading(true);
     const userEmail = user?.email || (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) || 'trader@example.com';
     const localLedger = userDataStore.getUserLedger(userEmail);
     const localPurchases = userDataStore.getUserPurchases(userEmail);
     const available = userDataStore.calculateAvailablePoints(userEmail);
     const pending = userDataStore.calculatePendingPoints(userEmail);
 
+    const fallbackSummary: PointsSummary = {
+      availablePoints: available,
+      totalPointsEarned: available + 22000,
+      totalPointsRedeemed: 22000,
+      pendingPoints: pending,
+      pendingPurchases: localPurchases.filter((p) => p.status === 'PENDING').length,
+      totalVerifiedPurchases: localPurchases.filter((p) => p.status === 'APPROVED').length,
+      activeRedemptions: 1,
+    };
+
+    // Hydrate immediately in 0ms
+    setSummary((prev) => prev || fallbackSummary);
+    setTransactions((prev) => (prev.length > 0 ? prev : (localLedger as any)));
+    setLoading(false);
+
     Promise.all([
-      api.get<PointsSummary>('/points/summary'),
-      api.get<{ transactions: LedgerTx[] }>('/points/ledger', { limit: 50 }),
-    ])
-      .then(([sum, ledger]) => {
-        setSummary(sum || {
-          availablePoints: available,
-          totalPointsEarned: available + 22000,
-          totalPointsRedeemed: 22000,
-          pendingPoints: pending,
-          pendingPurchases: localPurchases.filter((p) => p.status === 'PENDING').length,
-          totalVerifiedPurchases: localPurchases.filter((p) => p.status === 'APPROVED').length,
-          activeRedemptions: 1,
-        });
-        setTransactions(ledger?.transactions && ledger.transactions.length > 0 ? ledger.transactions : (localLedger as any));
-      })
-      .catch(() => {
-        setSummary({
-          availablePoints: available,
-          totalPointsEarned: available + 22000,
-          totalPointsRedeemed: 22000,
-          pendingPoints: pending,
-          pendingPurchases: localPurchases.filter((p) => p.status === 'PENDING').length,
-          totalVerifiedPurchases: localPurchases.filter((p) => p.status === 'APPROVED').length,
-          activeRedemptions: 1,
-        });
-        setTransactions(localLedger as any);
-      })
-      .finally(() => setLoading(false));
+      api.get<PointsSummary>('/points/summary').catch(() => null),
+      api.get<{ transactions: LedgerTx[] }>('/points/ledger', { limit: 50 }).catch(() => null),
+    ]).then(([sum, ledger]) => {
+      if (sum) setSummary(sum);
+      if (ledger?.transactions && ledger.transactions.length > 0) {
+        setTransactions(ledger.transactions);
+      }
+    });
   };
 
   useEffect(() => {

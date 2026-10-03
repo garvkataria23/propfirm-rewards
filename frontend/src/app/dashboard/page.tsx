@@ -79,7 +79,7 @@ export default function DashboardOverviewPage() {
   const [recentPurchases, setRecentPurchases] = useState<PurchaseSubmission[]>([]);
   const [recentTransactions, setRecentTransactions] = useState<PointsTransaction[]>([]);
   const [recentRedemptions, setRecentRedemptions] = useState<Redemption[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
 
   useEffect(() => {
@@ -93,51 +93,40 @@ export default function DashboardOverviewPage() {
     const available = userDataStore.calculateAvailablePoints(userEmail);
     const pending = userDataStore.calculatePendingPoints(userEmail);
 
+    const fallbackSummary: PointsSummary = {
+      availablePoints: available,
+      totalPointsEarned: available + 22000,
+      totalPointsRedeemed: 22000,
+      pendingPoints: pending,
+      pendingPurchases: localPurchases.filter((p) => p.status === 'PENDING').length,
+      totalVerifiedPurchases: localPurchases.filter((p) => p.status === 'APPROVED').length,
+      activeRedemptions: localRedemptions.filter((r) => r.status === 'SHIPPED').length,
+    };
+
+    // Hydrate immediately in 0ms so UI never waits on cold-start network calls
+    setSummary((prev) => prev || fallbackSummary);
+    setRecentPurchases((prev) => (prev.length > 0 ? prev : (localPurchases.slice(0, 5) as any)));
+    setRecentTransactions((prev) => (prev.length > 0 ? prev : (localLedger.slice(0, 5) as any)));
+    setRecentRedemptions((prev) => (prev.length > 0 ? prev : (localRedemptions.slice(0, 3) as any)));
+    setLoading(false);
+
     Promise.all([
-      api.get<PointsSummary>('/points/summary'),
-      api.get<PurchaseSubmission[]>('/purchases'),
-      api.get<{ transactions: PointsTransaction[] }>('/points/ledger', { limit: 5 }),
-      api.get<Redemption[]>('/redemptions'),
-    ])
-      .then(([sum, purchases, ledger, redemptions]) => {
-        setSummary(
-          sum || {
-            availablePoints: available,
-            totalPointsEarned: available + 22000,
-            totalPointsRedeemed: 22000,
-            pendingPoints: pending,
-            pendingPurchases: localPurchases.filter((p) => p.status === 'PENDING').length,
-            totalVerifiedPurchases: localPurchases.filter((p) => p.status === 'APPROVED').length,
-            activeRedemptions: localRedemptions.filter((r) => r.status === 'SHIPPED').length,
-          }
-        );
-        setRecentPurchases(
-          purchases && purchases.length > 0 ? purchases.slice(0, 5) : (localPurchases.slice(0, 5) as any)
-        );
-        setRecentTransactions(
-          ledger?.transactions && ledger.transactions.length > 0
-            ? ledger.transactions
-            : (localLedger.slice(0, 5) as any)
-        );
-        setRecentRedemptions(
-          redemptions && redemptions.length > 0 ? redemptions.slice(0, 3) : (localRedemptions.slice(0, 3) as any)
-        );
-      })
-      .catch(() => {
-        setSummary({
-          availablePoints: available,
-          totalPointsEarned: available + 22000,
-          totalPointsRedeemed: 22000,
-          pendingPoints: pending,
-          pendingPurchases: localPurchases.filter((p) => p.status === 'PENDING').length,
-          totalVerifiedPurchases: localPurchases.filter((p) => p.status === 'APPROVED').length,
-          activeRedemptions: localRedemptions.filter((r) => r.status === 'SHIPPED').length,
-        });
-        setRecentPurchases(localPurchases.slice(0, 5) as any);
-        setRecentTransactions(localLedger.slice(0, 5) as any);
-        setRecentRedemptions(localRedemptions.slice(0, 3) as any);
-      })
-      .finally(() => setLoading(false));
+      api.get<PointsSummary>('/points/summary').catch(() => null),
+      api.get<PurchaseSubmission[]>('/purchases').catch(() => null),
+      api.get<{ transactions: PointsTransaction[] }>('/points/ledger', { limit: 5 }).catch(() => null),
+      api.get<Redemption[]>('/redemptions').catch(() => null),
+    ]).then(([sum, purchases, ledger, redemptions]) => {
+      if (sum) setSummary(sum);
+      if (Array.isArray(purchases) && purchases.length > 0) {
+        setRecentPurchases(purchases.slice(0, 5));
+      }
+      if (ledger?.transactions && ledger.transactions.length > 0) {
+        setRecentTransactions(ledger.transactions);
+      }
+      if (Array.isArray(redemptions) && redemptions.length > 0) {
+        setRecentRedemptions(redemptions.slice(0, 3));
+      }
+    });
   }, [user]);
 
   const copyUniversalCode = () => {

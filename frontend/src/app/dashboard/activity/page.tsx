@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/auth-context';
+import { userDataStore } from '@/lib/userDataStore';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -35,10 +36,72 @@ export default function ActivityPage() {
   const { user } = useAuth();
   const [filter, setFilter] = useState<'ALL' | 'PURCHASE' | 'POINTS' | 'REDEMPTION'>('ALL');
   const [events, setEvents] = useState<ActivityEvent[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch ledger and submissions to create real-time activity events
+    const userEmail =
+      user?.email ||
+      (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) ||
+      'trader@example.com';
+
+    const buildEvents = (ledger: any[], purchases: any[], redemptions: any[]): ActivityEvent[] => {
+      const combined: ActivityEvent[] = [];
+      ledger.forEach((item: any) => {
+        combined.push({
+          id: `ledger-${item.id}`,
+          type: 'POINTS',
+          title: item.type === 'PURCHASE_REWARD' ? 'Points Credited' : item.description,
+          description: `${item.points > 0 ? '+' : ''}${item.points} Points • Balance: ${item.balanceAfter} PTS`,
+          timestamp: item.createdAt,
+          points: item.points,
+          link: '/dashboard/points',
+        });
+      });
+      purchases.forEach((p: any) => {
+        combined.push({
+          id: `purchase-${p.id}`,
+          type: 'PURCHASE',
+          title: `Submitted Purchase Proof: ${p.propFirm?.name || 'Prop Firm'}`,
+          description: `Order #${p.orderId} • Tier: ${p.accountType} ($${p.purchaseAmountUsd})`,
+          timestamp: p.createdAt,
+          status: p.status,
+          link: '/dashboard/purchases',
+        });
+      });
+      redemptions.forEach((r: any) => {
+        combined.push({
+          id: `redemption-${r.id}`,
+          type: 'REDEMPTION',
+          title: `Redeemed: ${r.reward?.name || 'Reward Item'}`,
+          description: `Spent ${(r.pointsSpent || 0).toLocaleString()} PTS • Status: ${r.status}`,
+          timestamp: r.createdAt,
+          status: r.status,
+          link: '/dashboard/redemptions',
+        });
+      });
+      if (combined.length === 0) {
+        combined.push({
+          id: 'welcome-1',
+          type: 'SECURITY',
+          title: 'Account Activated',
+          description: 'Welcome to PropNation! Account verified and initial access granted.',
+          timestamp: new Date().toISOString(),
+        });
+      }
+      combined.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      return combined;
+    };
+
+    // Hydrate immediately in 0ms from local store
+    const localEvents = buildEvents(
+      userDataStore.getUserLedger(userEmail),
+      userDataStore.getUserPurchases(userEmail),
+      userDataStore.getUserRedemptions(userEmail)
+    );
+    setEvents((prev) => (prev.length > 0 ? prev : localEvents));
+    setLoading(false);
+
+    // Fetch ledger and submissions in background
     Promise.all([
       api.get<any>('/points/ledger').catch(() => []),
       api.get<any>('/purchases').catch(() => []),

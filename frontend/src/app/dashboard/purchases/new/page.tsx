@@ -131,6 +131,107 @@ const DEMO_PROOF_EXAMPLES = [
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'pdf', 'mp4', 'mov', 'webm'];
 
+const FALLBACK_PROP_FIRMS: PropFirm[] = [
+  {
+    id: 'firm-2',
+    name: 'Pipstone Capital',
+    slug: 'pipstone-capital',
+    affiliateCode: 'NATION',
+    offers: [
+      { id: 'o-6', accountTierName: '$15K Pipstone Standard', purchasePriceUsd: 120, rewardPoints: 1200 },
+      { id: 'o-7', accountTierName: '$30K Pipstone Standard', purchasePriceUsd: 220, rewardPoints: 2200 },
+      { id: 'o-8', accountTierName: '$60K Pipstone Standard', purchasePriceUsd: 380, rewardPoints: 3800 },
+      { id: 'o-9', accountTierName: '$100K Pipstone Standard', purchasePriceUsd: 520, rewardPoints: 5200 },
+      { id: 'o-10', accountTierName: '$200K Pipstone Standard', purchasePriceUsd: 980, rewardPoints: 9800 },
+    ],
+  },
+  {
+    id: 'firm-1',
+    name: 'FundedSquad',
+    slug: 'fundedsquad',
+    affiliateCode: 'NATION',
+    offers: [
+      { id: 'o-1', accountTierName: '$10K Evaluation Challenge', purchasePriceUsd: 100, rewardPoints: 1000 },
+      { id: 'o-2', accountTierName: '$25K Evaluation Challenge', purchasePriceUsd: 200, rewardPoints: 2000 },
+      { id: 'o-3', accountTierName: '$50K Evaluation Challenge', purchasePriceUsd: 350, rewardPoints: 3500 },
+      { id: 'o-4', accountTierName: '$100K Evaluation Challenge', purchasePriceUsd: 550, rewardPoints: 5500 },
+      { id: 'o-5', accountTierName: '$200K Evaluation Challenge', purchasePriceUsd: 1000, rewardPoints: 10000 },
+    ],
+  },
+  {
+    id: 'firm-3',
+    name: 'FTMO',
+    slug: 'ftmo',
+    affiliateCode: 'NATION',
+    offers: [
+      { id: 'o-11', accountTierName: '$10K Evaluation Challenge', purchasePriceUsd: 175, rewardPoints: 1750 },
+      { id: 'o-12', accountTierName: '$25K Evaluation Challenge', purchasePriceUsd: 280, rewardPoints: 2800 },
+      { id: 'o-13', accountTierName: '$50K Evaluation Challenge', purchasePriceUsd: 390, rewardPoints: 3900 },
+      { id: 'o-14', accountTierName: '$100K Evaluation Challenge', purchasePriceUsd: 600, rewardPoints: 6000 },
+      { id: 'o-15', accountTierName: '$200K Evaluation Challenge', purchasePriceUsd: 1180, rewardPoints: 11800 },
+    ],
+  },
+  {
+    id: 'firm-4',
+    name: 'FundedNext',
+    slug: 'fundednext',
+    affiliateCode: 'NATION',
+    offers: [
+      { id: 'o-16', accountTierName: '$15K Stellar 2-Step', purchasePriceUsd: 119, rewardPoints: 1190 },
+      { id: 'o-17', accountTierName: '$25K Stellar 2-Step', purchasePriceUsd: 199, rewardPoints: 1990 },
+      { id: 'o-18', accountTierName: '$50K Stellar 2-Step', purchasePriceUsd: 299, rewardPoints: 2990 },
+      { id: 'o-19', accountTierName: '$100K Stellar 2-Step', purchasePriceUsd: 549, rewardPoints: 5490 },
+      { id: 'o-20', accountTierName: '$200K Stellar 2-Step', purchasePriceUsd: 1099, rewardPoints: 10990 },
+    ],
+  },
+  {
+    id: 'firm-5',
+    name: 'Funding Pips',
+    slug: 'funding-pips',
+    affiliateCode: 'NATION',
+    offers: [
+      { id: 'o-21', accountTierName: '$5K Evaluation 2-Step', purchasePriceUsd: 32, rewardPoints: 320 },
+      { id: 'o-22', accountTierName: '$25K Evaluation 2-Step', purchasePriceUsd: 139, rewardPoints: 1390 },
+      { id: 'o-23', accountTierName: '$50K Evaluation 2-Step', purchasePriceUsd: 239, rewardPoints: 2390 },
+      { id: 'o-24', accountTierName: '$100K Evaluation 2-Step', purchasePriceUsd: 399, rewardPoints: 3990 },
+    ],
+  },
+  {
+    id: 'firm-6',
+    name: 'Apex Trader Funding',
+    slug: 'apex-trader-funding',
+    affiliateCode: 'NATION',
+    offers: [
+      { id: 'o-25', accountTierName: '$25K Full Futures', purchasePriceUsd: 147, rewardPoints: 1470 },
+      { id: 'o-26', accountTierName: '$50K Full Futures', purchasePriceUsd: 167, rewardPoints: 1670 },
+      { id: 'o-27', accountTierName: '$100K Full Futures', purchasePriceUsd: 207, rewardPoints: 2070 },
+      { id: 'o-28', accountTierName: '$150K Full Futures', purchasePriceUsd: 297, rewardPoints: 2970 },
+    ],
+  },
+  {
+    id: 'firm-7',
+    name: 'Topstep',
+    slug: 'topstep',
+    affiliateCode: 'NATION',
+    offers: [
+      { id: 'o-29', accountTierName: '$50K Trading Combine', purchasePriceUsd: 49, rewardPoints: 490 },
+      { id: 'o-30', accountTierName: '$100K Trading Combine', purchasePriceUsd: 99, rewardPoints: 990 },
+      { id: 'o-31', accountTierName: '$150K Trading Combine', purchasePriceUsd: 149, rewardPoints: 1490 },
+    ],
+  },
+  {
+    id: 'firm-8',
+    name: 'MyFundedFutures',
+    slug: 'myfundedfutures',
+    affiliateCode: 'NATION',
+    offers: [
+      { id: 'o-32', accountTierName: '$50K Starter Plan', purchasePriceUsd: 80, rewardPoints: 800 },
+      { id: 'o-33', accountTierName: '$100K Starter Plan', purchasePriceUsd: 150, rewardPoints: 1500 },
+      { id: 'o-34', accountTierName: '$150K Expert Plan', purchasePriceUsd: 375, rewardPoints: 3750 },
+    ],
+  },
+];
+
 export default function SubmitPurchasePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -138,14 +239,14 @@ export default function SubmitPurchasePage() {
   const preSelectedFirmId = searchParams.get('propFirmId');
   const preSelectedOfferId = searchParams.get('offerId');
 
-  const [propFirms, setPropFirms] = useState<PropFirm[]>([]);
-  const [selectedFirmId, setSelectedFirmId] = useState<string>(preSelectedFirmId || '');
-  const [selectedOfferId, setSelectedOfferId] = useState<string>(preSelectedOfferId || '');
+  const [propFirms, setPropFirms] = useState<PropFirm[]>(FALLBACK_PROP_FIRMS);
+  const [selectedFirmId, setSelectedFirmId] = useState<string>(preSelectedFirmId || FALLBACK_PROP_FIRMS[0].id);
+  const [selectedOfferId, setSelectedOfferId] = useState<string>(preSelectedOfferId || FALLBACK_PROP_FIRMS[0].offers[0].id);
 
   const [orderId, setOrderId] = useState('');
   const [accountId, setAccountId] = useState('');
   const [purchaseDate, setPurchaseDate] = useState(new Date().toISOString().split('T')[0]);
-  const [purchaseAmountUsd, setPurchaseAmountUsd] = useState<number | string>('');
+  const [purchaseAmountUsd, setPurchaseAmountUsd] = useState<number | string>(FALLBACK_PROP_FIRMS[0].offers[0].purchasePriceUsd);
   const [emailUsed, setEmailUsed] = useState(user?.email || '');
   const [referralCodeUsed, setReferralCodeUsed] = useState('NATION');
   const [notes, setNotes] = useState('');
@@ -188,12 +289,9 @@ export default function SubmitPurchasePage() {
       setActiveIntent(intent);
     }
 
-    api.get<PropFirm[]>('/prop-firms').then((data) => {
-      setPropFirms(data);
-
-      // Priority 1: URL Query parameter ?propFirmId=...
+    const applyFirmSelection = (data: PropFirm[]) => {
       if (preSelectedFirmId) {
-        const found = data.find((f) => f.id === preSelectedFirmId);
+        const found = data.find((f) => f.id === preSelectedFirmId || f.slug === preSelectedFirmId);
         if (found) {
           setSelectedFirmId(found.id);
           setReferralCodeUsed(found.affiliateCode || 'NATION');
@@ -204,9 +302,7 @@ export default function SubmitPurchasePage() {
             }
           }
         }
-      }
-      // Priority 2: 1-Click Referral Auto-Apply Intent Session (clicked prop firm link recently)
-      else if (intent) {
+      } else if (intent) {
         const found = data.find((f) => f.id === intent.firmId || f.slug === intent.firmSlug);
         if (found) {
           setSelectedFirmId(found.id);
@@ -221,9 +317,7 @@ export default function SubmitPurchasePage() {
             setPlatform(intent.platform);
           }
         }
-      }
-      // Priority 3: Default to first firm
-      else if (data.length > 0 && !selectedFirmId) {
+      } else if (data.length > 0 && !selectedFirmId) {
         setSelectedFirmId(data[0].id);
         setReferralCodeUsed(data[0].affiliateCode || 'NATION');
         if (data[0].offers?.length > 0) {
@@ -231,7 +325,20 @@ export default function SubmitPurchasePage() {
           setPurchaseAmountUsd(data[0].offers[0].purchasePriceUsd);
         }
       }
-    }).catch(console.error);
+    };
+
+    // Hydrate selection immediately from FALLBACK_PROP_FIRMS
+    applyFirmSelection(FALLBACK_PROP_FIRMS);
+
+    api
+      .get<PropFirm[]>('/prop-firms')
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setPropFirms(data);
+          applyFirmSelection(data);
+        }
+      })
+      .catch(() => {});
   }, [preSelectedFirmId, preSelectedOfferId]);
 
   // Clean up object URLs on unmount
