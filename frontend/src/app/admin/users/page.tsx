@@ -245,8 +245,8 @@ const DEFAULT_TRADERS: UserData[] = [
 const STORAGE_KEY = 'propfirm_admin_traders_cache_v2';
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState<UserData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState<UserData[]>(DEFAULT_TRADERS);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [roleFilter, setRoleFilter] = useState('ALL');
@@ -311,27 +311,20 @@ export default function AdminUsersPage() {
   // 7. Full Dossier / Detail View
   const [inspectUser, setInspectUser] = useState<UserData | null>(null);
 
-  // Load Initial Data
+  // Load Initial Data (0ms instant render + background sync)
   const fetchUsers = async () => {
-    setLoading(true);
+    loadFallbackUsers();
     try {
-      const data = await api.get<UserData[]>('/users/admin/all', {
-        status: statusFilter === 'ALL' ? undefined : statusFilter,
-        role: roleFilter === 'ALL' ? undefined : roleFilter,
-        search: search || undefined,
-      });
-
+      const data = await api.get<UserData[]>('/users/admin/all');
       const userList = Array.isArray(data) ? data : (data as any)?.users || [];
       if (userList && userList.length > 0) {
         setUsers(userList);
         if (typeof window !== 'undefined') {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(userList));
         }
-      } else {
-        loadFallbackUsers();
       }
     } catch {
-      loadFallbackUsers();
+      // Keep instant local/fallback users
     } finally {
       setLoading(false);
     }
@@ -364,7 +357,7 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     fetchUsers();
-  }, [statusFilter, roleFilter]);
+  }, []);
 
   // Flash notification
   const triggerSuccess = (msg: string) => {

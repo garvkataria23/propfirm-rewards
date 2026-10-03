@@ -50,9 +50,9 @@ export default function VerificationPage() {
     const userEmail =
       user?.email ||
       (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) ||
-      'trader@example.com';
+      'anonymous';
     const localPurchases = userDataStore.getUserPurchases(userEmail);
-    setSubmissions((prev) => (prev.length > 0 ? prev : (localPurchases as any)));
+    setSubmissions(localPurchases as any);
     setLoading(false);
 
     api

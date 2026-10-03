@@ -9,12 +9,15 @@ interface CacheItem<T> {
 const STORAGE_CACHE_PREFIX = 'propfirm_cache_v2:';
 const DEFAULT_FRESH_TTL_MS = 60_000; // 60 seconds fresh
 const DEFAULT_STALE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours stale-while-revalidate
-const GET_TIMEOUT_MS = 5_000; // 5 seconds max wait for GET before falling back
+const GET_TIMEOUT_MS = 1_200; // 1.2 seconds max wait before falling back
+const MUTATION_TIMEOUT_MS = 1_500; // 1.5 seconds max wait for mutations
+const OFFLINE_COOLDOWN_MS = 60_000; // 60s fast-fail circuit breaker when backend is unreachable
 
 class ApiClient {
   private cache = new Map<string, CacheItem<any>>();
   private inFlight = new Map<string, Promise<any>>();
   private warmedUp = false;
+  private backendOfflineUntil = 0;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -26,8 +29,23 @@ class ApiClient {
   private warmUpBackend() {
     if (this.warmedUp || typeof window === 'undefined') return;
     this.warmedUp = true;
-    // Non-blocking ping to wake up Render / backend instance immediately
-    fetch(`${API_BASE_URL}/health`, { method: 'GET', mode: 'cors' }).catch(() => {});
+    const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const t = ctrl ? setTimeout(() => ctrl.abort(), 1_000) : null;
+    // Non-blocking ping to check/wake up backend instance immediately
+    fetch(`${API_BASE_URL}/health`, {
+      method: 'GET',
+      mode: 'cors',
+      signal: ctrl?.signal,
+    })
+      .then(() => {
+        this.backendOfflineUntil = 0;
+      })
+      .catch(() => {
+        this.backendOfflineUntil = Date.now() + OFFLINE_COOLDOWN_MS;
+      })
+      .finally(() => {
+        if (t) clearTimeout(t);
+      });
   }
 
   private hydrateFromStorage() {
@@ -86,7 +104,12 @@ class ApiClient {
     }
   }
 
-  private async request<T>(endpoint: string, options: RequestInit = {}, timeoutMs?: number): Promise<T> {
+  private async request<T>(endpoint: string, options: RequestInit = {}, timeoutMs = MUTATION_TIMEOUT_MS): Promise<T> {
+    // Fast-fail in 0ms if backend is currently marked unreachable
+    if (this.backendOfflineUntil > Date.now()) {
+      throw new Error('Backend offline (fast-fail cache active)');
+    }
+
     const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
     const token = this.getToken();
 
@@ -118,6 +141,8 @@ class ApiClient {
         signal: controller ? controller.signal : options.signal,
       });
 
+      this.backendOfflineUntil = 0;
+
       if (!response.ok) {
         let errorMessage = 'An error occurred';
         try {
@@ -140,6 +165,12 @@ class ApiClient {
       }
 
       return response.json();
+    } catch (err: any) {
+      // If fetch threw a network error or AbortError, trip the circuit breaker so future calls resolve in 0ms
+      if (!err.status) {
+        this.backendOfflineUntil = Date.now() + OFFLINE_COOLDOWN_MS;
+      }
+      throw err;
     } finally {
       if (timer) clearTimeout(timer);
     }

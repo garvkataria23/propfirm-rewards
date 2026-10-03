@@ -26,6 +26,8 @@ import {
   ShieldCheck,
   Zap,
 } from 'lucide-react';
+import { useAuth } from '@/context/auth-context';
+import { userDataStore } from '@/lib/userDataStore';
 
 interface UserAddress {
   fullName: string;
@@ -70,6 +72,7 @@ interface Redemption {
 }
 
 export default function RedemptionsTrackingPage() {
+  const { user } = useAuth();
   const [selectedTab, setSelectedTab] = useState<'ALL' | 'IN_TRANSIT' | 'DELIVERED' | 'DIGITAL'>('ALL');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
@@ -77,99 +80,17 @@ export default function RedemptionsTrackingPage() {
   const [activeTrackingModal, setActiveTrackingModal] = useState<Redemption | null>(null);
   const [waPingEnabled, setWaPingEnabled] = useState(true);
 
-  // Default seed dataset for instant rich experience
-  const DEFAULT_REDEMPTIONS: Redemption[] = [
-    {
-      id: 'RDM-88219',
-      redemptionCode: 'RDM-AIRPODS-991',
-      pointsSpent: 22000,
-      status: 'SHIPPED',
-      courier: 'DHL Express Worldwide',
-      trackingNumber: 'DHL-882941029',
-      estimatedDelivery: 'Tomorrow, By 5:00 PM',
-      shippingNotes: 'Priority insured air courier delivery with signature required.',
-      createdAt: '2026-10-01T10:14:00Z',
-      updatedAt: '2026-10-02T08:30:00Z',
-      reward: {
-        name: 'Apple AirPods Pro (2nd Gen - MagSafe USB-C)',
-        imageUrl: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80',
-        description: 'Active Noise Cancellation, Adaptive Audio, Personalized Spatial Audio.',
-        category: 'Electronics & Audio',
-      },
-      shippingAddress: {
-        fullName: 'Verified Trader (Demo)',
-        phone: '+1 (555) 019-2834',
-        addressLine1: 'Suite 1400, Financial District',
-        addressLine2: 'Tower B',
-        city: 'New York',
-        state: 'NY',
-        postalCode: '10005',
-        country: 'United States',
-      },
-      checkpoints: [
-        { time: 'Today, 09:15 AM', location: 'Local Delivery Hub', status: 'Out for delivery with express courier van #42', completed: true },
-        { time: 'Yesterday, 11:30 PM', location: 'International Air Hub', status: 'Transit flight departed to Destination Country', completed: true },
-        { time: 'Oct 01, 04:30 PM', location: 'PropNation Vault, Singapore', status: 'Package inspected, serialized & handed to DHL Express', completed: true },
-        { time: 'Oct 01, 10:14 AM', location: 'PropNation Escrow System', status: 'Redemption order verified & points debited (-22,000 PTS)', completed: true },
-      ],
-    },
-    {
-      id: 'RDM-88190',
-      redemptionCode: 'RDM-IPAD-774',
-      pointsSpent: 59000,
-      status: 'DELIVERED',
-      courier: 'FedEx Priority',
-      trackingNumber: 'FDX-994102847',
-      estimatedDelivery: 'Delivered on Sep 28',
-      shippingNotes: 'Signed by recipient at main reception.',
-      createdAt: '2026-09-24T14:20:00Z',
-      updatedAt: '2026-09-28T16:45:00Z',
-      reward: {
-        name: 'Apple iPad Air 11" M2 Chip (128GB Wi-Fi - Space Gray)',
-        imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80',
-        description: 'Ultra-fast M2 chip, Liquid Retina display, Apple Pencil Pro support.',
-        category: 'Tech Gadgets',
-      },
-      shippingAddress: {
-        fullName: 'Verified Trader (Demo)',
-        phone: '+1 (555) 019-2834',
-        addressLine1: 'Suite 1400, Financial District',
-        addressLine2: 'Tower B',
-        city: 'New York',
-        state: 'NY',
-        postalCode: '10005',
-        country: 'United States',
-      },
-      checkpoints: [
-        { time: 'Sep 28, 04:45 PM', location: 'Destination Facility', status: 'Delivered - Signed by Verified Trader', completed: true },
-        { time: 'Sep 27, 08:00 AM', location: 'Regional Hub', status: 'Customs cleared & dispatched to local facility', completed: true },
-        { time: 'Sep 25, 02:15 PM', location: 'Singapore Hub', status: 'International shipment picked up by FedEx', completed: true },
-        { time: 'Sep 24, 02:20 PM', location: 'PropNation System', status: 'Order confirmed & processed', completed: true },
-      ],
-    },
-    {
-      id: 'RDM-88155',
-      redemptionCode: 'RDM-PASS-552',
-      pointsSpent: 39900,
-      status: 'DELIVERED',
-      isDigital: true,
-      voucherCode: 'FP100K-PASS-99420-CLAIMED',
-      shippingNotes: 'Instant digital challenge evaluation code activated.',
-      createdAt: '2026-09-18T11:00:00Z',
-      updatedAt: '2026-09-18T11:02:00Z',
-      reward: {
-        name: 'Funding Pips $100K 2-Step Evaluation (Free Pass)',
-        imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&auto=format&fit=crop&q=80',
-        description: '100% Free challenge evaluation pass with zero fee. Direct account access.',
-        category: 'Prop Firm Passes',
-      },
-    },
-  ];
-
-  const [redemptions, setRedemptions] = useState<Redemption[]>(DEFAULT_REDEMPTIONS);
+  const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const userEmail =
+      user?.email ||
+      (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) ||
+      'anonymous';
+    const localRedemptions = userDataStore.getUserRedemptions(userEmail);
+    setRedemptions(localRedemptions as Redemption[]);
+
     api
       .get<Redemption[]>('/redemptions')
       .then((data) => {
@@ -178,7 +99,7 @@ export default function RedemptionsTrackingPage() {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [user]);
 
   const handleCopyCode = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -333,8 +254,36 @@ export default function RedemptionsTrackingPage() {
 
       {/* Redemptions Cards Feed */}
       <div className="space-y-6">
-        {filteredRedemptions.map((rdm) => {
-          const stepIdx = getStepProgress(rdm.status);
+        {filteredRedemptions.length === 0 ? (
+          <Card className="p-12 text-center border-dashed border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 space-y-4">
+            <div className="h-14 w-14 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mx-auto">
+              <Package className="h-7 w-7" />
+            </div>
+            <div className="space-y-1 max-w-md mx-auto">
+              <h3 className="text-base font-black text-slate-900 dark:text-white">
+                No Reward Orders Yet
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Your account starts fresh with 0 redemptions. Submit a prop firm purchase proof to earn points, then claim Apple hardware, gaming gear, or free evaluation passes here.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <Link href="/dashboard/purchases/new">
+                <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold">
+                  Submit Purchase Proof
+                </Button>
+              </Link>
+              <Link href="/rewards">
+                <Button size="sm" variant="outline">
+                  <Gift className="h-4 w-4 mr-1.5" />
+                  Browse Rewards Store
+                </Button>
+              </Link>
+            </div>
+          </Card>
+        ) : (
+          filteredRedemptions.map((rdm) => {
+            const stepIdx = getStepProgress(rdm.status);
 
           return (
             <Card
@@ -531,7 +480,8 @@ export default function RedemptionsTrackingPage() {
               )}
             </Card>
           );
-        })}
+          })
+        )}
       </div>
 
       {/* Live Courier Radar Modal */}

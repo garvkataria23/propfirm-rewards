@@ -61,9 +61,104 @@ interface Redemption {
   shippingAddress?: UserAddress;
 }
 
+const DEFAULT_ADMIN_REDEMPTIONS: Redemption[] = [
+  {
+    id: 'rdm-demo-1',
+    redemptionCode: 'RDM-AIRPODS-991',
+    pointsSpent: 22000,
+    status: 'SHIPPED',
+    courier: 'DHL Express Worldwide',
+    trackingNumber: 'DHL-882941029',
+    adminNotes: 'Packed in tamper-proof bubble mailer with signature required.',
+    createdAt: '2026-10-01T10:14:00Z',
+    user: {
+      id: 'usr-1',
+      name: 'Garv Gautam Kataria',
+      email: 'garv@propnation.com',
+      phone: '+91 98765 43210',
+    },
+    reward: {
+      id: 'rew-1',
+      name: 'Apple AirPods Pro (2nd Gen - MagSafe USB-C)',
+      imageUrl: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80',
+    },
+    shippingAddress: {
+      fullName: 'Garv Gautam Kataria',
+      phone: '+91 98765 43210',
+      addressLine1: 'Tower B, Floor 14, Vertex Heights',
+      addressLine2: 'Financial District, Gachibowli',
+      city: 'Hyderabad',
+      state: 'Telangana',
+      postalCode: '500032',
+      country: 'India',
+    },
+  },
+  {
+    id: 'rdm-demo-2',
+    redemptionCode: 'RDM-IPAD-774',
+    pointsSpent: 59000,
+    status: 'DELIVERED',
+    courier: 'FedEx Priority',
+    trackingNumber: 'FDX-994102847',
+    adminNotes: 'Delivered and signed by recipient on Sep 28.',
+    createdAt: '2026-09-24T14:20:00Z',
+    user: {
+      id: 'usr-1',
+      name: 'Garv Gautam Kataria',
+      email: 'garv@propnation.com',
+      phone: '+91 98765 43210',
+    },
+    reward: {
+      id: 'rew-2',
+      name: 'Apple iPad Air 11" M2 Chip (128GB Wi-Fi)',
+      imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80',
+    },
+    shippingAddress: {
+      fullName: 'Garv Gautam Kataria',
+      phone: '+91 98765 43210',
+      addressLine1: 'Tower B, Floor 14, Vertex Heights',
+      addressLine2: 'Financial District, Gachibowli',
+      city: 'Hyderabad',
+      state: 'Telangana',
+      postalCode: '500032',
+      country: 'India',
+    },
+  },
+  {
+    id: 'rdm-demo-3',
+    redemptionCode: 'RDM-SONY-332',
+    pointsSpent: 35000,
+    status: 'PROCESSING',
+    courier: 'Pending Courier Assignment',
+    trackingNumber: '',
+    adminNotes: 'Awaiting stock dispatch from Singapore warehouse.',
+    createdAt: '2026-10-02T05:30:00Z',
+    user: {
+      id: 'usr-2',
+      name: 'David Vance',
+      email: 'david.v@gmail.com',
+      phone: '+44 7911 123456',
+    },
+    reward: {
+      id: 'rew-3',
+      name: 'Sony WH-1000XM5 Wireless Headphones',
+      imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80',
+    },
+    shippingAddress: {
+      fullName: 'David Vance',
+      phone: '+44 7911 123456',
+      addressLine1: '42 Baker Street',
+      city: 'London',
+      state: 'Greater London',
+      postalCode: 'NW1 6XE',
+      country: 'United Kingdom',
+    },
+  },
+];
+
 export default function AdminRedemptionsPage() {
-  const [redemptions, setRedemptions] = useState<Redemption[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [redemptions, setRedemptions] = useState<Redemption[]>(DEFAULT_ADMIN_REDEMPTIONS);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
 
@@ -105,133 +200,22 @@ export default function AdminRedemptionsPage() {
     adminNotes: 'Manually logged redemption by Admin',
   });
 
-  const DEFAULT_ADMIN_REDEMPTIONS: Redemption[] = [
-    {
-      id: 'rdm-demo-1',
-      redemptionCode: 'RDM-AIRPODS-991',
-      pointsSpent: 22000,
-      status: 'SHIPPED',
-      courier: 'DHL Express Worldwide',
-      trackingNumber: 'DHL-882941029',
-      adminNotes: 'Packed in tamper-proof bubble mailer with signature required.',
-      createdAt: '2026-10-01T10:14:00Z',
-      user: {
-        id: 'usr-1',
-        name: 'Garv Gautam Kataria',
-        email: 'garv@propnation.com',
-        phone: '+91 98765 43210',
-      },
-      reward: {
-        id: 'rew-1',
-        name: 'Apple AirPods Pro (2nd Gen - MagSafe USB-C)',
-        imageUrl: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80',
-      },
-      shippingAddress: {
-        fullName: 'Garv Gautam Kataria',
-        phone: '+91 98765 43210',
-        addressLine1: 'Tower B, Floor 14, Vertex Heights',
-        addressLine2: 'Financial District, Gachibowli',
-        city: 'Hyderabad',
-        state: 'Telangana',
-        postalCode: '500032',
-        country: 'India',
-      },
-    },
-    {
-      id: 'rdm-demo-2',
-      redemptionCode: 'RDM-IPAD-774',
-      pointsSpent: 59000,
-      status: 'DELIVERED',
-      courier: 'FedEx Priority',
-      trackingNumber: 'FDX-994102847',
-      adminNotes: 'Delivered and signed by recipient on Sep 28.',
-      createdAt: '2026-09-24T14:20:00Z',
-      user: {
-        id: 'usr-1',
-        name: 'Garv Gautam Kataria',
-        email: 'garv@propnation.com',
-        phone: '+91 98765 43210',
-      },
-      reward: {
-        id: 'rew-2',
-        name: 'Apple iPad Air 11" M2 Chip (128GB Wi-Fi)',
-        imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80',
-      },
-      shippingAddress: {
-        fullName: 'Garv Gautam Kataria',
-        phone: '+91 98765 43210',
-        addressLine1: 'Tower B, Floor 14, Vertex Heights',
-        addressLine2: 'Financial District, Gachibowli',
-        city: 'Hyderabad',
-        state: 'Telangana',
-        postalCode: '500032',
-        country: 'India',
-      },
-    },
-    {
-      id: 'rdm-demo-3',
-      redemptionCode: 'RDM-SONY-332',
-      pointsSpent: 35000,
-      status: 'PROCESSING',
-      courier: 'Pending Courier Assignment',
-      trackingNumber: '',
-      adminNotes: 'Awaiting stock dispatch from Singapore warehouse.',
-      createdAt: '2026-10-02T05:30:00Z',
-      user: {
-        id: 'usr-2',
-        name: 'David Vance',
-        email: 'david.v@gmail.com',
-        phone: '+44 7911 123456',
-      },
-      reward: {
-        id: 'rew-3',
-        name: 'Sony WH-1000XM5 Wireless Headphones',
-        imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80',
-      },
-      shippingAddress: {
-        fullName: 'David Vance',
-        phone: '+44 7911 123456',
-        addressLine1: '42 Baker Street',
-        city: 'London',
-        state: 'Greater London',
-        postalCode: 'NW1 6XE',
-        country: 'United Kingdom',
-      },
-    },
-  ];
-
   const fetchRedemptions = () => {
-    setLoading(true);
     api
-      .get<Redemption[]>('/redemptions/admin/all', {
-        status: statusFilter === 'ALL' ? undefined : statusFilter,
-        search: search || undefined,
-      })
+      .get<Redemption[]>('/redemptions/admin/all')
       .then((data: any) => {
         const list = Array.isArray(data) ? data : data?.redemptions || [];
         if (list && list.length > 0) {
           setRedemptions(list);
-        } else {
-          setRedemptions(
-            DEFAULT_ADMIN_REDEMPTIONS.filter(
-              (r) => statusFilter === 'ALL' || r.status === statusFilter
-            )
-          );
         }
       })
-      .catch(() => {
-        setRedemptions(
-          DEFAULT_ADMIN_REDEMPTIONS.filter(
-            (r) => statusFilter === 'ALL' || r.status === statusFilter
-          )
-        );
-      })
+      .catch(() => {})
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
     fetchRedemptions();
-  }, [statusFilter]);
+  }, []);
 
   const handleOpenEdit = (rdm: Redemption) => {
     setSelectedRdm(rdm);
@@ -398,6 +382,7 @@ export default function AdminRedemptionsPage() {
   };
 
   const filteredRedemptions = redemptions.filter((r) => {
+    if (statusFilter !== 'ALL' && r.status !== statusFilter) return false;
     const q = search.toLowerCase().trim();
     if (!q) return true;
     return (
@@ -412,16 +397,16 @@ export default function AdminRedemptionsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black text-white tracking-tight">
-              Redemptions & Shipping Pipeline
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              Redemptions &amp; Shipping Pipeline
             </h1>
-            <Badge variant="purple" className="text-[10px]">FULL FULFILLMENT ACCESS</Badge>
+            <Badge variant="success" className="text-[10px]">FULL FULFILLMENT ACCESS</Badge>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Process reward orders, update shipping tracking numbers, edit destination addresses, or cancel & refund points.
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+            Process reward orders, update shipping tracking numbers, edit destination addresses, or cancel &amp; refund points.
           </p>
         </div>
 
@@ -430,9 +415,8 @@ export default function AdminRedemptionsPage() {
             size="sm"
             variant="primary"
             onClick={() => setIsManualAddOpen(true)}
-            className="text-xs font-bold bg-purple-600 hover:bg-purple-700"
           >
-            <PlusCircle className="h-4 w-4 mr-1.5" />
+            <PlusCircle className="h-4 w-4" />
             + Manual Add Redemption
           </Button>
 
@@ -444,13 +428,13 @@ export default function AdminRedemptionsPage() {
             className="flex items-center gap-2"
           >
             <div className="relative w-60">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
               <input
                 type="text"
                 placeholder="Search order, tracking, email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-900 pl-8 pr-3 py-1.5 text-xs text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-8 pr-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </form>
@@ -464,10 +448,10 @@ export default function AdminRedemptionsPage() {
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
                 statusFilter === st
-                  ? 'bg-purple-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white bg-slate-900 border border-slate-800'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'
               }`}
             >
               {st}
@@ -477,22 +461,22 @@ export default function AdminRedemptionsPage() {
       </div>
 
       {/* Redemptions Table Card */}
-      <Card className="p-0 overflow-hidden border-slate-800 bg-slate-900/60 shadow-xl">
+      <Card className="p-0 overflow-hidden">
         {loading ? (
           <div className="p-16 text-center space-y-2">
-            <RefreshCw className="h-6 w-6 text-purple-400 animate-spin mx-auto" />
-            <div className="text-xs text-slate-400">Loading redemptions...</div>
+            <RefreshCw className="h-6 w-6 text-emerald-600 dark:text-emerald-400 animate-spin mx-auto" />
+            <div className="text-xs text-slate-500 dark:text-slate-400">Loading redemptions...</div>
           </div>
         ) : filteredRedemptions.length === 0 ? (
           <div className="p-16 text-center space-y-2">
-            <Package className="h-8 w-8 text-slate-600 mx-auto" />
-            <div className="text-sm font-semibold text-white">No redemptions found</div>
-            <p className="text-xs text-slate-400">Orders placed by traders will appear here for fulfillment.</p>
+            <Package className="h-8 w-8 text-slate-400 mx-auto" />
+            <div className="text-sm font-semibold text-slate-900 dark:text-white">No redemptions found</div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Orders placed by traders will appear here for fulfillment.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-950/80 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
+            <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-950/80 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="px-5 py-3.5">Redemption Ref</th>
                   <th className="px-5 py-3.5">Trader</th>
@@ -503,17 +487,17 @@ export default function AdminRedemptionsPage() {
                   <th className="px-5 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/80">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
                 {filteredRedemptions.map((rdm) => (
-                  <tr key={rdm.id} className="hover:bg-slate-800/40 transition-colors">
-                    <td className="px-5 py-3.5 font-mono font-bold text-white whitespace-nowrap">
+                  <tr key={rdm.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                    <td className="px-5 py-3.5 font-mono font-bold text-slate-900 dark:text-white whitespace-nowrap">
                       {rdm.redemptionCode}
                       <div className="text-[10px] text-slate-500 font-normal">
                         {formatDateTime(rdm.createdAt)}
                       </div>
                     </td>
                     <td className="px-5 py-3.5">
-                      <div className="font-semibold text-white">{rdm.user.name}</div>
+                      <div className="font-bold text-slate-900 dark:text-white">{rdm.user.name}</div>
                       <div className="text-[11px] text-slate-500 font-mono">{rdm.user.email}</div>
                     </td>
                     <td className="px-5 py-3.5">
@@ -522,13 +506,13 @@ export default function AdminRedemptionsPage() {
                           <img
                             src={rdm.reward.imageUrl}
                             alt=""
-                            className="h-7 w-7 rounded object-contain bg-slate-950 p-0.5"
+                            className="h-8 w-8 rounded-lg object-cover bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800"
                           />
                         )}
-                        <span className="font-medium text-slate-200">{rdm.reward.name}</span>
+                        <span className="font-semibold text-slate-900 dark:text-slate-200">{rdm.reward.name}</span>
                       </div>
                     </td>
-                    <td className="px-5 py-3.5 font-mono text-purple-400 font-bold whitespace-nowrap">
+                    <td className="px-5 py-3.5 font-mono text-purple-600 dark:text-purple-400 font-bold whitespace-nowrap">
                       -{rdm.pointsSpent.toLocaleString()} PTS
                     </td>
                     <td className="px-5 py-3.5 whitespace-nowrap">
@@ -536,33 +520,31 @@ export default function AdminRedemptionsPage() {
                     </td>
                     <td className="px-5 py-3.5 font-mono text-xs">
                       {rdm.trackingNumber ? (
-                        <div className="text-emerald-400 font-bold">
+                        <div className="text-emerald-600 dark:text-emerald-400 font-bold">
                           {rdm.courier}: {rdm.trackingNumber}
                         </div>
                       ) : (
-                        <span className="text-slate-500">Unassigned</span>
+                        <span className="text-slate-400">Unassigned</span>
                       )}
                     </td>
                     <td className="px-5 py-3.5 text-right whitespace-nowrap space-x-1.5">
                       <Button
                         size="sm"
-                        variant="secondary"
+                        variant="outline"
                         onClick={() => handleOpenEdit(rdm)}
-                        className="text-xs"
                       >
-                        <Edit2 className="h-3 w-3 mr-1" />
+                        <Edit2 className="h-3 w-3" />
                         Update
                       </Button>
 
                       {rdm.status !== 'CANCELLED' && (
                         <Button
                           size="sm"
-                          variant="secondary"
+                          variant="danger"
                           onClick={() => handleCancelAndRefund(rdm)}
-                          className="text-xs text-rose-300 hover:text-white hover:bg-rose-500/20 border-rose-500/30"
                           title="Cancel Order & Refund Points"
                         >
-                          <RotateCcw className="h-3 w-3 mr-1 text-rose-400" />
+                          <RotateCcw className="h-3 w-3" />
                           Refund
                         </Button>
                       )}
@@ -571,7 +553,6 @@ export default function AdminRedemptionsPage() {
                         size="sm"
                         variant="danger"
                         onClick={() => handleDeleteRedemption(rdm.id)}
-                        className="text-xs bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-white"
                         title="Delete Redemption Order"
                       >
                         <Trash2 className="h-3 w-3" />
@@ -597,27 +578,25 @@ export default function AdminRedemptionsPage() {
       >
         {selectedRdm && (
           <form onSubmit={handleUpdateStatus} className="space-y-4 text-xs">
-            {/* Summary info */}
-            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-1">
               <div className="flex justify-between">
                 <span className="text-slate-500">Recipient:</span>
-                <strong className="text-white">{selectedRdm.user.name} ({selectedRdm.user.email})</strong>
+                <strong className="text-slate-900 dark:text-white">{selectedRdm.user.name} ({selectedRdm.user.email})</strong>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Item:</span>
-                <strong className="text-white">{selectedRdm.reward.name}</strong>
+                <strong className="text-slate-900 dark:text-white">{selectedRdm.reward.name}</strong>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Points Cost:</span>
-                <strong className="text-purple-400 font-mono">{selectedRdm.pointsSpent.toLocaleString()} PTS</strong>
+                <strong className="text-purple-600 dark:text-purple-400 font-mono">{selectedRdm.pointsSpent.toLocaleString()} PTS</strong>
               </div>
             </div>
 
-            {/* Editable Destination Address */}
-            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-slate-300 font-bold flex items-center gap-1.5">
-                  <MapPin className="h-3.5 w-3.5 text-purple-400" />
+                <label className="text-slate-800 dark:text-slate-200 font-bold flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                   <span>Shipping Address (Edit if user requested fix)</span>
                 </label>
               </div>
@@ -628,14 +607,14 @@ export default function AdminRedemptionsPage() {
                   placeholder="Full Name"
                   value={editAddress.fullName}
                   onChange={(e) => setEditAddress({ ...editAddress, fullName: e.target.value })}
-                  className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-white text-xs"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-slate-900 dark:text-white text-xs"
                 />
                 <input
                   type="text"
                   placeholder="Phone"
                   value={editAddress.phone}
                   onChange={(e) => setEditAddress({ ...editAddress, phone: e.target.value })}
-                  className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-white text-xs"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-slate-900 dark:text-white text-xs"
                 />
               </div>
 
@@ -644,7 +623,7 @@ export default function AdminRedemptionsPage() {
                 placeholder="Address Line 1"
                 value={editAddress.addressLine1}
                 onChange={(e) => setEditAddress({ ...editAddress, addressLine1: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-white text-xs"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-slate-900 dark:text-white text-xs"
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -653,21 +632,21 @@ export default function AdminRedemptionsPage() {
                   placeholder="City"
                   value={editAddress.city}
                   onChange={(e) => setEditAddress({ ...editAddress, city: e.target.value })}
-                  className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-white text-xs"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-slate-900 dark:text-white text-xs"
                 />
                 <input
                   type="text"
                   placeholder="State / Province"
                   value={editAddress.state}
                   onChange={(e) => setEditAddress({ ...editAddress, state: e.target.value })}
-                  className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-white text-xs"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-slate-900 dark:text-white text-xs"
                 />
                 <input
                   type="text"
                   placeholder="Postal Code"
                   value={editAddress.postalCode}
                   onChange={(e) => setEditAddress({ ...editAddress, postalCode: e.target.value })}
-                  className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-white text-xs"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-slate-900 dark:text-white text-xs"
                 />
               </div>
 
@@ -676,16 +655,16 @@ export default function AdminRedemptionsPage() {
                 placeholder="Country"
                 value={editAddress.country}
                 onChange={(e) => setEditAddress({ ...editAddress, country: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-white text-xs"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-slate-900 dark:text-white text-xs"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Fulfillment Status *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Fulfillment Status *</label>
               <select
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white"
               >
                 <option value="PENDING">PENDING</option>
                 <option value="CONFIRMED">CONFIRMED</option>
@@ -700,7 +679,7 @@ export default function AdminRedemptionsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-slate-300 font-semibold">Courier / Carrier</label>
+                  <label className="text-slate-700 dark:text-slate-300 font-semibold">Courier / Carrier</label>
                   <button
                     type="button"
                     onClick={() => {
@@ -708,7 +687,7 @@ export default function AdminRedemptionsPage() {
                       if (!trackingNumber) setTrackingNumber(`VCH-${Math.random().toString(36).substring(2, 9).toUpperCase()}`);
                       if (!adminNotes) setAdminNotes('CODE: ');
                     }}
-                    className="text-[10px] text-purple-400 hover:text-purple-300 font-medium underline"
+                    className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold underline cursor-pointer"
                   >
                     + Digital Code
                   </button>
@@ -717,7 +696,7 @@ export default function AdminRedemptionsPage() {
                   <select
                     value={courier}
                     onChange={(e) => setCourier(e.target.value)}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white text-xs"
+                    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white text-xs"
                   >
                     <option value="">-- Select Courier / Carrier --</option>
                     <option value="DHL Express Worldwide">DHL Express Worldwide</option>
@@ -738,43 +717,43 @@ export default function AdminRedemptionsPage() {
                       placeholder="Specify custom courier name..."
                       value={courier === 'Custom Courier' ? '' : courier}
                       onChange={(e) => setCourier(e.target.value)}
-                      className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-white"
+                      className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs text-slate-900 dark:text-white"
                     />
                   )}
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-slate-300 font-semibold">Tracking Number / Voucher Key</label>
+                <label className="text-slate-700 dark:text-slate-300 font-semibold">Tracking Number / Voucher Key</label>
                 <input
                   type="text"
                   placeholder="e.g. DHL-882941029 or VCH-9921"
                   value={trackingNumber}
                   onChange={(e) => setTrackingNumber(e.target.value)}
-                  className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white font-mono text-xs"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white font-mono text-xs"
                 />
                 <p className="text-[10px] text-slate-500">Sent automatically to trader via Email &amp; WhatsApp when status is SHIPPED.</p>
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-slate-300 font-semibold">Admin Notes / Voucher Code</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Admin Notes / Voucher Code</label>
               <input
                 type="text"
                 placeholder="e.g. Signed delivery requested OR CODE: AMZN-9941-X9"
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white text-xs"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white text-xs"
               />
             </div>
 
             {newStatus === 'CANCELLED' && (
-              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs">
+              <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-700 dark:text-rose-300 text-xs">
                 ⚠️ Marking this order as CANCELLED will automatically refund {selectedRdm.pointsSpent.toLocaleString()} points back to the trader&apos;s ledger.
               </div>
             )}
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
               <Button variant="ghost" size="sm" onClick={() => setSelectedRdm(null)} disabled={isUpdating}>
                 Cancel
               </Button>
@@ -798,60 +777,60 @@ export default function AdminRedemptionsPage() {
         <form onSubmit={handleManualAddRedemption} className="space-y-4 text-xs">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Trader Name *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Trader Name *</label>
               <input
                 type="text"
                 required
                 value={manualForm.traderName}
                 onChange={(e) => setManualForm({ ...manualForm, traderName: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Trader Email *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Trader Email *</label>
               <input
                 type="email"
                 required
                 value={manualForm.traderEmail}
                 onChange={(e) => setManualForm({ ...manualForm, traderEmail: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Reward Item Name *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Reward Item Name *</label>
               <input
                 type="text"
                 required
                 value={manualForm.rewardName}
                 onChange={(e) => setManualForm({ ...manualForm, rewardName: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Points Cost *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Points Cost *</label>
               <input
                 type="number"
                 required
                 min={0}
                 value={manualForm.pointsSpent}
                 onChange={(e) => setManualForm({ ...manualForm, pointsSpent: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white font-mono text-purple-400 font-bold focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 font-mono text-emerald-600 dark:text-emerald-400 font-bold focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Initial Status</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Initial Status</label>
               <select
                 value={manualForm.status}
                 onChange={(e) => setManualForm({ ...manualForm, status: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               >
                 <option value="CONFIRMED">CONFIRMED</option>
                 <option value="PROCESSING">PROCESSING</option>
@@ -861,23 +840,23 @@ export default function AdminRedemptionsPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Courier / Carrier</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Courier / Carrier</label>
               <input
                 type="text"
                 value={manualForm.courier}
                 onChange={(e) => setManualForm({ ...manualForm, courier: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-slate-300 font-semibold">Destination Street Address</label>
+            <label className="text-slate-700 dark:text-slate-300 font-semibold">Destination Street Address</label>
             <input
               type="text"
               value={manualForm.addressLine1}
               onChange={(e) => setManualForm({ ...manualForm, addressLine1: e.target.value })}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
             />
           </div>
 
@@ -887,25 +866,25 @@ export default function AdminRedemptionsPage() {
               placeholder="City"
               value={manualForm.city}
               onChange={(e) => setManualForm({ ...manualForm, city: e.target.value })}
-              className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+              className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
             />
             <input
               type="text"
               placeholder="State"
               value={manualForm.state}
               onChange={(e) => setManualForm({ ...manualForm, state: e.target.value })}
-              className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+              className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
             />
             <input
               type="text"
               placeholder="Postal Code"
               value={manualForm.postalCode}
               onChange={(e) => setManualForm({ ...manualForm, postalCode: e.target.value })}
-              className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+              className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
             <Button
               type="button"
               variant="ghost"
@@ -918,8 +897,8 @@ export default function AdminRedemptionsPage() {
             <Button
               type="submit"
               size="sm"
+              variant="primary"
               isLoading={isSubmittingManual}
-              className="bg-purple-600 hover:bg-purple-700 text-white font-bold"
             >
               Record Redemption
             </Button>

@@ -47,13 +47,91 @@ import {
   Radio,
 } from 'lucide-react';
 
+const DEFAULT_ADMIN_TICKETS: LiveChatTicket[] = [
+  {
+    id: 'tkt-demo-1',
+    ticketNumber: 'TKT-98412',
+    userId: 'usr-1',
+    userName: 'Garv Gautam Kataria',
+    userEmail: 'garv@propnation.com',
+    userCountry: 'India',
+    assignedToId: 'staff-2',
+    assignedTo: DEFAULT_STAFF_TEAM[1],
+    subject: 'Funding Pips $100K Invoice Verification (Order #FP-ORD-98214)',
+    department: 'VERIFICATION',
+    priority: 'HIGH',
+    status: 'IN_PROGRESS',
+    lastMessageAt: new Date(Date.now() - 12 * 60 * 1000).toISOString(),
+    lastMessagePreview: 'I have uploaded my Funding Pips invoice with code NATION applied.',
+    createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+    unreadByAdmin: 1,
+    unreadByUser: 0,
+  },
+  {
+    id: 'tkt-demo-2',
+    ticketNumber: 'TKT-98390',
+    userId: 'usr-2',
+    userName: 'David Vance',
+    userEmail: 'david.v@gmail.com',
+    userCountry: 'United Kingdom',
+    assignedToId: 'staff-4',
+    assignedTo: DEFAULT_STAFF_TEAM[3],
+    subject: 'DHL Express Tracking Update for Sony WH-1000XM5',
+    department: 'PAYOUTS',
+    priority: 'MEDIUM',
+    status: 'OPEN',
+    lastMessageAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    lastMessagePreview: 'When will my Sony headphones dispatch from the warehouse?',
+    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+    unreadByAdmin: 0,
+    unreadByUser: 0,
+  },
+];
+
+const DEFAULT_ADMIN_MESSAGES: Record<string, LiveChatMessage[]> = {
+  'tkt-demo-1': [
+    {
+      id: 'msg-demo-1',
+      ticketId: 'tkt-demo-1',
+      senderId: 'usr-1',
+      senderName: 'Garv Gautam Kataria',
+      senderRole: 'USER',
+      message: 'Hi team, I have uploaded my Funding Pips $100K invoice (#FP-ORD-98214) using referral code NATION. Please verify my 39,900 points.',
+      status: 'SEEN',
+      createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 'msg-demo-2',
+      ticketId: 'tkt-demo-1',
+      senderId: 'staff-2',
+      senderName: 'Aarav Mehta',
+      senderRole: 'SUPPORT_LEAD',
+      message: 'Hello Garv! We have received your Funding Pips receipt and matched code NATION. Your 39,900 points are being credited right now.',
+      status: 'DELIVERED',
+      createdAt: new Date(Date.now() - 12 * 60 * 1000).toISOString(),
+    },
+  ],
+  'tkt-demo-2': [
+    {
+      id: 'msg-demo-3',
+      ticketId: 'tkt-demo-2',
+      senderId: 'usr-2',
+      senderName: 'David Vance',
+      senderRole: 'USER',
+      message: 'Hello! Just checking when my Sony WH-1000XM5 headphones order (RDM-SONY-332) will receive its DHL tracking code.',
+      status: 'SEEN',
+      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    },
+  ],
+};
+
 export default function AdminSupportDeskPage() {
   const { user } = useAuth();
-  const [tickets, setTickets] = useState<LiveChatTicket[]>([]);
-  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
-  const [messages, setMessages] = useState<LiveChatMessage[]>([]);
+  const [tickets, setTickets] = useState<LiveChatTicket[]>(DEFAULT_ADMIN_TICKETS);
+  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(DEFAULT_ADMIN_TICKETS[0].id);
+  const [messages, setMessages] = useState<LiveChatMessage[]>(DEFAULT_ADMIN_MESSAGES['tkt-demo-1']);
   const [teamMembers] = useState<AssignedStaffInfo[]>(DEFAULT_STAFF_TEAM);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   // Filters
@@ -119,12 +197,13 @@ export default function AdminSupportDeskPage() {
 
         prevUnreadTotalRef.current = totalUnread;
         initializedTicketsRef.current = true;
-        setTickets(list);
-        setIsLoading(false);
-
-        if (!selectedTicketId && list.length > 0) {
-          setSelectedTicketId(list[0].id);
+        if (list.length > 0) {
+          setTickets(list);
+          if (!selectedTicketId || selectedTicketId.startsWith('tkt-demo-')) {
+            setSelectedTicketId(list[0].id);
+          }
         }
+        setIsLoading(false);
       },
       () => {
         setIsLoading(false);
@@ -141,6 +220,10 @@ export default function AdminSupportDeskPage() {
       return;
     }
 
+    if (DEFAULT_ADMIN_MESSAGES[selectedTicketId]) {
+      setMessages(DEFAULT_ADMIN_MESSAGES[selectedTicketId]);
+    }
+
     const q = query(
       collection(db, 'supportTickets', selectedTicketId, 'messages'),
       orderBy('createdAt', 'asc')
@@ -151,8 +234,12 @@ export default function AdminSupportDeskPage() {
       snap.forEach((d) => {
         list.push({ ...(d.data() as LiveChatMessage), id: d.id });
       });
-      setMessages(list);
-      markTicketMessagesAsSeen(selectedTicketId, 'ADMIN');
+      if (list.length > 0 || !DEFAULT_ADMIN_MESSAGES[selectedTicketId]) {
+        setMessages(list);
+      }
+      if (!selectedTicketId.startsWith('tkt-demo-')) {
+        markTicketMessagesAsSeen(selectedTicketId, 'ADMIN');
+      }
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 80);

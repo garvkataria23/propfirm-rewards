@@ -70,11 +70,14 @@ export default function PurchasesListPage() {
   const [resubmitError, setResubmitError] = useState<string | null>(null);
 
   const fetchPurchases = () => {
-    const userEmail = user?.email || (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) || 'trader@example.com';
+    const userEmail =
+      user?.email ||
+      (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) ||
+      'anonymous';
     const localPurchases = userDataStore.getUserPurchases(userEmail);
 
-    // Hydrate immediately in 0ms
-    setPurchases((prev) => (prev.length > 0 ? prev : (localPurchases as any)));
+    // Hydrate immediately from current user's clean store
+    setPurchases(localPurchases as any);
     setLoading(false);
 
     api

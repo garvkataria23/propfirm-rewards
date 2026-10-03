@@ -235,7 +235,7 @@ const FALLBACK_PROP_FIRMS: PropFirm[] = [
 export default function SubmitPurchasePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const preSelectedFirmId = searchParams.get('propFirmId');
   const preSelectedOfferId = searchParams.get('offerId');
 
@@ -424,7 +424,7 @@ export default function SubmitPurchasePage() {
     const randomOrderNum = Math.floor(100000 + Math.random() * 900000);
     setOrderId(`FS-${randomOrderNum}`);
     setAccountId(`MT5-${Math.floor(200000 + Math.random() * 800000)}`);
-    setEmailUsed('alex.trader@propfirm.com');
+    setEmailUsed(user?.email || 'trader@example.com');
     setPlatform('MetaTrader 5 (MT5)');
     setCurrency('USD');
     setPaymentMethod('Credit / Debit Card');
@@ -644,6 +644,7 @@ export default function SubmitPurchasePage() {
     });
     clearActiveCheckoutIntent();
     setActiveIntent(null);
+    refreshUser().catch(() => {});
     setIsLoading(false);
   };
 

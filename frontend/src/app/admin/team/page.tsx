@@ -237,7 +237,7 @@ export default function AdminTeamManagementPage() {
   const { user } = useAuth();
   const [members, setMembers] = useState<TeamMember[]>(DEFAULT_TEAM_MEMBERS);
   const [roles, setRoles] = useState<RoleDefinition[]>(DEFAULT_ROLES);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('ALL');
   const [activeTab, setActiveTab] = useState<'members' | 'roles'>('members');
@@ -286,7 +286,6 @@ export default function AdminTeamManagementPage() {
     }
 
     const loadTeam = async () => {
-      setIsLoading(true);
       let localList: TeamMember[] | null = null;
       try {
         const savedTeam = localStorage.getItem(TEAM_STORAGE_KEY);

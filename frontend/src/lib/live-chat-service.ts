@@ -306,6 +306,84 @@ function compressImageFile(file: File): Promise<string> {
   });
 }
 
+// Get or create a persistent Guest Visitor profile in localStorage so website visitors can use Live Chat without logging in
+export function getOrCreateGuestVisitor(): {
+  id: string;
+  name: string;
+  email: string;
+  isGuest: boolean;
+} {
+  if (typeof window === 'undefined') {
+    return {
+      id: 'guest_ssr',
+      name: 'Website Visitor',
+      email: 'visitor@propnation.app',
+      isGuest: true,
+    };
+  }
+
+  const STORAGE_KEY = 'pn_guest_chat_visitor_v1';
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.id) {
+        return {
+          id: parsed.id,
+          name: parsed.name || 'Website Visitor',
+          email: parsed.email || 'visitor@propnation.app',
+          isGuest: true,
+        };
+      }
+    }
+  } catch {}
+
+  const randomCode = Math.floor(1000 + Math.random() * 9000);
+  const newGuest = {
+    id: `guest_${Date.now()}_${randomCode}`,
+    name: `Visitor #${randomCode}`,
+    email: `visitor.${randomCode}@guest.propnation.app`,
+    isGuest: true,
+  };
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newGuest));
+  } catch {}
+
+  return newGuest;
+}
+
+export async function updateGuestVisitorIdentity(
+  ticketId: string,
+  name: string,
+  email: string
+): Promise<void> {
+  if (typeof window !== 'undefined') {
+    const STORAGE_KEY = 'pn_guest_chat_visitor_v1';
+    try {
+      const current = getOrCreateGuestVisitor();
+      const updated = {
+        ...current,
+        name: name.trim() || current.name,
+        email: email.trim() || current.email,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    } catch {}
+  }
+
+  try {
+    const ticketRef = doc(db, 'supportTickets', ticketId);
+    await setDoc(
+      ticketRef,
+      {
+        userName: name.trim(),
+        userEmail: email.trim(),
+      },
+      { merge: true }
+    );
+  } catch {}
+}
+
 // Ensure user has at least one active support conversation or create one automatically
 export async function getOrCreateActiveUserTicket(user: {
   id: string;
@@ -327,23 +405,26 @@ export async function getOrCreateActiveUserTicket(user: {
   const assignedAgent = DEFAULT_STAFF_TEAM[0]; // Arjun Mehta (VIP Verification & Escrow Lead)
   const nowIso = new Date().toISOString();
   const ticketNumber = `PN-CHAT-${Math.floor(10000 + Math.random() * 90000)}`;
+  const isGuestUser = user.id.startsWith('guest_');
 
   const newTicket: LiveChatTicket = {
     id: ticketId,
     ticketNumber,
     userId: user.id,
-    userName: user.name || 'Trader',
-    userEmail: user.email || 'trader@propnation.app',
+    userName: user.name || (isGuestUser ? 'Website Visitor' : 'Trader'),
+    userEmail: user.email || 'visitor@propnation.app',
     userAvatar: user.avatarUrl || '',
-    userCountry: user.country || 'United States',
+    userCountry: user.country || 'Global',
     assignedToId: assignedAgent.id,
     assignedTo: assignedAgent,
-    subject: 'Live Priority Concierge & Verification Chat',
-    department: 'VIP_CONCIERGE',
+    subject: isGuestUser
+      ? 'Website Live Support Inquiry'
+      : 'Live Priority Concierge & Verification Chat',
+    department: isGuestUser ? 'WEBSITE_LIVE_CHAT' : 'VIP_CONCIERGE',
     priority: 'HIGH',
     status: 'IN_PROGRESS',
     lastMessageAt: nowIso,
-    lastMessagePreview: `Hi ${user.name || 'Trader'}! I'm ${assignedAgent.name}, your assigned PropNation Specialist. How can I help you today?`,
+    lastMessagePreview: `Hi ${user.name || 'there'}! I'm ${assignedAgent.name}, your assigned PropNation Specialist. How can I help you today?`,
     createdAt: nowIso,
     unreadByAdmin: 0,
     unreadByUser: 0,
@@ -362,7 +443,7 @@ export async function getOrCreateActiveUserTicket(user: {
       senderId: assignedAgent.id,
       senderName: assignedAgent.name,
       senderRole: assignedAgent.role,
-      message: `Hi ${user.name || 'Trader'}! 👋 I am ${assignedAgent.name} (${assignedAgent.department}), your dedicated assigned specialist. You can send messages, screenshots, PDFs, or videos up to 10MB right here in real time.`,
+      message: `Hi ${user.name || 'there'}! 👋 Welcome to PropNation Live Support. I am ${assignedAgent.name} (${assignedAgent.department}). Ask me anything about prop firm promo codes, challenge rules, purchase proof verification, or reward payouts!`,
       isInternalNote: false,
       attachments: [],
       status: 'DELIVERED',

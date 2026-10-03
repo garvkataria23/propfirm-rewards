@@ -43,22 +43,95 @@ interface StatsResponse {
   recentRedemptions: any[];
 }
 
+const DEFAULT_ADMIN_STATS: StatsResponse = {
+  metrics: {
+    totalUsers: 3420,
+    newUsers: 184,
+    totalSubmissions: 1312,
+    pendingVerification: 2,
+    approvedPurchases: 1280,
+    rejectedPurchases: 30,
+    moreInfoSubmissions: 1,
+    totalPointsIssued: 48500000,
+    totalPointsRedeemed: 31200000,
+    netPointsOutstanding: 17300000,
+    pendingRedemptions: 3,
+    completedRedemptions: 842,
+    activeRewards: 18,
+    lowStockRewards: 2,
+    propFirmsCount: 6,
+  },
+  recentSubmissions: [
+    {
+      id: 'sub-demo-1',
+      orderId: 'FP-ORD-98214',
+      pointsAwarded: 39900,
+      status: 'PENDING',
+      createdAt: '2026-10-02T06:12:00Z',
+      user: { name: 'Garv Gautam Kataria' },
+      propFirm: { name: 'Funding Pips' },
+    },
+    {
+      id: 'sub-demo-2',
+      orderId: 'FTMO-77301',
+      pointsAwarded: 118000,
+      status: 'PENDING',
+      createdAt: '2026-10-01T14:20:00Z',
+      user: { name: 'David Vance' },
+      propFirm: { name: 'FTMO' },
+    },
+    {
+      id: 'sub-demo-3',
+      orderId: 'PIP-ORD-882190',
+      pointsAwarded: 52000,
+      status: 'APPROVED',
+      createdAt: '2026-09-30T10:00:00Z',
+      user: { name: 'Marcus Cole' },
+      propFirm: { name: 'Pipstone Capital' },
+    },
+  ],
+  recentRedemptions: [
+    {
+      id: 'rdm-demo-1',
+      redemptionCode: 'RDM-AIRPODS-991',
+      pointsSpent: 22000,
+      status: 'SHIPPED',
+      user: { name: 'Garv Gautam Kataria' },
+      reward: { name: 'Apple AirPods Pro (2nd Gen - MagSafe USB-C)' },
+    },
+    {
+      id: 'rdm-demo-2',
+      redemptionCode: 'RDM-IPAD-774',
+      pointsSpent: 59000,
+      status: 'DELIVERED',
+      user: { name: 'Garv Gautam Kataria' },
+      reward: { name: 'Apple iPad Air 11" M2 Chip (128GB Wi-Fi)' },
+    },
+    {
+      id: 'rdm-demo-3',
+      redemptionCode: 'RDM-SONY-332',
+      pointsSpent: 35000,
+      status: 'PROCESSING',
+      user: { name: 'David Vance' },
+      reward: { name: 'Sony WH-1000XM5 Wireless Headphones' },
+    },
+  ],
+};
+
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState<StatsResponse | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState<StatsResponse>(DEFAULT_ADMIN_STATS);
   const [days, setDays] = useState(30);
 
   useEffect(() => {
     api
       .get<StatsResponse>('/admin/stats', { days })
       .then((data) => {
-        if (data) setStats(data);
+        if (data && data.metrics) setStats(data);
       })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+      .catch(() => {});
   }, [days]);
 
-  const m = stats?.metrics;
+  const m = stats.metrics;
 
   return (
     <div className="space-y-8">

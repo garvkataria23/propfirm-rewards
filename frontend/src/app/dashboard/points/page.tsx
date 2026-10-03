@@ -61,76 +61,36 @@ export default function PointsLedgerPage() {
   const [filterType, setFilterType] = useState<'ALL' | 'EARNED' | 'REDEEMED' | 'VIP' | 'ADMIN'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const DEFAULT_TRANSACTIONS: PointsTransaction[] = [
-    {
-      id: 'tx-901',
-      type: 'PURCHASE_REWARD',
-      points: 4500,
-      balanceAfter: 15700,
-      description: 'Funding Pips $100K 2-Step Evaluation verified (Order #FP-98214)',
-      createdAt: '2026-10-02T06:12:00Z',
-    },
-    {
-      id: 'tx-900',
-      type: 'VIP_MULTIPLIER',
-      points: 900,
-      balanceAfter: 11200,
-      description: 'Silver Tier 1.2x Multiplier Bonus on Order #FP-98214',
-      createdAt: '2026-10-02T06:12:00Z',
-    },
-    {
-      id: 'tx-895',
-      type: 'REDEMPTION',
-      points: -22000,
-      balanceAfter: 10300,
-      description: 'Redeemed Apple AirPods Pro (2nd Gen - MagSafe USB-C)',
-      createdAt: '2026-10-01T10:14:00Z',
-    },
-    {
-      id: 'tx-880',
-      type: 'PURCHASE_REWARD',
-      points: 11200,
-      balanceAfter: 32300,
-      description: 'FTMO $200K Challenge purchase proof verified (Order #FTMO-77301)',
-      createdAt: '2026-09-24T14:20:00Z',
-    },
-    {
-      id: 'tx-872',
-      type: 'ADMIN_CREDIT',
-      points: 1500,
-      balanceAfter: 21100,
-      description: 'Welcome Bonus: First challenge verification milestone reward',
-      createdAt: '2026-09-18T11:00:00Z',
-    },
-  ];
-
-  const DEFAULT_SUMMARY: PointsSummary = {
-    availablePoints: 15700,
-    totalPointsEarned: 37700,
-    totalPointsRedeemed: 22000,
-    pendingPoints: 4500,
-  };
-
-  const [summary, setSummary] = useState<PointsSummary | null>(DEFAULT_SUMMARY);
-  const [transactions, setTransactions] = useState<PointsTransaction[]>(DEFAULT_TRANSACTIONS);
+  const [summary, setSummary] = useState<PointsSummary | null>({
+    availablePoints: 0,
+    totalPointsEarned: 0,
+    totalPointsRedeemed: 0,
+    pendingPoints: 0,
+  });
+  const [transactions, setTransactions] = useState<PointsTransaction[]>([]);
   const [loading, setLoading] = useState(false);
 
   const { user } = useAuth();
 
   useEffect(() => {
-    const userEmail = user?.email || (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) || 'trader@example.com';
+    const userEmail =
+      user?.email ||
+      (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) ||
+      'anonymous';
     const localLedger = userDataStore.getUserLedger(userEmail);
     const available = userDataStore.calculateAvailablePoints(userEmail);
     const pending = userDataStore.calculatePendingPoints(userEmail);
+    const totalEarned = userDataStore.calculateTotalEarnedPoints(userEmail);
+    const totalRedeemed = userDataStore.calculateTotalRedeemedPoints(userEmail);
 
     const userSummary: PointsSummary = {
       availablePoints: available,
-      totalPointsEarned: available + 22000,
-      totalPointsRedeemed: 22000,
+      totalPointsEarned: totalEarned,
+      totalPointsRedeemed: totalRedeemed,
       pendingPoints: pending,
     };
 
-    // Hydrate immediately in 0ms
+    // Hydrate immediately from current user's clean store
     setSummary(userSummary);
     setTransactions(localLedger as any);
 

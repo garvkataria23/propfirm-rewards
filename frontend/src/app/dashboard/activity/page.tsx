@@ -42,7 +42,7 @@ export default function ActivityPage() {
     const userEmail =
       user?.email ||
       (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) ||
-      'trader@example.com';
+      'anonymous';
 
     const buildEvents = (ledger: any[], purchases: any[], redemptions: any[]): ActivityEvent[] => {
       const combined: ActivityEvent[] = [];
@@ -79,26 +79,17 @@ export default function ActivityPage() {
           link: '/dashboard/redemptions',
         });
       });
-      if (combined.length === 0) {
-        combined.push({
-          id: 'welcome-1',
-          type: 'SECURITY',
-          title: 'Account Activated',
-          description: 'Welcome to PropNation! Account verified and initial access granted.',
-          timestamp: new Date().toISOString(),
-        });
-      }
       combined.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
       return combined;
     };
 
-    // Hydrate immediately in 0ms from local store
+    // Hydrate immediately from current user's clean store
     const localEvents = buildEvents(
       userDataStore.getUserLedger(userEmail),
       userDataStore.getUserPurchases(userEmail),
       userDataStore.getUserRedemptions(userEmail)
     );
-    setEvents((prev) => (prev.length > 0 ? prev : localEvents));
+    setEvents(localEvents);
     setLoading(false);
 
     // Fetch ledger and submissions in background

@@ -82,11 +82,151 @@ interface PurchaseSubmission {
   userPreviousSubmissions?: any[];
 }
 
+const DEFAULT_ADMIN_SUBMISSIONS: PurchaseSubmission[] = [
+  {
+    id: 'sub-demo-1',
+    submissionCode: 'PN-PUR-98214',
+    userId: 'usr-1',
+    propFirmId: 'firm-1',
+    accountType: '$100,000 2-Step Evaluation',
+    orderId: 'FP-ORD-98214',
+    accountId: 'MT5-994102',
+    purchaseDate: '2026-10-02',
+    purchaseAmountUsd: 399,
+    emailUsed: 'garv@propnation.com',
+    referralCodeUsed: 'NATION',
+    pointsAwarded: 39900,
+    status: 'PENDING',
+    fraudStatus: 'CLEAN',
+    createdAt: '2026-10-02T06:12:00Z',
+    user: {
+      id: 'usr-1',
+      name: 'Garv Gautam Kataria',
+      email: 'garv@propnation.com',
+      phone: '+91 98765 43210',
+      createdAt: '2026-09-01T00:00:00Z',
+    },
+    propFirm: {
+      id: 'firm-1',
+      name: 'Funding Pips',
+      logoUrl: '',
+    },
+    proofs: [
+      {
+        id: 'prf-1',
+        fileUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1200&auto=format&fit=crop&q=80',
+        fileName: 'FundingPips_Invoice_FP98214.png',
+        fileType: 'image/png',
+        fileSize: 482000,
+      },
+    ],
+    userPreviousSubmissions: [
+      { id: 'prev-1', orderId: 'FP-ORD-11029', status: 'APPROVED', points: 23900, date: '2026-09-15' },
+      { id: 'prev-2', orderId: 'FS-99120', status: 'APPROVED', points: 35000, date: '2026-09-22' },
+    ],
+  },
+  {
+    id: 'sub-demo-2',
+    submissionCode: 'PN-PUR-77301',
+    userId: 'usr-2',
+    propFirmId: 'firm-2',
+    accountType: '$200,000 Challenge Account',
+    orderId: 'FTMO-77301',
+    accountId: 'cTrader-48201',
+    purchaseDate: '2026-10-01',
+    purchaseAmountUsd: 1180,
+    emailUsed: 'david.v@gmail.com',
+    referralCodeUsed: 'NATION',
+    pointsAwarded: 118000,
+    status: 'PENDING',
+    fraudStatus: 'CLEAN',
+    createdAt: '2026-10-01T14:20:00Z',
+    user: {
+      id: 'usr-2',
+      name: 'David Vance',
+      email: 'david.v@gmail.com',
+      phone: '+44 7911 123456',
+      createdAt: '2026-09-10T00:00:00Z',
+    },
+    propFirm: {
+      id: 'firm-2',
+      name: 'FTMO',
+      logoUrl: '',
+    },
+    proofs: [
+      {
+        id: 'prf-2',
+        fileUrl: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?w=1200&auto=format&fit=crop&q=80',
+        fileName: 'FTMO_Confirmation_Receipt.pdf',
+        fileType: 'image/jpeg',
+        fileSize: 640000,
+      },
+    ],
+    userPreviousSubmissions: [],
+  },
+  {
+    id: 'sub-demo-3',
+    submissionCode: 'PN-PUR-88219',
+    userId: 'usr-3',
+    propFirmId: 'firm-3',
+    accountType: '$100,000 Pipstone Standard',
+    orderId: 'PIP-ORD-882190',
+    accountId: 'MT5-22019',
+    purchaseDate: '2026-09-30',
+    purchaseAmountUsd: 520,
+    emailUsed: 'marcus.c@gmail.com',
+    referralCodeUsed: 'NATION',
+    pointsAwarded: 52000,
+    status: 'APPROVED',
+    fraudStatus: 'CLEAN',
+    createdAt: '2026-09-30T10:00:00Z',
+    user: {
+      id: 'usr-3',
+      name: 'Marcus Cole',
+      email: 'marcus.c@gmail.com',
+      phone: '+61 400 123 456',
+      createdAt: '2026-08-20T00:00:00Z',
+    },
+    propFirm: {
+      id: 'firm-3',
+      name: 'Pipstone Capital',
+      logoUrl: '',
+    },
+    proofs: [
+      {
+        id: 'prf-3',
+        fileUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1200&auto=format&fit=crop&q=80',
+        fileName: 'Pipstone_Invoice.pdf',
+        fileType: 'image/png',
+        fileSize: 320000,
+      },
+    ],
+    userPreviousSubmissions: [
+      { id: 'prev-3', orderId: 'PIP-5510', status: 'APPROVED', points: 38000, date: '2026-09-02' },
+    ],
+  },
+];
+
 export default function AdminPurchasesPage() {
-  const [submissions, setSubmissions] = useState<PurchaseSubmission[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [allSubmissions, setAllSubmissions] = useState<PurchaseSubmission[]>(DEFAULT_ADMIN_SUBMISSIONS);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('PENDING');
+
+  // Instant 0ms local filtered view
+  const submissions = allSubmissions.filter((s) => {
+    const matchesStatus = statusFilter === 'ALL' || s.status === statusFilter;
+    const q = search.trim().toLowerCase();
+    const matchesSearch =
+      !q ||
+      s.submissionCode.toLowerCase().includes(q) ||
+      s.orderId.toLowerCase().includes(q) ||
+      s.user.name.toLowerCase().includes(q) ||
+      s.user.email.toLowerCase().includes(q) ||
+      s.propFirm.name.toLowerCase().includes(q);
+    return matchesStatus && matchesSearch;
+  });
+  const setSubmissions = setAllSubmissions;
 
   // Quick ID Inspector Bar
   const [quickInspectId, setQuickInspectId] = useState('');
@@ -138,7 +278,7 @@ export default function AdminPurchasesPage() {
     accountType: '$100,000 Evaluation Account',
     orderId: '',
     purchaseAmountUsd: '399',
-    pointsAwarded: '3990',
+    pointsAwarded: '39900',
     status: 'APPROVED',
     notes: 'Manually logged by Admin from Support Desk',
   });
@@ -185,7 +325,7 @@ export default function AdminPurchasesPage() {
       fetchSubmissions();
     } catch (err: any) {
       const matched = parsed.filter((r) =>
-        submissions.some((s) => s.orderId.toLowerCase() === r.orderId.toLowerCase())
+        allSubmissions.some((s) => s.orderId.toLowerCase() === r.orderId.toLowerCase())
       );
       setReconcileResult({
         totalRows: parsed.length,
@@ -195,7 +335,7 @@ export default function AdminPurchasesPage() {
         unmatchedCount: parsed.length - matched.length,
         matchedItems: matched.map((m) => ({ orderId: m.orderId, status: 'MATCHED_SIMULATED' })),
         unmatchedItems: parsed.filter(
-          (r) => !submissions.some((s) => s.orderId.toLowerCase() === r.orderId.toLowerCase())
+          (r) => !allSubmissions.some((s) => s.orderId.toLowerCase() === r.orderId.toLowerCase())
         ),
       });
       fetchSubmissions();
@@ -209,163 +349,22 @@ export default function AdminPurchasesPage() {
     setCsvRawText(sample);
   };
 
-  const DEFAULT_ADMIN_SUBMISSIONS: PurchaseSubmission[] = [
-    {
-      id: 'sub-demo-1',
-      submissionCode: 'PN-PUR-98214',
-      userId: 'usr-1',
-      propFirmId: 'firm-1',
-      accountType: '$100,000 2-Step Evaluation',
-      orderId: 'FP-ORD-98214',
-      accountId: 'MT5-994102',
-      purchaseDate: '2026-10-02',
-      purchaseAmountUsd: 399,
-      emailUsed: 'garv@propnation.com',
-      referralCodeUsed: 'NATION',
-      pointsAwarded: 3990,
-      status: 'PENDING',
-      fraudStatus: 'CLEAN',
-      createdAt: '2026-10-02T06:12:00Z',
-      user: {
-        id: 'usr-1',
-        name: 'Garv Gautam Kataria',
-        email: 'garv@propnation.com',
-        phone: '+91 98765 43210',
-        createdAt: '2026-09-01T00:00:00Z',
-      },
-      propFirm: {
-        id: 'firm-1',
-        name: 'Funding Pips',
-        logoUrl: '',
-      },
-      proofs: [
-        {
-          id: 'prf-1',
-          fileUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1200&auto=format&fit=crop&q=80',
-          fileName: 'FundingPips_Invoice_FP98214.png',
-          fileType: 'image/png',
-          fileSize: 482000,
-        },
-      ],
-      userPreviousSubmissions: [
-        { id: 'prev-1', orderId: 'FP-ORD-11029', status: 'APPROVED', points: 2390, date: '2026-09-15' },
-        { id: 'prev-2', orderId: 'FS-99120', status: 'APPROVED', points: 3500, date: '2026-09-22' },
-      ],
-    },
-    {
-      id: 'sub-demo-2',
-      submissionCode: 'PN-PUR-77301',
-      userId: 'usr-2',
-      propFirmId: 'firm-2',
-      accountType: '$200,000 Challenge Account',
-      orderId: 'FTMO-77301',
-      accountId: 'cTrader-48201',
-      purchaseDate: '2026-10-01',
-      purchaseAmountUsd: 1180,
-      emailUsed: 'david.v@gmail.com',
-      referralCodeUsed: 'NATION',
-      pointsAwarded: 11800,
-      status: 'PENDING',
-      fraudStatus: 'CLEAN',
-      createdAt: '2026-10-01T14:20:00Z',
-      user: {
-        id: 'usr-2',
-        name: 'David Vance',
-        email: 'david.v@gmail.com',
-        phone: '+44 7911 123456',
-        createdAt: '2026-09-10T00:00:00Z',
-      },
-      propFirm: {
-        id: 'firm-2',
-        name: 'FTMO',
-        logoUrl: '',
-      },
-      proofs: [
-        {
-          id: 'prf-2',
-          fileUrl: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?w=1200&auto=format&fit=crop&q=80',
-          fileName: 'FTMO_Confirmation_Receipt.pdf',
-          fileType: 'image/jpeg',
-          fileSize: 640000,
-        },
-      ],
-      userPreviousSubmissions: [],
-    },
-    {
-      id: 'sub-demo-3',
-      submissionCode: 'PN-PUR-88219',
-      userId: 'usr-3',
-      propFirmId: 'firm-3',
-      accountType: '$100,000 Pipstone Standard',
-      orderId: 'PIP-ORD-882190',
-      accountId: 'MT5-22019',
-      purchaseDate: '2026-09-30',
-      purchaseAmountUsd: 520,
-      emailUsed: 'marcus.c@gmail.com',
-      referralCodeUsed: 'NATION',
-      pointsAwarded: 5200,
-      status: 'APPROVED',
-      fraudStatus: 'CLEAN',
-      createdAt: '2026-09-30T10:00:00Z',
-      user: {
-        id: 'usr-3',
-        name: 'Marcus Cole',
-        email: 'marcus.c@gmail.com',
-        phone: '+61 400 123 456',
-        createdAt: '2026-08-20T00:00:00Z',
-      },
-      propFirm: {
-        id: 'firm-3',
-        name: 'Pipstone Capital',
-        logoUrl: '',
-      },
-      proofs: [
-        {
-          id: 'prf-3',
-          fileUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1200&auto=format&fit=crop&q=80',
-          fileName: 'Pipstone_Invoice.pdf',
-          fileType: 'image/png',
-          fileSize: 320000,
-        },
-      ],
-      userPreviousSubmissions: [
-        { id: 'prev-3', orderId: 'PIP-5510', status: 'APPROVED', points: 3800, date: '2026-09-02' },
-      ],
-    },
-  ];
-
   const fetchSubmissions = () => {
-    setLoading(true);
     api
-      .get<PurchaseSubmission[]>('/purchases/admin/all', {
-        status: statusFilter === 'ALL' ? undefined : statusFilter,
-        search: search || undefined,
-      })
+      .get<PurchaseSubmission[]>('/purchases/admin/all')
       .then((data: any) => {
         const list = Array.isArray(data) ? data : data?.purchases || [];
         if (list && list.length > 0) {
-          setSubmissions(list);
-        } else {
-          setSubmissions(
-            DEFAULT_ADMIN_SUBMISSIONS.filter(
-              (s) => statusFilter === 'ALL' || s.status === statusFilter
-            )
-          );
+          setAllSubmissions(list);
         }
       })
-      .catch(() => {
-        setSubmissions(
-          DEFAULT_ADMIN_SUBMISSIONS.filter(
-            (s) => statusFilter === 'ALL' || s.status === statusFilter
-          )
-        );
-      })
+      .catch(() => {})
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
     fetchSubmissions();
-  }, [statusFilter]);
+  }, []);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -603,33 +602,35 @@ export default function AdminPurchasesPage() {
       {/* ======================================================== */}
       {/* 1. UNIVERSAL TRACKING ID QUICK INSPECTOR BAR */}
       {/* ======================================================== */}
-      <div className="rounded-3xl border border-purple-500/30 bg-gradient-to-r from-purple-950 via-[#0e0924] to-slate-950 p-6 text-white shadow-xl space-y-4">
+      <div className="rounded-2xl border border-slate-200/90 dark:border-[#14234b]/80 bg-gradient-to-br from-white via-slate-50/60 to-emerald-50/30 dark:from-[#080f24] dark:via-[#060b1c] dark:to-[#041a18] p-6 shadow-sm space-y-4 transition-colors">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30">
               <Sparkles className="h-3.5 w-3.5" />
               <span>Universal Tracking ID Inspector</span>
             </div>
-            <h1 className="text-2xl font-[900] tracking-tight">
+            <h1 className="text-2xl font-[900] text-slate-900 dark:text-white tracking-tight">
               Purchase Verification Queue &amp; Fix-it Dossier
             </h1>
-            <p className="text-xs text-purple-200">
+            <p className="text-xs text-slate-600 dark:text-slate-400">
               Instant 360° trader audit by Tracking Reference Code (e.g. <strong>PN-PUR-98214</strong>) or Order ID. Verify, approve, reject, or edit order data directly by ID.
             </p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <Button
               type="button"
+              variant="outline"
               onClick={() => setIsManualAddOpen(true)}
-              className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-10 px-4 rounded-xl shadow-lg shadow-purple-900/40 flex items-center gap-2 cursor-pointer shrink-0"
+              className="text-xs h-10 px-4"
             >
-              <PlusCircle className="h-4 w-4" />
+              <PlusCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
               <span>+ Manual Add Purchase</span>
             </Button>
             <Button
               type="button"
+              variant="primary"
               onClick={() => setIsReconcileModalOpen(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-10 px-4 rounded-xl shadow-lg shadow-emerald-900/40 flex items-center gap-2 cursor-pointer shrink-0"
+              className="text-xs h-10 px-4"
             >
               <FileSpreadsheet className="h-4 w-4" />
               <span>Bulk CSV Reconciliation</span>
@@ -640,18 +641,19 @@ export default function AdminPurchasesPage() {
         {/* Quick ID Lookup Input */}
         <form onSubmit={handleQuickInspect} className="flex flex-col sm:flex-row items-center gap-3">
           <div className="relative flex-1 w-full">
-            <Tag className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-purple-400" />
+            <Tag className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-600 dark:text-emerald-400" />
             <input
               type="text"
               placeholder="Paste Tracking ID (e.g. PN-PUR-98214) or Order ID (e.g. FP-ORD-98214)..."
               value={quickInspectId}
               onChange={(e) => setQuickInspectId(e.target.value)}
-              className="w-full font-mono bg-white/10 border border-purple-400/40 rounded-2xl pl-10 pr-4 py-3 text-xs text-white placeholder-purple-300/60 focus:outline-none focus:border-purple-300"
+              className="w-full font-mono bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500"
             />
           </div>
           <Button
             type="submit"
-            className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-11 px-6 rounded-2xl shadow-md shrink-0 flex items-center gap-2"
+            variant="primary"
+            className="w-full sm:w-auto text-xs h-10 px-6 shrink-0"
           >
             <Search className="h-4 w-4" />
             <span>Inspect ID &amp; History</span>
@@ -670,10 +672,10 @@ export default function AdminPurchasesPage() {
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   statusFilter === status
-                    ? 'bg-purple-600 text-white shadow-md shadow-purple-600/25'
-                    : 'text-slate-400 hover:text-white bg-slate-900 border border-slate-800'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'
                 }`}
               >
                 {status.replace(/_/g, ' ')}
@@ -691,13 +693,13 @@ export default function AdminPurchasesPage() {
           className="flex items-center gap-2"
         >
           <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
             <input
               type="text"
               placeholder="Search trader email or order..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-slate-700 bg-slate-900 pl-8 pr-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-8 pr-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-emerald-500 focus:outline-none"
             />
           </div>
           <Button type="submit" size="sm" variant="secondary">
@@ -709,20 +711,20 @@ export default function AdminPurchasesPage() {
       {/* ======================================================== */}
       {/* 3. SUBMISSIONS QUEUE TABLE */}
       {/* ======================================================== */}
-      <Card className="p-0 overflow-hidden border-slate-800 bg-slate-900/60 rounded-3xl">
+      <Card className="p-0 overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-xs text-slate-400">
+          <div className="p-12 text-center text-xs text-slate-500 dark:text-slate-400">
             Loading purchase submissions...
           </div>
         ) : submissions.length === 0 ? (
           <div className="p-12 text-center text-xs text-slate-500 space-y-1">
-            <ShoppingBag className="h-8 w-8 text-slate-600 mx-auto" />
-            <p className="font-semibold text-white">No submissions found in this status</p>
+            <ShoppingBag className="h-8 w-8 text-slate-400 mx-auto" />
+            <p className="font-semibold text-slate-900 dark:text-white">No submissions found in this status</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-950/80 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
+            <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-950/80 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="px-5 py-4">Tracking Reference Code</th>
                   <th className="px-5 py-4">Trader</th>
@@ -734,48 +736,48 @@ export default function AdminPurchasesPage() {
                   <th className="px-5 py-4 text-right">360° Dossier</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/80">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
                 {submissions.map((sub) => (
-                  <tr key={sub.id} className="hover:bg-purple-950/10 transition-colors">
+                  <tr key={sub.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
                     <td className="px-5 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-mono font-[900] text-purple-300 bg-purple-950/60 border border-purple-500/30 px-2.5 py-1 rounded-lg">
+                        <span className="font-mono font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/30 px-2.5 py-1 rounded-lg">
                           {sub.submissionCode}
                         </span>
                         <button
                           onClick={() => handleCopy(sub.submissionCode)}
-                          className="p-1 text-slate-400 hover:text-white"
+                          className="p-1 text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
                           title="Copy Code"
                         >
                           {copiedId === sub.submissionCode ? (
-                            <Check className="h-3 w-3 text-purple-400" />
+                            <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                           ) : (
-                            <Copy className="h-3 w-3" />
+                            <Copy className="h-3.5 w-3.5" />
                           )}
                         </button>
                       </div>
                     </td>
                     <td className="px-5 py-4">
-                      <div className="font-semibold text-white">{sub.user.name}</div>
+                      <div className="font-bold text-slate-900 dark:text-white">{sub.user.name}</div>
                       <div className="text-[11px] text-slate-500">{sub.user.email}</div>
                     </td>
-                    <td className="px-5 py-4 font-semibold text-slate-200">
+                    <td className="px-5 py-4 font-bold text-slate-800 dark:text-slate-200">
                       {sub.propFirm.name}
                     </td>
-                    <td className="px-5 py-4 font-mono text-slate-300">
+                    <td className="px-5 py-4 font-mono text-slate-700 dark:text-slate-300">
                       {sub.orderId}
                     </td>
-                    <td className="px-5 py-4 whitespace-nowrap text-slate-300 font-semibold">
+                    <td className="px-5 py-4 whitespace-nowrap text-slate-900 dark:text-white font-bold">
                       ${sub.purchaseAmountUsd}
                     </td>
-                    <td className="px-5 py-4 whitespace-nowrap font-bold text-purple-400">
+                    <td className="px-5 py-4 whitespace-nowrap font-bold text-emerald-600 dark:text-emerald-400">
                       +{sub.pointsAwarded.toLocaleString()} PTS
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap">
                       <Badge
                         variant={
                           sub.status === 'APPROVED'
-                            ? 'purple'
+                            ? 'success'
                             : sub.status === 'PENDING'
                             ? 'warning'
                             : sub.status === 'MORE_INFO_REQUIRED'
@@ -786,7 +788,7 @@ export default function AdminPurchasesPage() {
                         {sub.status}
                       </Badge>
                       {sub.fraudStatus === 'FLAGGED' && (
-                        <span className="ml-1 text-[10px] font-bold text-rose-400 bg-rose-500/20 px-1 py-0.5 rounded">
+                        <span className="ml-1 text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/20 px-1.5 py-0.5 rounded border border-rose-200 dark:border-rose-500/30">
                           FLAGGED
                         </span>
                       )}
@@ -794,16 +796,15 @@ export default function AdminPurchasesPage() {
                     <td className="px-5 py-4 text-right whitespace-nowrap space-x-1.5">
                       <Button
                         size="sm"
-                        className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs"
+                        variant="primary"
                         onClick={() => handleOpenDetail(sub)}
                       >
-                        <Eye className="h-3.5 w-3.5 mr-1" />
+                        <Eye className="h-3.5 w-3.5" />
                         Inspect &amp; Fix
                       </Button>
                       <Button
                         size="sm"
                         variant="danger"
-                        className="text-xs bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-white"
                         onClick={() => handleDeleteSubmission(sub.id)}
                         title="Delete Submission"
                       >
@@ -831,59 +832,56 @@ export default function AdminPurchasesPage() {
         {selectedSub && (
           <div className="space-y-6 text-left">
             {/* Top Tracking ID Pill Banner */}
-            <div className="p-4 rounded-2xl bg-purple-950/40 border border-purple-500/30 flex items-center justify-between">
+            <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-500/30 flex items-center justify-between">
               <div>
-                <span className="text-[10px] uppercase tracking-wider font-extrabold text-purple-300 block">
+                <span className="text-[10px] uppercase tracking-wider font-extrabold text-emerald-700 dark:text-emerald-400 block">
                   Official Tracking ID
                 </span>
-                <div className="font-mono text-xl font-black text-white flex items-center gap-2">
+                <div className="font-mono text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
                   <span>{selectedSub.submissionCode}</span>
                   <button
                     onClick={() => handleCopy(selectedSub.submissionCode)}
-                    className="p-1 rounded bg-purple-900/60 hover:bg-purple-800 text-purple-200 text-xs flex items-center gap-1"
+                    className="px-2 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs flex items-center gap-1 cursor-pointer"
                   >
-                    {copiedId === selectedSub.submissionCode ? <Check className="h-3 w-3 text-purple-300" /> : <Copy className="h-3 w-3" />}
+                    {copiedId === selectedSub.submissionCode ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
                     <span>{copiedId === selectedSub.submissionCode ? 'Copied' : 'Copy'}</span>
                   </button>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <Badge variant="purple" className="text-xs">{selectedSub.status}</Badge>
-                {/* Toggle Direct Edit Mode ("ID se hi thik kare") */}
+                <Badge variant={selectedSub.status === 'APPROVED' ? 'success' : 'warning'}>{selectedSub.status}</Badge>
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => setIsEditMode(!isEditMode)}
-                  className="text-xs font-bold border-purple-400/40 text-purple-200 hover:bg-purple-900/40"
                 >
-                  <Edit3 className="h-3.5 w-3.5 mr-1" />
+                  <Edit3 className="h-3.5 w-3.5" />
                   {isEditMode ? 'Cancel Edit' : 'Edit / Fix Data'}
                 </Button>
                 <Button
                   size="sm"
                   variant="danger"
                   onClick={() => handleDeleteSubmission(selectedSub.id)}
-                  className="text-xs font-bold bg-rose-500/10 border-rose-500/30 text-rose-300 hover:bg-rose-500 hover:text-white"
                   title="Delete Submission"
                 >
-                  <Trash2 className="h-3.5 w-3.5 mr-1" />
+                  <Trash2 className="h-3.5 w-3.5" />
                   Delete
                 </Button>
               </div>
             </div>
 
             {fixSuccessMsg && (
-              <div className="p-3 rounded-xl bg-purple-500/20 border border-purple-400 text-xs text-purple-200 flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-purple-400" />
+              <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-xs font-semibold text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 <span>{fixSuccessMsg}</span>
               </div>
             )}
 
             {/* Anti-Fraud duplicate alert if flagged */}
             {selectedSub.fraudStatus === 'FLAGGED' && (
-              <div className="p-3.5 rounded-xl border border-rose-500/30 bg-rose-950/20 text-xs text-rose-300 flex items-start gap-2">
-                <ShieldAlert className="h-5 w-5 text-rose-400 shrink-0" />
+              <div className="p-3.5 rounded-xl border border-rose-200 dark:border-rose-500/30 bg-rose-50 dark:bg-rose-950/20 text-xs text-rose-800 dark:text-rose-300 flex items-start gap-2">
+                <ShieldAlert className="h-5 w-5 text-rose-600 dark:text-rose-400 shrink-0" />
                 <div>
                   <strong>Potential Fraud / Duplicate Warning:</strong> Another submission exists with the same Order ID ({selectedSub.orderId}). Verify carefully before awarding points!
                 </div>
@@ -892,101 +890,101 @@ export default function AdminPurchasesPage() {
 
             {/* DIRECT FIX / EDIT MODE FORM */}
             {isEditMode ? (
-              <div className="p-4 rounded-2xl bg-purple-950/30 border border-purple-500/40 space-y-3">
-                <h4 className="text-xs font-bold text-purple-200 uppercase tracking-wider flex items-center gap-1.5">
-                  <Edit3 className="h-4 w-4" />
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                  <Edit3 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   <span>Correct Submission Data by Tracking ID</span>
                 </h4>
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div>
-                    <label className="text-slate-400 block mb-1">Order ID</label>
+                    <label className="text-slate-600 dark:text-slate-400 font-semibold block mb-1">Order ID</label>
                     <input
                       type="text"
                       value={editOrderId}
                       onChange={(e) => setEditOrderId(e.target.value)}
-                      className="w-full font-mono bg-slate-950 border border-purple-400/40 rounded-lg px-3 py-1.5 text-white"
+                      className="w-full font-mono bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-slate-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-400 block mb-1">Amount ($ USD)</label>
+                    <label className="text-slate-600 dark:text-slate-400 font-semibold block mb-1">Amount ($ USD)</label>
                     <input
                       type="number"
                       value={editAmountUsd}
                       onChange={(e) => setEditAmountUsd(e.target.value)}
-                      className="w-full bg-slate-950 border border-purple-400/40 rounded-lg px-3 py-1.5 text-white"
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-slate-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-400 block mb-1">Challenge Tier Name</label>
+                    <label className="text-slate-600 dark:text-slate-400 font-semibold block mb-1">Challenge Tier Name</label>
                     <input
                       type="text"
                       value={editAccountType}
                       onChange={(e) => setEditAccountType(e.target.value)}
-                      className="w-full bg-slate-950 border border-purple-400/40 rounded-lg px-3 py-1.5 text-white"
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-slate-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-400 block mb-1">Reward Points to Credit</label>
+                    <label className="text-slate-600 dark:text-slate-400 font-semibold block mb-1">Reward Points to Credit</label>
                     <input
                       type="number"
                       value={editPoints}
                       onChange={(e) => setEditPoints(e.target.value)}
-                      className="w-full bg-slate-950 border border-purple-400/40 rounded-lg px-3 py-1.5 text-white font-bold"
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-slate-900 dark:text-white font-bold"
                     />
                   </div>
                 </div>
                 <div className="flex justify-end pt-2">
                   <Button
                     size="sm"
+                    variant="primary"
                     disabled={isSavingFixes}
                     onClick={handleSaveFixes}
-                    className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs"
                   >
-                    <Save className="h-3.5 w-3.5 mr-1" />
+                    <Save className="h-3.5 w-3.5" />
                     {isSavingFixes ? 'Saving...' : 'Save Corrections by ID'}
                   </Button>
                 </div>
               </div>
             ) : (
               /* Regular 360° Dossier View */
-              <div className="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs">
+              <div className="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs">
                 <div>
                   <span className="text-slate-500 block">Trader Name:</span>
-                  <span className="font-bold text-white text-sm">{selectedSub.user.name}</span>
-                  <span className="text-slate-400 block font-mono text-[11px]">{selectedSub.user.email}</span>
+                  <span className="font-bold text-slate-900 dark:text-white text-sm">{selectedSub.user.name}</span>
+                  <span className="text-slate-500 dark:text-slate-400 block font-mono text-[11px]">{selectedSub.user.email}</span>
                   {selectedSub.user.phone && (
-                    <span className="text-purple-400 block font-mono text-[11px] mt-0.5">{selectedSub.user.phone}</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 block font-mono text-[11px] mt-0.5">{selectedSub.user.phone}</span>
                   )}
                 </div>
                 <div>
                   <span className="text-slate-500 block">Prop Firm &amp; Challenge:</span>
-                  <span className="font-bold text-white text-sm">{selectedSub.propFirm.name}</span>
-                  <span className="text-purple-300 block font-semibold">{selectedSub.accountType}</span>
+                  <span className="font-bold text-slate-900 dark:text-white text-sm">{selectedSub.propFirm.name}</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 block font-semibold">{selectedSub.accountType}</span>
                 </div>
                 <div>
                   <span className="text-slate-500 block">Order ID (Receipt):</span>
-                  <span className="font-mono font-bold text-white">{selectedSub.orderId}</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">{selectedSub.orderId}</span>
                 </div>
                 <div>
                   <span className="text-slate-500 block">Referral Code Used:</span>
-                  <span className="font-mono font-bold text-purple-300">{selectedSub.referralCodeUsed}</span>
+                  <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">{selectedSub.referralCodeUsed}</span>
                 </div>
                 <div>
                   <span className="text-slate-500 block">Amount Paid:</span>
-                  <span className="text-slate-200">${selectedSub.purchaseAmountUsd} USD</span>
+                  <span className="font-bold text-slate-900 dark:text-white">${selectedSub.purchaseAmountUsd} USD</span>
                 </div>
                 <div>
                   <span className="text-slate-500 block">Points Allocation:</span>
-                  <span className="text-purple-300 font-black">+{selectedSub.pointsAwarded.toLocaleString()} PTS</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-black">+{selectedSub.pointsAwarded.toLocaleString()} PTS</span>
                 </div>
               </div>
             )}
 
             {/* Trader Previous History Dossier */}
-            <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 text-xs space-y-2">
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-300 flex items-center gap-1.5">
-                  <History className="h-4 w-4 text-purple-400" />
+                <span className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <History className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   Trader Submission History
                 </span>
                 <span className="text-[11px] text-slate-500">
@@ -996,10 +994,10 @@ export default function AdminPurchasesPage() {
               {selectedSub.userPreviousSubmissions && selectedSub.userPreviousSubmissions.length > 0 ? (
                 <div className="space-y-1.5 pt-1">
                   {selectedSub.userPreviousSubmissions.map((prev, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-slate-800 text-[11px]">
-                      <span className="font-mono text-slate-300">{prev.orderId}</span>
-                      <span className="text-purple-300 font-bold">+{prev.points} PTS</span>
-                      <Badge variant="purple" className="text-[9px]">{prev.status}</Badge>
+                    <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px]">
+                      <span className="font-mono font-semibold text-slate-800 dark:text-slate-300">{prev.orderId}</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">+{prev.points} PTS</span>
+                      <Badge variant="success" className="text-[9px]">{prev.status}</Badge>
                       <span className="text-slate-500">{prev.date}</span>
                     </div>
                   ))}
@@ -1011,11 +1009,11 @@ export default function AdminPurchasesPage() {
 
             {/* Proofs Viewer */}
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 Uploaded Invoices &amp; Proofs ({selectedSub.proofs?.length || 0})
               </span>
               {selectedSub.proofs?.length === 0 ? (
-                <div className="p-4 rounded-xl bg-slate-950 text-center text-xs text-slate-500">
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 text-center text-xs text-slate-500">
                   No proof files uploaded.
                 </div>
               ) : (
@@ -1023,17 +1021,17 @@ export default function AdminPurchasesPage() {
                   {selectedSub.proofs.map((proof) => (
                     <div
                       key={proof.id}
-                      className="p-3 rounded-2xl border border-slate-800 bg-slate-950 space-y-2"
+                      className="p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-2"
                     >
                       <div className="flex items-center justify-between text-xs">
-                        <span className="truncate max-w-[160px] font-semibold text-slate-200">
+                        <span className="truncate max-w-[160px] font-semibold text-slate-800 dark:text-slate-200">
                           {proof.fileName}
                         </span>
                         <a
                           href={proof.fileUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-purple-400 hover:underline flex items-center gap-1 font-bold"
+                          className="text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-bold"
                         >
                           <span>Open</span>
                           <ExternalLink className="h-3 w-3" />
@@ -1041,7 +1039,7 @@ export default function AdminPurchasesPage() {
                       </div>
 
                       {proof.fileType?.startsWith('video/') || proof.fileUrl.match(/\.(mp4|mov|webm)/i) ? (
-                        <div className="rounded-xl overflow-hidden bg-slate-900 border border-slate-800">
+                        <div className="rounded-xl overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-800">
                           <video
                             src={proof.fileUrl}
                             controls
@@ -1049,7 +1047,7 @@ export default function AdminPurchasesPage() {
                           />
                         </div>
                       ) : proof.fileType?.startsWith('image/') || proof.fileUrl.match(/\.(jpg|jpeg|png|webp)/i) ? (
-                        <div className="aspect-video rounded-xl overflow-hidden bg-slate-900 border border-slate-800">
+                        <div className="aspect-video rounded-xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                           <img
                             src={proof.fileUrl}
                             alt={proof.fileName}
@@ -1057,8 +1055,8 @@ export default function AdminPurchasesPage() {
                           />
                         </div>
                       ) : (
-                        <div className="h-24 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-xs text-slate-400">
-                          <FileText className="h-6 w-6 text-purple-400 mr-2" />
+                        <div className="h-24 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-xs text-slate-500">
+                          <FileText className="h-6 w-6 text-emerald-600 dark:text-emerald-400 mr-2" />
                           <span>PDF Document</span>
                         </div>
                       )}
@@ -1070,60 +1068,59 @@ export default function AdminPurchasesPage() {
 
             {/* Action buttons panel */}
             {selectedSub.status !== 'APPROVED' ? (
-              <div className="space-y-4 pt-4 border-t border-slate-800">
+              <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
                 {actionType === null ? (
                   <div className="grid grid-cols-3 gap-2">
                     <Button
                       variant="primary"
                       onClick={() => setActionType('APPROVE')}
-                      className="bg-purple-600 hover:bg-purple-700 text-white font-bold"
                     >
-                      <CheckCircle2 className="h-4 w-4 mr-1.5" />
+                      <CheckCircle2 className="h-4 w-4" />
                       Approve &amp; Credit
                     </Button>
                     <Button
-                      variant="secondary"
+                      variant="outline"
                       onClick={() => setActionType('REQUEST_INFO')}
-                      className="text-purple-300 border-purple-500/30"
                     >
-                      <HelpCircle className="h-4 w-4 mr-1.5" />
+                      <HelpCircle className="h-4 w-4" />
                       Request Info
                     </Button>
                     <Button
                       variant="danger"
                       onClick={() => setActionType('REJECT')}
                     >
-                      <XCircle className="h-4 w-4 mr-1.5" />
+                      <XCircle className="h-4 w-4" />
                       Reject
                     </Button>
                   </div>
                 ) : actionType === 'APPROVE' ? (
-                  <div className="p-4 rounded-2xl bg-purple-950/20 border border-purple-500/30 space-y-3">
+                  <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-500/30 space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-purple-300">Confirm Points Credit</span>
-                      <button onClick={() => setActionType(null)} className="text-xs text-slate-400">Cancel</button>
+                      <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">Confirm Points Credit</span>
+                      <button onClick={() => setActionType(null)} className="text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer">Cancel</button>
                     </div>
                     <div>
-                      <label className="text-xs text-slate-400 block mb-1">Points to Award</label>
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">Points to Award</label>
                       <input
                         type="number"
                         value={customPoints}
                         onChange={(e) => setCustomPoints(e.target.value)}
-                        className="w-full bg-slate-950 border border-purple-400/40 rounded-xl px-3 py-2 text-xs text-white font-bold"
+                        className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white font-bold"
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-slate-400 block mb-1">Internal Note (Optional)</label>
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">Internal Note (Optional)</label>
                       <input
                         type="text"
                         placeholder="e.g. Verified on FundingPips portal, approved"
                         value={adminNotes}
                         onChange={(e) => setAdminNotes(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                        className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white"
                       />
                     </div>
                     <Button
-                      className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs"
+                      variant="primary"
+                      className="w-full text-xs"
                       disabled={isProcessingAction}
                       onClick={handleApprove}
                     >
@@ -1131,12 +1128,11 @@ export default function AdminPurchasesPage() {
                     </Button>
                   </div>
                 ) : actionType === 'REJECT' ? (
-                  <div className="p-4 rounded-2xl bg-rose-950/20 border border-rose-500/30 space-y-3">
+                  <div className="p-4 rounded-2xl bg-rose-50/70 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-500/30 space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-rose-300">Reject Submission</span>
-                      <button onClick={() => setActionType(null)} className="text-xs text-slate-400">Cancel</button>
+                      <span className="text-xs font-bold text-rose-800 dark:text-rose-300">Reject Submission</span>
+                      <button onClick={() => setActionType(null)} className="text-xs text-slate-500 cursor-pointer">Cancel</button>
                     </div>
-                    {/* Quick Preset Rejection Buttons */}
                     <div className="flex flex-wrap gap-1.5">
                       {[
                         'Duplicate Order ID',
@@ -1148,7 +1144,7 @@ export default function AdminPurchasesPage() {
                           key={preset}
                           type="button"
                           onClick={() => setActionReason(preset)}
-                          className="px-2.5 py-1 rounded-lg bg-rose-950/40 border border-rose-800 text-[10px] text-rose-300 hover:bg-rose-900/60"
+                          className="px-2.5 py-1 rounded-lg bg-white dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-[10px] font-semibold text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/60 cursor-pointer"
                         >
                           {preset}
                         </button>
@@ -1159,7 +1155,7 @@ export default function AdminPurchasesPage() {
                       placeholder="Enter rejection reason sent to trader..."
                       value={actionReason}
                       onChange={(e) => setActionReason(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-white"
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-white"
                     />
                     <Button
                       variant="danger"
@@ -1171,20 +1167,21 @@ export default function AdminPurchasesPage() {
                     </Button>
                   </div>
                 ) : (
-                  <div className="p-4 rounded-2xl bg-purple-950/20 border border-purple-500/30 space-y-3">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-purple-300">Request Information</span>
-                      <button onClick={() => setActionType(null)} className="text-xs text-slate-400">Cancel</button>
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Request Information</span>
+                      <button onClick={() => setActionType(null)} className="text-xs text-slate-500 cursor-pointer">Cancel</button>
                     </div>
                     <textarea
                       rows={3}
                       placeholder="Specify what additional proof is required..."
                       value={actionReason}
                       onChange={(e) => setActionReason(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-white"
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-white"
                     />
                     <Button
-                      className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs"
+                      variant="primary"
+                      className="w-full text-xs"
                       disabled={isProcessingAction}
                       onClick={handleRequestInfo}
                     >
@@ -1194,9 +1191,9 @@ export default function AdminPurchasesPage() {
                 )}
               </div>
             ) : (
-              <div className="p-3.5 rounded-2xl bg-purple-950/20 border border-purple-500/30 text-xs text-purple-200 flex items-center justify-between">
+              <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-500/30 text-xs font-semibold text-emerald-800 dark:text-emerald-200 flex items-center justify-between">
                 <span>Verified &amp; Approved • Points Credited to User Ledger</span>
-                <Badge variant="purple">COMPLETED</Badge>
+                <Badge variant="success">COMPLETED</Badge>
               </div>
             )}
           </div>
@@ -1216,7 +1213,6 @@ export default function AdminPurchasesPage() {
         description="Upload or paste affiliate conversion report CSV from Trackdesk, Affise, Rewardful, or Prop Firms to auto-verify matched orders."
       >
         <div className="space-y-4 max-h-[75vh] overflow-y-auto pr-1">
-          {/* Action Bar & Quick Demo */}
           <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-800 dark:text-emerald-300">
             <div className="flex items-center gap-2">
               <FileSpreadsheet className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
@@ -1231,22 +1227,20 @@ export default function AdminPurchasesPage() {
             </button>
           </div>
 
-          {/* CSV File Upload Dropzone / Paste Area */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
               <span>Paste CSV Text or Upload File</span>
-              <span className="text-[10px] text-slate-400 font-normal">Supports comma (,), semicolon (;), and tab separated values</span>
+              <span className="text-[10px] text-slate-500 font-normal">Supports comma (,), semicolon (;), and tab separated values</span>
             </label>
             <textarea
               rows={6}
               value={csvRawText}
               onChange={(e) => setCsvRawText(e.target.value)}
               placeholder="Order ID,Amount,Commission,Status&#10;FP-ORD-98214,399,59.85,Approved&#10;FS-51656,549,82.35,Approved"
-              className="w-full font-mono text-xs p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-purple-500"
+              className="w-full font-mono text-xs p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500"
             />
           </div>
 
-          {/* Action Button */}
           <div className="flex justify-end gap-2">
             <Button
               variant="ghost"
@@ -1260,15 +1254,14 @@ export default function AdminPurchasesPage() {
             </Button>
             <Button
               size="sm"
+              variant="primary"
               disabled={isProcessingCsv || !csvRawText.trim()}
               onClick={handleRunReconciliation}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/20"
             >
               {isProcessingCsv ? 'Reconciling & Auto-Approving...' : 'Run Auto-Reconciliation'}
             </Button>
           </div>
 
-          {/* Reconciliation Result Report */}
           {reconcileResult && (
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-4">
               <div className="flex items-center justify-between">
@@ -1276,10 +1269,9 @@ export default function AdminPurchasesPage() {
                   <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                   <span>Reconciliation Execution Summary</span>
                 </h4>
-                <Badge variant="purple">{reconcileResult.totalRows} Processed</Badge>
+                <Badge variant="success">{reconcileResult.totalRows} Processed</Badge>
               </div>
 
-              {/* Statistics Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                 <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
                   <div className="text-lg font-black text-emerald-600 dark:text-emerald-400">
@@ -1310,7 +1302,6 @@ export default function AdminPurchasesPage() {
                 </div>
               </div>
 
-              {/* Matched Orders List */}
               {reconcileResult.matchedItems.length > 0 && (
                 <div className="space-y-1.5">
                   <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
@@ -1320,7 +1311,7 @@ export default function AdminPurchasesPage() {
                     {reconcileResult.matchedItems.map((item, idx) => (
                       <div key={idx} className="flex items-center justify-between text-[11px] py-1 border-b border-slate-100 dark:border-slate-800 last:border-none">
                         <span className="font-bold text-slate-900 dark:text-white">{item.orderId}</span>
-                        <span className="text-emerald-500 font-bold">{item.status || 'MATCHED'}</span>
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">{item.status || 'MATCHED'}</span>
                       </div>
                     ))}
                   </div>
@@ -1343,35 +1334,35 @@ export default function AdminPurchasesPage() {
         <form onSubmit={handleManualAddSubmission} className="space-y-4 text-xs">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Trader Name *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Trader Name *</label>
               <input
                 type="text"
                 required
                 value={manualForm.traderName}
                 onChange={(e) => setManualForm({ ...manualForm, traderName: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Trader Email *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Trader Email *</label>
               <input
                 type="email"
                 required
                 value={manualForm.traderEmail}
                 onChange={(e) => setManualForm({ ...manualForm, traderEmail: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Prop Firm Partner *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Prop Firm Partner *</label>
               <select
                 value={manualForm.propFirmName}
                 onChange={(e) => setManualForm({ ...manualForm, propFirmName: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               >
                 <option value="Funding Pips">Funding Pips</option>
                 <option value="FTMO">FTMO</option>
@@ -1383,33 +1374,33 @@ export default function AdminPurchasesPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Account Tier / Type *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Account Tier / Type *</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. $100,000 2-Step Evaluation"
                 value={manualForm.accountType}
                 onChange={(e) => setManualForm({ ...manualForm, accountType: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Order ID *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Order ID *</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. FP-ORD-10928"
                 value={manualForm.orderId}
                 onChange={(e) => setManualForm({ ...manualForm, orderId: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white font-mono focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white font-mono focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Amount Paid ($ USD) *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Amount Paid ($ USD) *</label>
               <input
                 type="number"
                 required
@@ -1424,30 +1415,30 @@ export default function AdminPurchasesPage() {
                     pointsAwarded: pts.toString(),
                   });
                 }}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white font-mono focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white font-mono focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Reward Points to Credit *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Reward Points to Credit *</label>
               <input
                 type="number"
                 required
                 min={0}
                 value={manualForm.pointsAwarded}
                 onChange={(e) => setManualForm({ ...manualForm, pointsAwarded: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white font-mono text-purple-400 font-bold focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 font-mono text-emerald-600 dark:text-emerald-400 font-bold focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Initial Status</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Initial Status</label>
               <select
                 value={manualForm.status}
                 onChange={(e) => setManualForm({ ...manualForm, status: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               >
                 <option value="APPROVED">APPROVED (Credit points immediately)</option>
                 <option value="PENDING">PENDING (Queue for review)</option>
@@ -1455,17 +1446,17 @@ export default function AdminPurchasesPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Admin Notes</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Admin Notes</label>
               <input
                 type="text"
                 value={manualForm.notes}
                 onChange={(e) => setManualForm({ ...manualForm, notes: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
             <Button
               type="button"
               variant="ghost"
@@ -1478,8 +1469,8 @@ export default function AdminPurchasesPage() {
             <Button
               type="submit"
               size="sm"
+              variant="primary"
               isLoading={isSubmittingManual}
-              className="bg-purple-600 hover:bg-purple-700 text-white font-bold"
             >
               Add Submission &amp; Credit
             </Button>

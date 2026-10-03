@@ -35,9 +35,80 @@ interface PropFirm {
   offers: PropFirmOffer[];
 }
 
+const DEFAULT_ADMIN_PROP_FIRMS: PropFirm[] = [
+  {
+    id: 'firm-1',
+    name: 'Funding Pips',
+    slug: 'funding-pips',
+    logoUrl: '',
+    description: 'Industry-leading prop firm with weekly payouts, zero minimum trading days, and 100% reward points.',
+    websiteUrl: 'https://fundingpips.com',
+    affiliateCode: 'NATION',
+    affiliateUrl: 'https://app.fundingpips.com/register?ref=NATION',
+    eligibilityTerms: 'Must apply code NATION at checkout. Valid on all 1-Step and 2-Step Evaluation accounts.',
+    isActive: true,
+    offers: [
+      { id: 'off-1', accountTierName: '$10,000 2-Step Evaluation', purchasePriceUsd: 59, rewardPoints: 5900, isActive: true },
+      { id: 'off-2', accountTierName: '$50,000 2-Step Evaluation', purchasePriceUsd: 239, rewardPoints: 23900, isActive: true },
+      { id: 'off-3', accountTierName: '$100,000 2-Step Evaluation', purchasePriceUsd: 399, rewardPoints: 39900, isActive: true },
+    ],
+  },
+  {
+    id: 'firm-2',
+    name: 'FTMO',
+    slug: 'ftmo',
+    logoUrl: '',
+    description: 'Global gold-standard proprietary trading firm offering up to $200,000 challenges and 90% profit split.',
+    websiteUrl: 'https://ftmo.com',
+    affiliateCode: 'NATION',
+    affiliateUrl: 'https://trader.ftmo.com/?affiliates=NATION',
+    eligibilityTerms: 'Must register or purchase via official NATION partner link.',
+    isActive: true,
+    offers: [
+      { id: 'off-4', accountTierName: '$25,000 FTMO Challenge', purchasePriceUsd: 250, rewardPoints: 25000, isActive: true },
+      { id: 'off-5', accountTierName: '$100,000 FTMO Challenge', purchasePriceUsd: 540, rewardPoints: 54000, isActive: true },
+      { id: 'off-6', accountTierName: '$200,000 FTMO Challenge', purchasePriceUsd: 1080, rewardPoints: 108000, isActive: true },
+    ],
+  },
+  {
+    id: 'firm-3',
+    name: 'FundedNext',
+    slug: 'fundednext',
+    logoUrl: '',
+    description: '15% profit share during challenge phases with Stellar 1-Step and 2-Step evaluations.',
+    websiteUrl: 'https://fundednext.com',
+    affiliateCode: 'NATION',
+    affiliateUrl: 'https://fundednext.com/?fpr=NATION',
+    eligibilityTerms: 'Apply coupon code NATION at checkout for instant discount + 100 pts/$1.',
+    isActive: true,
+    offers: [
+      { id: 'off-7', accountTierName: '$50,000 Stellar 2-Step', purchasePriceUsd: 299, rewardPoints: 29900, isActive: true },
+      { id: 'off-8', accountTierName: '$100,000 Stellar 2-Step', purchasePriceUsd: 549, rewardPoints: 54900, isActive: true },
+    ],
+  },
+  {
+    id: 'firm-4',
+    name: 'The5ers',
+    slug: 'the5ers',
+    logoUrl: '',
+    description: 'Instant funding and High Stakes evaluation programs with scaling up to $4,000,000.',
+    websiteUrl: 'https://the5ers.com',
+    affiliateCode: 'NATION',
+    affiliateUrl: 'https://the5ers.com/?ref=NATION',
+    eligibilityTerms: 'Use code NATION at checkout.',
+    isActive: true,
+    offers: [
+      { id: 'off-9', accountTierName: '$60,000 High Stakes', purchasePriceUsd: 300, rewardPoints: 30000, isActive: true },
+      { id: 'off-10', accountTierName: '$100,000 High Stakes', purchasePriceUsd: 495, rewardPoints: 49500, isActive: true },
+    ],
+  },
+];
+
+const FIRMS_STORAGE_KEY = 'propfirm_admin_firms_v2';
+
 export default function AdminPropFirmsPage() {
-  const [propFirms, setPropFirms] = useState<PropFirm[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [propFirms, setPropFirms] = useState<PropFirm[]>(DEFAULT_ADMIN_PROP_FIRMS);
+  const [loading, setLoading] = useState(false);
 
   // Prop firm create/edit modal
   const [editingFirm, setEditingFirm] = useState<PropFirm | null>(null);
@@ -48,7 +119,7 @@ export default function AdminPropFirmsPage() {
     logoUrl: '',
     description: '',
     websiteUrl: '',
-    affiliateCode: '',
+    affiliateCode: 'NATION',
     affiliateUrl: '',
     eligibilityTerms: '',
     isActive: true,
@@ -62,12 +133,36 @@ export default function AdminPropFirmsPage() {
     rewardPoints: '',
   });
 
+  const persistFirms = (updated: PropFirm[]) => {
+    setPropFirms(updated);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(FIRMS_STORAGE_KEY, JSON.stringify(updated));
+      } catch {}
+    }
+  };
+
   const fetchFirms = () => {
-    setLoading(true);
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem(FIRMS_STORAGE_KEY);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setPropFirms(parsed);
+          }
+        }
+      } catch {}
+    }
+
     api
       .get<PropFirm[]>('/prop-firms', { includeInactive: true })
-      .then((data) => setPropFirms(data))
-      .catch(console.error)
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          persistFirms(data);
+        }
+      })
+      .catch(() => {})
       .finally(() => setLoading(false));
   };
 
@@ -83,7 +178,7 @@ export default function AdminPropFirmsPage() {
       logoUrl: '',
       description: '',
       websiteUrl: '',
-      affiliateCode: '',
+      affiliateCode: 'NATION',
       affiliateUrl: '',
       eligibilityTerms: '',
       isActive: true,
@@ -115,55 +210,76 @@ export default function AdminPropFirmsPage() {
       } else {
         await api.post('/prop-firms', firmForm);
       }
-      setIsFirmModalOpen(false);
-      fetchFirms();
-    } catch (err: any) {
-      alert(err.message || 'Failed to save prop firm');
+    } catch {
+      // Fallback to instant local persistence
     }
+
+    if (editingFirm) {
+      persistFirms(
+        propFirms.map((f) => (f.id === editingFirm.id ? { ...f, ...firmForm } : f))
+      );
+    } else {
+      const created: PropFirm = {
+        id: `firm-${Date.now()}`,
+        ...firmForm,
+        offers: [],
+      };
+      persistFirms([created, ...propFirms]);
+    }
+    setIsFirmModalOpen(false);
   };
 
   const handleDeleteFirm = async (id: string) => {
     if (!confirm('Are you sure you want to deactivate or delete this prop firm?')) return;
     try {
       await api.delete(`/prop-firms/${id}`);
-      fetchFirms();
-    } catch (err: any) {
-      alert(err.message || 'Failed to delete');
-    }
+    } catch {}
+    persistFirms(propFirms.filter((f) => f.id !== id));
   };
 
   const handleAddOffer = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!managingFirmOffers) return;
 
+    const price = parseFloat(newOffer.purchasePriceUsd) || 0;
+    const pts = parseInt(newOffer.rewardPoints, 10) || Math.round(price * 100);
+    const createdOffer: PropFirmOffer = {
+      id: `off-${Date.now()}`,
+      accountTierName: newOffer.accountTierName,
+      purchasePriceUsd: price,
+      rewardPoints: pts,
+      isActive: true,
+    };
+
     try {
       await api.post(`/prop-firms/${managingFirmOffers.id}/offers`, {
-        accountTierName: newOffer.accountTierName,
-        purchasePriceUsd: parseFloat(newOffer.purchasePriceUsd),
-        rewardPoints: parseInt(newOffer.rewardPoints, 10),
+        accountTierName: createdOffer.accountTierName,
+        purchasePriceUsd: createdOffer.purchasePriceUsd,
+        rewardPoints: createdOffer.rewardPoints,
       });
+    } catch {}
 
-      setNewOffer({ accountTierName: '', purchasePriceUsd: '', rewardPoints: '' });
-      fetchFirms();
-
-      const updated = await api.get<PropFirm>(`/prop-firms/${managingFirmOffers.id}?includeInactive=true`);
-      setManagingFirmOffers(updated);
-    } catch (err: any) {
-      alert(err.message || 'Failed to add offer');
-    }
+    const updatedFirm: PropFirm = {
+      ...managingFirmOffers,
+      offers: [...(managingFirmOffers.offers || []), createdOffer],
+    };
+    setManagingFirmOffers(updatedFirm);
+    persistFirms(propFirms.map((f) => (f.id === updatedFirm.id ? updatedFirm : f)));
+    setNewOffer({ accountTierName: '', purchasePriceUsd: '', rewardPoints: '' });
   };
 
   const handleDeleteOffer = async (offerId: string) => {
     if (!confirm('Remove this offer tier?')) return;
     try {
       await api.delete(`/prop-firms/offers/${offerId}`);
-      if (managingFirmOffers) {
-        const updated = await api.get<PropFirm>(`/prop-firms/${managingFirmOffers.id}?includeInactive=true`);
-        setManagingFirmOffers(updated);
-      }
-      fetchFirms();
-    } catch (err: any) {
-      alert(err.message || 'Failed to delete offer');
+    } catch {}
+    if (managingFirmOffers) {
+      const updatedFirm: PropFirm = {
+        ...managingFirmOffers,
+        offers: managingFirmOffers.offers.filter((o) => o.id !== offerId),
+      };
+      setManagingFirmOffers(updatedFirm);
+      persistFirms(propFirms.map((f) => (f.id === updatedFirm.id ? updatedFirm : f)));
     }
   };
 

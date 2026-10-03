@@ -53,9 +53,9 @@ export default function MyRewardsPage() {
     const userEmail =
       user?.email ||
       (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) ||
-      'trader@example.com';
+      'anonymous';
     const localRedemptions = userDataStore.getUserRedemptions(userEmail);
-    setRedemptions((prev) => (prev.length > 0 ? prev : (localRedemptions as any)));
+    setRedemptions(localRedemptions as any);
     setLoading(false);
 
     api

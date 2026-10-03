@@ -77,25 +77,31 @@ export default function TraderWalletPage() {
   const [payoutLoading, setPayoutLoading] = useState(false);
 
   const fetchWalletData = () => {
-    const userEmail = user?.email || (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) || 'trader@example.com';
+    const userEmail =
+      user?.email ||
+      (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) ||
+      'anonymous';
     const localLedger = userDataStore.getUserLedger(userEmail);
     const localPurchases = userDataStore.getUserPurchases(userEmail);
+    const localRedemptions = userDataStore.getUserRedemptions(userEmail);
     const available = userDataStore.calculateAvailablePoints(userEmail);
     const pending = userDataStore.calculatePendingPoints(userEmail);
+    const totalEarned = userDataStore.calculateTotalEarnedPoints(userEmail);
+    const totalRedeemed = userDataStore.calculateTotalRedeemedPoints(userEmail);
 
     const fallbackSummary: PointsSummary = {
       availablePoints: available,
-      totalPointsEarned: available + 22000,
-      totalPointsRedeemed: 22000,
+      totalPointsEarned: totalEarned,
+      totalPointsRedeemed: totalRedeemed,
       pendingPoints: pending,
-      pendingPurchases: localPurchases.filter((p) => p.status === 'PENDING').length,
+      pendingPurchases: localPurchases.filter((p) => p.status === 'PENDING' || p.status === 'UNDER_REVIEW').length,
       totalVerifiedPurchases: localPurchases.filter((p) => p.status === 'APPROVED').length,
-      activeRedemptions: 1,
+      activeRedemptions: localRedemptions.filter((r) => r.status === 'SHIPPED' || r.status === 'PROCESSING' || r.status === 'CONFIRMED').length,
     };
 
-    // Hydrate immediately in 0ms
-    setSummary((prev) => prev || fallbackSummary);
-    setTransactions((prev) => (prev.length > 0 ? prev : (localLedger as any)));
+    // Hydrate immediately from current user's clean store
+    setSummary(fallbackSummary);
+    setTransactions(localLedger as any);
     setLoading(false);
 
     Promise.all([
@@ -117,7 +123,7 @@ export default function TraderWalletPage() {
   const pendingPoints = summary?.pendingPoints ?? user?.points?.pending ?? 0;
   const lifetimeEarned = summary?.totalPointsEarned ?? user?.points?.lifetimeEarned ?? 0;
   const lifetimeRedeemed = summary?.totalPointsRedeemed ?? user?.points?.lifetimeRedeemed ?? 0;
-  const verifiedChallenges = summary?.totalVerifiedPurchases ?? 3;
+  const verifiedChallenges = summary?.totalVerifiedPurchases ?? 0;
 
   // Valuation: 10 PTS = $1.00 USD (1$ = 10 points)
   const availableUsd = (availablePoints / 10).toFixed(2);
