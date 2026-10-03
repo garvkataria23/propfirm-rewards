@@ -24,7 +24,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const { isPinned } = useSidebarMode();
+  const { isExpanded } = useSidebarMode();
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -47,10 +47,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 dark:bg-[#060b18] dark:text-slate-100 flex flex-col lg:flex-row antialiased transition-colors">
-      {/* Desktop Left Sidebar: Dynamic Width Spacer */}
+      {/* Desktop Left Sidebar: Dynamic Width Spacer (shifts right-side layout on both hover & pin, zero overlap) */}
       <div
         className={`hidden lg:block shrink-0 h-screen sticky top-0 z-30 transition-[width] duration-300 ease-in-out ${
-          isPinned ? 'w-64' : 'w-[68px]'
+          isExpanded ? 'w-64' : 'w-[68px]'
         }`}
       >
         <PropNationSidebar />

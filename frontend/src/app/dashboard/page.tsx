@@ -86,28 +86,30 @@ export default function DashboardOverviewPage() {
     const userEmail =
       user?.email ||
       (typeof window !== 'undefined' ? localStorage.getItem('propfirm_saved_email') : null) ||
-      'trader@example.com';
+      'anonymous';
     const localPurchases = userDataStore.getUserPurchases(userEmail);
     const localLedger = userDataStore.getUserLedger(userEmail);
     const localRedemptions = userDataStore.getUserRedemptions(userEmail);
     const available = userDataStore.calculateAvailablePoints(userEmail);
     const pending = userDataStore.calculatePendingPoints(userEmail);
+    const totalEarned = userDataStore.calculateTotalEarnedPoints(userEmail);
+    const totalRedeemed = userDataStore.calculateTotalRedeemedPoints(userEmail);
 
     const fallbackSummary: PointsSummary = {
       availablePoints: available,
-      totalPointsEarned: available + 22000,
-      totalPointsRedeemed: 22000,
+      totalPointsEarned: totalEarned,
+      totalPointsRedeemed: totalRedeemed,
       pendingPoints: pending,
-      pendingPurchases: localPurchases.filter((p) => p.status === 'PENDING').length,
+      pendingPurchases: localPurchases.filter((p) => p.status === 'PENDING' || p.status === 'UNDER_REVIEW').length,
       totalVerifiedPurchases: localPurchases.filter((p) => p.status === 'APPROVED').length,
-      activeRedemptions: localRedemptions.filter((r) => r.status === 'SHIPPED').length,
+      activeRedemptions: localRedemptions.filter((r) => r.status === 'SHIPPED' || r.status === 'PROCESSING' || r.status === 'CONFIRMED').length,
     };
 
-    // Hydrate immediately in 0ms so UI never waits on cold-start network calls
-    setSummary((prev) => prev || fallbackSummary);
-    setRecentPurchases((prev) => (prev.length > 0 ? prev : (localPurchases.slice(0, 5) as any)));
-    setRecentTransactions((prev) => (prev.length > 0 ? prev : (localLedger.slice(0, 5) as any)));
-    setRecentRedemptions((prev) => (prev.length > 0 ? prev : (localRedemptions.slice(0, 3) as any)));
+    // Hydrate immediately from current user's clean store
+    setSummary(fallbackSummary);
+    setRecentPurchases(localPurchases.slice(0, 5) as any);
+    setRecentTransactions(localLedger.slice(0, 5) as any);
+    setRecentRedemptions(localRedemptions.slice(0, 3) as any);
     setLoading(false);
 
     Promise.all([

@@ -151,7 +151,7 @@ export default function RewardsStorePage() {
             specifications: 'Display: 13-inch Tandem OLED | Processor: Apple M4 Chip | Storage: 256GB Wi-Fi',
             imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80',
             pointsRequired: 12990,
-            stock: 6,
+            stock: 0,
             isUnlimitedStock: false,
             category: fallbackCats[0],
           },
@@ -176,7 +176,7 @@ export default function RewardsStorePage() {
             specifications: 'Processor: Apple M4 Max (16-core CPU, 40-core GPU) | Memory: 64GB Unified RAM | Storage: 1TB NVMe SSD',
             imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80',
             pointsRequired: 34990,
-            stock: 4,
+            stock: 0,
             isUnlimitedStock: false,
             category: fallbackCats[1],
           },
@@ -225,7 +225,7 @@ export default function RewardsStorePage() {
             specifications: 'Case: Forged Carbon & Stainless Steel | Resistance: 200M Water & Mud Resistant | Glass: Sapphire Crystal',
             imageUrl: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=800&auto=format&fit=crop&q=80',
             pointsRequired: 8000,
-            stock: 10,
+            stock: 0,
             isUnlimitedStock: false,
             category: fallbackCats[2],
           },
@@ -286,7 +286,7 @@ export default function RewardsStorePage() {
             specifications: 'Colorway: Varsity Red/Black/Sail | Material: Premium Full-Grain Leather | Sizes: US 7 to 13',
             imageUrl: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=800&auto=format&fit=crop&q=80',
             pointsRequired: 3500,
-            stock: 8,
+            stock: 0,
             isUnlimitedStock: false,
             category: fallbackCats[3],
           },
@@ -359,7 +359,7 @@ export default function RewardsStorePage() {
             specifications: 'Screen Size: 49" Curved 1000R | Resolution: 5120 x 1440 Dual QHD | Refresh Rate: 240Hz 1ms',
             imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&auto=format&fit=crop&q=80',
             pointsRequired: 17990,
-            stock: 3,
+            stock: 0,
             isUnlimitedStock: false,
             category: fallbackCats[4],
           },
@@ -444,7 +444,7 @@ export default function RewardsStorePage() {
             specifications: 'Color: Space Gray | Connector: USB-C Charging | Active Noise Cancellation with Transparency Mode',
             imageUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80',
             pointsRequired: 5490,
-            stock: 10,
+            stock: 0,
             isUnlimitedStock: false,
             category: fallbackCats[5],
           },
@@ -469,7 +469,7 @@ export default function RewardsStorePage() {
             specifications: 'Display: 3.7" Curved E-Ink | Connection: Bluetooth 5.2 & USB-C | Security: CC EAL6+ Certified Element',
             imageUrl: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=800&auto=format&fit=crop&q=80',
             pointsRequired: 3990,
-            stock: 14,
+            stock: 0,
             isUnlimitedStock: false,
             category: fallbackCats[6],
           },
@@ -494,7 +494,7 @@ export default function RewardsStorePage() {
             specifications: 'Size: Size B (Medium) | Finish: Mineral/Satin Aluminum | Features: PostureFit SL & Forward Tilt',
             imageUrl: 'https://images.unsplash.com/photo-1505797149-43b0069ec26b?w=800&auto=format&fit=crop&q=80',
             pointsRequired: 16950,
-            stock: 4,
+            stock: 0,
             isUnlimitedStock: false,
             category: fallbackCats[8],
           },
@@ -561,6 +561,17 @@ export default function RewardsStorePage() {
           },
         ];
 
+    const soldOutSlugs = new Set([
+      'apple-ipad-pro-13-m4',
+      'macbook-pro-16-m4-max',
+      'casio-gshock-mudmaster-gwg2000',
+      'nike-air-jordan-1-retro-chicago',
+      'samsung-odyssey-neo-g9-49',
+      'apple-airpods-max-usbc',
+      'ledger-stax-hardware-wallet',
+      'herman-miller-aeron-chair',
+    ]);
+
     // Hydrate immediately in 0ms so user sees full catalog right away
     setCategories((prev) => (prev.length > 0 ? prev : fallbackCats));
     setRewards((prev) => (prev.length > 0 ? prev : fallbackRews));
@@ -571,7 +582,13 @@ export default function RewardsStorePage() {
       api.get<Category[]>('/rewards/categories').catch(() => null),
     ]).then(([rewardsData, categoriesData]) => {
       if (Array.isArray(rewardsData) && rewardsData.length > 0) {
-        setRewards(rewardsData);
+        const hasAnyOutOfStock = rewardsData.some((r) => !r.isUnlimitedStock && r.stock <= 0);
+        const normalizedRewards = hasAnyOutOfStock
+          ? rewardsData
+          : rewardsData.map((r) =>
+              soldOutSlugs.has(r.slug) ? { ...r, stock: 0, isUnlimitedStock: false } : r
+            );
+        setRewards(normalizedRewards);
       }
       if (Array.isArray(categoriesData) && categoriesData.length > 0) {
         setCategories(categoriesData);
@@ -592,15 +609,20 @@ export default function RewardsStorePage() {
     }
   }, [user]);
 
-  const filteredRewards = rewards.filter((r) => {
+  const categoryAndSearchMatches = rewards.filter((r) => {
     const matchesCategory =
       selectedCategory === 'all' || r.category?.slug === selectedCategory;
     const matchesSearch =
       r.name.toLowerCase().includes(search.toLowerCase()) ||
       r.description.toLowerCase().includes(search.toLowerCase());
-    const matchesStock = !inStockOnly || r.isUnlimitedStock || r.stock > 0;
-    return matchesCategory && matchesSearch && matchesStock;
+    return matchesCategory && matchesSearch;
   });
+
+  const inStockMatches = categoryAndSearchMatches.filter(
+    (r) => r.isUnlimitedStock || r.stock > 0
+  );
+
+  const filteredRewards = inStockOnly ? inStockMatches : categoryAndSearchMatches;
 
   const handleOpenRedeemModal = (reward: Reward) => {
     setSelectedReward(reward);
@@ -683,7 +705,7 @@ export default function RewardsStorePage() {
       {/* Filter and Search Bar */}
       <div className="space-y-4">
         {/* Category Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setSelectedCategory('all')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
@@ -722,15 +744,37 @@ export default function RewardsStorePage() {
             />
           </div>
 
-          <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 cursor-pointer self-start sm:self-auto select-none">
-            <input
-              type="checkbox"
-              checked={inStockOnly}
-              onChange={(e) => setInStockOnly(e.target.checked)}
-              className="rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-emerald-500 focus:ring-emerald-500"
-            />
-            <span>In-Stock Only</span>
-          </label>
+          <div className="flex items-center gap-3 self-start sm:self-auto">
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+              Showing <strong className="text-slate-900 dark:text-white">{filteredRewards.length}</strong> of{' '}
+              <strong className="text-slate-900 dark:text-white">{categoryAndSearchMatches.length}</strong> rewards
+            </span>
+
+            <label
+              className={`inline-flex items-center gap-2.5 rounded-xl border px-3.5 py-2 text-xs font-semibold cursor-pointer select-none transition-all ${
+                inStockOnly
+                  ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 shadow-xs shadow-emerald-500/10'
+                  : 'border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 hover:border-slate-400 dark:hover:border-slate-700'
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={inStockOnly}
+                onChange={(e) => setInStockOnly(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 dark:border-slate-700 accent-emerald-500 cursor-pointer"
+              />
+              <span>In-Stock Only</span>
+              <span
+                className={`rounded-md px-1.5 py-0.5 text-[10px] font-bold ${
+                  inStockOnly
+                    ? 'bg-emerald-500 text-slate-950'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                {inStockMatches.length}
+              </span>
+            </label>
+          </div>
         </div>
       </div>
 
@@ -800,9 +844,17 @@ export default function RewardsStorePage() {
                         <span className="text-xs text-slate-500 dark:text-slate-400">Points</span>
                       </div>
 
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                      <span
+                        className={`text-[11px] font-medium ${
+                          isOutOfStock
+                            ? 'text-rose-500 dark:text-rose-400 font-semibold'
+                            : 'text-slate-500 dark:text-slate-400'
+                        }`}
+                      >
                         {reward.isUnlimitedStock
                           ? 'Instant Digital Delivery'
+                          : isOutOfStock
+                          ? 'Out of Stock · Restocking'
                           : `${reward.stock} in stock`}
                       </span>
                     </div>
@@ -814,19 +866,19 @@ export default function RewardsStorePage() {
                         </Button>
                       </Link>
 
-                      {user ? (
+                      {isOutOfStock ? (
+                        <Button variant="secondary" size="sm" disabled className="w-full">
+                          Out of Stock
+                        </Button>
+                      ) : user ? (
                         <Button
-                          variant={canAfford && !isOutOfStock ? 'primary' : 'secondary'}
+                          variant={canAfford ? 'primary' : 'secondary'}
                           size="sm"
-                          disabled={!canAfford || isOutOfStock}
+                          disabled={!canAfford}
                           onClick={() => handleOpenRedeemModal(reward)}
                           className="w-full"
                         >
-                          {isOutOfStock
-                            ? 'Out of Stock'
-                            : !canAfford
-                            ? 'Need More Pts'
-                            : 'Redeem Now'}
+                          {!canAfford ? 'Need More Pts' : 'Redeem Now'}
                         </Button>
                       ) : (
                         <Link href="/login">

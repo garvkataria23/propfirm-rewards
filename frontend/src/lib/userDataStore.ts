@@ -1,3 +1,16 @@
+import {
+  auth,
+  db,
+  doc,
+  setDoc,
+  getDocs,
+  collection,
+  query,
+  orderBy,
+  limit,
+  serverTimestamp,
+} from '@/lib/firebase';
+
 export interface UserPurchaseRecord {
   id: string;
   submissionCode: string;
@@ -52,125 +65,16 @@ export interface UserRedemptionRecord {
   };
 }
 
-const SEED_PURCHASES: Record<string, UserPurchaseRecord[]> = {
-  'default_seed': [
-    {
-      id: 'pur-seed-1',
-      submissionCode: 'PN-PUR-88214',
-      propFirm: {
-        name: 'Funding Pips',
-        logoUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
-      },
-      accountType: '$100K 2-Step Evaluation',
-      orderId: 'FP-98214',
-      accountId: 'MT5-881920',
-      purchaseDate: '2026-10-01',
-      purchaseAmountUsd: 399.0,
-      emailUsed: 'trader@example.com',
-      referralCodeUsed: 'NATION',
-      pointsAwarded: 4500,
-      status: 'APPROVED',
-      proofs: [
-        {
-          id: 'proof-1',
-          fileUrl: '/demo-proofs/fundedsquad-invoice-sample.jpg',
-          fileName: 'FundingPips_Official_Receipt_FP98214.pdf',
-          fileType: 'application/pdf',
-        },
-      ],
-      createdAt: '2026-10-01T08:30:00Z',
-    },
-    {
-      id: 'pur-seed-2',
-      submissionCode: 'PN-PUR-77402',
-      propFirm: {
-        name: 'FundedSquad',
-        logoUrl: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
-      },
-      accountType: '$50K Direct Evaluation',
-      orderId: 'FS-51656',
-      accountId: 'CTR-22019',
-      purchaseDate: '2026-10-02',
-      purchaseAmountUsd: 249.0,
-      emailUsed: 'trader@example.com',
-      referralCodeUsed: 'NATION',
-      pointsAwarded: 2800,
-      status: 'UNDER_REVIEW',
-      proofs: [
-        {
-          id: 'proof-2',
-          fileUrl: '/demo-proofs/order-confirmed-sample.jpg',
-          fileName: 'FundedSquad_Payment_Proof.png',
-          fileType: 'image/png',
-        },
-      ],
-      createdAt: '2026-10-02T11:15:00Z',
-    },
-    {
-      id: 'pur-seed-3',
-      submissionCode: 'PN-PUR-66109',
-      propFirm: {
-        name: 'FTMO',
-        logoUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=120&auto=format&fit=crop&q=80',
-      },
-      accountType: '$200K Challenge (Normal Risk)',
-      orderId: 'FTMO-77301',
-      accountId: 'MT5-901412',
-      purchaseDate: '2026-09-24',
-      purchaseAmountUsd: 1080.0,
-      emailUsed: 'trader@example.com',
-      referralCodeUsed: 'NATION',
-      pointsAwarded: 11200,
-      status: 'APPROVED',
-      proofs: [
-        {
-          id: 'proof-3',
-          fileUrl: '/demo-proofs/email-processing-sample.jpg',
-          fileName: 'FTMO_Order_Confirmation_Receipt.png',
-          fileType: 'image/png',
-        },
-      ],
-      createdAt: '2026-09-24T14:20:00Z',
-    },
-  ],
-};
+const LEGACY_SEED_PURCHASE_IDS = new Set(['pur-seed-1', 'pur-seed-2', 'pur-seed-3']);
+const LEGACY_SEED_TX_IDS = new Set(['tx-1', 'tx-2', 'tx-3', 'tx-4']);
 
-const SEED_LEDGER: Record<string, UserLedgerTransaction[]> = {
-  'default_seed': [
-    {
-      id: 'tx-1',
-      type: 'PURCHASE_REWARD',
-      points: 4500,
-      balanceAfter: 15700,
-      description: 'Funding Pips $100K 2-Step Evaluation verified (Order #FP-98214)',
-      createdAt: '2026-10-01T08:35:00Z',
-    },
-    {
-      id: 'tx-2',
-      type: 'REDEMPTION',
-      points: -22000,
-      balanceAfter: 11200,
-      description: 'Redeemed Apple AirPods Pro (2nd Gen - MagSafe USB-C)',
-      createdAt: '2026-10-01T10:14:00Z',
-    },
-    {
-      id: 'tx-3',
-      type: 'PURCHASE_REWARD',
-      points: 11200,
-      balanceAfter: 33200,
-      description: 'FTMO $200K Challenge purchase verified (Order #FTMO-77301)',
-      createdAt: '2026-09-24T14:25:00Z',
-    },
-    {
-      id: 'tx-4',
-      type: 'WELCOME_BONUS',
-      points: 1000,
-      balanceAfter: 22000,
-      description: 'Account activation welcome reward (+1,000 PTS)',
-      createdAt: '2026-09-20T09:00:00Z',
-    },
-  ],
-};
+function isLegacySeedPurchase(p: UserPurchaseRecord): boolean {
+  return LEGACY_SEED_PURCHASE_IDS.has(p.id);
+}
+
+function isLegacySeedTx(tx: UserLedgerTransaction): boolean {
+  return LEGACY_SEED_TX_IDS.has(tx.id) || tx.id.startsWith('tx-welcome-');
+}
 
 function normalizeKey(email?: string | null): string {
   if (!email) return 'anonymous';
@@ -178,38 +82,47 @@ function normalizeKey(email?: string | null): string {
 }
 
 export const userDataStore = {
-  // Purchases
+  // Purchases — starts empty (0 data) for all new accounts
   getUserPurchases(email: string): UserPurchaseRecord[] {
     if (typeof window === 'undefined') return [];
-    const key = `propfirm_purchases_${normalizeKey(email)}`;
+    const key = `propfirm_v2_purchases_${normalizeKey(email)}`;
     const saved = localStorage.getItem(key);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed: UserPurchaseRecord[] = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed.filter((p) => !isLegacySeedPurchase(p)) : [];
       } catch (e) {
         console.error('Failed to parse purchases:', e);
       }
     }
-
-    // If trader demo or primary user, return rich baseline seed
-    const normalized = normalizeKey(email);
-    if (normalized.includes('trader') || normalized.includes('garv') || normalized.includes('alex')) {
-      const seed = SEED_PURCHASES['default_seed'];
-      localStorage.setItem(key, JSON.stringify(seed));
-      return seed;
-    }
-
     return [];
   },
 
   addUserPurchase(email: string, purchase: UserPurchaseRecord): void {
     if (typeof window === 'undefined') return;
-    const key = `propfirm_purchases_${normalizeKey(email)}`;
+    const key = `propfirm_v2_purchases_${normalizeKey(email)}`;
     const current = this.getUserPurchases(email);
     const updated = [purchase, ...current.filter((p) => p.id !== purchase.id && p.submissionCode !== purchase.submissionCode)];
     localStorage.setItem(key, JSON.stringify(updated));
 
-    // Also record an entry in ledger as pending
+    // Persist to Cloud Firestore if authenticated
+    const uid = auth.currentUser?.uid;
+    if (uid) {
+      setDoc(doc(db, 'users', uid, 'purchases', purchase.id), {
+        ...purchase,
+        userId: uid,
+        userEmail: normalizeKey(email),
+        syncedAt: serverTimestamp(),
+      }, { merge: true }).catch(() => {});
+      setDoc(doc(db, 'purchases', purchase.id), {
+        ...purchase,
+        userId: uid,
+        userEmail: normalizeKey(email),
+        syncedAt: serverTimestamp(),
+      }, { merge: true }).catch(() => {});
+    }
+
+    // Record an entry in ledger for the submitted purchase
     this.addUserLedgerTransaction(email, {
       id: `tx-${Date.now()}`,
       type: 'PURCHASE_PENDING',
@@ -220,61 +133,53 @@ export const userDataStore = {
     });
   },
 
-  // Ledger / Points
+  // Ledger / Points — starts empty (0 data) for all new accounts
   getUserLedger(email: string): UserLedgerTransaction[] {
     if (typeof window === 'undefined') return [];
-    const key = `propfirm_ledger_${normalizeKey(email)}`;
+    const key = `propfirm_v2_ledger_${normalizeKey(email)}`;
     const saved = localStorage.getItem(key);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed: UserLedgerTransaction[] = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed.filter((tx) => !isLegacySeedTx(tx)) : [];
       } catch (e) {
         console.error('Failed to parse ledger:', e);
       }
     }
-
-    const normalized = normalizeKey(email);
-    if (normalized.includes('trader') || normalized.includes('garv') || normalized.includes('alex')) {
-      const seed = SEED_LEDGER['default_seed'];
-      localStorage.setItem(key, JSON.stringify(seed));
-      return seed;
-    }
-
-    // Default welcome record for any new user
-    const defaultTx: UserLedgerTransaction[] = [
-      {
-        id: `tx-welcome-${Date.now()}`,
-        type: 'WELCOME_BONUS',
-        points: 1000,
-        balanceAfter: 1000,
-        description: 'Welcome Bonus: Account registered & verified (+1,000 PTS)',
-        createdAt: new Date().toISOString(),
-      },
-    ];
-    localStorage.setItem(key, JSON.stringify(defaultTx));
-    return defaultTx;
+    return [];
   },
 
   addUserLedgerTransaction(email: string, tx: UserLedgerTransaction): void {
     if (typeof window === 'undefined') return;
-    const key = `propfirm_ledger_${normalizeKey(email)}`;
+    const key = `propfirm_v2_ledger_${normalizeKey(email)}`;
     const current = this.getUserLedger(email);
-    const updated = [tx, ...current];
+    const updated = [tx, ...current.filter((t) => t.id !== tx.id)];
     localStorage.setItem(key, JSON.stringify(updated));
+
+    const uid = auth.currentUser?.uid;
+    if (uid) {
+      setDoc(doc(db, 'users', uid, 'ledger', tx.id), {
+        ...tx,
+        userId: uid,
+        userEmail: normalizeKey(email),
+        syncedAt: serverTimestamp(),
+      }, { merge: true }).catch(() => {});
+      setDoc(doc(db, 'users', uid), {
+        points: {
+          available: this.calculateAvailablePoints(email),
+          pending: this.calculatePendingPoints(email),
+          lifetimeEarned: this.calculateTotalEarnedPoints(email),
+          lifetimeRedeemed: this.calculateTotalRedeemedPoints(email),
+        },
+        updatedAt: serverTimestamp(),
+      }, { merge: true }).catch(() => {});
+    }
   },
 
   calculateAvailablePoints(email: string): number {
-    const purchases = this.getUserPurchases(email);
-    const approvedPoints = purchases
-      .filter((p) => p.status === 'APPROVED')
-      .reduce((sum, p) => sum + p.pointsAwarded, 0);
-
-    const redemptions = this.getUserRedemptions(email);
-    const spentPoints = redemptions.reduce((sum, r) => sum + r.pointsSpent, 0);
-
-    const bonus = 1000; // Welcome perk
-    const balance = approvedPoints + bonus - spentPoints;
-    return Math.max(balance, 1000);
+    const approvedPoints = this.calculateTotalEarnedPoints(email);
+    const spentPoints = this.calculateTotalRedeemedPoints(email);
+    return Math.max(approvedPoints - spentPoints, 0);
   },
 
   calculatePendingPoints(email: string): number {
@@ -284,14 +189,27 @@ export const userDataStore = {
       .reduce((sum, p) => sum + p.pointsAwarded, 0);
   },
 
-  // Redemptions
+  calculateTotalEarnedPoints(email: string): number {
+    const purchases = this.getUserPurchases(email);
+    return purchases
+      .filter((p) => p.status === 'APPROVED')
+      .reduce((sum, p) => sum + p.pointsAwarded, 0);
+  },
+
+  calculateTotalRedeemedPoints(email: string): number {
+    const redemptions = this.getUserRedemptions(email);
+    return redemptions.reduce((sum, r) => sum + r.pointsSpent, 0);
+  },
+
+  // Redemptions — starts empty (0 data) for all new accounts
   getUserRedemptions(email: string): UserRedemptionRecord[] {
     if (typeof window === 'undefined') return [];
-    const key = `propfirm_redemptions_${normalizeKey(email)}`;
+    const key = `propfirm_v2_redemptions_${normalizeKey(email)}`;
     const saved = localStorage.getItem(key);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed : [];
       } catch (e) {
         console.error('Failed to parse redemptions:', e);
       }
@@ -301,19 +219,80 @@ export const userDataStore = {
 
   addUserRedemption(email: string, rdm: UserRedemptionRecord): void {
     if (typeof window === 'undefined') return;
-    const key = `propfirm_redemptions_${normalizeKey(email)}`;
+    const key = `propfirm_v2_redemptions_${normalizeKey(email)}`;
     const current = this.getUserRedemptions(email);
-    const updated = [rdm, ...current];
+    const updated = [rdm, ...current.filter((r) => r.id !== rdm.id && r.redemptionCode !== rdm.redemptionCode)];
     localStorage.setItem(key, JSON.stringify(updated));
+
+    const uid = auth.currentUser?.uid;
+    if (uid) {
+      setDoc(doc(db, 'users', uid, 'redemptions', rdm.id), {
+        ...rdm,
+        userId: uid,
+        userEmail: normalizeKey(email),
+        syncedAt: serverTimestamp(),
+      }, { merge: true }).catch(() => {});
+      setDoc(doc(db, 'redemptions', rdm.id), {
+        ...rdm,
+        userId: uid,
+        userEmail: normalizeKey(email),
+        syncedAt: serverTimestamp(),
+      }, { merge: true }).catch(() => {});
+    }
 
     // Ledger debit
     this.addUserLedgerTransaction(email, {
       id: `tx-rdm-${Date.now()}`,
       type: 'REDEMPTION',
       points: -rdm.pointsSpent,
-      balanceAfter: this.calculateAvailablePoints(email) - rdm.pointsSpent,
+      balanceAfter: this.calculateAvailablePoints(email),
       description: `Redeemed ${rdm.reward.name} (${rdm.redemptionCode})`,
       createdAt: new Date().toISOString(),
     });
+  },
+
+  async syncFromFirestore(uid: string, email: string): Promise<void> {
+    if (typeof window === 'undefined' || !uid || !email) return;
+    try {
+      const normalized = normalizeKey(email);
+      const [purchasesSnap, ledgerSnap, redemptionsSnap] = await Promise.all([
+        getDocs(query(collection(db, 'users', uid, 'purchases'), orderBy('createdAt', 'desc'), limit(50))).catch(() => null),
+        getDocs(query(collection(db, 'users', uid, 'ledger'), orderBy('createdAt', 'desc'), limit(50))).catch(() => null),
+        getDocs(query(collection(db, 'users', uid, 'redemptions'), orderBy('createdAt', 'desc'), limit(50))).catch(() => null),
+      ]);
+
+      if (purchasesSnap && !purchasesSnap.empty) {
+        const remotePurchases = purchasesSnap.docs
+          .map((d) => d.data() as UserPurchaseRecord)
+          .filter((p) => !isLegacySeedPurchase(p));
+        const localPurchases = this.getUserPurchases(email);
+        const merged = [...remotePurchases, ...localPurchases].filter(
+          (item, index, self) => index === self.findIndex((p) => p.id === item.id || p.submissionCode === item.submissionCode)
+        );
+        localStorage.setItem(`propfirm_v2_purchases_${normalized}`, JSON.stringify(merged));
+      }
+
+      if (ledgerSnap && !ledgerSnap.empty) {
+        const remoteLedger = ledgerSnap.docs
+          .map((d) => d.data() as UserLedgerTransaction)
+          .filter((tx) => !isLegacySeedTx(tx));
+        const localLedger = this.getUserLedger(email);
+        const merged = [...remoteLedger, ...localLedger].filter(
+          (item, index, self) => index === self.findIndex((t) => t.id === item.id)
+        );
+        localStorage.setItem(`propfirm_v2_ledger_${normalized}`, JSON.stringify(merged));
+      }
+
+      if (redemptionsSnap && !redemptionsSnap.empty) {
+        const remoteRedemptions = redemptionsSnap.docs.map((d) => d.data() as UserRedemptionRecord);
+        const localRedemptions = this.getUserRedemptions(email);
+        const merged = [...remoteRedemptions, ...localRedemptions].filter(
+          (item, index, self) => index === self.findIndex((r) => r.id === item.id || r.redemptionCode === item.redemptionCode)
+        );
+        localStorage.setItem(`propfirm_v2_redemptions_${normalized}`, JSON.stringify(merged));
+      }
+    } catch {
+      // Non-blocking sync
+    }
   },
 };

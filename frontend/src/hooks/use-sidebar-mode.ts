@@ -4,8 +4,12 @@ import { useState, useEffect } from 'react';
 
 const STORAGE_KEY = 'propnation_sidebar_pinned';
 
+// Shared in-memory hover state across all hook instances
+let globalHoveredState = false;
+
 export function useSidebarMode() {
   const [isPinned, setIsPinned] = useState<boolean>(false);
+  const [isHovered, setIsHoveredState] = useState<boolean>(globalHoveredState);
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -26,10 +30,16 @@ export function useSidebarMode() {
       } catch {}
     };
 
+    const handleHoverSync = () => {
+      setIsHoveredState(globalHoveredState);
+    };
+
     window.addEventListener('sidebar-preference-change', handleSync);
+    window.addEventListener('sidebar-hover-change', handleHoverSync);
     window.addEventListener('storage', handleSync);
     return () => {
       window.removeEventListener('sidebar-preference-change', handleSync);
+      window.removeEventListener('sidebar-hover-change', handleHoverSync);
       window.removeEventListener('storage', handleSync);
     };
   }, []);
@@ -42,7 +52,18 @@ export function useSidebarMode() {
     } catch {}
   };
 
-  const togglePinned = () => setPinned(!isPinned);
+  const setHovered = (hovered: boolean) => {
+    if (globalHoveredState !== hovered) {
+      globalHoveredState = hovered;
+      setIsHoveredState(hovered);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('sidebar-hover-change'));
+      }
+    }
+  };
 
-  return { isPinned, setPinned, togglePinned, mounted };
+  const togglePinned = () => setPinned(!isPinned);
+  const isExpanded = isPinned || isHovered;
+
+  return { isPinned, setPinned, togglePinned, isHovered, setHovered, isExpanded, mounted };
 }

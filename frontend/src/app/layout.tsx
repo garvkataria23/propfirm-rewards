@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/context/theme-context';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { CookieBanner } from '@/components/ui/cookie-banner';
+import { FloatingLiveChat } from '@/components/support/floating-live-chat';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -18,9 +19,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'PropNation — Trade. Earn. Get Rewarded.',
+  title: 'PROP NATION — Trade. Earn. Get Rewarded.',
   description:
-    'Purchase eligible prop-firm challenges with our affiliate codes, verify your purchase, earn reward points, and redeem them for tech gear, gadgets, and gift cards.',
+    'Earn reward points from eligible prop-firm purchases and redeem them for premium rewards with PROP NATION.',
+  openGraph: {
+    title: 'PROP NATION — Trade. Earn. Get Rewarded.',
+    description:
+      'Earn reward points from eligible prop-firm purchases and redeem them for premium rewards with PROP NATION.',
+    images: ['/pn-logo-hd.png'],
+    type: 'website',
+  },
   icons: {
     icon: '/logo.png',
     shortcut: '/logo.png',
@@ -36,7 +44,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased scroll-smooth`}
       suppressHydrationWarning
     >
       <head>
@@ -47,12 +55,13 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://translate.googleapis.com" />
         <link rel="dns-prefetch" href="https://www.gstatic.com" />
       </head>
-      <body className="min-h-full flex flex-col bg-[#f8fafc] text-slate-900 dark:bg-[#090d16] dark:text-slate-100 font-sans transition-colors duration-200">
+      <body className="min-h-full flex flex-col bg-[#06090e] text-slate-100 font-sans transition-colors duration-200 selection:bg-emerald-500 selection:text-slate-950">
         <ThemeProvider>
           <AuthProvider>
             <Navbar />
             <main className="flex-1">{children}</main>
             <Footer />
+            <FloatingLiveChat />
             <CookieBanner />
           </AuthProvider>
         </ThemeProvider>

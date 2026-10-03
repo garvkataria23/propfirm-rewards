@@ -29,12 +29,11 @@ function applyTheme(t: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('light');
+  const [theme, setThemeState] = useState<Theme>('dark');
 
   useEffect(() => {
-    // Strictly default to 'light' mode until explicitly changed by the user
     const saved = localStorage.getItem('propnation_theme') as Theme | null;
-    const initialTheme: Theme = saved === 'dark' ? 'dark' : 'light';
+    const initialTheme: Theme = saved === 'light' ? 'light' : 'dark';
     setThemeState(initialTheme);
     applyTheme(initialTheme);
   }, []);

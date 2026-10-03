@@ -121,8 +121,7 @@ interface PropNationSidebarProps {
 export function PropNationSidebar({ onClose, className = '' }: PropNationSidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
-  const { isPinned, togglePinned } = useSidebarMode();
-  const [isHovered, setIsHovered] = useState(false);
+  const { isPinned, togglePinned, isHovered, setHovered } = useSidebarMode();
 
   // Keep track of collapsed groups
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
@@ -175,29 +174,27 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
 
   // User details fallback for display
   const isStaff = user && ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER'].includes(user.role);
-  const displayName = user?.name || 'Garv Gautam Kataria';
+  const displayName = user?.name || 'Verified Trader';
   const displayPoints = user?.points?.available ?? 0;
-  const initial = displayName.charAt(0).toUpperCase() || 'G';
+  const initial = displayName.charAt(0).toUpperCase() || 'T';
 
   return (
     <aside
       onMouseEnter={() => {
         if (!isPinned && !isMobileDrawer) {
-          setIsHovered(true);
+          setHovered(true);
         }
       }}
       onMouseLeave={() => {
         if (!isPinned && !isMobileDrawer) {
-          setIsHovered(false);
+          setHovered(false);
         }
       }}
       className={`bg-white text-slate-800 border-r border-slate-200 dark:bg-[#070e20] dark:text-slate-200 dark:border-[#14234b]/60 flex flex-col h-full select-none transition-all duration-300 ease-in-out ${
         isMobileDrawer
           ? 'w-full'
-          : isPinned
+          : isExpanded
           ? 'w-64'
-          : isHovered
-          ? 'w-64 absolute left-0 top-0 h-screen z-50 shadow-2xl border-r border-slate-300 dark:border-slate-700'
           : 'w-[68px]'
       } ${className}`}
     >

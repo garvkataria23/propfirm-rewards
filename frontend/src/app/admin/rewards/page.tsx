@@ -7,15 +7,10 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Modal } from '@/components/ui/modal';
 import {
-  Gift,
   PlusCircle,
   Edit2,
   Trash2,
   Coins,
-  Package,
-  Layers,
-  CheckCircle2,
-  AlertCircle,
 } from 'lucide-react';
 
 interface Category {
@@ -149,34 +144,34 @@ export default function AdminRewardsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight">Rewards Inventory Catalog</h1>
-          <p className="text-xs text-slate-400">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Rewards Inventory Catalog</h1>
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
             Control items available in the Rewards Store, set required points, and track stock.
           </p>
         </div>
 
-        <Button size="sm" onClick={handleOpenAdd}>
+        <Button size="sm" variant="primary" onClick={handleOpenAdd}>
           <PlusCircle className="h-4 w-4 mr-1.5" />
           Add New Reward
         </Button>
       </div>
 
       {loading ? (
-        <div className="p-12 text-center text-xs text-slate-400">Loading catalog...</div>
+        <div className="p-12 text-center text-xs text-slate-500 dark:text-slate-400">Loading catalog...</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {rewards.map((reward) => (
             <Card
               key={reward.id}
-              className="p-5 flex flex-col justify-between border-slate-800 bg-slate-900/60 card-hover-glow space-y-4"
+              className="p-5 flex flex-col justify-between card-hover-glow space-y-4"
             >
               <div className="space-y-3">
-                <div className="aspect-video w-full rounded-xl overflow-hidden bg-slate-950 relative border border-slate-800">
+                <div className="aspect-video w-full rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-950 relative border border-slate-200 dark:border-slate-800">
                   <img src={reward.imageUrl} alt={reward.name} className="h-full w-full object-cover" />
                   <div className="absolute top-2 left-2 flex gap-1">
-                    <Badge variant="default" className="bg-slate-950/80">
+                    <Badge variant="default" className="bg-white/90 text-slate-900 dark:bg-slate-950/90 dark:text-white shadow-xs">
                       {reward.category?.name}
                     </Badge>
                     {!reward.isActive && (
@@ -186,25 +181,25 @@ export default function AdminRewardsPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <h3 className="font-bold text-white text-base truncate">{reward.name}</h3>
+                  <h3 className="font-bold text-slate-900 dark:text-white text-base truncate">{reward.name}</h3>
                   <div className="flex items-center gap-1.5">
-                    <Coins className="h-4 w-4 text-emerald-400" />
-                    <span className="font-bold text-emerald-400 text-sm">
+                    <Coins className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
                       {reward.pointsRequired.toLocaleString()} PTS
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-slate-400 p-2.5 rounded-lg bg-slate-950 border border-slate-800">
+                <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
                   <span>Inventory:</span>
-                  <span className="font-semibold text-white">
+                  <span className="font-bold text-slate-900 dark:text-white">
                     {reward.isUnlimitedStock ? 'Unlimited Digital' : `${reward.stock} units available`}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
-                <Button size="sm" variant="secondary" onClick={() => handleOpenEdit(reward)}>
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <Button size="sm" variant="outline" onClick={() => handleOpenEdit(reward)}>
                   <Edit2 className="h-3.5 w-3.5 mr-1" />
                   Edit
                 </Button>
@@ -228,7 +223,7 @@ export default function AdminRewardsPage() {
         <form onSubmit={handleSaveReward} className="space-y-3.5 text-xs">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Reward Name *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Reward Name *</label>
               <input
                 type="text"
                 required
@@ -242,16 +237,16 @@ export default function AdminRewardsPage() {
                     slug: !editingReward ? val.toLowerCase().replace(/[^a-z0-9]+/g, '-') : rewardForm.slug,
                   });
                 }}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Category *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Category *</label>
               <select
                 value={rewardForm.categoryId}
                 onChange={(e) => setRewardForm({ ...rewardForm, categoryId: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white"
               >
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -264,99 +259,99 @@ export default function AdminRewardsPage() {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">URL Slug *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">URL Slug *</label>
               <input
                 type="text"
                 required
                 value={rewardForm.slug}
                 onChange={(e) => setRewardForm({ ...rewardForm, slug: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white font-mono"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white font-mono"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Points Required *</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Points Required *</label>
               <input
                 type="number"
                 required
                 min={1}
                 value={rewardForm.pointsRequired}
                 onChange={(e) => setRewardForm({ ...rewardForm, pointsRequired: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white font-bold text-emerald-400"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 font-bold text-emerald-600 dark:text-emerald-400"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-slate-300 font-semibold">Image URL *</label>
+            <label className="text-slate-700 dark:text-slate-300 font-semibold">Image URL *</label>
             <input
               type="url"
               required
               placeholder="https://images.unsplash.com/..."
               value={rewardForm.imageUrl}
               onChange={(e) => setRewardForm({ ...rewardForm, imageUrl: e.target.value })}
-              className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-slate-300 font-semibold">Description *</label>
+            <label className="text-slate-700 dark:text-slate-300 font-semibold">Description *</label>
             <textarea
               rows={2}
               required
               value={rewardForm.description}
               onChange={(e) => setRewardForm({ ...rewardForm, description: e.target.value })}
-              className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-slate-300 font-semibold">Technical Specifications</label>
+            <label className="text-slate-700 dark:text-slate-300 font-semibold">Technical Specifications</label>
             <input
               type="text"
               placeholder="e.g. 256GB Storage | Space Black | 120Hz ProMotion"
               value={rewardForm.specifications}
               onChange={(e) => setRewardForm({ ...rewardForm, specifications: e.target.value })}
-              className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3 pt-1">
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Stock Count</label>
+              <label className="text-slate-700 dark:text-slate-300 font-semibold">Stock Count</label>
               <input
                 type="number"
                 disabled={rewardForm.isUnlimitedStock}
                 value={rewardForm.stock}
                 onChange={(e) => setRewardForm({ ...rewardForm, stock: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white disabled:opacity-50"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white disabled:opacity-50"
               />
             </div>
 
             <div className="flex flex-col justify-end space-y-2">
-              <label className="flex items-center gap-2 cursor-pointer text-slate-300">
+              <label className="flex items-center gap-2 cursor-pointer text-slate-700 dark:text-slate-300 font-medium">
                 <input
                   type="checkbox"
                   checked={rewardForm.isUnlimitedStock}
                   onChange={(e) => setRewardForm({ ...rewardForm, isUnlimitedStock: e.target.checked })}
-                  className="rounded border-slate-700 bg-slate-800 text-emerald-500"
+                  className="rounded border-slate-300 dark:border-slate-700 text-emerald-600"
                 />
                 <span>Unlimited Stock (Digital)</span>
               </label>
 
-              <label className="flex items-center gap-2 cursor-pointer text-slate-300">
+              <label className="flex items-center gap-2 cursor-pointer text-slate-700 dark:text-slate-300 font-medium">
                 <input
                   type="checkbox"
                   checked={rewardForm.isActive}
                   onChange={(e) => setRewardForm({ ...rewardForm, isActive: e.target.checked })}
-                  className="rounded border-slate-700 bg-slate-800 text-emerald-500"
+                  className="rounded border-slate-300 dark:border-slate-700 text-emerald-600"
                 />
-                <span>Active & Visible in Store</span>
+                <span>Active &amp; Visible in Store</span>
               </label>
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
             <Button variant="ghost" size="sm" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

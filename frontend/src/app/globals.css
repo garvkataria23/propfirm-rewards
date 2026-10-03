@@ -4,38 +4,38 @@
 
 @layer base {
   :root {
-    --background: #fdfdfe;
-    --foreground: #0c1024;
+    --background: #f8fafc;
+    --foreground: #090d16;
     --card: #ffffff;
-    --card-foreground: #0c1024;
-    --card-border: #ede9fe;
-    --primary: #7c3aed;
-    --primary-foreground: #ffffff;
-    --secondary: #f5f3ff;
-    --secondary-foreground: #1e1b4b;
-    --muted: #f5f3ff;
-    --muted-foreground: #6b7280;
-    --accent: #8b5cf6;
-    --accent-foreground: #ffffff;
-    --border: #e9e5ff;
-    --radius: 0.75rem;
+    --card-foreground: #090d16;
+    --card-border: #e2e8f0;
+    --primary: #10b981;
+    --primary-foreground: #022c22;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #0f172a;
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    --accent: #06b6d4;
+    --accent-foreground: #083344;
+    --border: #e2e8f0;
+    --radius: 0.875rem;
   }
 
   .dark {
-    --background: #070913;
+    --background: #06090e;
     --foreground: #f8fafc;
-    --card: #0d1127;
+    --card: #0c1118;
     --card-foreground: #f8fafc;
-    --card-border: #2e1065;
-    --primary: #a855f7;
-    --primary-foreground: #ffffff;
-    --secondary: #1e1b4b;
+    --card-border: rgba(255, 255, 255, 0.08);
+    --primary: #10b981;
+    --primary-foreground: #022c22;
+    --secondary: #0f1722;
     --secondary-foreground: #f8fafc;
-    --muted: #1e1b4b;
-    --muted-foreground: #a78bfa;
-    --accent: #c084fc;
-    --accent-foreground: #ffffff;
-    --border: #2e1065;
+    --muted: #0f1722;
+    --muted-foreground: #94a3b8;
+    --accent: #06b6d4;
+    --accent-foreground: #ecfeff;
+    --border: rgba(255, 255, 255, 0.08);
   }
 }
 
@@ -46,48 +46,34 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Custom Scrollbar - Light & Dark */
+/* Custom Scrollbar - Dark Fintech */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f5f3ff;
-}
-.dark ::-webkit-scrollbar-track {
-  background: #070913;
+  background: #06090e;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c4b5fd;
+  background: #1e293b;
   border-radius: 4px;
 }
-.dark ::-webkit-scrollbar-thumb {
-  background: #3b0764;
-}
 ::-webkit-scrollbar-thumb:hover {
-  background: #a78bfa;
-}
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #581c87;
+  background: #10b981;
 }
 
-/* Fintech card glow - Light Purple */
+/* Fintech card glow - Subtle Emerald */
 .card-hover-glow {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease, box-shadow 0.28s ease;
 }
 .card-hover-glow:hover {
-  border-color: rgba(139, 92, 246, 0.45);
-  box-shadow: 0 12px 30px -10px rgba(139, 92, 246, 0.25);
-  transform: translateY(-2px);
-}
-
-.card-hover-glow-purple:hover {
-  border-color: rgba(168, 85, 247, 0.5);
-  box-shadow: 0 12px 30px -10px rgba(168, 85, 247, 0.25);
-  transform: translateY(-2px);
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 16px 36px -14px rgba(16, 185, 129, 0.16);
+  transform: translateY(-4px);
 }
 
 /* Smart Fintech Animation Keyframes */
@@ -237,11 +223,124 @@ body {
 
 /* Subtle dot background - Light & Dark */
 .bg-grid-pattern {
-  background-image: radial-gradient(rgba(124, 58, 237, 0.07) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(16, 185, 129, 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 .dark .bg-grid-pattern {
-  background-image: radial-gradient(rgba(168, 85, 247, 0.1) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(16, 185, 129, 0.12) 1px, transparent 1px);
+}
+
+@keyframes marqueeScroll {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marqueeScroll 36s linear infinite;
+}
+
+@keyframes flyToWallet {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.92);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(-16px) scale(1.03);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-38px) scale(0.9);
+  }
+}
+
+.animate-fly-wallet {
+  animation: flyToWallet 2.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── DARK ATMOSPHERIC TRADING & MOTION KEYFRAMES (#6, #20, #21, #29) ── */
+@keyframes candleFloatUp {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0) scaleY(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate3d(0, -12px, 0) scaleY(1.04);
+    opacity: 1;
+  }
+}
+
+@keyframes candleFloatDown {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0) scaleY(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(0, 10px, 0) scaleY(0.96);
+    opacity: 0.5;
+  }
+}
+
+@keyframes rewardFloatA {
+  0%, 100% { transform: translate3d(0, 0px, 0); }
+  50% { transform: translate3d(0, -4px, 0); }
+}
+
+@keyframes rewardFloatB {
+  0%, 100% { transform: translate3d(0, 0px, 0); }
+  50% { transform: translate3d(0, 3px, 0); }
+}
+
+@keyframes rewardFloatC {
+  0%, 100% { transform: translate3d(0, 0px, 0); }
+  50% { transform: translate3d(0, -2.5px, 0); }
+}
+
+@keyframes verifyScanLine {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  70% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(220%);
+    opacity: 0;
+  }
+}
+
+@keyframes particleFlowRight {
+  0% {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(110px);
+    opacity: 0;
+  }
+}
+
+/* Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ===== GOOGLE TRANSLATE ENGINE & RTL STYLES ===== */

@@ -1,21 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Calculator,
-  ShieldCheck,
+  ShieldAlert,
   TrendingUp,
-  Percent,
-  AlertTriangle,
-  Gift,
+  Sliders,
+  AlertCircle,
   ArrowRight,
-  Sparkles,
   CheckCircle2,
   XCircle,
-  HelpCircle,
-  Sliders,
-  DollarSign,
-  Zap,
+  Coins,
+  Layers,
 } from 'lucide-react';
 import { AutoApplyModal, AutoApplyFirmData } from '@/components/prop-firms/auto-apply-modal';
 import { buildAutoApplyUrl } from '@/lib/referral-system';
@@ -24,7 +20,7 @@ interface PropFirmRuleData {
   id: string;
   name: string;
   slug: string;
-  logo: string;
+  code: string;
   websiteUrl: string;
   affiliateCode: string;
   affiliateUrl: string;
@@ -34,188 +30,145 @@ interface PropFirmRuleData {
   profitTargetPhase1: number;
   profitTargetPhase2: number;
   weekendHolding: boolean;
-  newsTrading: boolean;
-  eaAllowed: boolean;
   payoutSpeed: string;
   profitSplit: string;
-  pricing: Record<number, number>; // accountSize -> priceUsd
+  pricing: Record<number, number>;
   pointsPerDollar: number;
 }
 
 const FIRMS_DATA: PropFirmRuleData[] = [
   {
-    id: 'pipstone-capital',
-    name: 'Pipstone Capital',
-    slug: 'pipstone-capital',
-    logo: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=120&auto=format&fit=crop&q=80',
-    websiteUrl: 'https://trader.pipstonecapital.com/guest-checkout',
-    affiliateCode: 'NATION',
-    affiliateUrl: 'https://trader.pipstonecapital.com/guest-checkout?coupon=NATION&affId=NATION&ref=nation',
+    id: 'custom-preset',
+    name: 'Standard 2-Step Rules',
+    slug: 'standard-rules',
+    code: '2S',
+    websiteUrl: '/prop-firms',
+    affiliateCode: '',
+    affiliateUrl: '/prop-firms',
     drawdownType: 'Static (Balance-based)',
     dailyLossPercent: 5,
     maxLossPercent: 10,
     profitTargetPhase1: 8,
     profitTargetPhase2: 5,
     weekendHolding: true,
-    newsTrading: true,
-    eaAllowed: true,
-    payoutSpeed: 'Bi-weekly (Fast)',
-    profitSplit: '80% – 90%',
-    pricing: {
-      10000: 120,
-      25000: 220,
-      50000: 380,
-      100000: 520,
-      200000: 980,
-    },
+    payoutSpeed: 'Bi-weekly',
+    profitSplit: 'Standard',
+    pricing: { 10000: 89, 25000: 189, 50000: 299, 100000: 499, 200000: 949 },
     pointsPerDollar: 10,
   },
   {
-    id: 'ftmo',
-    name: 'FTMO',
-    slug: 'ftmo',
-    logo: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
-    websiteUrl: 'https://trader.ftmo.com/register',
-    affiliateCode: 'NATION',
-    affiliateUrl: 'https://trader.ftmo.com/register?ref=nation&coupon=NATION',
-    drawdownType: 'Static (Balance-based)',
-    dailyLossPercent: 5,
-    maxLossPercent: 10,
-    profitTargetPhase1: 10,
-    profitTargetPhase2: 5,
-    weekendHolding: true,
-    newsTrading: true,
-    eaAllowed: true,
-    payoutSpeed: 'Bi-weekly (Fast)',
-    profitSplit: '80% – 90%',
-    pricing: {
-      10000: 175,
-      25000: 280,
-      50000: 390,
-      100000: 600,
-      200000: 1180,
-    },
-    pointsPerDollar: 10,
-  },
-  {
-    id: 'fundednext',
-    name: 'FundedNext',
-    slug: 'fundednext',
-    logo: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=120&auto=format&fit=crop&q=80',
-    websiteUrl: 'https://app.fundednext.com/register',
-    affiliateCode: 'NATION',
-    affiliateUrl: 'https://app.fundednext.com/register?ref=nation&coupon=NATION',
-    drawdownType: 'Static (Balance-based)',
-    dailyLossPercent: 5,
-    maxLossPercent: 10,
-    profitTargetPhase1: 8,
-    profitTargetPhase2: 5,
-    weekendHolding: true,
-    newsTrading: true,
-    eaAllowed: true,
-    payoutSpeed: '24-Hour Guaranteed',
-    profitSplit: 'Up to 95%',
-    pricing: {
-      10000: 99,
-      25000: 199,
-      50000: 299,
-      100000: 549,
-      200000: 1099,
-    },
-    pointsPerDollar: 10,
-  },
-  {
-    id: 'funding-pips',
-    name: 'Funding Pips',
-    slug: 'funding-pips',
-    logo: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
-    websiteUrl: 'https://app.fundingpips.com/register',
-    affiliateCode: 'NATION',
-    affiliateUrl: 'https://app.fundingpips.com/register?ref=nation&coupon=NATION',
-    drawdownType: 'Trailing (Equity-based)',
-    dailyLossPercent: 5,
-    maxLossPercent: 10,
-    profitTargetPhase1: 8,
-    profitTargetPhase2: 5,
-    weekendHolding: true,
-    newsTrading: true,
-    eaAllowed: true,
-    payoutSpeed: 'Weekly (Every 5 Days)',
-    profitSplit: '80% – 90%',
-    pricing: {
-      10000: 60,
-      25000: 139,
-      50000: 239,
-      100000: 399,
-      200000: 799,
-    },
-    pointsPerDollar: 10,
-  },
-  {
-    id: 'fundedsquad',
-    name: 'FundedSquad',
-    slug: 'fundedsquad',
-    logo: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
-    websiteUrl: 'https://my.fundedsquad.com/register',
-    affiliateCode: 'NATION',
-    affiliateUrl: 'https://my.fundedsquad.com/register?ref=nation&coupon=NATION',
+    id: 'conservative-preset',
+    name: 'Conservative 2-Step Model',
+    slug: 'conservative-rules',
+    code: 'C2',
+    websiteUrl: '/prop-firms',
+    affiliateCode: '',
+    affiliateUrl: '/prop-firms',
     drawdownType: 'Static (Balance-based)',
     dailyLossPercent: 4,
     maxLossPercent: 8,
     profitTargetPhase1: 8,
     profitTargetPhase2: 4,
     weekendHolding: true,
-    newsTrading: true,
-    eaAllowed: true,
     payoutSpeed: 'Bi-weekly',
-    profitSplit: '85% – 90%',
-    pricing: {
-      10000: 89,
-      25000: 169,
-      50000: 299,
-      100000: 499,
-      200000: 979,
-    },
+    profitSplit: 'Standard',
+    pricing: { 10000: 89, 25000: 169, 50000: 299, 100000: 499, 200000: 979 },
+    pointsPerDollar: 10,
+  },
+  {
+    id: 'one-step-preset',
+    name: '1-Step Trailing Model',
+    slug: 'one-step-rules',
+    code: '1S',
+    websiteUrl: '/prop-firms',
+    affiliateCode: '',
+    affiliateUrl: '/prop-firms',
+    drawdownType: 'Trailing (Equity-based)',
+    dailyLossPercent: 3,
+    maxLossPercent: 6,
+    profitTargetPhase1: 10,
+    profitTargetPhase2: 0,
+    weekendHolding: false,
+    payoutSpeed: 'Weekly',
+    profitSplit: 'Standard',
+    pricing: { 10000: 99, 25000: 199, 50000: 319, 100000: 529, 200000: 999 },
+    pointsPerDollar: 10,
+  },
+  {
+    id: 'swing-preset',
+    name: 'Swing Evaluation Model',
+    slug: 'swing-rules',
+    code: 'SW',
+    websiteUrl: '/prop-firms',
+    affiliateCode: '',
+    affiliateUrl: '/prop-firms',
+    drawdownType: 'Static (Balance-based)',
+    dailyLossPercent: 5,
+    maxLossPercent: 10,
+    profitTargetPhase1: 10,
+    profitTargetPhase2: 5,
+    weekendHolding: true,
+    payoutSpeed: 'Weekly',
+    profitSplit: 'Standard',
+    pricing: { 10000: 95, 25000: 195, 50000: 309, 100000: 519, 200000: 969 },
     pointsPerDollar: 10,
   },
 ];
 
-const SIZES = [10000, 25000, 50000, 100000, 200000];
+const ACCOUNT_SIZES = [10000, 25000, 50000, 100000, 200000];
+
+function useSmoothValue(target: number, duration = 260) {
+  const [display, setDisplay] = useState(target);
+  useEffect(() => {
+    const startVal = display;
+    const diff = target - startVal;
+    if (diff === 0) return;
+    const startTime = performance.now();
+    let rafId: number;
+    const step = (now: number) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(startVal + diff * eased));
+      if (progress < 1) {
+        rafId = requestAnimationFrame(step);
+      }
+    };
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [target, duration]);
+  return display;
+}
 
 export function PropFirmCalculator() {
   const [activeTab, setActiveTab] = useState<'calculator' | 'matrix'>('calculator');
-  const [selectedFirmId, setSelectedFirmId] = useState<string>('pipstone-capital');
   const [accountSize, setAccountSize] = useState<number>(100000);
-  const [vipTier, setVipTier] = useState<number>(1.0); // 1.0 = Rookie, 1.25 = Funded, 1.5 = Master
+  const [maxDrawdown, setMaxDrawdown] = useState<number>(10);
+  const [dailyDrawdown, setDailyDrawdown] = useState<number>(5);
+  const [selectedFirmId, setSelectedFirmId] = useState<string>('custom-preset');
   const [filterStyle, setFilterStyle] = useState<string>('all');
 
-  // Modal State
   const [autoApplyModalOpen, setAutoApplyModalOpen] = useState(false);
   const [modalFirmData, setModalFirmData] = useState<AutoApplyFirmData | null>(null);
 
-  const selectedFirm = FIRMS_DATA.find((f) => f.id === selectedFirmId) || FIRMS_DATA[0];
+  const maxLossRaw = Math.round((accountSize * maxDrawdown) / 100);
+  const dailyLossRaw = Math.round((accountSize * dailyDrawdown) / 100);
+  const maxBreachEquityRaw = accountSize - maxLossRaw;
+  const dailyBreachEquityRaw = accountSize - dailyLossRaw;
 
-  // Calculations
-  const price = selectedFirm.pricing[accountSize] || 500;
-  const maxLossDollar = (accountSize * selectedFirm.maxLossPercent) / 100;
-  const dailyLossDollar = (accountSize * selectedFirm.dailyLossPercent) / 100;
-  const profitTargetP1Dollar = (accountSize * selectedFirm.profitTargetPhase1) / 100;
-  const profitTargetP2Dollar = (accountSize * selectedFirm.profitTargetPhase2) / 100;
+  const animatedAccountSize = useSmoothValue(accountSize);
+  const animatedMaxLoss = useSmoothValue(maxLossRaw);
+  const animatedDailyLoss = useSmoothValue(dailyLossRaw);
+  const animatedMaxBreach = useSmoothValue(maxBreachEquityRaw);
+  const animatedDailyBreach = useSmoothValue(dailyBreachEquityRaw);
 
-  const basePoints = Math.round(price * selectedFirm.pointsPerDollar);
-  const finalPoints = Math.round(basePoints * vipTier);
-  const bonusPoints = finalPoints - basePoints;
-
-  // Filtered firms for matrix
-  const filteredFirms = FIRMS_DATA.filter((firm) => {
-    if (filterStyle === 'weekend') return firm.weekendHolding;
-    if (filterStyle === 'static') return firm.drawdownType.includes('Static');
-    if (filterStyle === 'fastpayout') return firm.payoutSpeed.includes('24-Hour') || firm.payoutSpeed.includes('Weekly');
-    if (filterStyle === 'highsplit') return firm.profitSplit.includes('95%');
-    return true;
-  });
+  const handleSelectFirmPreset = (firm: PropFirmRuleData) => {
+    setSelectedFirmId(firm.id);
+    setMaxDrawdown(firm.maxLossPercent);
+    setDailyDrawdown(firm.dailyLossPercent);
+  };
 
   const handleLaunchModal = (firm: PropFirmRuleData) => {
+    if (firm.id === 'custom-preset') return;
     const code = firm.affiliateCode || 'NATION';
     navigator.clipboard?.writeText(code).catch(() => {});
     const directUrl = buildAutoApplyUrl(firm.affiliateUrl || firm.websiteUrl || firm.slug, code);
@@ -224,316 +177,295 @@ export function PropFirmCalculator() {
       id: firm.id,
       name: firm.name,
       slug: firm.slug,
-      logoUrl: firm.logo,
       websiteUrl: firm.websiteUrl,
       affiliateCode: firm.affiliateCode,
       affiliateUrl: directUrl,
-      tierName: `$${(accountSize / 1000).toFixed(0)}K Evaluation Challenge`,
-      tierPrice: firm.pricing[accountSize] || 250,
+      tierName: `$${(accountSize / 1000).toFixed(0)}K Evaluation`,
+      tierPrice: firm.pricing[accountSize] || 299,
     });
     setAutoApplyModalOpen(true);
   };
 
-  return (
-    <div className="w-full max-w-[1600px] mx-auto py-8 px-4 sm:px-6 lg:px-10">
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-10">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-4">
-          <Calculator className="w-3.5 h-3.5" />
-          Interactive Trader Terminal
-        </div>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Prop Firm Rules &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300">Drawdown Calculator</span>
-        </h2>
-        <p className="mt-3 text-slate-600 dark:text-slate-400 text-base">
-          Know your exact dollar risk limits, profit targets, and guaranteed PropNation Reward Points before you buy.
-        </p>
+  const filteredFirms = FIRMS_DATA.filter((f) => f.id !== 'custom-preset').filter((firm) => {
+    if (filterStyle === 'weekend') return firm.weekendHolding;
+    if (filterStyle === 'static') return firm.drawdownType.includes('Static');
+    if (filterStyle === 'fastpayout') return firm.payoutSpeed.includes('Weekly');
+    return true;
+  });
 
-        {/* Tab Switcher */}
-        <div className="flex items-center justify-center gap-3 mt-6">
+  return (
+    <div className="w-full max-w-7xl mx-auto py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+      {/* Section Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider">
+            <Calculator className="w-3.5 h-3.5" />
+            Trader Utility · Drawdown Calculator
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
+            KNOW YOUR LIMITS.
+          </h2>
+          <p className="text-slate-200 text-base sm:text-lg max-w-xl leading-relaxed">
+            Calculate your maximum loss and daily loss limits across account sizes.
+          </p>
+        </div>
+
+        {/* Mode Switcher */}
+        <div className="inline-flex p-1 rounded-xl bg-[#101614] border border-white/[0.1] self-start md:self-auto">
           <button
             onClick={() => setActiveTab('calculator')}
-            className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'calculator'
-                ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20'
-                : 'bg-slate-100 dark:bg-slate-900/80 text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white border border-slate-200 dark:border-slate-800'
+                ? 'bg-emerald-500 text-slate-950 shadow-sm'
+                : 'text-slate-200 hover:text-white'
             }`}
           >
-            <Sliders className="w-4 h-4" />
-            Risk &amp; Reward Calculator
+            <Sliders className="w-3.5 h-3.5" />
+            Drawdown Calculator
           </button>
           <button
             onClick={() => setActiveTab('matrix')}
-            className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'matrix'
-                ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20'
-                : 'bg-slate-100 dark:bg-slate-900/80 text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white border border-slate-200 dark:border-slate-800'
+                ? 'bg-emerald-500 text-slate-950 shadow-sm'
+                : 'text-slate-200 hover:text-white'
             }`}
           >
-            <TrendingUp className="w-4 h-4" />
-            Side-by-Side Comparison Matrix
+            <Layers className="w-3.5 h-3.5" />
+            Rule Comparison
           </button>
         </div>
       </div>
 
-      {/* TAB 1: CALCULATOR */}
-      {activeTab === 'calculator' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Controls (Left 5 Cols) */}
-          <div className="lg:col-span-5 rounded-3xl bg-white dark:bg-[#090e13]/90 border border-slate-200 dark:border-slate-800/80 p-6 md:p-8 backdrop-blur-xl shadow-xl dark:shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      {activeTab === 'calculator' ? (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          {/* Left Column: Calculator Inputs */}
+          <div className="lg:col-span-6 rounded-2xl bg-[#101614] border border-white/[0.09] p-6 sm:p-8 shadow-xl flex flex-col justify-between space-y-6">
+            <div className="space-y-6">
+              {/* Input 1: Account Size */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="calc-account-size"
+                    className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200"
+                  >
+                    Account Size
+                  </label>
+                  <span className="text-lg font-mono font-extrabold text-white">
+                    ${accountSize.toLocaleString()}
+                  </span>
+                </div>
 
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-              <Sliders className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
-              Configure Challenge Parameters
-            </h3>
+                <div className="grid grid-cols-5 gap-2">
+                  {ACCOUNT_SIZES.map((size) => (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => setAccountSize(size)}
+                      className={`py-2.5 px-2 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${
+                        accountSize === size
+                          ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-xs'
+                          : 'bg-[#080c0b] border-white/[0.09] text-slate-200 hover:border-emerald-500/40'
+                      }`}
+                    >
+                      ${size / 1000}K
+                    </button>
+                  ))}
+                </div>
 
-            {/* Firm Selector */}
-            <div className="mb-6">
-              <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                1. Select Target Prop Firm
-              </label>
-              <div className="grid grid-cols-2 gap-2.5">
+                <input
+                  id="calc-account-size"
+                  type="range"
+                  min={5000}
+                  max={300000}
+                  step={5000}
+                  value={accountSize}
+                  onChange={(e) => setAccountSize(Number(e.target.value))}
+                  className="w-full accent-emerald-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+                />
+              </div>
+
+              {/* Input 2: Max Drawdown (%) */}
+              <div className="space-y-2.5 pt-2 border-t border-white/[0.08]">
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="calc-max-dd"
+                    className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200"
+                  >
+                    Max Drawdown (%)
+                  </label>
+                  <span className="px-2.5 py-0.5 rounded-md bg-rose-500/15 border border-rose-500/30 text-rose-400 font-mono text-sm font-bold">
+                    {maxDrawdown}%
+                  </span>
+                </div>
+                <input
+                  id="calc-max-dd"
+                  type="range"
+                  min={3}
+                  max={15}
+                  step={0.5}
+                  value={maxDrawdown}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    setMaxDrawdown(val);
+                    if (dailyDrawdown > val) setDailyDrawdown(val);
+                  }}
+                  className="w-full accent-emerald-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+                />
+                <div className="flex justify-between text-[11px] font-mono text-slate-300">
+                  <span>3% Strict</span>
+                  <span>8% – 10% Standard</span>
+                  <span>15% Flex</span>
+                </div>
+              </div>
+
+              {/* Input 3: Daily Drawdown (%) */}
+              <div className="space-y-2.5 pt-2 border-t border-white/[0.08]">
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="calc-daily-dd"
+                    className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200"
+                  >
+                    Daily Drawdown (%)
+                  </label>
+                  <span className="px-2.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-400 font-mono text-sm font-bold">
+                    {dailyDrawdown}%
+                  </span>
+                </div>
+                <input
+                  id="calc-daily-dd"
+                  type="range"
+                  min={1}
+                  max={10}
+                  step={0.5}
+                  value={dailyDrawdown}
+                  onChange={(e) => setDailyDrawdown(Math.min(Number(e.target.value), maxDrawdown))}
+                  className="w-full accent-emerald-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+                />
+                <div className="flex justify-between text-[11px] font-mono text-slate-300">
+                  <span>1% Tight</span>
+                  <span>4% – 5% Standard</span>
+                  <span>10% Wide</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Optional Quick Rule Presets */}
+            <div className="pt-4 border-t border-white/[0.08]">
+              <div className="text-[11px] font-mono uppercase tracking-wider text-slate-300 mb-2.5">
+                Quick Rule Presets
+              </div>
+              <div className="flex flex-wrap gap-2">
                 {FIRMS_DATA.map((firm) => (
                   <button
                     key={firm.id}
-                    onClick={() => setSelectedFirmId(firm.id)}
-                    className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                    type="button"
+                    onClick={() => handleSelectFirmPreset(firm)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
                       selectedFirmId === firm.id
-                        ? 'bg-emerald-50 dark:bg-emerald-500/15 border-emerald-500/60 text-slate-900 dark:text-white shadow-md shadow-emerald-500/10'
-                        : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
+                        ? 'bg-emerald-500/15 border-emerald-500/45 text-emerald-300'
+                        : 'bg-[#080c0b] border-white/[0.08] text-slate-300 hover:border-white/20'
                     }`}
                   >
-                    <img src={firm.logo} alt={firm.name} className="w-6 h-6 rounded-md object-cover" />
-                    <span className="text-xs font-bold truncate">{firm.name}</span>
+                    {firm.name} ({firm.maxLossPercent}% / {firm.dailyLossPercent}%)
                   </button>
                 ))}
               </div>
             </div>
-
-            {/* Account Size Selector */}
-            <div className="mb-6">
-              <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                2. Choose Challenge Account Size
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {SIZES.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setAccountSize(size)}
-                    className={`py-2 px-2 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${
-                      accountSize === size
-                        ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-md shadow-emerald-500/20'
-                        : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                  >
-                    ${(size / 1000).toFixed(0)}K
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* VIP Tier Boost Multiplier Selector */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  3. Trader VIP Tier Boost
-                </label>
-                <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                  {vipTier === 1.0 ? '1.0x (Standard)' : vipTier === 1.25 ? '1.25x (+25%)' : '1.50x (+50%)'}
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  onClick={() => setVipTier(1.0)}
-                  className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition-all cursor-pointer ${
-                    vipTier === 1.0
-                      ? 'bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white border-slate-300 dark:border-slate-600'
-                      : 'bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'
-                  }`}
-                >
-                  🥉 Rookie (1.0x)
-                </button>
-                <button
-                  onClick={() => setVipTier(1.25)}
-                  className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition-all cursor-pointer ${
-                    vipTier === 1.25
-                      ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-400 dark:border-emerald-500 font-bold'
-                      : 'bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'
-                  }`}
-                >
-                  🥈 Funded (1.25x)
-                </button>
-                <button
-                  onClick={() => setVipTier(1.5)}
-                  className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition-all cursor-pointer ${
-                    vipTier === 1.5
-                      ? 'bg-amber-50 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-400 dark:border-amber-500 font-bold'
-                      : 'bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'
-                  }`}
-                >
-                  👑 Master (1.5x)
-                </button>
-              </div>
-            </div>
-
-            {/* Launch Modal CTA */}
-            <button
-              onClick={() => handleLaunchModal(selectedFirm)}
-              className="w-full mt-4 py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-bold text-sm hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer"
-            >
-              <Zap className="w-4 h-4 fill-slate-950" />
-              1-Click Launch with Code {selectedFirm.affiliateCode}
-              <ArrowRight className="w-4 h-4" />
-            </button>
           </div>
 
-          {/* Results Visualizer (Right 7 Cols) */}
-          <div className="lg:col-span-7 space-y-6">
-            {/* Top Stat Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Max Overall Drawdown */}
-              <div className="rounded-2xl bg-white dark:bg-[#090e13]/90 border border-slate-200 dark:border-slate-800/80 p-5 backdrop-blur-xl shadow-md dark:shadow-none relative overflow-hidden">
-                <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mb-2">
-                  <span className="flex items-center gap-1.5 text-rose-500 dark:text-rose-400 font-semibold">
-                    <AlertTriangle className="w-4 h-4" />
-                    Max Overall Drawdown
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold">
-                    {selectedFirm.maxLossPercent}% Limit
-                  </span>
-                </div>
-                <div className="text-2xl font-extrabold text-slate-900 dark:text-white font-mono">
-                  ${maxLossDollar.toLocaleString()}
-                </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                  Type: <span className="text-slate-700 dark:text-slate-200 font-semibold">{selectedFirm.drawdownType}</span>
-                </p>
-              </div>
+          {/* Right Column: Live Calculated Risk Output */}
+          <div className="lg:col-span-6 flex flex-col justify-between gap-6">
+            {/* Primary Output Card */}
+            <div className="rounded-2xl bg-[#101614] text-white border border-white/[0.09] p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden flex-1 flex flex-col justify-between">
+              {/* Subtle top-right ambient glow */}
+              <div className="absolute -top-24 -right-24 w-56 h-56 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
 
-              {/* Max Daily Loss */}
-              <div className="rounded-2xl bg-white dark:bg-[#090e13]/90 border border-slate-200 dark:border-slate-800/80 p-5 backdrop-blur-xl shadow-md dark:shadow-none relative overflow-hidden">
-                <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mb-2">
-                  <span className="flex items-center gap-1.5 text-amber-500 dark:text-amber-400 font-semibold">
-                    <AlertTriangle className="w-4 h-4" />
-                    Max Daily Loss
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">
-                    {selectedFirm.dailyLossPercent}% Limit
-                  </span>
-                </div>
-                <div className="text-2xl font-extrabold text-slate-900 dark:text-white font-mono">
-                  ${dailyLossDollar.toLocaleString()}
-                </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                  Reset: <span className="text-slate-700 dark:text-slate-200 font-semibold">00:00 CE(S)T Daily</span>
-                </p>
-              </div>
-
-              {/* Profit Target Phase 1 */}
-              <div className="rounded-2xl bg-white dark:bg-[#090e13]/90 border border-slate-200 dark:border-slate-800/80 p-5 backdrop-blur-xl shadow-md dark:shadow-none relative overflow-hidden">
-                <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mb-2">
-                  <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                    <TrendingUp className="w-4 h-4" />
-                    Profit Target (Phase 1)
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
-                    {selectedFirm.profitTargetPhase1}%
-                  </span>
-                </div>
-                <div className="text-2xl font-extrabold text-slate-900 dark:text-white font-mono">
-                  ${profitTargetP1Dollar.toLocaleString()}
-                </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                  Phase 2 Target: <span className="text-emerald-600 dark:text-emerald-400 font-semibold">${profitTargetP2Dollar.toLocaleString()} ({selectedFirm.profitTargetPhase2}%)</span>
-                </p>
-              </div>
-
-              {/* Payout & Profit Split */}
-              <div className="rounded-2xl bg-white dark:bg-[#090e13]/90 border border-slate-200 dark:border-slate-800/80 p-5 backdrop-blur-xl shadow-md dark:shadow-none relative overflow-hidden">
-                <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mb-2">
-                  <span className="flex items-center gap-1.5 text-teal-600 dark:text-cyan-400 font-semibold">
-                    <Percent className="w-4 h-4" />
-                    Payout &amp; Split
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-teal-500/10 text-teal-600 dark:text-cyan-400 font-bold">
-                    {selectedFirm.profitSplit}
-                  </span>
-                </div>
-                <div className="text-xl font-bold text-slate-900 dark:text-white">
-                  {selectedFirm.payoutSpeed}
-                </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                  Weekend Holding: <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Allowed ✓</span>
-                </p>
-              </div>
-            </div>
-
-            {/* PropNation Reward Yield Card (Golden / Emerald Vault Card) */}
-            <div className="rounded-3xl bg-gradient-to-br from-emerald-50/80 via-teal-50/40 to-white dark:from-[#0c1613] dark:via-[#08110f] dark:to-[#040807] border-2 border-emerald-500/30 dark:border-emerald-500/40 p-6 md:p-8 shadow-xl dark:shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-emerald-500/20 pb-6 mb-6">
+              <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
                 <div>
-                  <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
-                    <Gift className="w-4 h-4" />
-                    PropNation Cashback &amp; Rewards
+                  <span className="text-[11px] font-mono uppercase tracking-widest text-slate-300">
+                    Calculated Risk Parameters
                   </span>
-                  <h4 className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
-                    Your Reward Yield on this Purchase
-                  </h4>
-                </div>
-                <div className="text-right">
-                  <div className="text-3xl font-black font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1 sm:justify-end">
-                    +{finalPoints.toLocaleString()} <span className="text-sm font-sans font-bold text-emerald-600 dark:text-emerald-300">PTS</span>
+                  <div className="text-xl font-bold text-white mt-0.5 font-mono">
+                    Account: ${animatedAccountSize.toLocaleString()}
                   </div>
-                  {bonusPoints > 0 && (
-                    <span className="text-[11px] font-mono text-amber-600 dark:text-amber-300 font-semibold">
-                      Includes +{bonusPoints.toLocaleString()} VIP Bonus Points!
-                    </span>
-                  )}
+                </div>
+                <span className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono text-xs font-bold">
+                  LIVE OUTPUT
+                </span>
+              </div>
+
+              {/* Output Grid: Maximum Loss & Daily Loss Limit */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Maximum Loss */}
+                <div className="p-5 rounded-xl bg-[#080c0b] border border-white/[0.08] space-y-2">
+                  <div className="flex items-center justify-between text-xs font-mono text-slate-300">
+                    <span>MAXIMUM LOSS</span>
+                    <span className="text-rose-400 font-bold">{maxDrawdown}%</span>
+                  </div>
+                  <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white tracking-tight">
+                    ${animatedMaxLoss.toLocaleString()}
+                  </div>
+                  <div className="text-xs text-slate-300 font-mono pt-1 border-t border-white/[0.07]">
+                    Min Equity Floor: <span className="text-white font-semibold">${animatedMaxBreach.toLocaleString()}</span>
+                  </div>
+                </div>
+
+                {/* Daily Loss Limit */}
+                <div className="p-5 rounded-xl bg-[#080c0b] border border-white/[0.08] space-y-2">
+                  <div className="flex items-center justify-between text-xs font-mono text-slate-300">
+                    <span>DAILY LOSS LIMIT</span>
+                    <span className="text-amber-400 font-bold">{dailyDrawdown}%</span>
+                  </div>
+                  <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white tracking-tight">
+                    ${animatedDailyLoss.toLocaleString()}
+                  </div>
+                  <div className="text-xs text-slate-300 font-mono pt-1 border-t border-white/[0.07]">
+                    Daily Stop Floor: <span className="text-white font-semibold">${animatedDailyBreach.toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
 
-              {/* What you can redeem */}
-              <div>
-                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mb-3">
-                  Unlocked Reward Potential:
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs shadow-xs">
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold block mb-1">🎁 Tech Gear</span>
-                    <span className="text-slate-600 dark:text-slate-300">Apple AirPods, Sony XM5, Keyboards</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs shadow-xs">
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold block mb-1">💳 Instant Cash Cards</span>
-                    <span className="text-slate-600 dark:text-slate-300">Amazon, Steam, Apple Gift Cards</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs shadow-xs">
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold block mb-1">⚡ Next Challenge Off</span>
-                    <span className="text-slate-600 dark:text-slate-300">Use points for 50%-100% off challenges</span>
-                  </div>
+              {/* Visual Risk Buffer Bar */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="text-slate-300">DAILY LOSS VS. TOTAL DRAWDOWN BUFFER</span>
+                  <span className="text-emerald-400 font-bold">
+                    {maxDrawdown > 0 ? Math.round((dailyDrawdown / maxDrawdown) * 100) : 0}% of Max Limit per Day
+                  </span>
                 </div>
+                <div className="h-2.5 w-full rounded-full bg-[#080c0b] border border-white/[0.08] overflow-hidden p-0.5">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 via-teal-400 to-amber-400 transition-all duration-300"
+                    style={{
+                      width: `${Math.min(100, Math.max(10, (dailyDrawdown / Math.max(maxDrawdown, 1)) * 100))}%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Educational Disclaimer */}
+              <div className="pt-3 border-t border-white/[0.08] flex items-start gap-2.5 text-xs text-slate-300">
+                <AlertCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <p>
+                  Educational tool only. Always verify current rules with the relevant prop firm.
+                </p>
               </div>
             </div>
           </div>
         </div>
-      )}
-
-      {/* TAB 2: COMPARISON MATRIX */}
-      {activeTab === 'matrix' && (
-        <div className="rounded-3xl bg-white dark:bg-[#090e13]/90 border border-slate-200 dark:border-slate-800/80 p-6 md:p-8 backdrop-blur-xl shadow-xl dark:shadow-2xl overflow-hidden">
-          {/* Filters */}
-          <div className="flex flex-wrap items-center gap-2 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4">
-            <span className="text-xs font-mono text-slate-500 dark:text-slate-400 mr-2 uppercase tracking-wider">
-              Filter By Trading Style:
+      ) : (
+        /* TAB 2: COMPARISON MATRIX */
+        <div className="rounded-2xl bg-[#101614] border border-white/[0.09] p-6 sm:p-8 shadow-xl overflow-hidden">
+          <div className="flex flex-wrap items-center gap-2 mb-6 border-b border-white/[0.08] pb-4">
+            <span className="text-xs font-mono text-slate-300 mr-2 uppercase tracking-wider">
+              Filter Rules:
             </span>
             {[
-              { id: 'all', label: 'All Firms' },
-              { id: 'weekend', label: 'Weekend Holding (Swing)' },
-              { id: 'static', label: 'Static Drawdown Only' },
-              { id: 'fastpayout', label: 'Fast Payouts (≤24h / Weekly)' },
-              { id: 'highsplit', label: '90%+ Profit Split' },
+              { id: 'all', label: 'All Participating Firms' },
+              { id: 'static', label: 'Static Drawdown' },
+              { id: 'weekend', label: 'Weekend Holding Allowed' },
+              { id: 'fastpayout', label: 'Weekly Payouts' },
             ].map((f) => (
               <button
                 key={f.id}
@@ -541,7 +473,7 @@ export function PropFirmCalculator() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   filterStyle === f.id
                     ? 'bg-emerald-500 text-slate-950 font-bold'
-                    : 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white border border-slate-200 dark:border-slate-800'
+                    : 'bg-[#080c0b] text-slate-200 hover:text-white border border-white/[0.08]'
                 }`}
               >
                 {f.label}
@@ -549,69 +481,51 @@ export function PropFirmCalculator() {
             ))}
           </div>
 
-          {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                <tr className="border-b border-white/[0.08] text-[11px] font-mono text-slate-300 uppercase tracking-wider">
                   <th className="py-3 px-4">Prop Firm</th>
                   <th className="py-3 px-4">Drawdown Type</th>
-                  <th className="py-3 px-4">Daily Loss</th>
-                  <th className="py-3 px-4">Max Loss</th>
-                  <th className="py-3 px-4">Profit Targets</th>
-                  <th className="py-3 px-4">Profit Split</th>
-                  <th className="py-3 px-4">Payout Cycle</th>
+                  <th className="py-3 px-4">Daily Drawdown</th>
+                  <th className="py-3 px-4">Max Drawdown</th>
+                  <th className="py-3 px-4">Targets (P1 / P2)</th>
                   <th className="py-3 px-4">Weekend Holding</th>
-                  <th className="py-3 px-4 text-emerald-600 dark:text-emerald-400">Reward Yield</th>
-                  <th className="py-3 px-4 text-right">Action</th>
+                  <th className="py-3 px-4 text-right">Offer</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 font-mono text-xs text-slate-700 dark:text-slate-300">
+              <tbody className="divide-y divide-white/[0.07] font-mono text-xs text-slate-200">
                 {filteredFirms.map((firm) => (
-                  <tr key={firm.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors">
-                    <td className="py-4 px-4 font-sans font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                      <img src={firm.logo} alt={firm.name} className="w-7 h-7 rounded-lg object-cover" />
+                  <tr key={firm.id} className="hover:bg-white/[0.03] transition-colors">
+                    <td className="py-4 px-4 font-sans font-bold text-white flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center font-mono text-xs font-bold text-emerald-400">
+                        {firm.code}
+                      </div>
                       <span>{firm.name}</span>
                     </td>
-                    <td className="py-4 px-4">
-                      <span
-                        className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
-                          firm.drawdownType.includes('Static')
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                            : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                        }`}
-                      >
-                        {firm.drawdownType}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4 font-bold text-slate-900 dark:text-slate-200">{firm.dailyLossPercent}%</td>
-                    <td className="py-4 px-4 font-bold text-slate-900 dark:text-slate-200">{firm.maxLossPercent}%</td>
-                    <td className="py-4 px-4 text-emerald-600 dark:text-emerald-400 font-semibold">
+                    <td className="py-4 px-4">{firm.drawdownType}</td>
+                    <td className="py-4 px-4 font-bold text-amber-400">{firm.dailyLossPercent}%</td>
+                    <td className="py-4 px-4 font-bold text-rose-400">{firm.maxLossPercent}%</td>
+                    <td className="py-4 px-4 text-emerald-400 font-semibold">
                       {firm.profitTargetPhase1}% / {firm.profitTargetPhase2}%
                     </td>
-                    <td className="py-4 px-4 font-bold text-slate-900 dark:text-white">{firm.profitSplit}</td>
-                    <td className="py-4 px-4 font-sans text-slate-700 dark:text-slate-300">{firm.payoutSpeed}</td>
                     <td className="py-4 px-4">
                       {firm.weekendHolding ? (
-                        <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
+                        <span className="text-emerald-400 inline-flex items-center gap-1 font-semibold">
                           <CheckCircle2 className="w-3.5 h-3.5" /> Allowed
                         </span>
                       ) : (
-                        <span className="text-rose-500 dark:text-rose-400 flex items-center gap-1">
-                          <XCircle className="w-3.5 h-3.5" /> Prohibited
+                        <span className="text-rose-400 inline-flex items-center gap-1">
+                          <XCircle className="w-3.5 h-3.5" /> No
                         </span>
                       )}
-                    </td>
-                    <td className="py-4 px-4 text-emerald-600 dark:text-emerald-400 font-bold">
-                      10 PTS / $1
                     </td>
                     <td className="py-4 px-4 text-right font-sans">
                       <button
                         onClick={() => handleLaunchModal(firm)}
-                        className="px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 font-bold text-xs transition-all inline-flex items-center gap-1 cursor-pointer"
+                        className="px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/35 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 font-bold text-xs transition-all inline-flex items-center gap-1 cursor-pointer"
                       >
-                        Apply Code {firm.affiliateCode}
-                        <ArrowRight className="w-3 h-3" />
+                        View Offer <ArrowRight className="w-3 h-3" />
                       </button>
                     </td>
                   </tr>
@@ -619,10 +533,12 @@ export function PropFirmCalculator() {
               </tbody>
             </table>
           </div>
+          <p className="mt-4 text-xs text-slate-300 font-sans">
+            Educational tool only. Always verify current rules with the relevant prop firm.
+          </p>
         </div>
       )}
 
-      {/* Auto-Apply Modal instance */}
       <AutoApplyModal
         isOpen={autoApplyModalOpen}
         onClose={() => setAutoApplyModalOpen(false)}

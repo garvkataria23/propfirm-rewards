@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 import { api } from '@/lib/api';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -15,64 +16,78 @@ import {
   ScrollText,
   Settings,
   ShieldCheck,
-  ChevronRight,
   LogOut,
   AlertTriangle,
   MessageSquare,
   MessageCircle,
+  ArrowLeft,
+  Menu,
+  X,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
+
+const ROLE_STYLES: Record<string, string> = {
+  SUPER_ADMIN: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/15 dark:text-rose-300 dark:border-rose-500/30',
+  ADMIN: 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/15 dark:text-orange-300 dark:border-orange-500/30',
+  SUPPORT_LEAD: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/15 dark:text-purple-300 dark:border-purple-500/30',
+  SUPPORT_AGENT: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/15 dark:text-blue-300 dark:border-blue-500/30',
+  FINANCE_OFFICER: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30',
+};
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading, logout } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const [pendingCount, setPendingCount] = useState<number>(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const STAFF_ROLES = ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER'];
   const isStaff = user && STAFF_ROLES.includes(user.role);
 
   useEffect(() => {
     if (!isLoading) {
-      if (!user) {
-        router.push('/login');
-      } else if (!STAFF_ROLES.includes(user.role)) {
-        router.push('/dashboard');
-      }
+      if (!user) router.push('/login');
+      else if (!STAFF_ROLES.includes(user.role)) router.push('/dashboard');
     }
   }, [user, isLoading, router]);
 
   useEffect(() => {
     if (user && STAFF_ROLES.includes(user.role)) {
-      api.get<{ metrics: { pendingVerification: number } }>('/admin/stats', { days: 30 })
-        .then((res) => {
-          setPendingCount(res?.metrics?.pendingVerification || 0);
-        })
+      api
+        .get<{ metrics: { pendingVerification: number } }>('/admin/stats', { days: 30 })
+        .then((res) => setPendingCount(res?.metrics?.pendingVerification || 0))
         .catch(() => {});
     }
   }, [user]);
 
   if (isLoading) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center text-slate-500 dark:text-slate-400">
-        Authenticating staff credentials...
+      <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] dark:bg-[#060b18]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 rounded-full border-2 border-emerald-600 border-t-transparent animate-spin" />
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Loading Staff Control Center...
+          </span>
+        </div>
       </div>
     );
   }
 
   if (!isStaff) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center text-center p-4">
-        <div className="max-w-md space-y-4">
-          <AlertTriangle className="h-12 w-12 text-rose-500 mx-auto" />
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Access Denied</h2>
-          <p className="text-xs text-slate-600 dark:text-slate-400">
-            Administrative or Support Staff privileges required. Please sign in with an authorized staff account.
+      <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] dark:bg-[#060b18] p-4">
+        <div className="max-w-sm text-center space-y-5 bg-white dark:bg-[#0d1424] p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-lg">
+          <div className="h-14 w-14 rounded-2xl bg-rose-50 dark:bg-rose-500/15 border border-rose-200 dark:border-rose-500/30 flex items-center justify-center mx-auto">
+            <AlertTriangle className="h-7 w-7 text-rose-600 dark:text-rose-400" />
+          </div>
+          <h2 className="text-xl font-black text-slate-900 dark:text-white">Access Denied</h2>
+          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Admin or Support Staff privileges required. Please sign in with an authorized staff account.
           </p>
           <Link href="/login">
-            <Button size="sm">Go to Login</Button>
+            <Button size="sm" variant="primary" className="w-full">
+              Go to Login
+            </Button>
           </Link>
         </div>
       </div>
@@ -86,100 +101,211 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       href: '/admin/support',
       icon: MessageSquare,
       badge: 'Live',
+      badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30',
     },
     {
       label: 'Purchase Verifications',
       href: '/admin/purchases',
       icon: ShoppingBag,
       badge: pendingCount > 0 ? pendingCount : undefined,
+      badgeClass: 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30',
     },
     { label: 'Team & Roles', href: '/admin/team', icon: ShieldCheck },
     { label: 'Trader Management', href: '/admin/users', icon: Users },
     { label: 'Prop Firms & Offers', href: '/admin/prop-firms', icon: Layers },
     { label: 'Rewards Catalog', href: '/admin/rewards', icon: Gift },
     { label: 'Redemptions Pipeline', href: '/admin/redemptions', icon: Truck },
-    { label: 'WhatsApp Automation', href: '/admin/whatsapp', icon: MessageCircle, badge: 'Live' },
+    {
+      label: 'WhatsApp Automation',
+      href: '/admin/whatsapp',
+      icon: MessageCircle,
+      badge: 'Live',
+      badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30',
+    },
     { label: 'Audit Trail', href: '/admin/audit-logs', icon: ScrollText },
     { label: 'System Settings', href: '/admin/settings', icon: Settings },
   ];
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#070a12] dark:text-slate-100 flex flex-col md:flex-row transition-colors">
-      {/* Admin Sidebar */}
-      <aside className="w-full md:w-64 border-r border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 p-4 space-y-6 shrink-0 flex flex-col justify-between">
-        <div className="space-y-6">
-          <div className="flex items-center justify-between px-2 py-1">
-            <Link href="/admin" className="flex items-center gap-2.5">
-              <div className="relative h-9 w-10 flex items-center justify-center">
-                <img
-                  src="/logo.png"
-                  alt="Prop Nation"
-                  className="h-full w-auto object-contain drop-shadow-xs select-none"
-                />
-              </div>
-              <div>
-                <h2 className="text-sm font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5">
-                  PropNation Admin
-                </h2>
-                <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
-                  Staff Control Center
-                </p>
-              </div>
-            </Link>
-            <ThemeToggle />
+  const roleStyle = ROLE_STYLES[user?.role] || 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
+
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full bg-white dark:bg-[#070e20] text-slate-800 dark:text-slate-200 select-none">
+      {/* Brand Header */}
+      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 dark:border-[#14234b]/60 shrink-0">
+        <Link href="/admin" className="flex items-center gap-2.5 group" onClick={() => setSidebarOpen(false)}>
+          <div className="relative h-9 w-9 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-sm flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 transition-all">
+            <img
+              src="/pn-logo-hd.png?v=3"
+              alt="Prop Nation"
+              className="h-full w-full object-contain rounded-lg"
+            />
           </div>
+          <div>
+            <div className="text-sm font-black tracking-tight leading-tight flex items-center">
+              <span className="text-slate-900 dark:text-white">PROP</span>
+              <span className="text-emerald-600 dark:text-emerald-400 ml-1">ADMIN</span>
+            </div>
+            <div className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Control Center
+            </div>
+          </div>
+        </Link>
+        <ThemeToggle />
+      </div>
 
-          {/* Navigation list */}
-          <nav className="space-y-1">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive = pathname === link.href;
-
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        {navLinks.map((link) => {
+          const Icon = link.icon;
+          const isActive = pathname === link.href;
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setSidebarOpen(false)}
+              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group ${
+                isActive
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30 font-bold'
+                  : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-[#0c1938]/70 border border-transparent'
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <Icon
+                  className={`h-4 w-4 shrink-0 ${
                     isActive
-                      ? 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20 shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900'
+                      ? 'text-emerald-600 dark:text-emerald-400'
+                      : 'text-slate-400 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200'
+                  }`}
+                />
+                <span>{link.label}</span>
+              </div>
+              {link.badge && (
+                <span
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                    link.badgeClass ?? 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <Icon className="h-4 w-4" />
-                    <span>{link.label}</span>
-                  </div>
-                  {link.badge && (
-                    <span className="text-[10px] font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded-full border border-amber-500/30">
-                      {link.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
+                  {link.badge}
+                </span>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
 
-        {/* Admin User info footer */}
-        <div className="pt-4 border-t border-slate-200 dark:border-slate-800/80 px-2 space-y-2">
-          <div className="text-xs text-slate-600 dark:text-slate-400 truncate">
-            <span className="text-[10px] text-slate-500 block">Logged in as:</span>
-            <strong className="text-slate-900 dark:text-white">{user.name}</strong>
+      {/* Switch to Trader Portal */}
+      <div className="px-3 pb-2">
+        <Link
+          href="/dashboard"
+          onClick={() => setSidebarOpen(false)}
+          className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors"
+        >
+          <ArrowLeft className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+          <span>Back to Trader Portal</span>
+        </Link>
+      </div>
+
+      {/* User Footer */}
+      <div className="p-3.5 border-t border-slate-200 dark:border-[#14234b]/60 bg-slate-50/80 dark:bg-[#060c1d] space-y-2.5">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
+              {user?.name?.[0]?.toUpperCase() ?? 'A'}
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{user?.name}</div>
+              <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border inline-block mt-0.5 ${roleStyle}`}>
+                {user?.role}
+              </span>
+            </div>
           </div>
           <button
             onClick={logout}
-            className="flex items-center gap-2 text-xs text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors pt-1 cursor-pointer"
+            title="Sign Out"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-slate-200/60 dark:hover:text-rose-400 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
           >
-            <LogOut className="h-3.5 w-3.5" />
-            <span>Sign Out</span>
+            <LogOut className="h-4 w-4" />
           </button>
         </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 dark:bg-[#060b18] dark:text-slate-100 flex flex-col lg:flex-row antialiased transition-colors">
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-slate-200 dark:border-[#14234b]/60 sticky top-0 h-screen overflow-hidden">
+        <SidebarContent />
       </aside>
 
-      {/* Main Admin Area */}
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full overflow-x-hidden">
-        {children}
-      </main>
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 flex lg:hidden">
+          <div
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+            onClick={() => setSidebarOpen(false)}
+          />
+          <aside className="relative z-10 w-64 max-w-xs h-full overflow-y-auto shadow-2xl">
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg z-20"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <SidebarContent />
+          </aside>
+        </div>
+      )}
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0 bg-[#f8fafc] dark:bg-[#060b18] transition-colors">
+        {/* Top Desktop Header */}
+        <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#070e20] shrink-0 shadow-2xs transition-colors">
+          <div className="flex items-center gap-3">
+            <span className="text-xs uppercase tracking-wider font-extrabold text-emerald-600 dark:text-emerald-400">
+              Admin Control Center
+            </span>
+            <span className="text-slate-300 dark:text-slate-700">/</span>
+            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+              Logged in as <strong className="text-slate-900 dark:text-white">{user?.name}</strong> ({user?.role})
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {pendingCount > 0 && (
+              <Link href="/admin/purchases">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30">
+                  <span className="h-2 w-2 rounded-full bg-amber-500 animate-ping" />
+                  {pendingCount} Pending Reviews
+                </span>
+              </Link>
+            )}
+            <ThemeToggle />
+            <Link href="/dashboard">
+              <Button variant="outline" size="sm">
+                Trader View
+              </Button>
+            </Link>
+          </div>
+        </header>
+
+        {/* Mobile Top Header */}
+        <div className="flex lg:hidden items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#070e20] sticky top-0 z-40">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <span className="text-sm font-black text-slate-900 dark:text-white">PropNation Admin</span>
+          <ThemeToggle />
+        </div>
+
+        {/* Page Content */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full overflow-x-hidden">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

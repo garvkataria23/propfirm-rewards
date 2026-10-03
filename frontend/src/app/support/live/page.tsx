@@ -7,72 +7,50 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/auth-context';
-import { api } from '@/lib/api';
-import { io, Socket } from 'socket.io-client';
+import { db } from '@/lib/firebase';
+import {
+  getOrCreateActiveUserTicket,
+  createNewLiveChatTicket,
+  sendLiveChatMessage,
+  setLiveTypingStatus,
+  markTicketMessagesAsSeen,
+  uploadChatAttachment,
+  triggerDesktopChatNotification,
+  onSnapshot,
+  collection,
+  query,
+  where,
+  orderBy,
+  type LiveChatTicket,
+  type LiveChatMessage,
+  type ChatAttachment,
+} from '@/lib/live-chat-service';
 import {
   MessageSquare,
   Send,
   Headphones,
-  ShieldCheck,
   CheckCircle2,
-  Clock,
   Sparkles,
   Ticket,
   PlusCircle,
   HelpCircle,
   ChevronDown,
-  AlertCircle,
-  Zap,
-  User,
   Radio,
   ExternalLink,
-  Phone,
   PhoneCall,
   Search,
   Check,
-  Copy,
-  Tag,
-  ArrowRight,
-  Calendar,
+  CheckCheck,
   Smartphone,
-  Globe,
+  Paperclip,
+  Image as ImageIcon,
+  Video,
+  FileText,
+  Download,
+  X,
+  Loader2,
+  UserCheck,
 } from 'lucide-react';
-
-interface ChatMessage {
-  id: string;
-  ticketId: string;
-  senderId: string;
-  senderRole: string;
-  message: string;
-  isInternalNote: boolean;
-  createdAt: string;
-  sender?: {
-    id: string;
-    name: string;
-    role: string;
-    avatarUrl?: string;
-  };
-}
-
-interface SupportTicket {
-  id: string;
-  ticketNumber: string;
-  userId: string;
-  assignedToId?: string | null;
-  subject: string;
-  department: string;
-  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
-  status: 'OPEN' | 'IN_PROGRESS' | 'WAITING_TRADER' | 'RESOLVED' | 'CLOSED';
-  lastMessageAt: string;
-  createdAt: string;
-  assignedTo?: {
-    id: string;
-    name: string;
-    role: string;
-    avatarUrl?: string;
-  } | null;
-  messages?: ChatMessage[];
-}
 
 type SupportChannel = 'LIVE_CHAT' | 'WHATSAPP' | 'CALL' | 'FAQ';
 
@@ -90,42 +68,44 @@ export default function LiveSupportPage() {
   const [activeChannel, setActiveChannel] = useState<SupportChannel>('LIVE_CHAT');
 
   // Live Chat States
-  const [tickets, setTickets] = useState<SupportTicket[]>([]);
+  const [tickets, setTickets] = useState<LiveChatTicket[]>([]);
   const [activeTicketId, setActiveTicketId] = useState<string | null>(null);
-  const [activeTicket, setActiveTicket] = useState<SupportTicket | null>(null);
+  const [messages, setMessages] = useState<LiveChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
+  const [pendingAttachments, setPendingAttachments] = useState<ChatAttachment[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
-  const [agentTyping, setAgentTyping] = useState<string | null>(null);
-  const [wsConnected, setWsConnected] = useState(false);
+  const [wsConnected, setWsConnected] = useState(true);
 
   // New Ticket Modal
   const [newModalOpen, setNewModalOpen] = useState(false);
   const [newSubject, setNewSubject] = useState('');
   const [newDepartment, setNewDepartment] = useState('PURCHASE_PROOF');
-  const [newPriority, setNewPriority] = useState('MEDIUM');
+  const [newPriority, setNewPriority] = useState<'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'>('MEDIUM');
   const [newTrackingId, setNewTrackingId] = useState('');
   const [newInitialMsg, setNewInitialMsg] = useState('');
   const [isCreatingTicket, setIsCreatingTicket] = useState(false);
 
   // WhatsApp States
   const [customWhatsAppMsg, setCustomWhatsAppMsg] = useState('');
-  const [copiedWhatsApp, setCopiedWhatsApp] = useState(false);
 
   // Phone Callback Form States
   const [callbackName, setCallbackName] = useState('');
   const [callbackPhone, setCallbackPhone] = useState('');
   const [callbackTrackingId, setCallbackTrackingId] = useState('');
   const [callbackTime, setCallbackTime] = useState('IMMEDIATE');
-  const [callbackNotes, setCallbackNotes] = useState('');
   const [callbackSubmitted, setCallbackSubmitted] = useState(false);
 
   // FAQ Search State
   const [faqSearch, setFaqSearch] = useState('');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
-  const socketRef = useRef<Socket | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const prevMsgCountRef = useRef<number>(0);
+  const initializedMsgsRef = useRef<boolean>(false);
 
   const quickPrompts = [
     'Expedite my purchase verification OCR review',
@@ -134,131 +114,94 @@ export default function LiveSupportPage() {
     'I have an issue with my Funding Pips account ID',
   ];
 
-  const playChime = () => {
-    try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.3);
-    } catch {}
-  };
-
-  const fetchMyTickets = async () => {
-    try {
-      const res = await api.get<SupportTicket[]>('/support/my-tickets');
-      setTickets(res || []);
-      if (!activeTicketId && res && res.length > 0) {
-        setActiveTicketId(res[0].id);
-      }
-    } catch (err) {
-      console.error('Error fetching tickets:', err);
-    }
-  };
-
+  // Subscribe to user's tickets in real-time
   useEffect(() => {
-    fetchMyTickets();
-  }, []);
+    if (!user) return;
 
-  useEffect(() => {
-    if (!activeTicketId) return;
+    let unsubTickets: (() => void) | null = null;
 
-    api.get<SupportTicket>(`/support/tickets/${activeTicketId}`)
-      .then((res) => {
-        setActiveTicket(res);
-        scrollToBottom();
-      })
-      .catch((err) => console.error('Error loading ticket details:', err));
-  }, [activeTicketId]);
+    getOrCreateActiveUserTicket({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      avatarUrl: user.avatarUrl,
+      country: user.country,
+    }).then((defaultTicket) => {
+      setActiveTicketId((prev) => prev || defaultTicket.id);
 
-  useEffect(() => {
-    const wsUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-    const socket = io(wsUrl, {
-      transports: ['websocket', 'polling'],
-      reconnectionAttempts: 5,
-    });
-
-    socketRef.current = socket;
-
-    socket.on('connect', () => {
-      setWsConnected(true);
-      if (user) {
-        socket.emit('authenticate', {
-          userId: user.id,
-          name: user.name,
-          role: user.role,
-          avatarUrl: user.avatarUrl,
-        });
-      }
-    });
-
-    socket.on('disconnect', () => {
-      setWsConnected(false);
-    });
-
-    socket.on('new_message', (data: { ticketId: string; message: ChatMessage; ticket: any }) => {
-      if (data.message.isInternalNote) return;
-
-      setActiveTicket((prev) => {
-        if (!prev || prev.id !== data.ticketId) return prev;
-        const exists = prev.messages?.some((m) => m.id === data.message.id);
-        if (exists) return prev;
-
-        if (data.message.senderRole !== 'USER') {
-          playChime();
+      const q = query(collection(db, 'supportTickets'), where('userId', '==', user.id));
+      unsubTickets = onSnapshot(
+        q,
+        (snap) => {
+          setWsConnected(true);
+          const list: LiveChatTicket[] = [];
+          snap.forEach((d) => {
+            list.push({ id: d.id, ...(d.data() as Omit<LiveChatTicket, 'id'>) });
+          });
+          list.sort((a, b) => (b.lastMessageAt || '').localeCompare(a.lastMessageAt || ''));
+          setTickets(list);
+          if (!activeTicketId && list.length > 0) {
+            setActiveTicketId(list[0].id);
+          }
+        },
+        () => {
+          setWsConnected(false);
         }
+      );
+    });
 
-        return {
-          ...prev,
-          status: data.ticket.status,
-          lastMessageAt: data.ticket.lastMessageAt,
-          messages: [...(prev.messages || []), data.message],
-        };
+    return () => {
+      if (unsubTickets) unsubTickets();
+    };
+  }, [user]);
+
+  // Subscribe to active ticket's messages in real-time
+  useEffect(() => {
+    if (!activeTicketId) {
+      setMessages([]);
+      initializedMsgsRef.current = false;
+      return;
+    }
+
+    const q = query(
+      collection(db, 'supportTickets', activeTicketId, 'messages'),
+      orderBy('createdAt', 'asc')
+    );
+
+    const unsub = onSnapshot(q, (snap) => {
+      const list: LiveChatMessage[] = [];
+      snap.forEach((d) => {
+        const data = d.data() as LiveChatMessage;
+        if (!data.isInternalNote) {
+          list.push({ ...data, id: d.id });
+        }
       });
 
+      if (initializedMsgsRef.current && list.length > prevMsgCountRef.current) {
+        const newest = list[list.length - 1];
+        if (newest && newest.senderRole !== 'USER' && newest.senderRole !== 'SYSTEM') {
+          triggerDesktopChatNotification(
+            `New reply from ${newest.senderName || 'Support Specialist'}`,
+            newest.message || '📎 Sent an attachment'
+          );
+        }
+      }
+
+      prevMsgCountRef.current = list.length;
+      initializedMsgsRef.current = true;
+      setMessages(list);
+      markTicketMessagesAsSeen(activeTicketId, 'USER');
       scrollToBottom();
     });
 
-    socket.on('user_typing', (data: { ticketId: string; user: { id: string; name: string; role: string }; isTyping: boolean }) => {
-      if (data.ticketId === activeTicketId && data.user.id !== user?.id) {
-        if (data.isTyping) {
-          const roleLabel = data.user.role.replace('_', ' ');
-          setAgentTyping(`${data.user.name} (${roleLabel}) is typing...`);
-        } else {
-          setAgentTyping(null);
-        }
-      }
-    });
+    return () => unsub();
+  }, [activeTicketId]);
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [user, activeTicketId]);
-
-  useEffect(() => {
-    if (!socketRef.current || !activeTicketId || !user) return;
-
-    socketRef.current.emit('join_ticket', {
-      ticketId: activeTicketId,
-      user: { id: user.id, name: user.name, role: user.role },
-    });
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.emit('leave_ticket', {
-          ticketId: activeTicketId,
-          user: { id: user.id, name: user.name },
-        });
-      }
-    };
-  }, [activeTicketId, user]);
+  const activeTicket = tickets.find((t) => t.id === activeTicketId) || null;
+  const agentTyping =
+    activeTicket?.typingAdmin && Date.now() - (activeTicket.typingAdmin.updatedAt || 0) < 8000
+      ? `${activeTicket.typingAdmin.name} is typing...`
+      : null;
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -267,48 +210,79 @@ export default function LiveSupportPage() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputMessage(e.target.value);
+    const val = e.target.value;
+    setInputMessage(val);
 
-    if (socketRef.current && activeTicketId && user) {
-      socketRef.current.emit('typing_start', {
+    if (activeTicketId && user) {
+      setLiveTypingStatus({
         ticketId: activeTicketId,
-        user: { id: user.id, name: user.name, role: user.role },
+        userId: user.id,
+        userName: user.name,
+        userRole: 'USER',
+        isTyping: val.trim().length > 0,
       });
 
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       typingTimeoutRef.current = setTimeout(() => {
-        if (socketRef.current && activeTicketId && user) {
-          socketRef.current.emit('typing_stop', {
+        if (activeTicketId && user) {
+          setLiveTypingStatus({
             ticketId: activeTicketId,
-            user: { id: user.id, name: user.name },
+            userId: user.id,
+            userName: user.name,
+            userRole: 'USER',
+            isTyping: false,
           });
         }
       }, 2500);
     }
   };
 
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !activeTicketId) return;
+
+    setUploadError(null);
+    const file = files[0];
+    if (file.size > 10 * 1024 * 1024) {
+      setUploadError('File exceeds 10 MB maximum limit. Please choose a file under 10 MB.');
+      e.target.value = '';
+      return;
+    }
+
+    try {
+      setUploadProgress(5);
+      const uploaded = await uploadChatAttachment(file, activeTicketId, (pct) => {
+        setUploadProgress(pct);
+      });
+      setPendingAttachments((prev) => [...prev, uploaded]);
+    } catch (err: any) {
+      setUploadError(err?.message || 'Failed to upload attachment.');
+    } finally {
+      setUploadProgress(null);
+      e.target.value = '';
+    }
+  };
+
   const handleSendMessage = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!inputMessage.trim() || !activeTicketId || !user || isSending) return;
+    if ((!inputMessage.trim() && pendingAttachments.length === 0) || !activeTicketId || !user || isSending) return;
 
     const messageText = inputMessage.trim();
+    const atts = [...pendingAttachments];
     setInputMessage('');
+    setPendingAttachments([]);
+    setUploadError(null);
     setIsSending(true);
 
     try {
-      if (socketRef.current?.connected) {
-        socketRef.current.emit('send_message', {
-          ticketId: activeTicketId,
-          message: messageText,
-          senderId: user.id,
-          senderRole: 'USER',
-        });
-      } else {
-        await api.post(`/support/tickets/${activeTicketId}/messages`, {
-          message: messageText,
-        });
-        fetchMyTickets();
-      }
+      await sendLiveChatMessage({
+        ticketId: activeTicketId,
+        senderId: user.id,
+        senderName: user.name,
+        senderRole: 'USER',
+        message: messageText,
+        attachments: atts,
+      });
     } catch (err) {
       console.error('Failed to send message:', err);
     } finally {
@@ -318,7 +292,7 @@ export default function LiveSupportPage() {
 
   const handleCreateNewTicket = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newSubject.trim() || !newInitialMsg.trim()) return;
+    if (!newSubject.trim() || !newInitialMsg.trim() || !user) return;
 
     setIsCreatingTicket(true);
     try {
@@ -326,24 +300,38 @@ export default function LiveSupportPage() {
         ? `[${newTrackingId.trim()}] ${newSubject.trim()}`
         : newSubject.trim();
 
-      const created = await api.post<SupportTicket>('/support/tickets', {
-        subject: subjectWithTracking,
-        message: newInitialMsg.trim(),
-        department: newDepartment,
-        priority: newPriority,
-      });
+      const created = await createNewLiveChatTicket(
+        {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+          country: user.country,
+        },
+        {
+          subject: subjectWithTracking,
+          department: newDepartment,
+          priority: newPriority,
+          initialMessage: newInitialMsg.trim(),
+        }
+      );
 
       setNewModalOpen(false);
       setNewSubject('');
       setNewTrackingId('');
       setNewInitialMsg('');
-      await fetchMyTickets();
       setActiveTicketId(created.id);
     } catch (err) {
       console.error('Failed to create ticket:', err);
     } finally {
       setIsCreatingTicket(false);
     }
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   };
 
   const handleRequestCallback = (e: React.FormEvent) => {
@@ -629,7 +617,7 @@ export default function LiveSupportPage() {
                 {activeTicket ? (
                   <>
                     {/* Chat Header */}
-                    <div className="p-4 border-b border-purple-100 dark:border-purple-900/40 bg-purple-50/30 dark:bg-slate-900/50 flex items-center justify-between">
+                    <div className="p-4 border-b border-purple-100 dark:border-purple-900/40 bg-purple-50/30 dark:bg-slate-900/50 flex flex-wrap items-center justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-mono text-xs font-bold text-purple-600 dark:text-purple-400">
@@ -639,21 +627,46 @@ export default function LiveSupportPage() {
                             {activeTicket.subject}
                           </h3>
                         </div>
-                        <p className="text-[10px] text-slate-500 mt-0.5">
-                          Department: <strong className="uppercase">{activeTicket.department}</strong> • Priority:{' '}
-                          <strong className="text-purple-600">{activeTicket.priority}</strong>
+                        <p className="text-[10px] text-slate-500 mt-0.5 flex items-center gap-2">
+                          <span>
+                            Department: <strong className="uppercase">{activeTicket.department}</strong>
+                          </span>
+                          <span>•</span>
+                          <span>
+                            Assigned Specialist:{' '}
+                            <strong className="text-emerald-600 dark:text-emerald-400">
+                              {activeTicket.assignedTo?.name || 'Arjun Mehta'}
+                            </strong>
+                          </span>
                         </p>
                       </div>
 
                       <div className="flex items-center gap-2">
+                        {activeTicket.assignedTo && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                            <UserCheck className="h-3 w-3" /> {activeTicket.assignedTo.name}
+                          </span>
+                        )}
                         <Badge variant="purple">{activeTicket.status}</Badge>
                       </div>
                     </div>
 
                     {/* Messages Body */}
                     <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 max-h-[440px] bg-slate-50/30 dark:bg-[#060814]">
-                      {activeTicket.messages?.map((msg) => {
+                      {messages.map((msg) => {
                         const isMe = msg.senderRole === 'USER';
+                        const isSystem = msg.senderRole === 'SYSTEM';
+
+                        if (isSystem) {
+                          return (
+                            <div key={msg.id} className="text-center my-2">
+                              <span className="inline-block px-3 py-1 rounded-full text-[10px] font-semibold bg-slate-200/70 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                                {msg.message}
+                              </span>
+                            </div>
+                          );
+                        }
+
                         return (
                           <div
                             key={msg.id}
@@ -661,27 +674,105 @@ export default function LiveSupportPage() {
                           >
                             <div className="flex items-center gap-2 mb-1 px-1">
                               <span className="text-[10px] font-bold text-slate-500">
-                                {isMe ? 'You' : msg.sender?.name || 'Support Desk'}
+                                {isMe ? 'You' : msg.senderName || activeTicket.assignedTo?.name || 'Support Desk'}
                               </span>
                               <span className="text-[9px] text-slate-400 font-mono">
                                 {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </span>
                             </div>
                             <div
-                              className={`max-w-md p-3.5 rounded-2xl text-xs leading-relaxed shadow-xs ${
+                              className={`max-w-md p-3.5 rounded-2xl text-xs leading-relaxed shadow-xs space-y-2 ${
                                 isMe
                                   ? 'bg-purple-600 text-white rounded-br-xs'
                                   : 'bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/40 text-slate-900 dark:text-white rounded-bl-xs'
                               }`}
                             >
-                              {msg.message}
+                              {msg.message && <p className="whitespace-pre-wrap break-words">{msg.message}</p>}
+
+                              {msg.attachments && msg.attachments.length > 0 && (
+                                <div className="space-y-2 pt-1">
+                                  {msg.attachments.map((att) => (
+                                    <div
+                                      key={att.id}
+                                      className={`rounded-xl overflow-hidden border ${
+                                        isMe
+                                          ? 'border-white/20 bg-black/20'
+                                          : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950'
+                                      }`}
+                                    >
+                                      {att.kind === 'image' ? (
+                                        <a href={att.url} target="_blank" rel="noopener noreferrer" className="block">
+                                          <img
+                                            src={att.url}
+                                            alt={att.name}
+                                            className="max-h-52 w-full object-cover hover:opacity-95"
+                                          />
+                                          <div className="px-2.5 py-1 text-[10px] flex items-center justify-between opacity-85">
+                                            <span className="truncate max-w-[180px]">{att.name}</span>
+                                            <span>{formatFileSize(att.size)}</span>
+                                          </div>
+                                        </a>
+                                      ) : att.kind === 'video' ? (
+                                        <div className="p-1.5 space-y-1">
+                                          <video
+                                            src={att.url}
+                                            controls
+                                            preload="metadata"
+                                            className="max-h-52 w-full rounded-lg bg-black"
+                                          />
+                                          <div className="px-1.5 text-[10px] flex items-center justify-between opacity-85">
+                                            <span className="truncate max-w-[180px]">{att.name}</span>
+                                            <span>{formatFileSize(att.size)}</span>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <a
+                                          href={att.url}
+                                          download={att.name}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="flex items-center justify-between gap-2.5 p-2.5 text-xs hover:underline"
+                                        >
+                                          <div className="flex items-center gap-2 min-w-0">
+                                            <FileText className="h-4 w-4 shrink-0" />
+                                            <div className="min-w-0">
+                                              <div className="font-semibold truncate">{att.name}</div>
+                                              <div className="text-[10px] opacity-75">{formatFileSize(att.size)}</div>
+                                            </div>
+                                          </div>
+                                          <Download className="h-4 w-4 shrink-0" />
+                                        </a>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
+
+                            {isMe && (
+                              <div className="flex items-center gap-1 mt-0.5 px-1 text-[10px]">
+                                {msg.status === 'SEEN' ? (
+                                  <span className="flex items-center gap-0.5 text-emerald-500 font-bold">
+                                    <CheckCheck className="h-3.5 w-3.5" /> Seen
+                                  </span>
+                                ) : msg.status === 'DELIVERED' ? (
+                                  <span className="flex items-center gap-0.5 text-slate-400 font-medium">
+                                    <CheckCheck className="h-3.5 w-3.5" /> Delivered
+                                  </span>
+                                ) : (
+                                  <span className="flex items-center gap-0.5 text-slate-400">
+                                    <Check className="h-3 w-3" /> Sent
+                                  </span>
+                                )}
+                              </div>
+                            )}
                           </div>
                         );
                       })}
 
                       {agentTyping && (
-                        <div className="flex items-center gap-2 text-xs text-purple-600 font-medium animate-pulse">
+                        <div className="flex items-center gap-2 text-xs text-emerald-500 font-semibold animate-pulse">
+                          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
                           <span>{agentTyping}</span>
                         </div>
                       )}
@@ -689,21 +780,86 @@ export default function LiveSupportPage() {
                       <div ref={messagesEndRef} />
                     </div>
 
+                    {/* Pending Attachments Strip */}
+                    {(pendingAttachments.length > 0 || uploadProgress !== null || uploadError) && (
+                      <div className="px-4 py-2 border-t border-purple-100 dark:border-purple-900/40 bg-slate-50 dark:bg-slate-900/90 space-y-1.5">
+                        {uploadError && (
+                          <div className="text-[11px] text-rose-500 font-semibold flex items-center justify-between">
+                            <span>{uploadError}</span>
+                            <button onClick={() => setUploadError(null)} className="text-xs underline">
+                              Dismiss
+                            </button>
+                          </div>
+                        )}
+                        {uploadProgress !== null && (
+                          <div className="flex items-center gap-2 text-xs text-purple-600 dark:text-purple-400 font-semibold">
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            <span>Uploading media ({uploadProgress}%)...</span>
+                          </div>
+                        )}
+                        {pendingAttachments.length > 0 && (
+                          <div className="flex items-center gap-2 overflow-x-auto py-1">
+                            {pendingAttachments.map((att) => (
+                              <div
+                                key={att.id}
+                                className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] shrink-0"
+                              >
+                                {att.kind === 'image' ? (
+                                  <ImageIcon className="h-3.5 w-3.5 text-emerald-500" />
+                                ) : att.kind === 'video' ? (
+                                  <Video className="h-3.5 w-3.5 text-purple-500" />
+                                ) : (
+                                  <FileText className="h-3.5 w-3.5 text-blue-500" />
+                                )}
+                                <span className="truncate max-w-[140px] font-medium">{att.name}</span>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setPendingAttachments((prev) => prev.filter((p) => p.id !== att.id))
+                                  }
+                                  className="text-slate-400 hover:text-rose-500"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {/* Message Input Box */}
                     <form
                       onSubmit={handleSendMessage}
                       className="p-3.5 border-t border-purple-100 dark:border-purple-900/40 bg-white dark:bg-slate-950 flex items-center gap-2"
                     >
                       <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*,video/*,.pdf,.doc,.docx,.txt,.csv,.zip"
+                        onChange={handleFileSelect}
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploadProgress !== null}
+                        title="Attach Photo, Video, or File (Max 10 MB)"
+                        className="p-2.5 rounded-xl border border-purple-100 dark:border-purple-900/40 text-slate-600 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900 hover:text-purple-600 transition-colors cursor-pointer shrink-0"
+                      >
+                        <Paperclip className="h-4 w-4" />
+                      </button>
+
+                      <input
                         type="text"
-                        placeholder="Type your message to support agent..."
+                        placeholder="Type message or attach photo/video/PDF (up to 10 MB)..."
                         value={inputMessage}
                         onChange={handleInputChange}
                         className="flex-1 bg-purple-50/40 dark:bg-slate-900/90 border border-purple-100 dark:border-purple-900/40 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-purple-500"
                       />
                       <Button
                         type="submit"
-                        disabled={isSending || !inputMessage.trim()}
+                        disabled={isSending || (!inputMessage.trim() && pendingAttachments.length === 0)}
                         className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs h-10 px-4 rounded-xl shadow-xs"
                       >
                         <Send className="h-4 w-4" />
@@ -1084,7 +1240,7 @@ export default function LiveSupportPage() {
                     <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Priority</label>
                     <select
                       value={newPriority}
-                      onChange={(e) => setNewPriority(e.target.value)}
+                      onChange={(e) => setNewPriority(e.target.value as 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT')}
                       className="w-full bg-purple-50/40 dark:bg-slate-950 border border-purple-100 dark:border-purple-900/40 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-purple-500"
                     >
                       <option value="LOW">Low</option>

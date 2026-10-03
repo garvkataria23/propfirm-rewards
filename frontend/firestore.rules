@@ -1,0 +1,680 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// This security rules file assumes the following data structures:
+//
+// Collection: users
+// Document ID: {userId} (matches Firebase Auth UID)
+// Fields:
+//   - id: string (optional, <= 128 chars, immutable) - User ID
+//   - uid: string (optional, <= 128 chars, immutable) - Firebase Auth UID
+//   - email: string (optional, valid email, <= 254 chars) - User email address (PII)
+//   - name: string (optional, 1..120 chars) - Display name
+//   - phone: string (optional, <= 32 chars) - Phone number (PII)
+//   - country: string (optional, <= 100 chars) - Country name or ISO code
+//   - role: string (optional, enum: 'USER', 'ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER') - RBAC role
+//   - status: string (optional, enum: 'ACTIVE', 'SUSPENDED', 'PENDING') - Account status
+//   - avatarUrl: string (optional, <= 2048 chars) - Profile avatar URL
+//   - authProvider: string (optional, <= 64 chars) - Auth provider identifier
+//   - department: string (optional, <= 100 chars) - Department name
+//   - points: map (optional, keys: available, pending, lifetimeEarned, lifetimeRedeemed) - Points summary
+//   - activeRedemptionsCount: number (optional, >= 0) - Count of active redemptions
+//   - createdAt: timestamp or string (optional, immutable) - Creation timestamp
+//   - updatedAt: timestamp or string (optional) - Last update timestamp
+//
+// Collection: users/{userId}/purchases AND purchases
+// Document ID: {purchaseId}
+// Fields:
+//   - id: string (required, 1..128 chars, immutable) - Purchase record ID
+//   - submissionCode: string (required, 1..64 chars) - Unique submission code
+//   - propFirm: map (required, keys: name, logoUrl) - Prop firm summary
+//   - accountType: string (required, 1..200 chars) - Challenge/account type
+//   - orderId: string (required, 1..128 chars) - Order identifier
+//   - accountId: string (optional, <= 128 chars) - Trading account identifier
+//   - purchaseDate: string (required, 1..64 chars) - Date of purchase
+//   - purchaseAmountUsd: number (required, >= 0) - Purchase amount in USD
+//   - emailUsed: string (required, <= 254 chars) - Email used at prop firm (PII)
+//   - referralCodeUsed: string (required, <= 64 chars) - Referral code used
+//   - pointsAwarded: number (required, >= 0) - Points associated with purchase
+//   - status: string (required, enum: 'PENDING', 'UNDER_REVIEW', 'MORE_INFO_REQUIRED', 'APPROVED', 'REJECTED')
+//   - rejectionReason: string (optional, <= 1000 chars)
+//   - infoRequestedMessage: string (optional, <= 1000 chars)
+//   - userResubmissionNotes: string (optional, <= 1000 chars)
+//   - proofs: list (required, <= 10 items) - Uploaded proof metadata objects
+//   - createdAt: string or timestamp (required, immutable)
+//   - updatedAt: string or timestamp (optional)
+//   - userId: string (required, matches owner UID, immutable)
+//   - userEmail: string (optional, <= 254 chars)
+//   - syncedAt: timestamp or string (optional)
+//
+// Collection: users/{userId}/ledger AND pointsLedger
+// Document ID: {txId}
+// Fields:
+//   - id: string (required, 1..128 chars, immutable) - Transaction ID
+//   - type: string (required, 1..64 chars) - Transaction type
+//   - points: number (required) - Points delta
+//   - balanceAfter: number (required, >= 0) - Balance after transaction
+//   - description: string (required, 1..500 chars) - Human-readable description
+//   - createdAt: string or timestamp (required, immutable)
+//   - userId: string (required, matches owner UID, immutable)
+//   - userEmail: string (optional, <= 254 chars)
+//   - syncedAt: timestamp or string (optional)
+//
+// Collection: users/{userId}/redemptions AND redemptions
+// Document ID: {redemptionId}
+// Fields:
+//   - id: string (required, 1..128 chars, immutable) - Redemption ID
+//   - redemptionCode: string (required, 1..64 chars) - Redemption code
+//   - pointsSpent: number (required, >= 0) - Points redeemed
+//   - status: string (required, enum: 'PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED')
+//   - courier: string (optional, <= 120 chars)
+//   - trackingNumber: string (optional, <= 128 chars)
+//   - estimatedDelivery: string (optional, <= 64 chars)
+//   - shippingNotes: string (optional, <= 1000 chars)
+//   - voucherCode: string (optional, <= 128 chars)
+//   - isDigital: bool (optional)
+//   - createdAt: string or timestamp (required, immutable)
+//   - updatedAt: string or timestamp (optional)
+//   - reward: map (required, keys: name, imageUrl, description)
+//   - userId: string (required, matches owner UID, immutable)
+//   - userEmail: string (optional, <= 254 chars)
+//   - syncedAt: timestamp or string (optional)
+//
+// Collection: supportTickets
+// Document ID: {ticketId}
+// Fields:
+//   - id: string (optional, <= 128 chars, immutable)
+//   - ticketNumber: string (optional, <= 64 chars)
+//   - userId: string (optional, <= 128 chars)
+//   - userName: string (optional, <= 150 chars)
+//   - userEmail: string (optional, <= 254 chars)
+//   - userAvatar: string (optional, <= 2048 chars)
+//   - userCountry: string (optional, <= 100 chars)
+//   - assignedToId: string or null (optional, <= 128 chars)
+//   - assignedTo: map or null (optional, keys: id, name, email, role, department, avatarUrl, online)
+//   - subject: string (optional, <= 300 chars)
+//   - department: string (optional, <= 100 chars)
+//   - priority: string (optional, enum: 'LOW', 'MEDIUM', 'HIGH', 'URGENT')
+//   - status: string (optional, enum: 'OPEN', 'IN_PROGRESS', 'WAITING_TRADER', 'RESOLVED', 'CLOSED')
+//   - lastMessageAt: string or timestamp (optional)
+//   - lastMessagePreview: string (optional, <= 1000 chars)
+//   - createdAt: string or timestamp (optional, immutable)
+//   - updatedAt: string or timestamp (optional)
+//   - unreadByAdmin: number (optional, >= 0)
+//   - unreadByUser: number (optional, >= 0)
+//   - typingUser: map or null (optional, keys: id, name, role, updatedAt)
+//   - typingAdmin: map or null (optional, keys: id, name, role, updatedAt)
+//
+// Subcollection: supportTickets/{ticketId}/messages
+// Document ID: {messageId}
+// Fields:
+//   - id: string (optional, <= 128 chars, immutable)
+//   - ticketId: string (optional, <= 128 chars, immutable)
+//   - senderId: string (optional, <= 128 chars)
+//   - senderName: string (optional, <= 150 chars)
+//   - senderRole: string (optional, <= 64 chars)
+//   - senderAvatar: string (optional, <= 2048 chars)
+//   - message: string (optional, <= 10000 chars)
+//   - isInternalNote: bool (optional)
+//   - attachments: list (optional, <= 10 items)
+//   - status: string (optional, enum: 'SENT', 'DELIVERED', 'SEEN')
+//   - deliveredAt: string or timestamp (optional)
+//   - seenAt: string or timestamp (optional)
+//   - createdAt: string or timestamp (optional, immutable)
+//   - updatedAt: string or timestamp (optional)
+//
+// Collection: propFirms
+// Document ID: {firmId}
+// Fields:
+//   - id: string (optional, <= 128 chars)
+//   - name: string (required, 1..150 chars)
+//   - slug: string (optional, <= 150 chars)
+//   - description: string (optional, <= 2000 chars)
+//   - logoUrl: string (optional, <= 2048 chars)
+//   - websiteUrl: string (optional, <= 2048 chars)
+//   - referralCode: string (optional, <= 64 chars)
+//   - discountText: string (optional, <= 200 chars)
+//   - pointsMultiplier: number (optional, >= 0)
+//   - isActive: bool (optional)
+//   - createdAt: timestamp or string (optional)
+//   - updatedAt: timestamp or string (optional)
+//
+// Collection: rewards
+// Document ID: {rewardId}
+// Fields:
+//   - id: string (optional, <= 128 chars)
+//   - name: string (required, 1..200 chars)
+//   - description: string (optional, <= 2000 chars)
+//   - category: string (optional, <= 100 chars)
+//   - imageUrl: string (optional, <= 2048 chars)
+//   - pointsCost: number (required, >= 0)
+//   - stock: number (optional, >= 0)
+//   - isDigital: bool (optional)
+//   - isActive: bool (optional)
+//   - createdAt: timestamp or string (optional)
+//   - updatedAt: timestamp or string (optional)
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user owns the resource by path userId
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Check if user is an administrator via trusted custom claims or verified bootstrap admin email
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.admin == true ||
+        request.auth.token.role == 'ADMIN' ||
+        request.auth.token.role == 'SUPER_ADMIN' ||
+        request.auth.token.role == 'SUPPORT_LEAD' ||
+        request.auth.token.role == 'SUPPORT_AGENT' ||
+        request.auth.token.role == 'FINANCE_OFFICER' ||
+        (request.auth.token.email_verified == true &&
+         request.auth.token.email in [
+           'admin@propfirm.com',
+           'admin@propfirmrewards.com',
+           'arjun.desk@propnation.app',
+           'elena.finance@propnation.app',
+           'garvkataria23@gmail.com'
+         ])
+      );
+    }
+
+    // Verify UID hasn't been tampered with on create
+    function uidUnchanged() {
+      return !('uid' in request.resource.data) ||
+        request.resource.data.uid == request.auth.uid;
+    }
+
+    // Ensure uid field is not modified on update
+    function uidNotModified() {
+      return !('uid' in request.resource.data) ||
+        !('uid' in resource.data) ||
+        request.resource.data.uid == resource.data.uid;
+    }
+
+    // Validate required fields exist
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // Validate that the document contains only the allowed fields
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // Validate that a map contains only allowed keys
+    function isValidMap(mapData, allowedKeys) {
+      return mapData is map && mapData.keys().hasOnly(allowedKeys);
+    }
+
+    // Validate that a list is a list and enforces size limits
+    function isValidList(listData, maxSize) {
+      return listData is list && listData.size() <= maxSize;
+    }
+
+    // Validate optional string (if present and non-null, must be string and within length)
+    function isValidOptionalString(data, field, minLen, maxLen) {
+      return !(field in data) || data[field] == null ||
+        (data[field] is string &&
+         data[field].size() >= minLen &&
+         data[field].size() <= maxLen);
+    }
+
+    // Validate timestamp or bounded ISO date string
+    function isValidTimeOrString(val) {
+      return val is timestamp || (val is string && val.size() >= 1 && val.size() <= 64);
+    }
+
+    // Validate optional timestamp or bounded ISO date string
+    function isValidOptionalTimeOrString(data, field) {
+      return !(field in data) || data[field] == null || isValidTimeOrString(data[field]);
+    }
+
+    // Validate immutable field if present in existing resource
+    function isFieldImmutable(field) {
+      return !(field in resource.data) ||
+        (field in request.resource.data && request.resource.data[field] == resource.data[field]);
+    }
+
+    // ===============================================================
+    // Domain Validators (Used in BOTH create and update)
+    // ===============================================================
+
+    function isValidPointsMap(points) {
+      return isValidMap(points, ['available', 'pending', 'lifetimeEarned', 'lifetimeRedeemed']) &&
+        (!('available' in points) || (points.available is number && points.available >= 0 && points.available <= 1000000000)) &&
+        (!('pending' in points) || (points.pending is number && points.pending >= 0 && points.pending <= 1000000000)) &&
+        (!('lifetimeEarned' in points) || (points.lifetimeEarned is number && points.lifetimeEarned >= 0 && points.lifetimeEarned <= 1000000000)) &&
+        (!('lifetimeRedeemed' in points) || (points.lifetimeRedeemed is number && points.lifetimeRedeemed >= 0 && points.lifetimeRedeemed <= 1000000000));
+    }
+
+    function isValidUser(data, userId) {
+      return hasOnlyAllowedFields([
+          'id', 'uid', 'email', 'name', 'phone', 'country', 'role',
+          'status', 'avatarUrl', 'authProvider', 'department',
+          'points', 'activeRedemptionsCount', 'createdAt', 'updatedAt'
+        ]) &&
+        (!('id' in data) || (data.id is string && data.id == userId && data.id.size() <= 128)) &&
+        (!('uid' in data) || (data.uid is string && data.uid == userId && data.uid.size() <= 128)) &&
+        isValidOptionalString(data, 'email', 3, 254) &&
+        isValidOptionalString(data, 'name', 1, 120) &&
+        isValidOptionalString(data, 'phone', 0, 32) &&
+        isValidOptionalString(data, 'country', 0, 100) &&
+        (!('role' in data) || data.role in ['USER', 'ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER']) &&
+        (!('status' in data) || data.status in ['ACTIVE', 'SUSPENDED', 'PENDING']) &&
+        isValidOptionalString(data, 'avatarUrl', 0, 2048) &&
+        isValidOptionalString(data, 'authProvider', 1, 64) &&
+        isValidOptionalString(data, 'department', 0, 100) &&
+        (!('points' in data) || isValidPointsMap(data.points)) &&
+        (!('activeRedemptionsCount' in data) || (data.activeRedemptionsCount is number && data.activeRedemptionsCount >= 0)) &&
+        isValidOptionalTimeOrString(data, 'createdAt') &&
+        isValidOptionalTimeOrString(data, 'updatedAt');
+    }
+
+    function isValidPropFirmSummary(propFirm) {
+      return isValidMap(propFirm, ['name', 'logoUrl']) &&
+        propFirm.name is string && propFirm.name.size() >= 1 && propFirm.name.size() <= 150 &&
+        propFirm.logoUrl is string && propFirm.logoUrl.size() <= 2048;
+    }
+
+    function isValidPurchase(data, expectedUserId) {
+      return hasRequiredFields([
+          'id', 'submissionCode', 'propFirm', 'accountType', 'orderId',
+          'purchaseDate', 'purchaseAmountUsd', 'emailUsed', 'referralCodeUsed',
+          'pointsAwarded', 'status', 'proofs', 'createdAt', 'userId'
+        ]) &&
+        hasOnlyAllowedFields([
+          'id', 'submissionCode', 'propFirm', 'accountType', 'orderId', 'accountId',
+          'purchaseDate', 'purchaseAmountUsd', 'emailUsed', 'referralCodeUsed',
+          'pointsAwarded', 'status', 'rejectionReason', 'infoRequestedMessage',
+          'userResubmissionNotes', 'proofs', 'createdAt', 'updatedAt',
+          'userId', 'userEmail', 'syncedAt'
+        ]) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.submissionCode is string && data.submissionCode.size() >= 1 && data.submissionCode.size() <= 64 &&
+        isValidPropFirmSummary(data.propFirm) &&
+        data.accountType is string && data.accountType.size() >= 1 && data.accountType.size() <= 200 &&
+        data.orderId is string && data.orderId.size() >= 1 && data.orderId.size() <= 128 &&
+        isValidOptionalString(data, 'accountId', 0, 128) &&
+        data.purchaseDate is string && data.purchaseDate.size() >= 1 && data.purchaseDate.size() <= 64 &&
+        data.purchaseAmountUsd is number && data.purchaseAmountUsd >= 0 && data.purchaseAmountUsd <= 1000000 &&
+        data.emailUsed is string && data.emailUsed.size() >= 3 && data.emailUsed.size() <= 254 &&
+        data.referralCodeUsed is string && data.referralCodeUsed.size() <= 64 &&
+        data.pointsAwarded is number && data.pointsAwarded >= 0 && data.pointsAwarded <= 100000000 &&
+        data.status in ['PENDING', 'UNDER_REVIEW', 'MORE_INFO_REQUIRED', 'APPROVED', 'REJECTED'] &&
+        isValidOptionalString(data, 'rejectionReason', 0, 1000) &&
+        isValidOptionalString(data, 'infoRequestedMessage', 0, 1000) &&
+        isValidOptionalString(data, 'userResubmissionNotes', 0, 1000) &&
+        isValidList(data.proofs, 10) &&
+        isValidTimeOrString(data.createdAt) &&
+        isValidOptionalTimeOrString(data, 'updatedAt') &&
+        data.userId is string && data.userId == expectedUserId && data.userId.size() <= 128 &&
+        isValidOptionalString(data, 'userEmail', 0, 254) &&
+        isValidOptionalTimeOrString(data, 'syncedAt');
+    }
+
+    function isValidLedgerTx(data, expectedUserId) {
+      return hasRequiredFields(['id', 'type', 'points', 'balanceAfter', 'description', 'createdAt', 'userId']) &&
+        hasOnlyAllowedFields([
+          'id', 'type', 'points', 'balanceAfter', 'description',
+          'createdAt', 'userId', 'userEmail', 'syncedAt'
+        ]) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.type is string && data.type.size() >= 1 && data.type.size() <= 64 &&
+        data.points is number && data.points >= -100000000 && data.points <= 100000000 &&
+        data.balanceAfter is number && data.balanceAfter >= 0 && data.balanceAfter <= 1000000000 &&
+        data.description is string && data.description.size() >= 1 && data.description.size() <= 500 &&
+        isValidTimeOrString(data.createdAt) &&
+        data.userId is string && data.userId == expectedUserId && data.userId.size() <= 128 &&
+        isValidOptionalString(data, 'userEmail', 0, 254) &&
+        isValidOptionalTimeOrString(data, 'syncedAt');
+    }
+
+    function isValidRewardSummary(reward) {
+      return isValidMap(reward, ['name', 'imageUrl', 'description']) &&
+        reward.name is string && reward.name.size() >= 1 && reward.name.size() <= 200 &&
+        reward.imageUrl is string && reward.imageUrl.size() <= 2048 &&
+        reward.description is string && reward.description.size() <= 2000;
+    }
+
+    function isValidRedemption(data, expectedUserId) {
+      return hasRequiredFields([
+          'id', 'redemptionCode', 'pointsSpent', 'status',
+          'createdAt', 'reward', 'userId'
+        ]) &&
+        hasOnlyAllowedFields([
+          'id', 'redemptionCode', 'pointsSpent', 'status', 'courier',
+          'trackingNumber', 'estimatedDelivery', 'shippingNotes', 'voucherCode',
+          'isDigital', 'createdAt', 'updatedAt', 'reward',
+          'userId', 'userEmail', 'syncedAt'
+        ]) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.redemptionCode is string && data.redemptionCode.size() >= 1 && data.redemptionCode.size() <= 64 &&
+        data.pointsSpent is number && data.pointsSpent >= 0 && data.pointsSpent <= 100000000 &&
+        data.status in ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED'] &&
+        isValidOptionalString(data, 'courier', 0, 120) &&
+        isValidOptionalString(data, 'trackingNumber', 0, 128) &&
+        isValidOptionalString(data, 'estimatedDelivery', 0, 64) &&
+        isValidOptionalString(data, 'shippingNotes', 0, 1000) &&
+        isValidOptionalString(data, 'voucherCode', 0, 128) &&
+        (!('isDigital' in data) || data.isDigital is bool) &&
+        isValidTimeOrString(data.createdAt) &&
+        isValidOptionalTimeOrString(data, 'updatedAt') &&
+        isValidRewardSummary(data.reward) &&
+        data.userId is string && data.userId == expectedUserId && data.userId.size() <= 128 &&
+        isValidOptionalString(data, 'userEmail', 0, 254) &&
+        isValidOptionalTimeOrString(data, 'syncedAt');
+    }
+
+    function isValidTypingIndicator(typing) {
+      return typing == null || (
+        isValidMap(typing, ['id', 'name', 'role', 'updatedAt']) &&
+        isValidOptionalString(typing, 'id', 1, 128) &&
+        isValidOptionalString(typing, 'name', 1, 150) &&
+        isValidOptionalString(typing, 'role', 1, 64) &&
+        (!('updatedAt' in typing) || typing.updatedAt is number || isValidTimeOrString(typing.updatedAt))
+      );
+    }
+
+    function isValidAssignedStaff(staff) {
+      return staff == null || (
+        isValidMap(staff, ['id', 'name', 'email', 'role', 'department', 'avatarUrl', 'online']) &&
+        isValidOptionalString(staff, 'id', 1, 128) &&
+        isValidOptionalString(staff, 'name', 1, 150) &&
+        isValidOptionalString(staff, 'email', 3, 254) &&
+        isValidOptionalString(staff, 'role', 1, 64) &&
+        isValidOptionalString(staff, 'department', 0, 120) &&
+        isValidOptionalString(staff, 'avatarUrl', 0, 2048) &&
+        (!('online' in staff) || staff.online is bool)
+      );
+    }
+
+    function isValidSupportTicket(data) {
+      return hasOnlyAllowedFields([
+          'id', 'ticketNumber', 'userId', 'userName', 'userEmail',
+          'userAvatar', 'userCountry', 'assignedToId', 'assignedTo',
+          'subject', 'department', 'priority', 'status',
+          'lastMessageAt', 'lastMessagePreview', 'createdAt', 'updatedAt',
+          'unreadByAdmin', 'unreadByUser', 'typingUser', 'typingAdmin'
+        ]) &&
+        isValidOptionalString(data, 'id', 1, 128) &&
+        isValidOptionalString(data, 'ticketNumber', 1, 64) &&
+        isValidOptionalString(data, 'userId', 1, 128) &&
+        isValidOptionalString(data, 'userName', 0, 150) &&
+        isValidOptionalString(data, 'userEmail', 0, 254) &&
+        isValidOptionalString(data, 'userAvatar', 0, 2048) &&
+        isValidOptionalString(data, 'userCountry', 0, 100) &&
+        isValidOptionalString(data, 'assignedToId', 0, 128) &&
+        (!('assignedTo' in data) || isValidAssignedStaff(data.assignedTo)) &&
+        isValidOptionalString(data, 'subject', 0, 300) &&
+        isValidOptionalString(data, 'department', 0, 100) &&
+        (!('priority' in data) || data.priority in ['LOW', 'MEDIUM', 'HIGH', 'URGENT']) &&
+        (!('status' in data) || data.status in ['OPEN', 'IN_PROGRESS', 'WAITING_TRADER', 'RESOLVED', 'CLOSED']) &&
+        isValidOptionalTimeOrString(data, 'lastMessageAt') &&
+        isValidOptionalString(data, 'lastMessagePreview', 0, 1000) &&
+        isValidOptionalTimeOrString(data, 'createdAt') &&
+        isValidOptionalTimeOrString(data, 'updatedAt') &&
+        (!('unreadByAdmin' in data) || (data.unreadByAdmin is number && data.unreadByAdmin >= 0 && data.unreadByAdmin <= 100000)) &&
+        (!('unreadByUser' in data) || (data.unreadByUser is number && data.unreadByUser >= 0 && data.unreadByUser <= 100000)) &&
+        (!('typingUser' in data) || isValidTypingIndicator(data.typingUser)) &&
+        (!('typingAdmin' in data) || isValidTypingIndicator(data.typingAdmin));
+    }
+
+    function isValidSupportMessage(data) {
+      return hasOnlyAllowedFields([
+          'id', 'ticketId', 'senderId', 'senderName', 'senderRole',
+          'senderAvatar', 'message', 'isInternalNote', 'attachments',
+          'status', 'deliveredAt', 'seenAt', 'createdAt', 'updatedAt'
+        ]) &&
+        isValidOptionalString(data, 'id', 1, 128) &&
+        isValidOptionalString(data, 'ticketId', 1, 128) &&
+        isValidOptionalString(data, 'senderId', 1, 128) &&
+        isValidOptionalString(data, 'senderName', 0, 150) &&
+        isValidOptionalString(data, 'senderRole', 1, 64) &&
+        isValidOptionalString(data, 'senderAvatar', 0, 2048) &&
+        isValidOptionalString(data, 'message', 0, 10000) &&
+        (!('isInternalNote' in data) || data.isInternalNote is bool) &&
+        (!('attachments' in data) || isValidList(data.attachments, 10)) &&
+        (!('status' in data) || data.status in ['SENT', 'DELIVERED', 'SEEN']) &&
+        isValidOptionalTimeOrString(data, 'deliveredAt') &&
+        isValidOptionalTimeOrString(data, 'seenAt') &&
+        isValidOptionalTimeOrString(data, 'createdAt') &&
+        isValidOptionalTimeOrString(data, 'updatedAt');
+    }
+
+    function isValidPropFirm(data) {
+      return hasRequiredFields(['name']) &&
+        hasOnlyAllowedFields([
+          'id', 'name', 'slug', 'description', 'logoUrl', 'websiteUrl',
+          'referralCode', 'discountText', 'pointsMultiplier', 'isActive',
+          'createdAt', 'updatedAt'
+        ]) &&
+        isValidOptionalString(data, 'id', 1, 128) &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 150 &&
+        isValidOptionalString(data, 'slug', 1, 150) &&
+        isValidOptionalString(data, 'description', 0, 2000) &&
+        isValidOptionalString(data, 'logoUrl', 0, 2048) &&
+        isValidOptionalString(data, 'websiteUrl', 0, 2048) &&
+        isValidOptionalString(data, 'referralCode', 0, 64) &&
+        isValidOptionalString(data, 'discountText', 0, 200) &&
+        (!('pointsMultiplier' in data) || (data.pointsMultiplier is number && data.pointsMultiplier >= 0 && data.pointsMultiplier <= 10000)) &&
+        (!('isActive' in data) || data.isActive is bool) &&
+        isValidOptionalTimeOrString(data, 'createdAt') &&
+        isValidOptionalTimeOrString(data, 'updatedAt');
+    }
+
+    function isValidReward(data) {
+      return hasRequiredFields(['name', 'pointsCost']) &&
+        hasOnlyAllowedFields([
+          'id', 'name', 'description', 'category', 'imageUrl',
+          'pointsCost', 'stock', 'isDigital', 'isActive',
+          'createdAt', 'updatedAt'
+        ]) &&
+        isValidOptionalString(data, 'id', 1, 128) &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 200 &&
+        isValidOptionalString(data, 'description', 0, 2000) &&
+        isValidOptionalString(data, 'category', 0, 100) &&
+        isValidOptionalString(data, 'imageUrl', 0, 2048) &&
+        data.pointsCost is number && data.pointsCost >= 0 && data.pointsCost <= 100000000 &&
+        (!('stock' in data) || (data.stock is number && data.stock >= 0 && data.stock <= 1000000)) &&
+        (!('isDigital' in data) || data.isDigital is bool) &&
+        (!('isActive' in data) || data.isActive is bool) &&
+        isValidOptionalTimeOrString(data, 'createdAt') &&
+        isValidOptionalTimeOrString(data, 'updatedAt');
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // 1. User Profile Documents & User-Scoped Subcollections
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+
+      // Prevent privilege escalation: non-admins can only set role to 'USER' (or omit role)
+      allow create: if isValidUser(request.resource.data, userId) && (
+        (isOwner(userId) && uidUnchanged() && (!('role' in request.resource.data) || request.resource.data.role == 'USER')) ||
+        isAdmin()
+      );
+
+      // Prevent privilege escalation and protect immutable identity/creation fields on update
+      allow update: if isValidUser(request.resource.data, userId) &&
+        isFieldImmutable('id') &&
+        isFieldImmutable('createdAt') && (
+          (isOwner(userId) && uidNotModified() && (
+            !('role' in request.resource.data) ||
+            ('role' in resource.data && request.resource.data.role == resource.data.role) ||
+            request.resource.data.role == 'USER'
+          )) ||
+          isAdmin()
+        );
+
+      allow delete: if isAdmin();
+
+      // User's purchase submissions subcollection
+      match /purchases/{purchaseId} {
+        allow read: if isOwner(userId) || isAdmin();
+        allow create: if (isOwner(userId) && isValidPurchase(request.resource.data, userId)) ||
+          (isAdmin() && isValidPurchase(request.resource.data, request.resource.data.userId));
+        allow update: if isFieldImmutable('id') &&
+          isFieldImmutable('userId') &&
+          isFieldImmutable('createdAt') && (
+            (isOwner(userId) && isValidPurchase(request.resource.data, userId)) ||
+            (isAdmin() && isValidPurchase(request.resource.data, resource.data.userId))
+          );
+        allow delete: if isAdmin();
+      }
+
+      // User's points ledger subcollection
+      match /ledger/{txId} {
+        allow read: if isOwner(userId) || isAdmin();
+        allow create: if (isOwner(userId) && isValidLedgerTx(request.resource.data, userId)) ||
+          (isAdmin() && isValidLedgerTx(request.resource.data, request.resource.data.userId));
+        allow update: if isFieldImmutable('id') &&
+          isFieldImmutable('userId') &&
+          isFieldImmutable('createdAt') && (
+            (isOwner(userId) && isValidLedgerTx(request.resource.data, userId)) ||
+            (isAdmin() && isValidLedgerTx(request.resource.data, resource.data.userId))
+          );
+        allow delete: if isAdmin();
+      }
+
+      // User's reward redemptions subcollection
+      match /redemptions/{redemptionId} {
+        allow read: if isOwner(userId) || isAdmin();
+        allow create: if (isOwner(userId) && isValidRedemption(request.resource.data, userId)) ||
+          (isAdmin() && isValidRedemption(request.resource.data, request.resource.data.userId));
+        allow update: if isFieldImmutable('id') &&
+          isFieldImmutable('userId') &&
+          isFieldImmutable('createdAt') && (
+            (isOwner(userId) && isValidRedemption(request.resource.data, userId)) ||
+            (isAdmin() && isValidRedemption(request.resource.data, resource.data.userId))
+          );
+        allow delete: if isAdmin();
+      }
+    }
+
+    // 2. Top-Level Purchases Collection
+    match /purchases/{purchaseId} {
+      allow read: if isAuthenticated() && (
+        resource == null ||
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+      allow create: if isAuthenticated() && (
+        (request.resource.data.userId == request.auth.uid && isValidPurchase(request.resource.data, request.auth.uid)) ||
+        (isAdmin() && isValidPurchase(request.resource.data, request.resource.data.userId))
+      );
+      allow update: if isAuthenticated() &&
+        isFieldImmutable('id') &&
+        isFieldImmutable('userId') &&
+        isFieldImmutable('createdAt') && (
+          (resource.data.userId == request.auth.uid && isValidPurchase(request.resource.data, request.auth.uid)) ||
+          (isAdmin() && isValidPurchase(request.resource.data, resource.data.userId))
+        );
+      allow delete: if isAdmin();
+    }
+
+    // 3. Top-Level Redemptions Collection
+    match /redemptions/{redemptionId} {
+      allow read: if isAuthenticated() && (
+        resource == null ||
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+      allow create: if isAuthenticated() && (
+        (request.resource.data.userId == request.auth.uid && isValidRedemption(request.resource.data, request.auth.uid)) ||
+        (isAdmin() && isValidRedemption(request.resource.data, request.resource.data.userId))
+      );
+      allow update: if isAuthenticated() &&
+        isFieldImmutable('id') &&
+        isFieldImmutable('userId') &&
+        isFieldImmutable('createdAt') && (
+          (resource.data.userId == request.auth.uid && isValidRedemption(request.resource.data, request.auth.uid)) ||
+          (isAdmin() && isValidRedemption(request.resource.data, resource.data.userId))
+        );
+      allow delete: if isAdmin();
+    }
+
+    // 4. Top-Level Points Ledger Collection
+    match /pointsLedger/{txId} {
+      allow read: if isAuthenticated() && (
+        resource == null ||
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+      allow create: if isAuthenticated() && (
+        (request.resource.data.userId == request.auth.uid && isValidLedgerTx(request.resource.data, request.auth.uid)) ||
+        (isAdmin() && isValidLedgerTx(request.resource.data, request.resource.data.userId))
+      );
+      allow update: if isAuthenticated() &&
+        isFieldImmutable('id') &&
+        isFieldImmutable('userId') &&
+        isFieldImmutable('createdAt') && (
+          (resource.data.userId == request.auth.uid && isValidLedgerTx(request.resource.data, request.auth.uid)) ||
+          (isAdmin() && isValidLedgerTx(request.resource.data, resource.data.userId))
+        );
+      allow delete: if isAdmin();
+    }
+
+    // 5. Real-Time Live Support Tickets & Messages Subcollection
+    match /supportTickets/{ticketId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidSupportTicket(request.resource.data);
+      allow update: if isAuthenticated() &&
+        isValidSupportTicket(request.resource.data) &&
+        isFieldImmutable('id') &&
+        isFieldImmutable('createdAt');
+      allow delete: if isAdmin();
+
+      match /messages/{messageId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated() && isValidSupportMessage(request.resource.data);
+        allow update: if isAuthenticated() &&
+          isValidSupportMessage(request.resource.data) &&
+          isFieldImmutable('id') &&
+          isFieldImmutable('ticketId') &&
+          isFieldImmutable('createdAt');
+        allow delete: if isAdmin();
+      }
+    }
+
+    // 6. Public Catalog: Prop Firms
+    match /propFirms/{firmId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidPropFirm(request.resource.data);
+      allow update: if isAdmin() && isValidPropFirm(request.resource.data) && isFieldImmutable('id') && isFieldImmutable('createdAt');
+      allow delete: if isAdmin();
+    }
+
+    // 7. Public Catalog: Rewards
+    match /rewards/{rewardId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidReward(request.resource.data);
+      allow update: if isAdmin() && isValidReward(request.resource.data) && isFieldImmutable('id') && isFieldImmutable('createdAt');
+      allow delete: if isAdmin();
+    }
+
+    // Default Deny All Other Paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
