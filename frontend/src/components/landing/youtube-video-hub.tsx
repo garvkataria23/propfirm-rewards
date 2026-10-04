@@ -622,13 +622,13 @@ export function YouTubeVideoHub() {
           </Reveal>
         </div>
 
-        {/* Main Cinema Player + Playlist Sidebar */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Main Cinema Player + Playlist Sidebar (Exact Equal Height on Desktop) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Left 8 Columns: Auto-Playing Cinema Stage + Full Custom Controls */}
-          <div className="lg:col-span-8 space-y-4">
+          <div className="lg:col-span-8 flex flex-col">
             <div
               ref={playerStageRef}
-              className="rounded-3xl bg-white dark:bg-[#0B1015] border border-slate-200/90 dark:border-white/[0.12] shadow-xl dark:shadow-[0_28px_70px_-15px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col"
+              className="h-full rounded-3xl bg-white dark:bg-[#0B1015] border border-slate-200/90 dark:border-white/[0.12] shadow-xl dark:shadow-[0_28px_70px_-15px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col justify-between"
             >
               {/* Top Cinema Bar */}
               <div className="px-4 sm:px-6 py-3 bg-slate-100/90 dark:bg-[#080D13] border-b border-slate-200 dark:border-white/[0.08] flex flex-wrap items-center justify-between gap-2">
@@ -836,30 +836,32 @@ export function YouTubeVideoHub() {
               </div>
 
               {/* Active Video Details & Key Takeaways */}
-              <div className="p-5 sm:p-6 bg-white dark:bg-[#0B1015] space-y-4">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                      <span>{activeVideo.categoryBadge}</span>
-                      <span>•</span>
-                      <span>{activeVideo.channel}</span>
-                      <span>•</span>
-                      <span className="inline-flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {activeVideo.durationLabel}
-                      </span>
+              <div className="p-5 sm:p-6 bg-white dark:bg-[#0B1015] space-y-4 flex-1 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                        <span>{activeVideo.categoryBadge}</span>
+                        <span>•</span>
+                        <span>{activeVideo.channel}</span>
+                        <span>•</span>
+                        <span className="inline-flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {activeVideo.durationLabel}
+                        </span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                        {activeVideo.title}
+                      </h3>
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                      {activeVideo.title}
-                    </h3>
                   </div>
+
+                  <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {activeVideo.description}
+                  </p>
                 </div>
 
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {activeVideo.description}
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
                   {activeVideo.takeaways.map((point) => (
                     <div
                       key={point}
@@ -874,85 +876,87 @@ export function YouTubeVideoHub() {
             </div>
           </div>
 
-          {/* Right 4 Columns: Interactive Up-Next Queue (All 12 Videos) */}
-          <div className="lg:col-span-4 rounded-3xl bg-white dark:bg-[#0B1015] border border-slate-200 dark:border-white/[0.12] shadow-lg overflow-hidden flex flex-col">
-            <div className="p-4 sm:px-5 bg-slate-100/80 dark:bg-[#080D13] border-b border-slate-200 dark:border-white/[0.08] flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Film className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-900 dark:text-white">
-                  VIDEO PLAYLIST ({filteredVideos.length} VIDEOS)
+          {/* Right 4 Columns: Interactive Up-Next Queue (Matches Exact Height of Left Column on Desktop) */}
+          <div className="lg:col-span-4 relative min-h-[540px] lg:min-h-0">
+            <div className="h-[540px] lg:h-auto lg:absolute lg:inset-0 rounded-3xl bg-white dark:bg-[#0B1015] border border-slate-200 dark:border-white/[0.12] shadow-xl dark:shadow-[0_28px_70px_-15px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col">
+              <div className="p-4 sm:px-5 bg-slate-100/80 dark:bg-[#080D13] border-b border-slate-200 dark:border-white/[0.08] flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2">
+                  <Film className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-900 dark:text-white">
+                    VIDEO PLAYLIST ({filteredVideos.length} VIDEOS)
+                  </span>
+                </div>
+                <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
+                  Click to Play
                 </span>
               </div>
-              <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
-                Click to Play
-              </span>
-            </div>
 
-            <div className="divide-y divide-slate-200/70 dark:divide-white/[0.06] max-h-[640px] overflow-y-auto">
-              {filteredVideos.map((vid, idx) => {
-                const isSelected = vid.id === activeVideo.id;
-                return (
-                  <button
-                    key={vid.id}
-                    type="button"
-                    onClick={() => selectVideo(vid, true)}
-                    className={`w-full p-3.5 text-left flex items-start gap-3.5 transition-all cursor-pointer ${
-                      isSelected
-                        ? 'bg-emerald-500/10 dark:bg-emerald-500/15 border-l-4 border-l-emerald-500'
-                        : 'hover:bg-slate-50 dark:hover:bg-white/[0.04]'
-                    }`}
-                  >
-                    {/* Thumbnail */}
-                    <div className="relative w-28 aspect-video rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-slate-200/60 dark:border-white/[0.1]">
-                      <img
-                        src={`https://i.ytimg.com/vi/${vid.youtubeId}/mqdefault.jpg`}
-                        alt={vid.title}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                        <div
-                          className={`h-7 w-7 rounded-full flex items-center justify-center ${
-                            isSelected
-                              ? 'bg-emerald-500 text-slate-950'
-                              : 'bg-black/70 text-white'
-                          }`}
-                        >
-                          {isSelected && isPlaying ? (
-                            <Pause className="h-3.5 w-3.5 fill-current" />
-                          ) : (
-                            <Play className="h-3.5 w-3.5 fill-current ml-0.5" />
-                          )}
+              <div className="divide-y divide-slate-200/70 dark:divide-white/[0.06] flex-1 min-h-0 overflow-y-auto">
+                {filteredVideos.map((vid, idx) => {
+                  const isSelected = vid.id === activeVideo.id;
+                  return (
+                    <button
+                      key={vid.id}
+                      type="button"
+                      onClick={() => selectVideo(vid, true)}
+                      className={`w-full p-3.5 text-left flex items-start gap-3.5 transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-emerald-500/10 dark:bg-emerald-500/15 border-l-4 border-l-emerald-500'
+                          : 'hover:bg-slate-50 dark:hover:bg-white/[0.04]'
+                      }`}
+                    >
+                      {/* Thumbnail */}
+                      <div className="relative w-28 aspect-video rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-slate-200/60 dark:border-white/[0.1]">
+                        <img
+                          src={`https://i.ytimg.com/vi/${vid.youtubeId}/mqdefault.jpg`}
+                          alt={vid.title}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                          <div
+                            className={`h-7 w-7 rounded-full flex items-center justify-center ${
+                              isSelected
+                                ? 'bg-emerald-500 text-slate-950'
+                                : 'bg-black/70 text-white'
+                            }`}
+                          >
+                            {isSelected && isPlaying ? (
+                              <Pause className="h-3.5 w-3.5 fill-current" />
+                            ) : (
+                              <Play className="h-3.5 w-3.5 fill-current ml-0.5" />
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 font-mono text-[10px] font-bold text-white">
-                        {vid.durationLabel}
-                      </span>
-                    </div>
-
-                    {/* Meta */}
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
-                          #{idx + 1} · {vid.categoryBadge}
+                        <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 font-mono text-[10px] font-bold text-white">
+                          {vid.durationLabel}
                         </span>
                       </div>
-                      <h4
-                        className={`text-xs sm:text-sm font-bold line-clamp-2 leading-snug ${
-                          isSelected
-                            ? 'text-emerald-700 dark:text-emerald-300'
-                            : 'text-slate-900 dark:text-white'
-                        }`}
-                      >
-                        {vid.title}
-                      </h4>
-                      <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate">
-                        {vid.channel}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
+
+                      {/* Meta */}
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
+                            #{idx + 1} · {vid.categoryBadge}
+                          </span>
+                        </div>
+                        <h4
+                          className={`text-xs sm:text-sm font-bold line-clamp-2 leading-snug ${
+                            isSelected
+                              ? 'text-emerald-700 dark:text-emerald-300'
+                              : 'text-slate-900 dark:text-white'
+                          }`}
+                        >
+                          {vid.title}
+                        </h4>
+                        <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate">
+                          {vid.channel}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
