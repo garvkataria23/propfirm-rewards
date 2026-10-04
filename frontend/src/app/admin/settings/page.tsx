@@ -335,7 +335,7 @@ export default function AdminSettingsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
         <div>
           <div className="flex items-center gap-2">
-            <Badge variant="emerald">Staff Control Center</Badge>
+            <Badge variant="success">Staff Control Center</Badge>
             <span className="text-xs text-slate-500 dark:text-slate-400">
               System Configuration, Appearance, Language &amp; Security
             </span>
@@ -726,7 +726,7 @@ export default function AdminSettingsPage() {
               </p>
             </div>
           </div>
-          <Badge variant="emerald">{settings.length} Active Keys</Badge>
+          <Badge variant="success">{settings.length} Active Keys</Badge>
         </div>
 
         {loading ? (
@@ -905,7 +905,7 @@ export default function AdminSettingsPage() {
                   </p>
                 </div>
               </div>
-              <Badge variant={twoFactorEnabled ? 'emerald' : 'warning'}>
+              <Badge variant={twoFactorEnabled ? 'success' : 'warning'}>
                 {twoFactorEnabled ? '2FA Active' : '2FA Disabled'}
               </Badge>
             </div>
@@ -1099,7 +1099,7 @@ export default function AdminSettingsPage() {
               </p>
             </div>
           </div>
-          <Badge variant="emerald">Authenticated Staff Session</Badge>
+          <Badge variant="success">Authenticated Staff Session</Badge>
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-[#0a142d]/60 border border-slate-200/80 dark:border-[#14234b]/50">
