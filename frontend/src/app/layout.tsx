@@ -55,7 +55,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://translate.googleapis.com" />
         <link rel="dns-prefetch" href="https://www.gstatic.com" />
       </head>
-      <body className="min-h-full flex flex-col bg-[#06090e] text-slate-100 font-sans transition-colors duration-200 selection:bg-emerald-500 selection:text-slate-950">
+      <body className="min-h-full flex flex-col bg-[#f8fafc] dark:bg-[#06090e] text-slate-900 dark:text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
         <ThemeProvider>
           <AuthProvider>
             <Navbar />

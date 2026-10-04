@@ -25,7 +25,24 @@ export function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
           {/* Brand Column */}
           <div className="lg:col-span-5 space-y-4">
-            <Link href="/" className="inline-flex items-center gap-3 group">
+            <Link
+              href="/"
+              scroll={true}
+              onClick={(e) => {
+                if (typeof window !== 'undefined') {
+                  if (pathname === '/') {
+                    e.preventDefault();
+                    if (window.location.hash) {
+                      window.history.pushState(null, '', '/');
+                    }
+                  }
+                  window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+                  document.documentElement.scrollTop = 0;
+                  document.body.scrollTop = 0;
+                }
+              }}
+              className="inline-flex items-center gap-3 group cursor-pointer"
+            >
               <div className="relative h-10 w-10 shrink-0 rounded-xl bg-[#090d14] border border-slate-200 dark:border-white/10 shadow-md flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/50 transition-all">
                 <img
                   src="/pn-logo-hd.png?v=3"

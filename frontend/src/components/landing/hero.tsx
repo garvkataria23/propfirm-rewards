@@ -24,7 +24,10 @@ export function Hero() {
   };
 
   return (
-    <section className="relative w-full overflow-hidden bg-gradient-to-b from-slate-50 via-white to-emerald-50/40 dark:from-[#030506] dark:via-[#05080B] dark:to-[#07100F] border-b border-slate-200 dark:border-white/[0.08] pt-6 pb-18 lg:pt-10 lg:pb-24 transition-colors duration-300">
+    <section
+      id="top"
+      className="relative w-full overflow-hidden bg-gradient-to-b from-slate-50 via-white to-emerald-50/40 dark:from-[#030506] dark:via-[#05080B] dark:to-[#07100F] border-b border-slate-200 dark:border-white/[0.08] pt-8 pb-18 lg:pt-12 lg:pb-24 transition-colors duration-300"
+    >
       {/* Layers 1, 2 & 3: Atmospheric Lighting, Masked Grid, Floating Candlesticks & Price Line */}
       <TradingVisualBackground variant="hero" />
 
@@ -34,7 +37,7 @@ export function Hero() {
           className="mb-8 lg:mb-10 flex justify-center"
           style={{ animation: 'heroReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both' }}
         >
-          <div className="inline-flex flex-wrap items-center justify-center gap-3 sm:gap-5 px-4 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-emerald-500/10 dark:bg-emerald-950/60 border-2 border-emerald-500/40 dark:border-emerald-400/40 shadow-[0_8px_30px_-6px_rgba(16,185,129,0.28)] backdrop-blur-md">
+          <div className="inline-flex flex-wrap items-center justify-center gap-3 sm:gap-5 px-4 py-2.5 sm:px-6 sm:py-3 rounded-2xl bg-emerald-500/10 dark:bg-emerald-950/60 border-2 border-emerald-500/40 dark:border-emerald-400/40 shadow-[0_8px_30px_-6px_rgba(16,185,129,0.28)] backdrop-blur-md">
             <span className="text-xs sm:text-sm font-black tracking-wide uppercase text-slate-900 dark:text-white flex items-center gap-2">
               <span className="text-base leading-none">🎁</span>
               <span>
@@ -72,8 +75,17 @@ export function Hero() {
           {/* Left Column: Brand Message, Value Proposition & CTAs */}
           <div className="lg:col-span-5 space-y-6 relative z-20">
             {/* 0.0-0.3s: PN Logo Badge */}
-            <div
-              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-[#0B1015]/90 border border-emerald-500/30 text-xs font-mono text-slate-700 dark:text-slate-200 shadow-sm backdrop-blur-xs"
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+                  document.documentElement.scrollTop = 0;
+                  document.body.scrollTop = 0;
+                }
+                handleCopyNation();
+              }}
+              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-[#0B1015]/90 border border-emerald-500/30 hover:border-emerald-500/60 text-xs font-mono text-slate-700 dark:text-slate-200 shadow-sm backdrop-blur-xs cursor-pointer transition-all"
               style={{ animation: 'heroReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both' }}
             >
               <img
@@ -84,7 +96,7 @@ export function Hero() {
               <span className="font-bold tracking-wider text-slate-900 dark:text-white">PROP NATION</span>
               <span className="text-slate-400 dark:text-slate-500">·</span>
               <span className="text-emerald-600 dark:text-emerald-400 font-semibold">USE CODE: NATION</span>
-            </div>
+            </button>
 
             {/* Staggered Headline: TRADE. EARN. (single line) / GET REWARDED. */}
             <h1 className="text-5xl sm:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.05] text-slate-900 dark:text-white">

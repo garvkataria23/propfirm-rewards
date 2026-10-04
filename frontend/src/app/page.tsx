@@ -25,6 +25,17 @@ export default function HomePage() {
   const [propFirms, setPropFirms] = useState<PropFirmItem[]>(DEFAULT_PARTICIPATING_FIRMS);
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && !window.location.hash) {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, []);
+
+  useEffect(() => {
     let mounted = true;
     (async () => {
       try {

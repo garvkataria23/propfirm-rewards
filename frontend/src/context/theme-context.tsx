@@ -19,13 +19,23 @@ const ThemeContext = createContext<ThemeContextType>({
 function applyTheme(t: Theme) {
   if (typeof document === 'undefined') return;
   const root = document.documentElement;
+  root.classList.add('theme-switching');
   if (t === 'dark') {
     root.classList.add('dark');
     root.classList.remove('light');
+    root.style.colorScheme = 'dark';
   } else {
     root.classList.remove('dark');
     root.classList.add('light');
+    root.style.colorScheme = 'light';
   }
+  // Force synchronous style recalc so header and all page sections repaint in the exact same frame
+  void window.getComputedStyle(root).opacity;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      root.classList.remove('theme-switching');
+    });
+  });
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {

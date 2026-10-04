@@ -205,10 +205,16 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
         }`}
       >
         <Link
-          href="/dashboard"
-          onClick={onClose}
+          href="/"
+          scroll={true}
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+            }
+            onClose?.();
+          }}
           className="flex items-center gap-2.5 group cursor-pointer overflow-hidden"
-          title="Prop Nation Trader Portal"
+          title="Prop Nation Home"
         >
           <div className="relative h-10 w-10 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-md flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
             <img

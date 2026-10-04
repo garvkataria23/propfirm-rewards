@@ -104,6 +104,22 @@ export function Navbar() {
     }
   };
 
+  const handleBrandClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    setActiveHash('');
+    setMobileMenuOpen(false);
+    if (typeof window !== 'undefined') {
+      if (pathname === '/') {
+        e.preventDefault();
+        if (window.location.hash) {
+          window.history.pushState(null, '', '/');
+        }
+      }
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  };
+
   return (
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
@@ -115,9 +131,10 @@ export function Navbar() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left: Brand Logo */}
         <Link
-          href={user ? '/dashboard' : '/'}
-          onClick={() => setActiveHash('')}
-          className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl"
+          href="/"
+          scroll={true}
+          onClick={handleBrandClick}
+          className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl cursor-pointer"
         >
           <div className="relative h-9 w-9 shrink-0 rounded-xl bg-[#090d14] border border-slate-200 dark:border-white/10 shadow-sm flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/50 group-hover:scale-105 transition-all duration-200">
             <img
