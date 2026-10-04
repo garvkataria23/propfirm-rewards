@@ -206,7 +206,9 @@ export function Navbar() {
                 <span>{(user.points?.available || 0).toLocaleString('en-US')} PTS</span>
               </Link>
 
-              {user.role === 'ADMIN' && (
+              {['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER'].includes(
+                user.role
+              ) && (
                 <Link href="/admin">
                   <Button
                     variant="ghost"
