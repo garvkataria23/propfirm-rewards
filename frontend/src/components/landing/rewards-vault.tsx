@@ -8,14 +8,13 @@ import { Reveal, TradingVisualBackground } from './motion-primitives';
 
 const VAULT_FEATURED_IPHONE: VaultRewardItem = {
   id: 'rew-1',
-  name: 'iPhone',
-  subtitle: 'Apple iPhone Pro Max · ProMotion XDR Display for Mobile Trading',
+  name: 'iPhone 16 Pro Max',
+  subtitle: 'Apple iPhone 16 Pro Max · ProMotion XDR Display for Mobile Trading',
   slug: 'apple-iphone-18-pro-max-1tb',
   category: 'Smartphones & Tablets',
   pointsRequired: 100000,
   availability: '8 in stock',
-  imageUrl:
-    'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=1000&auto=format&fit=crop&q=80',
+  imageUrl: '/iphone-16-pro-real.jpg',
   featured: true,
   tag: 'FEATURED REWARD',
 };

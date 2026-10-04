@@ -34,36 +34,34 @@ export function Hero() {
           className="mb-8 lg:mb-10 flex justify-center"
           style={{ animation: 'heroReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both' }}
         >
-          <div className="inline-flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl bg-emerald-500/10 dark:bg-emerald-950/60 border-2 border-emerald-500/40 dark:border-emerald-400/40 shadow-[0_8px_30px_-6px_rgba(16,185,129,0.28)] backdrop-blur-md">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-mono text-[11px] font-black uppercase tracking-wider">
-              <Gift className="h-3 w-3" />
-              GET REWARDS
-            </span>
-
-            <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
-              Use Referral Code{' '}
-              <span className="font-mono font-black text-emerald-700 dark:text-emerald-300 underline decoration-emerald-500/60 underline-offset-4">
-                NATION
-              </span>{' '}
-              at Checkout to Get Rewards!
+          <div className="inline-flex flex-wrap items-center justify-center gap-3 sm:gap-5 px-4 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-emerald-500/10 dark:bg-emerald-950/60 border-2 border-emerald-500/40 dark:border-emerald-400/40 shadow-[0_8px_30px_-6px_rgba(16,185,129,0.28)] backdrop-blur-md">
+            <span className="text-xs sm:text-sm font-black tracking-wide uppercase text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-base leading-none">🎁</span>
+              <span>
+                BUY WITH CODE{' '}
+                <span className="font-mono font-black text-emerald-700 dark:text-emerald-300 underline decoration-emerald-500/60 underline-offset-4">
+                  NATION
+                </span>{' '}
+                → EARN REWARD POINTS
+              </span>
             </span>
 
             <button
               type="button"
               onClick={handleCopyNation}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-white dark:bg-[#0B1015] hover:bg-emerald-50 dark:hover:bg-emerald-950 border border-emerald-500/50 font-mono text-xs font-black text-emerald-700 dark:text-emerald-300 shadow-2xs transition-all cursor-pointer active:scale-95"
+              className="inline-flex items-center gap-2 px-3.5 py-1 rounded-xl bg-white dark:bg-[#0B1015] hover:bg-emerald-50 dark:hover:bg-emerald-950 border border-emerald-500/50 font-mono text-xs font-black text-emerald-700 dark:text-emerald-300 shadow-2xs transition-all cursor-pointer active:scale-95"
               title="Click to copy referral code NATION"
             >
               <span className="tracking-widest">CODE: NATION</span>
               {copied ? (
                 <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                   <Check className="h-3.5 w-3.5" />
-                  COPIED
+                  [COPIED]
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300">
+                <span className="inline-flex items-center gap-1 text-slate-700 dark:text-slate-200">
                   <Copy className="h-3.5 w-3.5" />
-                  COPY
+                  [COPY]
                 </span>
               )}
             </button>
