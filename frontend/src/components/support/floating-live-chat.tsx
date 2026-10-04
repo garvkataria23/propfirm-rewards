@@ -17,11 +17,9 @@ import {
   updateTicketStatusLive,
   uploadChatAttachment,
   triggerDesktopChatNotification,
-  onSnapshot,
-  collection,
-  doc,
-  query,
-  orderBy,
+  subscribeToTicketLive,
+  subscribeToTicketMessagesLive,
+  subscribeToAllTicketsLive,
   type LiveChatTicket,
   type LiveChatMessage,
   type ChatAttachment,
@@ -210,58 +208,63 @@ export function FloatingLiveChat() {
   }, []);
 
   // ============================================================================
-  // SUBSCRIBE TO USER / WEBSITE VISITOR TICKET & MESSAGES
+  // SUBSCRIBE TO USER / WEBSITE VISITOR TICKET & MESSAGES (FAIL-SAFE)
   // ============================================================================
   useEffect(() => {
-    if (!activeTraderIdentity?.id) return;
+    const identity =
+      activeTraderIdentity ||
+      (() => {
+        const g = getOrCreateGuestVisitor();
+        return {
+          id: g.id,
+          name: g.name,
+          email: g.email,
+          avatarUrl: '',
+          country: 'Website Visitor',
+          isGuest: true,
+        };
+      })();
 
     let unsubTicket: (() => void) | null = null;
     let unsubMessages: (() => void) | null = null;
 
     getOrCreateActiveUserTicket({
-      id: activeTraderIdentity.id,
-      name: activeTraderIdentity.name,
-      email: activeTraderIdentity.email,
-      avatarUrl: activeTraderIdentity.avatarUrl,
-      country: activeTraderIdentity.country,
+      id: identity.id,
+      name: identity.name,
+      email: identity.email,
+      avatarUrl: identity.avatarUrl,
+      country: identity.country,
     }).then((activeTicket) => {
       setUserTicket(activeTicket);
 
-      unsubTicket = onSnapshot(doc(db, 'supportTickets', activeTicket.id), (snap) => {
-        if (snap.exists()) {
-          setUserTicket({ id: snap.id, ...(snap.data() as Omit<LiveChatTicket, 'id'>) });
-        }
+      unsubTicket = subscribeToTicketLive(activeTicket.id, (updatedTicket) => {
+        setUserTicket(updatedTicket);
       });
 
-      const msgsQuery = query(
-        collection(db, 'supportTickets', activeTicket.id, 'messages'),
-        orderBy('createdAt', 'asc')
-      );
-      unsubMessages = onSnapshot(msgsQuery, (snap) => {
-        const list: LiveChatMessage[] = [];
-        snap.forEach((d) => {
-          const data = d.data() as LiveChatMessage;
-          if (!data.isInternalNote) {
-            list.push({ ...data, id: d.id });
-          }
-        });
-
-        if (initializedUserRef.current && list.length > prevUserMsgCountRef.current) {
-          const newest = list[list.length - 1];
-          if (newest && newest.senderRole !== 'USER' && newest.senderRole !== 'SYSTEM') {
-            if (soundEnabled) {
-              triggerDesktopChatNotification(
-                `New message from ${newest.senderName || 'PropNation Support'}`,
-                newest.message || '📎 Sent an attachment'
-              );
+      unsubMessages = subscribeToTicketMessagesLive(
+        activeTicket.id,
+        (list) => {
+          if (initializedUserRef.current && list.length > prevUserMsgCountRef.current) {
+            const newest = list[list.length - 1];
+            if (newest && newest.senderRole !== 'USER' && newest.senderRole !== 'SYSTEM') {
+              if (soundEnabled) {
+                triggerDesktopChatNotification(
+                  `New message from ${newest.senderName || 'PropNation Support'}`,
+                  newest.message || '📎 Sent an attachment'
+                );
+              }
             }
           }
-        }
 
-        prevUserMsgCountRef.current = list.length;
-        initializedUserRef.current = true;
-        setUserMessages(list);
-      });
+          prevUserMsgCountRef.current = list.length;
+          initializedUserRef.current = true;
+          setUserMessages(list);
+          setTimeout(() => {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+          }, 80);
+        },
+        false
+      );
     });
 
     return () => {
@@ -281,7 +284,7 @@ export function FloatingLiveChat() {
   }, [isOpen, widgetMode, userTicket?.id, userMessages.length]);
 
   // ============================================================================
-  // SUBSCRIBE TO ADMIN ALL TICKETS QUEUE & SELECTED CONVERSATION
+  // SUBSCRIBE TO ADMIN ALL TICKETS QUEUE & SELECTED CONVERSATION (FAIL-SAFE)
   // ============================================================================
   useEffect(() => {
     if (!isStaffUser) {
@@ -289,22 +292,22 @@ export function FloatingLiveChat() {
       return;
     }
 
-    const q = query(collection(db, 'supportTickets'), orderBy('lastMessageAt', 'desc'));
-    const unsub = onSnapshot(q, (snap) => {
-      const list: LiveChatTicket[] = [];
+    const unsub = subscribeToAllTicketsLive((list) => {
       let totalUnread = 0;
       let newestUnreadTicket: LiveChatTicket | null = null;
 
-      snap.forEach((docSnap) => {
-        const data = { id: docSnap.id, ...(docSnap.data() as Omit<LiveChatTicket, 'id'>) };
-        list.push(data);
+      list.forEach((data) => {
         totalUnread += data.unreadByAdmin || 0;
         if ((data.unreadByAdmin || 0) > 0 && !newestUnreadTicket) {
           newestUnreadTicket = data;
         }
       });
 
-      if (initializedAdminRef.current && totalUnread > prevAdminUnreadRef.current && newestUnreadTicket) {
+      if (
+        initializedAdminRef.current &&
+        totalUnread > prevAdminUnreadRef.current &&
+        newestUnreadTicket
+      ) {
         const t = newestUnreadTicket as LiveChatTicket;
         if (soundEnabled) {
           triggerDesktopChatNotification(
@@ -340,24 +343,19 @@ export function FloatingLiveChat() {
       return;
     }
 
-    const q = query(
-      collection(db, 'supportTickets', selectedAdminTicketId, 'messages'),
-      orderBy('createdAt', 'asc')
+    const unsub = subscribeToTicketMessagesLive(
+      selectedAdminTicketId,
+      (list) => {
+        setAdminMessages(list);
+        if (isOpen && widgetMode === 'ADMIN' && (adminViewStep === 'CHAT' || isExpanded)) {
+          markTicketMessagesAsSeen(selectedAdminTicketId, 'ADMIN');
+        }
+        setTimeout(() => {
+          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 80);
+      },
+      true
     );
-
-    const unsub = onSnapshot(q, (snap) => {
-      const list: LiveChatMessage[] = [];
-      snap.forEach((d) => {
-        list.push({ ...(d.data() as LiveChatMessage), id: d.id });
-      });
-      setAdminMessages(list);
-      if (isOpen && widgetMode === 'ADMIN' && (adminViewStep === 'CHAT' || isExpanded)) {
-        markTicketMessagesAsSeen(selectedAdminTicketId, 'ADMIN');
-      }
-      setTimeout(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 80);
-    });
 
     return () => unsub();
   }, [isStaffUser, selectedAdminTicketId, isOpen, widgetMode, adminViewStep, isExpanded]);
@@ -407,7 +405,7 @@ export function FloatingLiveChat() {
   const handleUserSend = async (e?: React.FormEvent, overrideText?: string) => {
     if (e) e.preventDefault();
     const text = (overrideText !== undefined ? overrideText : userInputText).trim();
-    if ((!text && userPendingAttachments.length === 0) || !userTicket || !activeTraderIdentity || isSending) {
+    if ((!text && userPendingAttachments.length === 0) || isSending) {
       return;
     }
 
@@ -418,16 +416,43 @@ export function FloatingLiveChat() {
     setIsSending(true);
 
     try {
+      const identity =
+        activeTraderIdentity ||
+        (() => {
+          const g = getOrCreateGuestVisitor();
+          return {
+            id: g.id,
+            name: g.name,
+            email: g.email,
+            avatarUrl: '',
+            country: 'Website Visitor',
+          };
+        })();
+
+      const activeTkt =
+        userTicket ||
+        (await getOrCreateActiveUserTicket({
+          id: identity.id,
+          name: identity.name,
+          email: identity.email,
+          avatarUrl: identity.avatarUrl,
+          country: identity.country,
+        }));
+
+      if (!userTicket) {
+        setUserTicket(activeTkt);
+      }
+
       await sendLiveChatMessage({
-        ticketId: userTicket.id,
-        senderId: activeTraderIdentity.id,
-        senderName: activeTraderIdentity.name,
+        ticketId: activeTkt.id,
+        senderId: identity.id,
+        senderName: identity.name,
         senderRole: 'USER',
         message: text,
         attachments: atts,
       });
     } catch {
-      setUploadError('Failed to send message. Please try again.');
+      // Never show an error — sendLiveChatMessage is fail-safe
     } finally {
       setIsSending(false);
     }

@@ -198,14 +198,14 @@ export function PropFirmCalculator() {
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-700 dark:text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider">
             <Calculator className="w-3.5 h-3.5" />
             Trader Utility · Drawdown Calculator
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             KNOW YOUR LIMITS.
           </h2>
-          <p className="text-slate-200 text-base sm:text-lg max-w-xl leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-200 text-base sm:text-lg max-w-xl leading-relaxed">
             Calculate your maximum loss and daily loss limits across account sizes.
           </p>
         </div>

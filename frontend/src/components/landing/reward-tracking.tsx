@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Reveal, useInView } from './motion-primitives';
+import { Reveal, TradingVisualBackground, useInView } from './motion-primitives';
 
 /**
  * #24 · REAL REDEMPTION TRACKING
@@ -47,8 +47,10 @@ export function RewardTracking() {
   return (
     <section
       ref={ref}
-      className="w-full py-20 lg:py-24 bg-white dark:bg-[#0B1015] border-b border-slate-200 dark:border-white/[0.07] relative overflow-hidden transition-colors duration-300"
+      className="w-full py-20 lg:py-24 bg-[#f8fafc] dark:bg-[#0B1015] border-b border-slate-200 dark:border-white/[0.07] relative overflow-hidden transition-colors duration-300"
     >
+      <TradingVisualBackground variant="section" />
+
       {/* Subtle ambient glow */}
       <div
         className="absolute top-1/2 right-[15%] -translate-y-1/2 w-[520px] h-[340px] rounded-full opacity-[0.07] pointer-events-none"

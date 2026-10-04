@@ -23,22 +23,61 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeHash, setActiveHash] = useState('');
+
+  useEffect(() => {
+    const syncHash = () => {
+      if (typeof window !== 'undefined') {
+        setActiveHash(window.location.hash || '');
+      }
+    };
+    syncHash();
+    window.addEventListener('hashchange', syncHash);
+    window.addEventListener('popstate', syncHash);
+    return () => {
+      window.removeEventListener('hashchange', syncHash);
+      window.removeEventListener('popstate', syncHash);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 18);
+
+      if (pathname === '/') {
+        const howEl = document.getElementById('how-it-works');
+        const vidEl = document.getElementById('video-academy');
+        const scrollPos = window.scrollY + 180;
+
+        if (vidEl && scrollPos >= vidEl.offsetTop && scrollPos < vidEl.offsetTop + vidEl.offsetHeight) {
+          setActiveHash('#video-academy');
+        } else if (howEl && scrollPos >= howEl.offsetTop && scrollPos < howEl.offsetTop + howEl.offsetHeight) {
+          setActiveHash('#how-it-works');
+        } else if (window.scrollY < 300 && !window.location.hash) {
+          setActiveHash('');
+        }
+      }
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [pathname]);
 
   const isPortal = pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin');
   if (isPortal) return null;
 
   const isActive = (href: string) => {
-    if (href === '/') return pathname === '/';
-    if (href.startsWith('/#')) return false;
+    if (href === '/') return pathname === '/' && !activeHash;
+    if (href === '/#how-it-works') {
+      return pathname === '/how-it-works' || (pathname === '/' && activeHash === '#how-it-works');
+    }
+    if (href === '/#video-academy') {
+      return pathname === '/videos' || (pathname === '/' && activeHash === '#video-academy');
+    }
+    if (href.startsWith('/#')) {
+      const targetHash = href.slice(1);
+      return pathname === '/' && activeHash === targetHash;
+    }
     return pathname === href || pathname?.startsWith(`${href}/`);
   };
 
@@ -50,6 +89,14 @@ export function Navbar() {
     { label: 'Rewards', href: '/rewards' },
     { label: 'Live Support', href: '/support/live' },
   ];
+
+  const handleNavClick = (href: string) => {
+    if (href.startsWith('/#')) {
+      setActiveHash(href.slice(1));
+    } else {
+      setActiveHash('');
+    }
+  };
 
   const openFloatingLiveChat = () => {
     if (typeof window !== 'undefined') {
@@ -69,6 +116,7 @@ export function Navbar() {
         {/* Left: Brand Logo */}
         <Link
           href={user ? '/dashboard' : '/'}
+          onClick={() => setActiveHash('')}
           className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl"
         >
           <div className="relative h-9 w-9 shrink-0 rounded-xl bg-[#090d14] border border-slate-200 dark:border-white/10 shadow-sm flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/50 group-hover:scale-105 transition-all duration-200">
@@ -92,16 +140,19 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-medium transition-colors duration-200 relative py-1 ${
+                onClick={() => handleNavClick(link.href)}
+                className={`group text-sm font-medium transition-colors duration-200 relative py-1 ${
                   active
                     ? 'text-emerald-600 dark:text-emerald-400 font-semibold'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400'
                 }`}
               >
                 {link.label}
-                {active && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
-                )}
+                <span
+                  className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-emerald-500 dark:bg-emerald-400 transition-transform duration-200 origin-left ${
+                    active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                  }`}
+                />
               </Link>
             );
           })}
@@ -225,7 +276,10 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    handleNavClick(link.href);
+                    setMobileMenuOpen(false);
+                  }}
                   className={`flex items-center justify-between px-3.5 py-3 text-sm font-semibold rounded-xl transition-colors ${
                     active
                       ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'

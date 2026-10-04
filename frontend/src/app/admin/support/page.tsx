@@ -15,10 +15,12 @@ import {
   updateTicketStatusLive,
   uploadChatAttachment,
   triggerDesktopChatNotification,
-  onSnapshot,
-  collection,
-  query,
-  orderBy,
+  subscribeToAllTicketsLive,
+  subscribeToTicketMessagesLive,
+  saveLocalTicket,
+  saveLocalTicketMessage,
+  getLocalTicketsMap,
+  getLocalTicketMessages,
   type LiveChatTicket,
   type LiveChatMessage,
   type ChatAttachment,
@@ -55,8 +57,8 @@ const DEFAULT_ADMIN_TICKETS: LiveChatTicket[] = [
     userName: 'Garv Gautam Kataria',
     userEmail: 'garv@propnation.com',
     userCountry: 'India',
-    assignedToId: 'staff-2',
-    assignedTo: DEFAULT_STAFF_TEAM[1],
+    assignedToId: 'staff-arjun-mehta',
+    assignedTo: DEFAULT_STAFF_TEAM[0],
     subject: 'Funding Pips $100K Invoice Verification (Order #FP-ORD-98214)',
     department: 'VERIFICATION',
     priority: 'HIGH',
@@ -74,8 +76,8 @@ const DEFAULT_ADMIN_TICKETS: LiveChatTicket[] = [
     userName: 'David Vance',
     userEmail: 'david.v@gmail.com',
     userCountry: 'United Kingdom',
-    assignedToId: 'staff-4',
-    assignedTo: DEFAULT_STAFF_TEAM[3],
+    assignedToId: 'staff-elena-rostova',
+    assignedTo: DEFAULT_STAFF_TEAM[1],
     subject: 'DHL Express Tracking Update for Sony WH-1000XM5',
     department: 'PAYOUTS',
     priority: 'MEDIUM',
@@ -103,8 +105,8 @@ const DEFAULT_ADMIN_MESSAGES: Record<string, LiveChatMessage[]> = {
     {
       id: 'msg-demo-2',
       ticketId: 'tkt-demo-1',
-      senderId: 'staff-2',
-      senderName: 'Aarav Mehta',
+      senderId: 'staff-arjun-mehta',
+      senderName: 'Arjun Mehta',
       senderRole: 'SUPPORT_LEAD',
       message: 'Hello Garv! We have received your Funding Pips receipt and matched code NATION. Your 39,900 points are being credited right now.',
       status: 'DELIVERED',
@@ -159,91 +161,84 @@ export default function AdminSupportDeskPage() {
     'Thank you for contacting PropNation Support. Your ticket has been resolved!',
   ];
 
-  // 1. Real-time Firestore WebSocket subscription to all support tickets
+  // Seed default demo tickets into local store once if not present
   useEffect(() => {
-    const q = query(collection(db, 'supportTickets'), orderBy('lastMessageAt', 'desc'));
-    const unsub = onSnapshot(
-      q,
-      (snap) => {
-        const list: LiveChatTicket[] = [];
-        let totalUnread = 0;
-        let newestTraderTicket: LiveChatTicket | null = null;
-
-        snap.forEach((docSnap) => {
-          const data = { id: docSnap.id, ...(docSnap.data() as Omit<LiveChatTicket, 'id'>) };
-          list.push(data);
-          totalUnread += data.unreadByAdmin || 0;
-          if ((data.unreadByAdmin || 0) > 0 && !newestTraderTicket) {
-            newestTraderTicket = data;
-          }
-        });
-
-        // Notify Admin when a new message arrives from a trader
-        if (initializedTicketsRef.current && totalUnread > prevUnreadTotalRef.current && newestTraderTicket) {
-          const t = newestTraderTicket as LiveChatTicket;
-          if (soundEnabled) {
-            triggerDesktopChatNotification(
-              `New Trader Message (${t.userName})`,
-              t.lastMessagePreview || 'Sent a new message'
-            );
-          }
-          setAdminToast({
-            title: `New message from ${t.userName} (${t.ticketNumber})`,
-            body: t.lastMessagePreview || 'Sent an attachment',
-            ticketId: t.id,
-          });
-          setTimeout(() => setAdminToast(null), 6000);
-        }
-
-        prevUnreadTotalRef.current = totalUnread;
-        initializedTicketsRef.current = true;
-        if (list.length > 0) {
-          setTickets(list);
-          if (!selectedTicketId || selectedTicketId.startsWith('tkt-demo-')) {
-            setSelectedTicketId(list[0].id);
-          }
-        }
-        setIsLoading(false);
-      },
-      () => {
-        setIsLoading(false);
+    const existingMap = getLocalTicketsMap();
+    DEFAULT_ADMIN_TICKETS.forEach((dt) => {
+      if (!existingMap[dt.id]) {
+        saveLocalTicket(dt);
+        (DEFAULT_ADMIN_MESSAGES[dt.id] || []).forEach((m) => saveLocalTicketMessage(dt.id, m));
       }
-    );
+    });
+  }, []);
+
+  // 1. Real-time Fail-Safe subscription to all support tickets
+  useEffect(() => {
+    const unsub = subscribeToAllTicketsLive((list) => {
+      let totalUnread = 0;
+      let newestTraderTicket: LiveChatTicket | null = null;
+
+      list.forEach((data) => {
+        totalUnread += data.unreadByAdmin || 0;
+        if ((data.unreadByAdmin || 0) > 0 && !newestTraderTicket) {
+          newestTraderTicket = data;
+        }
+      });
+
+      if (initializedTicketsRef.current && totalUnread > prevUnreadTotalRef.current && newestTraderTicket) {
+        const t = newestTraderTicket as LiveChatTicket;
+        if (soundEnabled) {
+          triggerDesktopChatNotification(
+            `New Trader Message (${t.userName})`,
+            t.lastMessagePreview || 'Sent a new message'
+          );
+        }
+        setAdminToast({
+          title: `New message from ${t.userName} (${t.ticketNumber})`,
+          body: t.lastMessagePreview || 'Sent an attachment',
+          ticketId: t.id,
+        });
+        setTimeout(() => setAdminToast(null), 6000);
+      }
+
+      prevUnreadTotalRef.current = totalUnread;
+      initializedTicketsRef.current = true;
+      if (list.length > 0) {
+        setTickets(list);
+        if (!selectedTicketId) {
+          setSelectedTicketId(list[0].id);
+        }
+      }
+      setIsLoading(false);
+    });
 
     return () => unsub();
   }, [selectedTicketId, soundEnabled]);
 
-  // 2. Real-time Firestore WebSocket subscription to selected ticket's messages
+  // 2. Real-time Fail-Safe subscription to selected ticket's messages
   useEffect(() => {
     if (!selectedTicketId) {
       setMessages([]);
       return;
     }
 
-    if (DEFAULT_ADMIN_MESSAGES[selectedTicketId]) {
-      setMessages(DEFAULT_ADMIN_MESSAGES[selectedTicketId]);
-    }
-
-    const q = query(
-      collection(db, 'supportTickets', selectedTicketId, 'messages'),
-      orderBy('createdAt', 'asc')
-    );
-
-    const unsub = onSnapshot(q, (snap) => {
-      const list: LiveChatMessage[] = [];
-      snap.forEach((d) => {
-        list.push({ ...(d.data() as LiveChatMessage), id: d.id });
-      });
-      if (list.length > 0 || !DEFAULT_ADMIN_MESSAGES[selectedTicketId]) {
-        setMessages(list);
-      }
-      if (!selectedTicketId.startsWith('tkt-demo-')) {
+    const unsub = subscribeToTicketMessagesLive(
+      selectedTicketId,
+      (list) => {
+        if (list.length > 0) {
+          setMessages(list);
+        } else if (DEFAULT_ADMIN_MESSAGES[selectedTicketId]) {
+          setMessages(DEFAULT_ADMIN_MESSAGES[selectedTicketId]);
+        } else {
+          setMessages([]);
+        }
         markTicketMessagesAsSeen(selectedTicketId, 'ADMIN');
-      }
-      setTimeout(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 80);
-    });
+        setTimeout(() => {
+          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 80);
+      },
+      true
+    );
 
     return () => unsub();
   }, [selectedTicketId]);

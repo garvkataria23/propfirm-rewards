@@ -8,7 +8,7 @@ import {
   RotateCcw,
   ArrowRight,
 } from 'lucide-react';
-import { Reveal, useInView, useAnimatedNumber } from './motion-primitives';
+import { Reveal, TradingVisualBackground, useInView, useAnimatedNumber } from './motion-primitives';
 
 /**
  * TransactionCard reusable component (#55)
@@ -73,8 +73,10 @@ export function PointsWallet() {
   return (
     <section
       ref={ref}
-      className="w-full py-20 lg:py-24 bg-gradient-to-b from-slate-50 via-emerald-50/30 to-slate-50 dark:from-[#05080B] dark:via-[#07100F] dark:to-[#05080B] border-b border-slate-200 dark:border-white/[0.08] relative overflow-hidden transition-colors duration-300"
+      className="w-full py-20 lg:py-24 bg-gradient-to-b from-[#f8fafc] via-emerald-50/30 to-[#f8fafc] dark:from-[#05080B] dark:via-[#07100F] dark:to-[#05080B] border-b border-slate-200 dark:border-white/[0.08] relative overflow-hidden transition-colors duration-300"
     >
+      <TradingVisualBackground variant="section" />
+
       {/* #25: Very subtle upward points curve in background */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.06]" aria-hidden="true">
         <svg className="w-full h-full" viewBox="0 0 1440 500" fill="none" preserveAspectRatio="none">

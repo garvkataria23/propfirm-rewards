@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Copy, Check, Sparkles, Gift } from 'lucide-react';
 import { HeroDashboard } from './hero-dashboard';
 import { TradingVisualBackground } from './motion-primitives';
 
@@ -15,12 +15,61 @@ import { TradingVisualBackground } from './motion-primitives';
  * - Layer 4: Illuminated HeroDashboard + soft halo + subtle reflection
  */
 export function Hero() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyNation = () => {
+    navigator.clipboard?.writeText('NATION').catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2200);
+  };
+
   return (
-    <section className="relative w-full overflow-hidden bg-gradient-to-b from-slate-50 via-white to-emerald-50/40 dark:from-[#030506] dark:via-[#05080B] dark:to-[#07100F] border-b border-slate-200 dark:border-white/[0.08] pt-8 pb-18 lg:pt-14 lg:pb-24 transition-colors duration-300">
+    <section className="relative w-full overflow-hidden bg-gradient-to-b from-slate-50 via-white to-emerald-50/40 dark:from-[#030506] dark:via-[#05080B] dark:to-[#07100F] border-b border-slate-200 dark:border-white/[0.08] pt-6 pb-18 lg:pt-10 lg:pb-24 transition-colors duration-300">
       {/* Layers 1, 2 & 3: Atmospheric Lighting, Masked Grid, Floating Candlesticks & Price Line */}
       <TradingVisualBackground variant="hero" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* TOP INSTANT REFERRAL CODE BANNER — Immediately visible when landing page opens */}
+        <div
+          className="mb-8 lg:mb-10 flex justify-center"
+          style={{ animation: 'heroReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both' }}
+        >
+          <div className="inline-flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl bg-emerald-500/10 dark:bg-emerald-950/60 border-2 border-emerald-500/40 dark:border-emerald-400/40 shadow-[0_8px_30px_-6px_rgba(16,185,129,0.28)] backdrop-blur-md">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-mono text-[11px] font-black uppercase tracking-wider">
+              <Gift className="h-3 w-3" />
+              GET REWARDS
+            </span>
+
+            <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+              Use Referral Code{' '}
+              <span className="font-mono font-black text-emerald-700 dark:text-emerald-300 underline decoration-emerald-500/60 underline-offset-4">
+                NATION
+              </span>{' '}
+              at Checkout to Get Rewards!
+            </span>
+
+            <button
+              type="button"
+              onClick={handleCopyNation}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-white dark:bg-[#0B1015] hover:bg-emerald-50 dark:hover:bg-emerald-950 border border-emerald-500/50 font-mono text-xs font-black text-emerald-700 dark:text-emerald-300 shadow-2xs transition-all cursor-pointer active:scale-95"
+              title="Click to copy referral code NATION"
+            >
+              <span className="tracking-widest">CODE: NATION</span>
+              {copied ? (
+                <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                  <Check className="h-3.5 w-3.5" />
+                  COPIED
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300">
+                  <Copy className="h-3.5 w-3.5" />
+                  COPY
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-10 items-center">
           {/* Left Column: Brand Message, Value Proposition & CTAs */}
           <div className="lg:col-span-6 space-y-6 relative z-20">
@@ -36,7 +85,7 @@ export function Hero() {
               />
               <span className="font-bold tracking-wider text-slate-900 dark:text-white">PROP NATION</span>
               <span className="text-slate-400 dark:text-slate-500">·</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">AFFILIATE &amp; REWARDS</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">USE CODE: NATION</span>
             </div>
 
             {/* Staggered Headline: TRADE. (0.3s) / EARN. (0.5s) / GET REWARDED. (0.7s) */}
@@ -67,34 +116,77 @@ export function Hero() {
               style={{ animation: 'heroReveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.85s both' }}
             >
               <p className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-snug">
-                Turn eligible prop-firm purchases into rewards.
+                Use Referral Code{' '}
+                <span className="px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/40 font-mono text-emerald-700 dark:text-emerald-300">
+                  NATION
+                </span>{' '}
+                to turn prop-firm purchases into real rewards.
               </p>
               <p className="text-base text-slate-600 dark:text-slate-200 leading-relaxed">
-                Purchase eligible prop-firm accounts using our referral codes, submit your purchase for verification, earn reward points, and redeem them for real-world rewards.
+                Purchase eligible prop-firm accounts using our referral code <strong className="text-slate-900 dark:text-white font-mono">NATION</strong>, submit your purchase for verification, earn reward points, and redeem them for real-world rewards.
               </p>
             </div>
 
-            {/* Partner Referral Rewards Pill */}
+            {/* Prominent Referral Code NATION Box + Quick Links */}
             <div
-              className="inline-flex flex-wrap items-center gap-3 p-1.5 pl-4 rounded-xl bg-white/95 dark:bg-[#0B1015]/90 border border-slate-200 dark:border-white/[0.1] shadow-xs"
+              className="p-4 rounded-2xl bg-white/95 dark:bg-[#0B1015]/95 border-2 border-emerald-500/40 dark:border-emerald-500/35 shadow-[0_12px_32px_-8px_rgba(16,185,129,0.22)] space-y-3 max-w-xl"
               style={{ animation: 'heroReveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.95s both' }}
             >
-              <span className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 font-medium">
-                Partner Referral Rewards:
-              </span>
-              <Link
-                href="#prop-firms"
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/35 font-mono text-xs font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/25 transition-colors"
-              >
-                <span>Eligible Partner Offers</span>
-                <ArrowRight className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-              </Link>
-              <Link
-                href="#video-academy"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/25 font-mono text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-500/20 transition-colors"
-              >
-                <span>▶ Watch Video Guides (12)</span>
-              </Link>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    <span>OFFICIAL REFERRAL CODE</span>
+                  </div>
+                  <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white">
+                    Use <span className="font-mono text-emerald-600 dark:text-emerald-400">NATION</span> to Get Rewards
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleCopyNation}
+                  className="group flex items-center justify-between sm:justify-center gap-3 px-4 py-2.5 rounded-xl bg-emerald-500/12 hover:bg-emerald-500/20 dark:bg-emerald-500/15 dark:hover:bg-emerald-500/25 border-2 border-dashed border-emerald-500/60 transition-all cursor-pointer active:scale-95"
+                >
+                  <div className="text-left">
+                    <div className="text-[10px] font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      REFERRAL CODE
+                    </div>
+                    <div className="text-lg font-mono font-black tracking-widest text-emerald-700 dark:text-emerald-300">
+                      NATION
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-mono text-xs font-extrabold inline-flex items-center gap-1.5 shadow-xs">
+                    {copied ? (
+                      <>
+                        <Check className="h-3.5 w-3.5" />
+                        <span>COPIED!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-3.5 w-3.5" />
+                        <span>COPY</span>
+                      </>
+                    )}
+                  </span>
+                </button>
+              </div>
+
+              <div className="pt-2.5 border-t border-slate-200/80 dark:border-white/[0.08] flex flex-wrap items-center gap-2.5">
+                <Link
+                  href="#prop-firms"
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/35 font-mono text-xs font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/25 transition-colors"
+                >
+                  <span>Eligible Partner Offers</span>
+                  <ArrowRight className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                </Link>
+                <Link
+                  href="#video-academy"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/25 font-mono text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-500/20 transition-colors"
+                >
+                  <span>▶ Watch Video Guides (12)</span>
+                </Link>
+              </div>
             </div>
 
             {/* Primary & Secondary CTAs */}

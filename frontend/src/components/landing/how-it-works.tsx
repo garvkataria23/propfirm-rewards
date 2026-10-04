@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Reveal, useInView, useAnimatedNumber } from './motion-primitives';
+import { Reveal, TradingVisualBackground, useInView, useAnimatedNumber } from './motion-primitives';
 
 /**
  * #18 & #19 · STEP 01 (BUY): Actual Prop Firm Offer Card UI
@@ -322,8 +322,10 @@ export function HowItWorks() {
     <section
       id="how-it-works"
       ref={ref}
-      className="w-full py-20 lg:py-24 bg-white dark:bg-[#081118] border-b border-slate-200 dark:border-white/[0.08] relative overflow-hidden transition-colors duration-300"
+      className="w-full py-20 lg:py-24 bg-[#f8fafc] dark:bg-[#081118] border-b border-slate-200 dark:border-white/[0.08] relative overflow-hidden transition-colors duration-300"
     >
+      <TradingVisualBackground variant="section" />
+
       {/* Subtle Atmospheric Glow */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[380px] rounded-full opacity-[0.07] pointer-events-none"

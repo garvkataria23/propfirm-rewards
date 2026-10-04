@@ -717,14 +717,14 @@ export default function AdminUsersPage() {
     <div className="w-full space-y-6 pb-16">
       {/* Success Banner */}
       {successBanner && (
-        <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-between shadow-lg animate-in fade-in duration-300">
+        <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center justify-between shadow-sm animate-in fade-in duration-300">
           <div className="flex items-center gap-2.5">
-            <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>{successBanner}</span>
           </div>
           <button
             onClick={() => setSuccessBanner(null)}
-            className="text-emerald-400 hover:text-white text-xs font-bold px-2 py-0.5"
+            className="text-emerald-600 dark:text-emerald-400 hover:text-slate-900 dark:hover:text-white text-xs font-bold px-2 py-0.5 cursor-pointer"
           >
             ✕
           </button>
@@ -732,14 +732,14 @@ export default function AdminUsersPage() {
       )}
 
       {/* Header & Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black text-white tracking-tight">Trader Management & Point Control</h1>
-            <Badge variant="purple" className="text-[10px]">FULL ADMIN ACCESS</Badge>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Trader Management &amp; Point Control</h1>
+            <Badge variant="success" className="text-[10px]">FULL ADMIN ACCESS</Badge>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Complete CRUD operations: Add or edit traders, adjust & deduct reward points directly, reset passwords, and inspect activity.
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+            Complete CRUD operations: Add or edit traders, adjust &amp; deduct reward points directly, reset passwords, and inspect activity.
           </p>
         </div>
 
@@ -749,9 +749,8 @@ export default function AdminUsersPage() {
             variant="outline"
             onClick={fetchUsers}
             disabled={loading}
-            className="text-xs"
           >
-            <RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
 
@@ -759,16 +758,15 @@ export default function AdminUsersPage() {
             size="sm"
             variant="primary"
             onClick={handleOpenCreateUser}
-            className="text-xs shadow-sm bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 border-none font-bold"
           >
-            <UserPlus className="h-4 w-4 mr-1.5" />
+            <UserPlus className="h-4 w-4" />
             Add New Trader
           </Button>
         </div>
       </div>
 
       {/* Filters and Search Bar */}
-      <Card className="p-4 bg-slate-900/80 border-slate-800 space-y-3">
+      <Card className="p-4 space-y-3">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Search Input */}
           <div className="relative flex-1 max-w-md">
@@ -778,23 +776,23 @@ export default function AdminUsersPage() {
               placeholder="Search by name, email, country, phone, ID..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 pl-9 pr-3.5 py-2 text-xs text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none transition-colors"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-9 pr-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-emerald-500 focus:outline-none transition-colors"
             />
           </div>
 
           {/* Status & Role Chips */}
           <div className="flex items-center gap-2 flex-wrap">
             {/* Status Selector */}
-            <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
               <span className="text-[11px] text-slate-500 font-semibold px-2">Status:</span>
               {['ALL', 'ACTIVE', 'SUSPENDED'].map((st) => (
                 <button
                   key={st}
                   onClick={() => setStatusFilter(st)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     statusFilter === st
                       ? 'bg-emerald-600 text-white shadow-xs'
-                      : 'text-slate-400 hover:text-white'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   {st}
@@ -806,7 +804,7 @@ export default function AdminUsersPage() {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-300 focus:border-emerald-500 focus:outline-none"
+              className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 font-semibold focus:border-emerald-500 focus:outline-none"
             >
               <option value="ALL">All Roles</option>
               <option value="USER">User</option>
@@ -818,77 +816,75 @@ export default function AdminUsersPage() {
         </div>
 
         {/* Quick Stats Strip */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-800/60 text-xs">
-          <div className="flex items-center gap-2 text-slate-400">
-            <Users className="h-3.5 w-3.5 text-emerald-400" />
-            <span>Total Traders: <strong className="text-white font-mono">{users.length}</strong></span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-200 dark:border-slate-800/60 text-xs">
+          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+            <Users className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span>Total Traders: <strong className="text-slate-900 dark:text-white font-mono">{users.length}</strong></span>
           </div>
-          <div className="flex items-center gap-2 text-slate-400">
-            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-            <span>Active: <strong className="text-emerald-400 font-mono">{users.filter((u) => u.status === 'ACTIVE').length}</strong></span>
+          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span>Active: <strong className="text-emerald-600 dark:text-emerald-400 font-mono">{users.filter((u) => u.status === 'ACTIVE').length}</strong></span>
           </div>
-          <div className="flex items-center gap-2 text-slate-400">
-            <Coins className="h-3.5 w-3.5 text-amber-400" />
-            <span>Total Points In Circulation: <strong className="text-white font-mono">{users.reduce((acc, u) => acc + (u.availablePoints || 0), 0).toLocaleString()}</strong></span>
+          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+            <Coins className="h-3.5 w-3.5 text-amber-500" />
+            <span>Total Points In Circulation: <strong className="text-slate-900 dark:text-white font-mono">{users.reduce((acc, u) => acc + (u.availablePoints || 0), 0).toLocaleString()}</strong></span>
           </div>
-          <div className="flex items-center gap-2 text-slate-400">
-            <ShoppingBag className="h-3.5 w-3.5 text-purple-400" />
-            <span>Total Purchases Tracked: <strong className="text-white font-mono">{users.reduce((acc, u) => acc + (u._count?.submissions || 0), 0)}</strong></span>
+          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+            <ShoppingBag className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+            <span>Total Purchases Tracked: <strong className="text-slate-900 dark:text-white font-mono">{users.reduce((acc, u) => acc + (u._count?.submissions || 0), 0)}</strong></span>
           </div>
         </div>
       </Card>
 
       {/* Users Table Card */}
-      <Card className="p-0 overflow-hidden border-slate-800 bg-slate-900/60 shadow-xl">
+      <Card className="p-0 overflow-hidden">
         {loading ? (
           <div className="p-16 text-center space-y-2">
-            <RefreshCw className="h-6 w-6 text-emerald-400 animate-spin mx-auto" />
-            <div className="text-xs text-slate-400">Loading traders...</div>
+            <RefreshCw className="h-6 w-6 text-emerald-600 dark:text-emerald-400 animate-spin mx-auto" />
+            <div className="text-xs text-slate-500 dark:text-slate-400">Loading traders...</div>
           </div>
         ) : filteredUsers.length === 0 ? (
           <div className="p-16 text-center space-y-2">
-            <Users className="h-8 w-8 text-slate-600 mx-auto" />
-            <div className="text-sm font-semibold text-white">No traders found</div>
-            <p className="text-xs text-slate-400">Try adjusting your search criteria or create a new trader.</p>
+            <Users className="h-8 w-8 text-slate-400 mx-auto" />
+            <div className="text-sm font-semibold text-slate-900 dark:text-white">No traders found</div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Try adjusting your search criteria or create a new trader.</p>
             <Button size="sm" variant="primary" onClick={handleOpenCreateUser} className="mt-3 text-xs">
-              <UserPlus className="h-3.5 w-3.5 mr-1.5" />
+              <UserPlus className="h-3.5 w-3.5" />
               Add First Trader
             </Button>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-950/90 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
+            <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-950/90 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="px-5 py-3.5">Trader Information</th>
-                  <th className="px-5 py-3.5">Role & Country</th>
+                  <th className="px-5 py-3.5">Role &amp; Country</th>
                   <th className="px-5 py-3.5">Points Balance</th>
                   <th className="px-5 py-3.5">Activity</th>
                   <th className="px-5 py-3.5">Status</th>
                   <th className="px-5 py-3.5 text-right">Actions (Full CRUD)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/80">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
                 {filteredUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-slate-800/40 transition-colors group">
+                  <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group">
                     {/* Trader Info */}
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs shrink-0">
+                        <div className="h-9 w-9 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold text-xs shrink-0">
                           {u.name.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
-                          <div className="font-bold text-white flex items-center gap-1.5">
+                          <div className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                             <span>{u.name}</span>
                             {u.role === 'ADMIN' && (
-                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-sm bg-purple-500/20 text-purple-400 border border-purple-500/30">
-                                ADMIN
-                              </span>
+                              <Badge variant="purple" className="text-[9px] px-1.5 py-0">ADMIN</Badge>
                             )}
                           </div>
-                          <div className="text-[11px] text-slate-400 font-mono flex items-center gap-2 mt-0.5">
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono flex items-center gap-2 mt-0.5">
                             <span>{u.email}</span>
-                            {u.phone && <span className="text-slate-500">• {u.phone}</span>}
+                            {u.phone && <span>• {u.phone}</span>}
                           </div>
                         </div>
                       </div>
@@ -896,11 +892,11 @@ export default function AdminUsersPage() {
 
                     {/* Role & Country */}
                     <td className="px-5 py-3.5">
-                      <div className="text-xs text-slate-200 font-medium flex items-center gap-1.5">
-                        <Globe className="h-3 w-3 text-slate-500 shrink-0" />
+                      <div className="text-xs text-slate-900 dark:text-slate-200 font-semibold flex items-center gap-1.5">
+                        <Globe className="h-3 w-3 text-slate-400 shrink-0" />
                         <span>{u.country || 'Global'}</span>
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">
+                      <div className="text-[11px] text-slate-500 mt-0.5">
                         Joined {formatDate(u.createdAt)}
                       </div>
                     </td>
@@ -908,21 +904,21 @@ export default function AdminUsersPage() {
                     {/* Points Balance with Quick +/- chips */}
                     <td className="px-5 py-3.5 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold font-mono text-sm text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-lg border border-emerald-500/20">
+                        <span className="font-bold font-mono text-sm text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-0.5 rounded-lg border border-emerald-200 dark:border-emerald-500/20">
                           {u.availablePoints.toLocaleString()} PTS
                         </span>
                         <div className="flex items-center gap-1">
                           <button
                             title="Quick Add Points"
                             onClick={() => handleOpenAdjust(u, 'ADD')}
-                            className="h-6 w-6 rounded-md bg-emerald-500/20 hover:bg-emerald-500 text-emerald-400 hover:text-white flex items-center justify-center transition-colors text-xs font-bold"
+                            className="h-6 w-6 rounded-md bg-emerald-100 hover:bg-emerald-600 dark:bg-emerald-500/20 dark:hover:bg-emerald-500 text-emerald-700 dark:text-emerald-400 hover:text-white flex items-center justify-center transition-colors text-xs font-bold cursor-pointer"
                           >
                             +
                           </button>
                           <button
                             title="Quick Deduct Points"
                             onClick={() => handleOpenAdjust(u, 'DEDUCT')}
-                            className="h-6 w-6 rounded-md bg-rose-500/20 hover:bg-rose-500 text-rose-400 hover:text-white flex items-center justify-center transition-colors text-xs font-bold"
+                            className="h-6 w-6 rounded-md bg-rose-100 hover:bg-rose-600 dark:bg-rose-500/20 dark:hover:bg-rose-500 text-rose-700 dark:text-rose-400 hover:text-white flex items-center justify-center transition-colors text-xs font-bold cursor-pointer"
                           >
                             -
                           </button>
@@ -932,11 +928,11 @@ export default function AdminUsersPage() {
 
                     {/* Activity */}
                     <td className="px-5 py-3.5 whitespace-nowrap">
-                      <div className="text-slate-300 text-xs">
-                        <span className="font-bold text-white">{u._count?.submissions || 0}</span> purchases
+                      <div className="text-slate-600 dark:text-slate-300 text-xs">
+                        <span className="font-bold text-slate-900 dark:text-white">{u._count?.submissions || 0}</span> purchases
                       </div>
-                      <div className="text-slate-400 text-[11px]">
-                        <span className="font-bold text-white">{u._count?.redemptions || 0}</span> redemptions
+                      <div className="text-slate-500 dark:text-slate-400 text-[11px]">
+                        <span className="font-bold text-slate-900 dark:text-white">{u._count?.redemptions || 0}</span> redemptions
                       </div>
                     </td>
 
@@ -950,53 +946,48 @@ export default function AdminUsersPage() {
                     {/* Actions (CRUD) */}
                     <td className="px-5 py-3.5 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1.5">
-                        {/* Adjust Points Button */}
                         <Button
                           size="sm"
-                          variant="secondary"
+                          variant="outline"
                           onClick={() => handleOpenAdjust(u, 'ADD')}
-                          className="text-xs h-7 px-2.5 bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500 hover:text-white"
+                          className="text-xs h-7 px-2.5 text-emerald-700 dark:text-emerald-400"
                           title="Add or Deduct Points"
                         >
-                          <Coins className="h-3 w-3 mr-1" />
+                          <Coins className="h-3 w-3" />
                           Points
                         </Button>
 
-                        {/* Edit User Button */}
                         <Button
                           size="sm"
-                          variant="secondary"
+                          variant="outline"
                           onClick={() => handleOpenEditUser(u)}
-                          className="text-xs h-7 px-2.5 text-slate-300 hover:text-white"
+                          className="text-xs h-7 px-2.5"
                           title="Edit Trader Details"
                         >
-                          <Edit2 className="h-3 w-3 mr-1 text-slate-400" />
+                          <Edit2 className="h-3 w-3" />
                           Edit
                         </Button>
 
-                        {/* Reset Password Button */}
                         <Button
                           size="sm"
-                          variant="secondary"
+                          variant="outline"
                           onClick={() => handleOpenResetPassword(u)}
-                          className="text-xs h-7 px-2 text-slate-300 hover:text-white"
+                          className="text-xs h-7 px-2"
                           title="Reset Password"
                         >
-                          <KeyRound className="h-3 w-3 text-amber-400" />
+                          <KeyRound className="h-3 w-3 text-amber-500" />
                         </Button>
 
-                        {/* Inspect Dossier Button */}
                         <Button
                           size="sm"
-                          variant="secondary"
+                          variant="outline"
                           onClick={() => setInspectUser(u)}
-                          className="text-xs h-7 px-2 text-slate-300 hover:text-white"
+                          className="text-xs h-7 px-2"
                           title="Inspect Trader Dossier"
                         >
-                          <Eye className="h-3 w-3 text-sky-400" />
+                          <Eye className="h-3 w-3 text-sky-500" />
                         </Button>
 
-                        {/* Suspend / Activate Toggle */}
                         {u.role !== 'ADMIN' && (
                           <Button
                             size="sm"
@@ -1012,13 +1003,12 @@ export default function AdminUsersPage() {
                           </Button>
                         )}
 
-                        {/* Delete User */}
                         {u.role !== 'ADMIN' && (
                           <Button
                             size="sm"
                             variant="danger"
                             onClick={() => handleOpenDelete(u)}
-                            className="text-xs h-7 px-2 bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white border-rose-500/20"
+                            className="text-xs h-7 px-2"
                             title="Delete Trader Account"
                           >
                             <Trash2 className="h-3 w-3" />
@@ -1053,18 +1043,18 @@ export default function AdminUsersPage() {
             )}
 
             {/* Current Dossier Strip */}
-            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1.5">
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs space-y-1.5">
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Target Trader:</span>
-                <strong className="text-white font-medium">{adjustingUser.name}</strong>
+                <span className="text-slate-500 dark:text-slate-400">Target Trader:</span>
+                <strong className="text-slate-900 dark:text-white font-semibold">{adjustingUser.name}</strong>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Email:</span>
-                <span className="text-slate-300 font-mono">{adjustingUser.email}</span>
+                <span className="text-slate-500 dark:text-slate-400">Email:</span>
+                <span className="text-slate-700 dark:text-slate-300 font-mono">{adjustingUser.email}</span>
               </div>
-              <div className="flex justify-between items-center pt-1 border-t border-slate-800">
-                <span className="text-slate-400">Current Balance:</span>
-                <span className="text-emerald-400 font-bold font-mono text-sm">
+              <div className="flex justify-between items-center pt-1 border-t border-slate-200 dark:border-slate-800">
+                <span className="text-slate-500 dark:text-slate-400">Current Balance:</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-sm">
                   {adjustingUser.availablePoints.toLocaleString()} PTS
                 </span>
               </div>
@@ -1080,8 +1070,8 @@ export default function AdminUsersPage() {
                 }}
                 className={`py-2 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 ${
                   adjustType === 'ADD'
-                    ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400 shadow-xs'
-                    : 'border-slate-800 text-slate-400 bg-slate-900 hover:text-white'
+                    ? 'bg-emerald-500/15 border-emerald-500 text-emerald-700 dark:text-emerald-400 shadow-xs'
+                    : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <PlusCircle className="h-4 w-4" />
@@ -1095,8 +1085,8 @@ export default function AdminUsersPage() {
                 }}
                 className={`py-2 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 ${
                   adjustType === 'DEDUCT'
-                    ? 'bg-rose-500/15 border-rose-500 text-rose-400 shadow-xs'
-                    : 'border-slate-800 text-slate-400 bg-slate-900 hover:text-white'
+                    ? 'bg-rose-500/15 border-rose-500 text-rose-700 dark:text-rose-400 shadow-xs'
+                    : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <MinusCircle className="h-4 w-4" />
@@ -1106,7 +1096,7 @@ export default function AdminUsersPage() {
 
             {/* Quick Amount Chips */}
             <div>
-              <label className="text-[11px] font-semibold text-slate-400 block mb-1.5">
+              <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1.5">
                 Quick Presets
               </label>
               <div className="flex items-center gap-1.5 flex-wrap">
@@ -1118,7 +1108,7 @@ export default function AdminUsersPage() {
                     className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold border transition-colors ${
                       Number(adjustPoints) === amt
                         ? 'bg-emerald-600 border-emerald-500 text-white'
-                        : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700'
+                        : 'bg-slate-100 dark:bg-slate-950 border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400 dark:hover:border-slate-700'
                     }`}
                   >
                     {adjustType === 'ADD' ? `+${amt.toLocaleString()}` : `-${amt.toLocaleString()}`}
@@ -1129,7 +1119,7 @@ export default function AdminUsersPage() {
 
             {/* Custom Points Input */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 Points Amount to {adjustType === 'ADD' ? 'Add' : 'Deduct'} *
               </label>
               <input
@@ -1139,15 +1129,15 @@ export default function AdminUsersPage() {
                 placeholder="e.g. 2500"
                 value={adjustPoints}
                 onChange={(e) => setAdjustPoints(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             {/* New Projected Balance */}
             {Number(adjustPoints) > 0 && (
-              <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 flex items-center justify-between text-xs">
-                <span className="text-slate-400">Projected New Balance:</span>
-                <span className="font-mono font-bold text-white">
+              <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
+                <span className="text-slate-600 dark:text-slate-400">Projected New Balance:</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white">
                   {adjustType === 'ADD'
                     ? (adjustingUser.availablePoints + Number(adjustPoints)).toLocaleString()
                     : (adjustingUser.availablePoints - Number(adjustPoints)).toLocaleString()}{' '}
@@ -1158,7 +1148,7 @@ export default function AdminUsersPage() {
 
             {/* Mandatory Reason */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 Reason (Mandatory Audit Log Note) *
               </label>
               <input
@@ -1167,24 +1157,24 @@ export default function AdminUsersPage() {
                 placeholder="e.g. Challenge proof manual override / Special community bonus"
                 value={adjustReason}
                 onChange={(e) => setAdjustReason(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             {/* Description on Ledger */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 Public Ledger Description (Visible to Trader)
               </label>
               <input
                 type="text"
                 value={adjustDescription}
                 onChange={(e) => setAdjustDescription(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
               <Button
                 variant="ghost"
                 size="sm"
@@ -1218,7 +1208,7 @@ export default function AdminUsersPage() {
       >
         <form onSubmit={handleConfirmCreateUser} className="space-y-4">
           {createError && (
-            <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs text-rose-400 flex items-center gap-2">
+            <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs text-rose-600 dark:text-rose-400 flex items-center gap-2">
               <AlertCircle className="h-4 w-4 shrink-0" />
               <span>{createError}</span>
             </div>
@@ -1226,33 +1216,33 @@ export default function AdminUsersPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Full Name *</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Full Name *</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. John Doe"
                 value={createForm.name}
                 onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Email Address *</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Email Address *</label>
               <input
                 type="email"
                 required
                 placeholder="trader@domain.com"
                 value={createForm.email}
                 onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="space-y-1">
             <div className="flex justify-between items-center">
-              <label className="text-xs font-semibold text-slate-300">Temporary Password *</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Temporary Password *</label>
               <button
                 type="button"
                 onClick={() => {
@@ -1261,7 +1251,7 @@ export default function AdminUsersPage() {
                   for (let i = 0; i < 10; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
                   setCreateForm({ ...createForm, password: pass });
                 }}
-                className="text-[11px] text-emerald-400 hover:underline"
+                className="text-[11px] text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
               >
                 Auto-generate
               </button>
@@ -1273,41 +1263,41 @@ export default function AdminUsersPage() {
               placeholder="Minimum 6 characters"
               value={createForm.password}
               onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white font-mono focus:border-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white font-mono focus:border-emerald-500 focus:outline-none"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Phone Number (optional)</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Phone Number (optional)</label>
               <input
                 type="text"
                 placeholder="+1 555 123 4567"
                 value={createForm.phone}
                 onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Country (optional)</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Country (optional)</label>
               <input
                 type="text"
                 placeholder="United States / India / UK"
                 value={createForm.country}
                 onChange={(e) => setCreateForm({ ...createForm, country: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">System Role</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">System Role</label>
               <select
                 value={createForm.role}
                 onChange={(e) => setCreateForm({ ...createForm, role: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               >
                 <option value="USER">User (Trader)</option>
                 <option value="REVIEWER">Reviewer</option>
@@ -1317,11 +1307,11 @@ export default function AdminUsersPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Initial Status</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Initial Status</label>
               <select
                 value={createForm.status}
                 onChange={(e) => setCreateForm({ ...createForm, status: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               >
                 <option value="ACTIVE">ACTIVE</option>
                 <option value="SUSPENDED">SUSPENDED</option>
@@ -1329,29 +1319,29 @@ export default function AdminUsersPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Starting Points</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Starting Points</label>
               <input
                 type="number"
                 min={0}
                 placeholder="1000"
                 value={createForm.initialPoints}
                 onChange={(e) => setCreateForm({ ...createForm, initialPoints: e.target.value })}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-300">Internal Audit Note</label>
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Internal Audit Note</label>
             <input
               type="text"
               value={createForm.notes}
               onChange={(e) => setCreateForm({ ...createForm, notes: e.target.value })}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
             <Button
               type="button"
               variant="ghost"
@@ -1380,7 +1370,7 @@ export default function AdminUsersPage() {
         {editingUser && (
           <form onSubmit={handleConfirmEditUser} className="space-y-4">
             {editError && (
-              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs text-rose-400 flex items-center gap-2">
+              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs text-rose-600 dark:text-rose-400 flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 shrink-0" />
                 <span>{editError}</span>
               </div>
@@ -1388,57 +1378,57 @@ export default function AdminUsersPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Trader Name *</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Trader Name *</label>
                 <input
                   type="text"
                   required
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Email Address *</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Email Address *</label>
                 <input
                   type="email"
                   required
                   value={editForm.email}
                   onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Phone</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Phone</label>
                 <input
                   type="text"
                   value={editForm.phone}
                   onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Country</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Country</label>
                 <input
                   type="text"
                   value={editForm.country}
                   onChange={(e) => setEditForm({ ...editForm, country: e.target.value })}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Role</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Role</label>
                 <select
                   value={editForm.role}
                   onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
                 >
                   <option value="USER">USER</option>
                   <option value="ADMIN">ADMIN</option>
@@ -1448,11 +1438,11 @@ export default function AdminUsersPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Account Status</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Account Status</label>
                 <select
                   value={editForm.status}
                   onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
                 >
                   <option value="ACTIVE">ACTIVE</option>
                   <option value="SUSPENDED">SUSPENDED</option>
@@ -1460,11 +1450,11 @@ export default function AdminUsersPage() {
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400">
-              User ID: <span className="font-mono text-slate-200">{editingUser.id}</span>
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
+              User ID: <span className="font-mono text-slate-900 dark:text-slate-200">{editingUser.id}</span>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
               <Button
                 type="button"
                 variant="ghost"
@@ -1494,7 +1484,7 @@ export default function AdminUsersPage() {
         {passwordUser && (
           <div className="space-y-4">
             {passwordError && (
-              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs text-rose-400 flex items-center gap-2">
+              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs text-rose-600 dark:text-rose-400 flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 shrink-0" />
                 <span>{passwordError}</span>
               </div>
@@ -1502,11 +1492,11 @@ export default function AdminUsersPage() {
 
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
-                <label className="text-xs font-semibold text-slate-300">New Password *</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">New Password *</label>
                 <button
                   type="button"
                   onClick={generateRandomPassword}
-                  className="text-[11px] text-emerald-400 hover:underline flex items-center gap-1"
+                  className="text-[11px] text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-medium"
                 >
                   <Sparkles className="h-3 w-3" />
                   Generate Strong Password
@@ -1519,7 +1509,7 @@ export default function AdminUsersPage() {
                   placeholder="Enter new password (min 6 chars)..."
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-white font-mono focus:border-emerald-500 focus:outline-none pr-20"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2 text-xs text-slate-900 dark:text-white font-mono focus:border-emerald-500 focus:outline-none pr-20"
                 />
                 {newPassword && (
                   <button
@@ -1529,9 +1519,9 @@ export default function AdminUsersPage() {
                       setPasswordCopied(true);
                       setTimeout(() => setPasswordCopied(false), 2000);
                     }}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 flex items-center gap-1 font-sans"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-[10px] text-slate-700 dark:text-slate-300 flex items-center gap-1 font-sans"
                   >
-                    {passwordCopied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
+                    {passwordCopied ? <Check className="h-3 w-3 text-emerald-600 dark:text-emerald-400" /> : <Copy className="h-3 w-3" />}
                     <span>{passwordCopied ? 'Copied' : 'Copy'}</span>
                   </button>
                 )}
@@ -1539,17 +1529,17 @@ export default function AdminUsersPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Reason for Reset</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Reason for Reset</label>
               <input
                 type="text"
                 value={passwordReason}
                 onChange={(e) => setPasswordReason(e.target.value)}
                 placeholder="e.g. Trader locked out of account / forgot password"
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
               <Button
                 variant="ghost"
                 size="sm"
@@ -1583,27 +1573,27 @@ export default function AdminUsersPage() {
       >
         {deletingUser && (
           <div className="space-y-4">
-            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs space-y-1">
-              <div className="font-bold text-rose-400">Warning: Irreversible Action</div>
+            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs space-y-1">
+              <div className="font-bold text-rose-600 dark:text-rose-400">Warning: Irreversible Action</div>
               <p>
                 Deleting <strong>{deletingUser.name}</strong> ({deletingUser.email}) will remove their points balance ({deletingUser.availablePoints.toLocaleString()} PTS), submission history, and redemption orders.
               </p>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">
-                Type <strong className="text-rose-400 font-mono">DELETE</strong> to confirm:
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                Type <strong className="text-rose-600 dark:text-rose-400 font-mono">DELETE</strong> to confirm:
               </label>
               <input
                 type="text"
                 placeholder="DELETE"
                 value={deleteConfirmText}
                 onChange={(e) => setDeleteConfirmText(e.target.value)}
-                className="w-full rounded-xl border border-rose-500/50 bg-slate-950 px-3.5 py-2 text-xs text-white font-mono focus:border-rose-400 focus:outline-none"
+                className="w-full rounded-xl border border-rose-500/50 bg-white dark:bg-slate-950 px-3.5 py-2 text-xs text-slate-900 dark:text-white font-mono focus:border-rose-400 focus:outline-none"
               />
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
               <Button variant="ghost" size="sm" onClick={() => setDeletingUser(null)} disabled={isDeleting}>
                 Cancel
               </Button>
@@ -1633,7 +1623,7 @@ export default function AdminUsersPage() {
       >
         <div className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-300">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
               Reason for Status Change * (Mandatory)
             </label>
             <textarea
@@ -1642,11 +1632,11 @@ export default function AdminUsersPage() {
               placeholder="e.g. Repeated duplicate submission attempts or customer request."
               value={statusReason}
               onChange={(e) => setStatusReason(e.target.value)}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
             <Button variant="ghost" size="sm" onClick={() => setStatusChangeUser(null)}>
               Cancel
             </Button>
@@ -1675,53 +1665,53 @@ export default function AdminUsersPage() {
           <div className="space-y-5">
             {/* Quick Metrics */}
             <div className="grid grid-cols-3 gap-2.5">
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-center">
-                <div className="text-[11px] text-slate-400">Available Points</div>
-                <div className="text-base font-bold font-mono text-emerald-400 mt-0.5">
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-center">
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">Available Points</div>
+                <div className="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-0.5">
                   {inspectUser.availablePoints.toLocaleString()} PTS
                 </div>
               </div>
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-center">
-                <div className="text-[11px] text-slate-400">Purchases Logged</div>
-                <div className="text-base font-bold font-mono text-white mt-0.5">
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-center">
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">Purchases Logged</div>
+                <div className="text-base font-bold font-mono text-slate-900 dark:text-white mt-0.5">
                   {inspectUser._count?.submissions || 0}
                 </div>
               </div>
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-center">
-                <div className="text-[11px] text-slate-400">Redemptions</div>
-                <div className="text-base font-bold font-mono text-white mt-0.5">
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-center">
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">Redemptions</div>
+                <div className="text-base font-bold font-mono text-slate-900 dark:text-white mt-0.5">
                   {inspectUser._count?.redemptions || 0}
                 </div>
               </div>
             </div>
 
             {/* Profile Overview */}
-            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2 text-xs">
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-400">Email:</span>
-                <span className="text-white font-mono">{inspectUser.email}</span>
+                <span className="text-slate-500 dark:text-slate-400">Email:</span>
+                <span className="text-slate-900 dark:text-white font-mono">{inspectUser.email}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Phone:</span>
-                <span className="text-slate-200">{inspectUser.phone || 'N/A'}</span>
+                <span className="text-slate-500 dark:text-slate-400">Phone:</span>
+                <span className="text-slate-800 dark:text-slate-200">{inspectUser.phone || 'N/A'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Country:</span>
-                <span className="text-slate-200">{inspectUser.country || 'Global'}</span>
+                <span className="text-slate-500 dark:text-slate-400">Country:</span>
+                <span className="text-slate-800 dark:text-slate-200">{inspectUser.country || 'Global'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Role:</span>
+                <span className="text-slate-500 dark:text-slate-400">Role:</span>
                 <Badge variant={inspectUser.role === 'ADMIN' ? 'purple' : 'default'}>{inspectUser.role}</Badge>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Account Status:</span>
+                <span className="text-slate-500 dark:text-slate-400">Account Status:</span>
                 <Badge variant={inspectUser.status === 'ACTIVE' ? 'success' : 'danger'}>{inspectUser.status}</Badge>
               </div>
             </div>
 
             {/* Points Ledger Activity */}
             <div className="space-y-2">
-              <div className="text-xs font-bold text-slate-200 flex items-center justify-between">
+              <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
                 <span>Recent Points Ledger Entries</span>
                 <span className="text-[11px] text-slate-500 font-mono">Last transactions</span>
               </div>
@@ -1731,11 +1721,11 @@ export default function AdminUsersPage() {
                   {inspectUser.ledgerHistory.map((tx) => (
                     <div
                       key={tx.id}
-                      className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80 flex items-center justify-between text-xs"
+                      className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs"
                     >
                       <div className="space-y-0.5">
-                        <div className="font-semibold text-white">{tx.description}</div>
-                        <div className="text-[10px] text-slate-400 flex items-center gap-2">
+                        <div className="font-semibold text-slate-900 dark:text-white">{tx.description}</div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-2">
                           <span>{formatDate(tx.createdAt)}</span>
                           {tx.reason && <span className="text-slate-500">• {tx.reason}</span>}
                         </div>
@@ -1743,7 +1733,7 @@ export default function AdminUsersPage() {
                       <div className="text-right">
                         <div
                           className={`font-bold font-mono ${
-                            tx.points > 0 ? 'text-emerald-400' : 'text-rose-400'
+                            tx.points > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                           }`}
                         >
                           {tx.points > 0 ? `+${tx.points.toLocaleString()}` : tx.points.toLocaleString()} PTS
@@ -1756,14 +1746,14 @@ export default function AdminUsersPage() {
                   ))}
                 </div>
               ) : (
-                <div className="p-6 text-center text-xs text-slate-500 rounded-xl bg-slate-950 border border-slate-800">
+                <div className="p-6 text-center text-xs text-slate-500 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
                   No point adjustments logged yet.
                 </div>
               )}
             </div>
 
             {/* Quick Action Buttons inside modal */}
-            <div className="flex justify-between items-center pt-3 border-t border-slate-800">
+            <div className="flex justify-between items-center pt-3 border-t border-slate-200 dark:border-slate-800">
               <div className="flex gap-2">
                 <Button
                   size="sm"
@@ -1775,7 +1765,7 @@ export default function AdminUsersPage() {
                   }}
                   className="text-xs"
                 >
-                  <Coins className="h-3 w-3 mr-1 text-emerald-400" />
+                  <Coins className="h-3 w-3 mr-1 text-emerald-600 dark:text-emerald-400" />
                   Add / Deduct Points
                 </Button>
                 <Button

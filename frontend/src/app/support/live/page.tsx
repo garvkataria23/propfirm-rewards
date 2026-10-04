@@ -17,11 +17,8 @@ import {
   markTicketMessagesAsSeen,
   uploadChatAttachment,
   triggerDesktopChatNotification,
-  onSnapshot,
-  collection,
-  query,
-  where,
-  orderBy,
+  subscribeToAllTicketsLive,
+  subscribeToTicketMessagesLive,
   type LiveChatTicket,
   type LiveChatMessage,
   type ChatAttachment,
@@ -144,40 +141,40 @@ export default function LiveSupportPage() {
     'I have an issue with my Funding Pips account ID',
   ];
 
-  // Subscribe to user's tickets in real-time
+  // Subscribe to user's tickets in real-time (Fail-Safe)
   useEffect(() => {
-    if (!activeChatUser?.id) return;
+    const identity =
+      activeChatUser ||
+      (() => {
+        const g = getOrCreateGuestVisitor();
+        return {
+          id: g.id,
+          name: g.name,
+          email: g.email,
+          avatarUrl: '',
+          country: 'Website Visitor',
+        };
+      })();
 
     let unsubTickets: (() => void) | null = null;
 
     getOrCreateActiveUserTicket({
-      id: activeChatUser.id,
-      name: activeChatUser.name,
-      email: activeChatUser.email,
-      avatarUrl: activeChatUser.avatarUrl,
-      country: activeChatUser.country,
+      id: identity.id,
+      name: identity.name,
+      email: identity.email,
+      avatarUrl: identity.avatarUrl,
+      country: identity.country,
     }).then((defaultTicket) => {
       setActiveTicketId((prev) => prev || defaultTicket.id);
+      setWsConnected(true);
 
-      const q = query(collection(db, 'supportTickets'), where('userId', '==', activeChatUser.id));
-      unsubTickets = onSnapshot(
-        q,
-        (snap) => {
-          setWsConnected(true);
-          const list: LiveChatTicket[] = [];
-          snap.forEach((d) => {
-            list.push({ id: d.id, ...(d.data() as Omit<LiveChatTicket, 'id'>) });
-          });
-          list.sort((a, b) => (b.lastMessageAt || '').localeCompare(a.lastMessageAt || ''));
-          setTickets(list);
-          if (!activeTicketId && list.length > 0) {
-            setActiveTicketId(list[0].id);
-          }
-        },
-        () => {
-          setWsConnected(false);
+      unsubTickets = subscribeToAllTicketsLive((list) => {
+        setWsConnected(true);
+        setTickets(list);
+        if (!activeTicketId && list.length > 0) {
+          setActiveTicketId(list[0].id);
         }
-      );
+      }, identity.id);
     });
 
     return () => {
@@ -185,7 +182,7 @@ export default function LiveSupportPage() {
     };
   }, [activeChatUser?.id]);
 
-  // Subscribe to active ticket's messages in real-time
+  // Subscribe to active ticket's messages in real-time (Fail-Safe)
   useEffect(() => {
     if (!activeTicketId) {
       setMessages([]);
@@ -193,36 +190,27 @@ export default function LiveSupportPage() {
       return;
     }
 
-    const q = query(
-      collection(db, 'supportTickets', activeTicketId, 'messages'),
-      orderBy('createdAt', 'asc')
+    const unsub = subscribeToTicketMessagesLive(
+      activeTicketId,
+      (list) => {
+        if (initializedMsgsRef.current && list.length > prevMsgCountRef.current) {
+          const newest = list[list.length - 1];
+          if (newest && newest.senderRole !== 'USER' && newest.senderRole !== 'SYSTEM') {
+            triggerDesktopChatNotification(
+              `New reply from ${newest.senderName || 'Support Specialist'}`,
+              newest.message || '📎 Sent an attachment'
+            );
+          }
+        }
+
+        prevMsgCountRef.current = list.length;
+        initializedMsgsRef.current = true;
+        setMessages(list);
+        markTicketMessagesAsSeen(activeTicketId, 'USER');
+        scrollToBottom();
+      },
+      false
     );
-
-    const unsub = onSnapshot(q, (snap) => {
-      const list: LiveChatMessage[] = [];
-      snap.forEach((d) => {
-        const data = d.data() as LiveChatMessage;
-        if (!data.isInternalNote) {
-          list.push({ ...data, id: d.id });
-        }
-      });
-
-      if (initializedMsgsRef.current && list.length > prevMsgCountRef.current) {
-        const newest = list[list.length - 1];
-        if (newest && newest.senderRole !== 'USER' && newest.senderRole !== 'SYSTEM') {
-          triggerDesktopChatNotification(
-            `New reply from ${newest.senderName || 'Support Specialist'}`,
-            newest.message || '📎 Sent an attachment'
-          );
-        }
-      }
-
-      prevMsgCountRef.current = list.length;
-      initializedMsgsRef.current = true;
-      setMessages(list);
-      markTicketMessagesAsSeen(activeTicketId, 'USER');
-      scrollToBottom();
-    });
 
     return () => unsub();
   }, [activeTicketId]);

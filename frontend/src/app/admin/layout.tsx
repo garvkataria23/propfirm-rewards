@@ -129,11 +129,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const roleStyle = ROLE_STYLES[user?.role] || 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-white dark:bg-[#070e20] text-slate-800 dark:text-slate-200 select-none">
+    <div className="flex flex-col h-full bg-white dark:bg-[#070e20] text-slate-800 dark:text-slate-200 select-none overflow-y-auto">
       {/* Brand Header */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 dark:border-[#14234b]/60 shrink-0">
+      <div className="h-14 flex items-center justify-between px-4 border-b border-slate-200 dark:border-[#14234b]/60 shrink-0">
         <Link href="/admin" className="flex items-center gap-2.5 group" onClick={() => setSidebarOpen(false)}>
-          <div className="relative h-9 w-9 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-sm flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 transition-all">
+          <div className="relative h-8 w-8 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-sm flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 transition-all">
             <img
               src="/pn-logo-hd.png?v=3"
               alt="Prop Nation"
@@ -145,87 +145,93 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <span className="text-slate-900 dark:text-white">PROP</span>
               <span className="text-emerald-600 dark:text-emerald-400 ml-1">ADMIN</span>
             </div>
-            <div className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              Control Center
+            <div className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Staff Control Center
             </div>
           </div>
         </Link>
         <ThemeToggle />
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {navLinks.map((link) => {
-          const Icon = link.icon;
-          const isActive = pathname === link.href;
-          return (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setSidebarOpen(false)}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group ${
-                isActive
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30 font-bold'
-                  : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-[#0c1938]/70 border border-transparent'
-              }`}
-            >
-              <div className="flex items-center gap-2.5">
-                <Icon
-                  className={`h-4 w-4 shrink-0 ${
-                    isActive
-                      ? 'text-emerald-600 dark:text-emerald-400'
-                      : 'text-slate-400 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200'
-                  }`}
-                />
-                <span>{link.label}</span>
+      {/* Navigation + Profile directly underneath (no huge empty gap) */}
+      <div className="px-3 py-2.5 space-y-2.5">
+        <nav className="space-y-0.5">
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all group ${
+                  isActive
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30 font-bold'
+                    : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-[#0c1938]/70 border border-transparent'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Icon
+                    className={`h-4 w-4 shrink-0 ${
+                      isActive
+                        ? 'text-emerald-600 dark:text-emerald-400'
+                        : 'text-slate-400 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200'
+                    }`}
+                  />
+                  <span>{link.label}</span>
+                </div>
+                {link.badge && (
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                      link.badgeClass ?? 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                    }`}
+                  >
+                    {link.badge}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Profile & Actions Card directly below System Settings (Zero Blank Space) */}
+        <div className="pt-2.5 border-t border-slate-200 dark:border-[#14234b]/60 space-y-2">
+          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#0b152e] border border-slate-200/80 dark:border-slate-800/90 space-y-2">
+            <div className="flex items-center gap-2.5">
+              <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
+                {user?.name?.[0]?.toUpperCase() ?? 'A'}
               </div>
-              {link.badge && (
-                <span
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                    link.badgeClass ?? 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
-                  }`}
-                >
-                  {link.badge}
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 leading-none">
+                  Logged in as:
+                </div>
+                <div className="text-xs font-bold text-slate-900 dark:text-white truncate mt-0.5">
+                  {user?.name || 'Platform Admin'}
+                </div>
+                <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border inline-block mt-1 ${roleStyle}`}>
+                  {user?.role}
                 </span>
-              )}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Switch to Trader Portal */}
-      <div className="px-3 pb-2">
-        <Link
-          href="/dashboard"
-          onClick={() => setSidebarOpen(false)}
-          className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors"
-        >
-          <ArrowLeft className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-          <span>Back to Trader Portal</span>
-        </Link>
-      </div>
-
-      {/* User Footer */}
-      <div className="p-3.5 border-t border-slate-200 dark:border-[#14234b]/60 bg-slate-50/80 dark:bg-[#060c1d] space-y-2.5">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
-              {user?.name?.[0]?.toUpperCase() ?? 'A'}
+              </div>
             </div>
-            <div className="min-w-0">
-              <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{user?.name}</div>
-              <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border inline-block mt-0.5 ${roleStyle}`}>
-                {user?.role}
-              </span>
+
+            <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-slate-200/70 dark:border-slate-800/80">
+              <Link
+                href="/dashboard"
+                onClick={() => setSidebarOpen(false)}
+                className="flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-[11px] font-bold transition-colors"
+              >
+                <ArrowLeft className="h-3 w-3 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <span>Trader View</span>
+              </Link>
+              <button
+                onClick={logout}
+                className="flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg border border-rose-200 dark:border-rose-500/30 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 text-[11px] font-bold transition-colors cursor-pointer"
+              >
+                <LogOut className="h-3 w-3 shrink-0" />
+                <span>Sign Out</span>
+              </button>
             </div>
           </div>
-          <button
-            onClick={logout}
-            title="Sign Out"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-slate-200/60 dark:hover:text-rose-400 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
         </div>
       </div>
     </div>

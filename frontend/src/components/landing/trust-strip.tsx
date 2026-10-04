@@ -3,6 +3,7 @@
 import React from 'react';
 import { ShieldCheck, Coins, PackageCheck, Layers } from 'lucide-react';
 import { Reveal } from './motion-primitives';
+import { FloatingCandlesticks } from '@/components/trading/floating-candlesticks';
 
 /**
  * §11 · TRUST SECTION
@@ -37,8 +38,9 @@ export function TrustStrip() {
   ];
 
   return (
-    <section className="w-full py-14 sm:py-16 bg-slate-100/70 dark:bg-[#070a09] border-b border-slate-200 dark:border-white/[0.08] transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden w-full py-14 sm:py-16 bg-[#f8fafc] dark:bg-[#070a09] border-b border-slate-200 dark:border-white/[0.08] transition-colors duration-300">
+      <FloatingCandlesticks />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {pillars.map((item, idx) => (
             <Reveal key={item.title} delay={idx * 70}>

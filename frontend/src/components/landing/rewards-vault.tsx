@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { RewardCard, VaultRewardItem } from './reward-card';
-import { Reveal } from './motion-primitives';
+import { Reveal, TradingVisualBackground } from './motion-primitives';
 
 const VAULT_FEATURED_IPHONE: VaultRewardItem = {
   id: 'rew-1',
@@ -193,8 +193,10 @@ export function RewardsVault() {
   return (
     <section
       id="rewards"
-      className="w-full py-20 lg:py-26 bg-gradient-to-b from-white via-slate-50 to-white dark:from-[#081118] dark:via-[#05080B] dark:to-[#081118] border-b border-slate-200 dark:border-white/[0.08] relative overflow-hidden transition-colors duration-300"
+      className="w-full py-20 lg:py-26 bg-gradient-to-b from-[#f8fafc] via-slate-50 to-[#f8fafc] dark:from-[#081118] dark:via-[#05080B] dark:to-[#081118] border-b border-slate-200 dark:border-white/[0.08] relative overflow-hidden transition-colors duration-300"
     >
+      <TradingVisualBackground variant="section" />
+
       {/* Premium Reward Showroom Atmospheric Spotlights */}
       <div
         className="absolute top-12 left-1/2 -translate-x-1/2 w-[820px] h-[440px] rounded-full opacity-[0.08] dark:opacity-[0.12] pointer-events-none"

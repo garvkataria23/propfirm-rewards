@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { FloatingCandlesticks } from '@/components/trading/floating-candlesticks';
 
 export function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -261,6 +262,9 @@ export function TradingVisualBackground({
       className="absolute inset-0 overflow-hidden pointer-events-none select-none"
       aria-hidden="true"
     >
+      {/* Unified Trading Grid + Floating Candlesticks + Price Levels (Light & Dark Mode) */}
+      <FloatingCandlesticks />
+
       {/* LAYER 1: Atmospheric Blurred Radial Gradients (#4, #40) */}
       {variant === 'hero' && (
         <>

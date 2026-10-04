@@ -19,6 +19,7 @@ import { LiveActivityTicker } from '@/components/social-proof/live-activity-tick
 import { FAQ } from '@/components/landing/faq';
 import { FinalCTA } from '@/components/landing/final-cta';
 import { YouTubeVideoHub } from '@/components/landing/youtube-video-hub';
+import { FloatingCandlesticks } from '@/components/trading/floating-candlesticks';
 
 export default function HomePage() {
   const [propFirms, setPropFirms] = useState<PropFirmItem[]>(DEFAULT_PARTICIPATING_FIRMS);
@@ -88,9 +89,12 @@ export default function HomePage() {
       {/* Drawdown Calculator */}
       <section
         id="calculator"
-        className="w-full bg-white dark:bg-[#07100F] text-slate-900 dark:text-white border-b border-slate-200 dark:border-white/[0.07] transition-colors duration-300"
+        className="relative overflow-hidden w-full bg-[#f8fafc] dark:bg-[#07100F] text-slate-900 dark:text-white border-b border-slate-200 dark:border-white/[0.07] transition-colors duration-300"
       >
-        <PropFirmCalculator />
+        <FloatingCandlesticks />
+        <div className="relative z-10">
+          <PropFirmCalculator />
+        </div>
       </section>
 
       {/* 11. FAQ — Calm readable section */}
