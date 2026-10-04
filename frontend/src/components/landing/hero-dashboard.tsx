@@ -17,7 +17,7 @@ export function HeroDashboard() {
 
   return (
     <div
-      className="relative w-full max-w-xl mx-auto transition-transform duration-200 ease-out"
+      className="relative w-full max-w-2xl mx-auto transition-transform duration-200 ease-out"
       style={{
         transform: `translate3d(${parallax.x * -2.5}px, ${parallax.y * -2.5}px, 0)`,
       }}
