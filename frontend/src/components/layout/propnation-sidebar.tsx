@@ -125,6 +125,12 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
 
   // Keep track of collapsed groups
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+  // Instant optimistic active href so previous item never stays highlighted during route transition
+  const [optimisticHref, setOptimisticHref] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    setOptimisticHref(null);
+  }, [pathname]);
 
   const toggleGroup = (groupId: string) => {
     setCollapsedGroups((prev) => ({
@@ -139,6 +145,9 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
 
   // Determine active item without multi-highlight collisions
   const isItemActive = (href: string) => {
+    if (optimisticHref) {
+      return optimisticHref === href;
+    }
     if (!pathname) return false;
     const [baseHref, query] = href.split('?');
 
@@ -207,16 +216,17 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
         <Link
           href="/"
           scroll={true}
-          onClick={() => {
+          onClick={(e) => {
+            e.currentTarget.blur();
             if (typeof window !== 'undefined') {
               window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
             }
             onClose?.();
           }}
-          className="flex items-center gap-2 group cursor-pointer overflow-hidden"
+          className="flex items-center gap-2 group cursor-pointer overflow-hidden outline-none focus:outline-none focus-visible:outline-none"
           title="Prop Nation Home"
         >
-          <div className="relative h-8 w-8 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-md flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
+          <div className="relative h-8 w-8 shrink-0 rounded-xl bg-[#06090e] border border-slate-800 shadow-md flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
             <img
               src="/pn-logo-hd.png?v=3"
               alt="Prop Nation PN Logo"
@@ -239,10 +249,11 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              e.currentTarget.blur();
               togglePinned();
             }}
             title={isPinned ? 'Unpin sidebar (auto-collapse to hover mode)' : 'Pin sidebar (keep full time open)'}
-            className={`hidden lg:flex items-center justify-center h-7 w-7 rounded-lg transition-colors cursor-pointer shrink-0 ${
+            className={`hidden lg:flex items-center justify-center h-7 w-7 rounded-lg transition-colors cursor-pointer shrink-0 outline-none focus:outline-none focus-visible:outline-none ${
               isPinned
                 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300'
                 : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-800'
@@ -268,8 +279,11 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
               {isExpanded ? (
                 <button
                   type="button"
-                  onClick={() => toggleGroup(group.id)}
-                  className="w-full flex items-center justify-between px-2 py-0.5 text-[10px] font-bold tracking-wider text-slate-500 dark:text-[#5f75a6] uppercase hover:text-slate-900 dark:hover:text-slate-200 transition-colors group cursor-pointer"
+                  onClick={(e) => {
+                    e.currentTarget.blur();
+                    toggleGroup(group.id);
+                  }}
+                  className="w-full flex items-center justify-between px-2 py-0.5 text-[10px] font-bold tracking-wider text-slate-500 dark:text-[#5f75a6] uppercase hover:text-slate-900 dark:hover:text-slate-200 transition-colors group cursor-pointer outline-none focus:outline-none focus-visible:outline-none"
                 >
                   <span className="truncate">{group.label}</span>
                   <ChevronDown
@@ -293,18 +307,22 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
                       <Link
                         key={`${item.href}-${idx}`}
                         href={item.href}
-                        onClick={onClose}
+                        onClick={(e) => {
+                          e.currentTarget.blur();
+                          setOptimisticHref(item.href);
+                          onClose?.();
+                        }}
                         title={!isExpanded ? item.label : undefined}
-                        className={`flex items-center rounded-xl transition-all relative group ${
+                        className={`flex items-center rounded-xl transition-colors relative group outline-none focus:outline-none focus-visible:outline-none border-0 ring-0 focus:ring-0 ${
                           isExpanded
                             ? `justify-between px-2.5 py-1.5 text-[13px] font-medium ${
                                 active
-                                  ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-200/60 shadow-xs dark:bg-[#12224d] dark:text-blue-400 dark:border-transparent dark:shadow-inner'
+                                  ? 'bg-blue-50 text-blue-700 font-semibold dark:bg-[#12224d] dark:text-blue-400'
                                   : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-[#0c1938]/70'
                               }`
                             : `justify-center h-9 w-9 mx-auto ${
                                 active
-                                  ? 'bg-blue-600 text-white shadow-sm dark:bg-blue-600 dark:text-white'
+                                  ? 'bg-blue-600 text-white dark:bg-blue-600 dark:text-white'
                                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-800/80 dark:hover:text-white'
                               }`
                         }`}
@@ -372,8 +390,13 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
               onClick={onClose}
               className="flex items-center gap-2 overflow-hidden flex-1 group"
             >
-              <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">
-                <span className="text-[11px] font-black">{initial}</span>
+              <div
+                translate="no"
+                className="notranslate h-8 w-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 text-white font-bold flex items-center justify-center shrink-0 shadow-sm"
+              >
+                <span translate="no" className="notranslate text-[11px] font-black leading-none select-none">
+                  {initial}
+                </span>
               </div>
 
               <div className="flex flex-col min-w-0">
@@ -408,8 +431,13 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
             title={`${displayName} (${displayPoints.toLocaleString('en-US')} PTS)`}
             className="flex items-center justify-center relative group py-0.5"
           >
-            <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 text-white font-bold flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-              <span className="text-[11px] font-black">{initial}</span>
+            <div
+              translate="no"
+              className="notranslate h-8 w-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 text-white font-bold flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform"
+            >
+              <span translate="no" className="notranslate text-[11px] font-black leading-none select-none">
+                {initial}
+              </span>
             </div>
             <span className="absolute bottom-0.5 right-1.5 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#060c1d]" />
           </Link>

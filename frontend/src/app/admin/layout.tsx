@@ -163,11 +163,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setSidebarOpen(false)}
-                className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all group ${
+                onClick={(e) => {
+                  e.currentTarget.blur();
+                  setSidebarOpen(false);
+                }}
+                className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors group outline-none focus:outline-none focus-visible:outline-none border-0 ring-0 focus:ring-0 ${
                   isActive
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30 font-bold'
-                    : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-[#0c1938]/70 border border-transparent'
+                    ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 font-bold'
+                    : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-[#0c1938]/70'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -198,8 +201,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="pt-2.5 border-t border-slate-200 dark:border-[#14234b]/60 space-y-2">
           <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#0b152e] border border-slate-200/80 dark:border-slate-800/90 space-y-2">
             <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
-                {user?.name?.[0]?.toUpperCase() ?? 'A'}
+              <div
+                translate="no"
+                className="notranslate h-9 w-9 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs"
+              >
+                <span translate="no" className="notranslate leading-none select-none">
+                  {user?.name?.trim()?.[0]?.toUpperCase() ?? 'A'}
+                </span>
               </div>
               <div className="min-w-0 flex-1">
                 <div className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 leading-none">

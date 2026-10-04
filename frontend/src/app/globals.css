@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@variant dark (&:where(.dark, .dark *));
+@variant dark (&:is(.dark, .dark *));
 
 @layer base {
   :root {
@@ -462,5 +462,20 @@ html.theme-switching *::after {
     transform: translateY(0px) scale(1);
     filter: none;
   }
+}
+
+/* Remove browser default silver/white focus outlines on sidebar & navigation items */
+aside a,
+aside button,
+aside a:focus,
+aside a:focus-visible,
+aside button:focus,
+aside button:focus-visible,
+nav a:focus,
+nav a:focus-visible,
+nav button:focus,
+nav button:focus-visible {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
 }
 

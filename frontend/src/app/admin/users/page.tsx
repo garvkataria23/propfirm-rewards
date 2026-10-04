@@ -872,8 +872,13 @@ export default function AdminUsersPage() {
                     {/* Trader Info */}
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold text-xs shrink-0">
-                          {u.name.substring(0, 2).toUpperCase()}
+                        <div
+                          translate="no"
+                          className="notranslate h-9 w-9 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold text-xs shrink-0"
+                        >
+                          <span translate="no" className="notranslate leading-none select-none">
+                            {u.name.trim().charAt(0).toUpperCase() || 'T'}
+                          </span>
                         </div>
                         <div>
                           <div className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">

@@ -564,19 +564,20 @@ export function GoogleTranslate({
       {/* Compact "LN" Language Dropdown Button */}
       <button
         type="button"
+        translate="no"
         onClick={() => setOpen((prev) => !prev)}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label="Select Language (195+ Languages)"
         title={`Language: ${selectedLang.label} (195+ Languages Available)`}
-        className={`group inline-flex items-center justify-center gap-1 rounded-xl border transition-all cursor-pointer font-mono font-bold select-none ${
+        className={`notranslate group inline-flex items-center justify-center gap-1 rounded-xl border transition-all cursor-pointer font-mono font-bold select-none ${
           compact || pill
             ? 'h-9 px-2.5 bg-slate-100 hover:bg-slate-200/80 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] border-slate-200 dark:border-white/10 hover:border-emerald-500/50 text-slate-800 dark:text-slate-200 text-[11px]'
             : 'h-9 px-2.5 bg-slate-100 hover:bg-slate-200/80 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] border-slate-200 dark:border-white/10 hover:border-emerald-500/50 text-slate-800 dark:text-slate-200 text-[11px]'
         }`}
       >
         <Globe2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:rotate-12 transition-transform duration-200" />
-        <span className="tracking-tight font-extrabold">{shortDisplayCode}</span>
+        <span translate="no" className="notranslate tracking-tight font-extrabold">{shortDisplayCode}</span>
         <ChevronDown
           className={`h-3 w-3 text-slate-400 transition-transform duration-200 shrink-0 ${
             open ? 'rotate-180 text-emerald-500' : ''

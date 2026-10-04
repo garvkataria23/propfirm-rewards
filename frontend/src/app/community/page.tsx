@@ -211,8 +211,13 @@ export default function CommunityPage() {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-bold flex items-center justify-center text-xs shadow-md">
-                        {post.avatarLetter}
+                      <div
+                        translate="no"
+                        className="notranslate h-9 w-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-bold flex items-center justify-center text-xs shadow-md shrink-0"
+                      >
+                        <span translate="no" className="notranslate leading-none select-none">
+                          {post.avatarLetter}
+                        </span>
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
