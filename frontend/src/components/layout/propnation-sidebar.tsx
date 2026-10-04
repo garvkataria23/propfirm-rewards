@@ -214,7 +214,7 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
         }`}
       >
         <Link
-          href="/"
+          href="/dashboard"
           scroll={true}
           onClick={(e) => {
             e.currentTarget.blur();
@@ -224,7 +224,7 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
             onClose?.();
           }}
           className="flex items-center gap-2 group cursor-pointer overflow-hidden outline-none focus:outline-none focus-visible:outline-none"
-          title="Prop Nation Home"
+          title="Prop Nation Trader Portal"
         >
           <div className="relative h-8 w-8 shrink-0 rounded-xl bg-[#06090e] border border-slate-800 shadow-md flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
             <img

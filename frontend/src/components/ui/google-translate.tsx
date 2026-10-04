@@ -569,7 +569,9 @@ export function GoogleTranslate({
   };
 
   const shortDisplayCode =
-    currentLang === 'en' ? 'LN' : `LN·${selectedLang.code.split('-')[0].toUpperCase()}`;
+    currentLang === 'en' || currentLang.startsWith('en-')
+      ? 'LN'
+      : `LN·${selectedLang.code.split('-')[0].toUpperCase()}`;
 
   return (
     <div id={id} ref={rootRef} className={`relative inline-block ${open ? 'z-[10000]' : ''} ${className}`}>

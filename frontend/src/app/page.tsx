@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/auth-context';
 import { api } from '@/lib/api';
 import { CursorSpotlight, ScrollProgressBar } from '@/components/landing/motion-primitives';
 import { Hero } from '@/components/landing/hero';
@@ -22,7 +24,16 @@ import { YouTubeVideoHub } from '@/components/landing/youtube-video-hub';
 import { FloatingCandlesticks } from '@/components/trading/floating-candlesticks';
 
 export default function HomePage() {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
   const [propFirms, setPropFirms] = useState<PropFirmItem[]>(DEFAULT_PARTICIPATING_FIRMS);
+
+  // Entry page is only for logged-out visitors; logged-in users go directly to /dashboard
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.replace('/dashboard');
+    }
+  }, [user, isLoading, router]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !window.location.hash) {
