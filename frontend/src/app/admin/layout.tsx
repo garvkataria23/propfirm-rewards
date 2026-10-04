@@ -7,6 +7,7 @@ import { useAuth } from '@/context/auth-context';
 import { useSidebarMode } from '@/hooks/use-sidebar-mode';
 import { api } from '@/lib/api';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { GoogleTranslate } from '@/components/ui/google-translate';
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -395,6 +396,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <MessageSquare className="h-3.5 w-3.5" />
               <span>Floating Live Chat</span>
             </button>
+            <GoogleTranslate id="google_translate_admin_header" />
             <ThemeToggle />
             <Link href="/dashboard">
               <Button variant="outline" size="sm">
@@ -413,7 +415,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Menu className="h-5 w-5" />
           </button>
           <span className="text-sm font-black text-slate-900 dark:text-white">PropNation Admin</span>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <GoogleTranslate id="google_translate_admin_mobile" compact />
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* Page Content */}

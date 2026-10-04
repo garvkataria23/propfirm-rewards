@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PropFirm Rewards Platform — Client Feature Proposal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+
+    :root {
+      --primary: #059669;
+      --primary-dark: #047857;
+      --primary-light: #ecfdf5;
+      --slate-950: #090d16;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--slate-800);
+      background: #e2e8f0;
+      line-height: 1.55;
+      font-size: 13.5px;
+      padding: 32px 16px;
+    }
+
+    .toolbar {
+      max-width: 900px;
+      margin: 0 auto 20px auto;
+      background: var(--slate-900);
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .btn-print {
+      background: #10b981;
+      color: #052e16;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-print:hover {
+      background: #34d399;
+      transform: translateY(-1px);
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 48px 56px;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+    }
+
+    /* Header / Cover Banner */
+    .header {
+      border-bottom: 3px solid var(--primary);
+      padding-bottom: 28px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #a7f3d0;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--slate-900);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--slate-600);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .meta-box {
+      text-align: right;
+      font-size: 12px;
+      color: var(--slate-600);
+      background: var(--slate-50);
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--slate-200);
+      min-width: 220px;
+    }
+
+    .meta-box strong {
+      color: var(--slate-900);
+    }
+
+    /* Tech Stack Strip */
+    .tech-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .tech-card {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .tech-card .label {
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      color: var(--slate-500);
+      font-weight: 600;
+    }
+
+    .tech-card .val {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-top: 2px;
+    }
+
+    /* Journey Flow */
+    .journey {
+      background: var(--slate-900);
+      color: #fff;
+      padding: 18px 22px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+
+    .journey-title {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #34d399;
+      margin-bottom: 10px;
+    }
+
+    .journey-steps {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .journey-step {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+
+    .arrow {
+      color: #34d399;
+      font-weight: 800;
+    }
+
+    /* Sections */
+    .section {
+      margin-bottom: 26px;
+      break-inside: avoid;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--slate-200);
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+    }
+
+    .section-num {
+      background: var(--primary);
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    h2 {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--slate-900);
+      letter-spacing: -0.01em;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .feature-box {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+
+    .feature-box h3 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    ul li {
+      position: relative;
+      padding-left: 16px;
+      margin-bottom: 5px;
+      color: var(--slate-700);
+      font-size: 12.8px;
+    }
+
+    ul li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    ul li strong {
+      color: var(--slate-900);
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 12.5px;
+    }
+
+    th, td {
+      border: 1px solid var(--slate-200);
+      padding: 9px 12px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--slate-100);
+      font-weight: 700;
+      color: var(--slate-900);
+    }
+
+    .footer {
+      margin-top: 36px;
+      padding-top: 18px;
+      border-top: 2px solid var(--slate-200);
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--slate-500);
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .toolbar {
+        display: none !important;
+      }
+      .page {
+        box-shadow: none;
+        padding: 16px 24px;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <span>📄 PropFirm Rewards — Client Feature Specification & Proposal</span>
+    </div>
+    <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  </div>
+
+  <div class="page">
+    <!-- Header -->
+    <div class="header">
+      <div>
+        <span class="badge">Product & Technical Proposal</span>
+        <h1>PropFirm Affiliate Rewards Platform</h1>
+        <p class="subtitle">End-to-End Trader Loyalty Ecosystem, Automated S2S Verification Engine & Enterprise Admin ERP</p>
+      </div>
+      <div class="meta-box">
+        <div><strong>Status:</strong> Production-Ready</div>
+        <div><strong>Architecture:</strong> Full-Stack Web App</div>
+        <div><strong>Security:</strong> ACID Ledger + HMAC S2S</div>
+        <div><strong>API Docs:</strong> Swagger OpenAPI 3.0</div>
+      </div>
+    </div>
+
+    <!-- Tech Stack Strip -->
+    <div class="tech-strip">
+      <div class="tech-card">
+        <div class="label">Frontend</div>
+        <div class="val">Next.js 16 + TypeScript + Tailwind</div>
+      </div>
+      <div class="tech-card">
+        <div class="label">Backend API</div>
+        <div class="val">NestJS 10 + WebSockets + JWT</div>
+      </div>
+      <div class="tech-card">
+        <div class="label">Database & Storage</div>
+        <div class="val">PostgreSQL (Prisma) + Cloudflare R2</div>
+      </div>
+      <div class="tech-card">
+        <div class="label">Messaging Channels</div>
+        <div class="val">WhatsApp Cloud API + Resend Email</div>
+      </div>
+    </div>
+
+    <!-- Core Business Flow -->
+    <div class="journey">
+      <div class="journey-title">Core Trader-to-Reward Lifecycle</div>
+      <div class="journey-steps">
+        <span class="journey-step">1. 1-Click Auto-Apply Code</span>
+        <span class="arrow">→</span>
+        <span class="journey-step">2. Submit Proof / S2S Webhook</span>
+        <span class="arrow">→</span>
+        <span class="journey-step">3. Anti-Fraud & Escrow Check</span>
+        <span class="arrow">→</span>
+        <span class="journey-step">4. Atomic Points Minting</span>
+        <span class="arrow">→</span>
+        <span class="journey-step">5. VIP Multiplier & Store Checkout</span>
+        <span class="arrow">→</span>
+        <span class="journey-step">6. 5-Stage Courier Tracking</span>
+      </div>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>Public Website, Discovery & High-Conversion Tools</h2>
+      </div>
+      <div class="grid-2">
+        <div class="feature-box">
+          <h3>⚡ Cinematic Fintech UI & Social Proof</h3>
+          <ul>
+            <li><strong>Dual Theme Engine:</strong> Instant Dark & Light mode toggle with smooth transitions.</li>
+            <li><strong>Trading Visuals:</strong> Floating candlestick animations, live trading charts, and scroll progress bar.</li>
+            <li><strong>Live Social Proof:</strong> Real-time activity ticker and toast popups showing verified trader redemptions.</li>
+            <li><strong>Multi-Language Support:</strong> Built-in Google Translate switcher for global traders.</li>
+          </ul>
+        </div>
+        <div class="feature-box">
+          <h3>🧮 Interactive Calculators & Education</h3>
+          <ul>
+            <li><strong>Prop Firm & Drawdown Calculator (<code>/compare</code>):</strong> Side-by-side comparison of challenge costs, discounts, drawdown rules, and points earned.</li>
+            <li><strong>Interactive Evaluation Matrix:</strong> Filter 1-Step, 2-Step, and Instant Funding tiers across partner prop firms.</li>
+            <li><strong>YouTube Video Academy:</strong> 12-video prop trading tutorial hub with built-in playback controls.</li>
+            <li><strong>Full Content Suite:</strong> Community, Trader Reviews, Announcements, FAQ, Help Center, Terms & Privacy.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>Universal 1-Click Auto-Apply Affiliate & Referral Engine</h2>
+      </div>
+      <div class="feature-box">
+        <ul>
+          <li><strong>Deep-Linked Checkout URL Builder:</strong> Automatically injects affiliate IDs, promo codes, selected challenge tiers, and unique tracking SubIDs (<code>PN-TRK-XXXXX</code>) into partner checkout URLs (FTMO, Funding Pips, FundedNext, Alpha Capital, Apex, Topstep, etc.).</li>
+          <li><strong>Background Clipboard Copy:</strong> Copies the partner discount code to the user's clipboard in one click.</li>
+          <li><strong>48-Hour Checkout Intent Memory:</strong> Remembers the trader's active checkout session and automatically pre-fills the prop firm, tier, price, and promo code when they return to submit their purchase proof.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>Trader Command Center, Financial Wallet & VIP Loyalty Tiers</h2>
+      </div>
+      <div class="grid-2">
+        <div class="feature-box">
+          <h3>💼 Trader Dashboard & Wallet</h3>
+          <ul>
+            <li><strong>Secure Auth:</strong> Email/Password + Google Sign-In, bcrypt hashing, and JWT token versioning.</li>
+            <li><strong>Live Points Portfolio:</strong> Tracks Available Balance, Lifetime Earned, Total Redeemed, and Pending Points.</li>
+            <li><strong>Immutable Transaction History:</strong> Full ledger audit trail of every point credit, redemption, or refund.</li>
+            <li><strong>Multi-Address Book:</strong> Save and manage multiple international shipping addresses with default selection.</li>
+          </ul>
+        </div>
+        <div class="feature-box">
+          <h3>👑 3-Tier VIP Multiplier Program</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>VIP Tier</th>
+                <th>Points Required</th>
+                <th>Multiplier</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>🥉 Rookie Trader</strong></td>
+                <td>0 – 4,999 PTS</td>
+                <td><strong>1.00x</strong> Base</td>
+              </tr>
+              <tr>
+                <td><strong>🥈 Funded Trader</strong></td>
+                <td>5,000+ PTS</td>
+                <td><strong>1.25x</strong> (+25% Boost)</td>
+              </tr>
+              <tr>
+                <td><strong>👑 Prop Master</strong></td>
+                <td>20,000+ PTS</td>
+                <td><strong>1.50x</strong> (+50% + Swag)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>Dual-Mode Purchase Verification (Automated S2S Webhooks + Manual Queue)</h2>
+      </div>
+      <div class="grid-2">
+        <div class="feature-box">
+          <h3>🤖 Automated S2S Affiliate Webhooks</h3>
+          <ul>
+            <li><strong>Zero-Touch Auto-Verification:</strong> Receives real-time postback webhooks from partner affiliate networks.</li>
+            <li><strong>Cryptographic Security:</strong> Constant-time <code>HMAC-SHA256</code> verification, 5-minute replay-attack window, and idempotent event keys.</li>
+            <li><strong>Instant Point Minting:</strong> Matches Order IDs, approves submissions atomically, and triggers WhatsApp + Email alerts automatically.</li>
+          </ul>
+        </div>
+        <div class="feature-box">
+          <h3>🛡️ Anti-Fraud Proof Submission</h3>
+          <ul>
+            <li><strong>Multi-File Cloud Upload:</strong> Drag-and-drop invoice images/PDFs stored on Cloudflare R2 / S3.</li>
+            <li><strong>Duplicate Claim Prevention:</strong> Enforces unique Order ID per prop firm at the database level.</li>
+            <li><strong>5-State Review Flow:</strong> <code>PENDING</code> → <code>UNDER_REVIEW</code> → <code>APPROVED</code> / <code>REJECTED</code> / <code>MORE_INFO_REQUIRED</code> (with in-app trader resubmission).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5 -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>Rewards Marketplace, Atomic Checkout & 5-Stage Fulfillment</h2>
+      </div>
+      <div class="feature-box">
+        <ul>
+          <li><strong>Categorized Rewards Catalog:</strong> Flagship Smartphones, Tablets, Trading Hardware & Monitors, Audio Gear, and Digital Gift Cards.</li>
+          <li><strong>Double-Spend Protected Checkout:</strong> Serializable ACID transaction verifies user status, validates stock, checks balance, deducts points, decrements inventory, and generates a unique redemption code (<code>RDM-YYYY-XXXX</code>).</li>
+          <li><strong>5-Stage Courier & Voucher Tracking:</strong> Visual delivery pipeline (<code>PENDING</code> → <code>CONFIRMED</code> → <code>PROCESSING</code> → <code>SHIPPED</code> → <code>DELIVERED</code>) with FedEx/DHL/UPS tracking numbers or instant digital voucher codes. Cancelled orders automatically refund points and restock inventory.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 6 -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2>Omnichannel Communications & 24/7 Live Support Desk</h2>
+      </div>
+      <div class="grid-2">
+        <div class="feature-box">
+          <h3>📱 Meta WhatsApp Cloud API & Email</h3>
+          <ul>
+            <li><strong>Instant WhatsApp Alerts:</strong> Automated messages for Purchase Received, Points Credited, Reward Shipped/Voucher Code, and Support Updates.</li>
+            <li><strong>Outbox & Simulation Mode:</strong> Built-in <code>NotificationOutbox</code> logging and simulator for pre-production testing.</li>
+            <li><strong>Resend HTML Emails & In-App Bell:</strong> Branded transactional emails and real-time in-app notification center.</li>
+          </ul>
+        </div>
+        <div class="feature-box">
+          <h3>💬 24/7 Live WebSocket Chat & Ticketing</h3>
+          <ul>
+            <li><strong>Real-Time Live Chat:</strong> Floating widget and full-screen live support room powered by Socket.IO.</li>
+            <li><strong>Smart Ticket Routing:</strong> Categorized by department (<code>PURCHASE_PROOF</code>, <code>CASHOUT_PAYOUT</code>, <code>KYC</code>, <code>VIP</code>) and priority (<code>LOW</code> to <code>URGENT</code>).</li>
+            <li><strong>Staff Whisper Notes:</strong> Internal-only staff notes on tickets hidden from traders.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 7 -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2>Enterprise Admin Control Portal & RBAC Team Management</h2>
+      </div>
+      <div class="grid-2">
+        <div class="feature-box">
+          <h3>🎛️ Operations & Catalog Control</h3>
+          <ul>
+            <li><strong>Executive KPI Dashboard:</strong> Live metrics on users, pending proofs, points liability, and redemptions.</li>
+            <li><strong>Verification & Fulfillment Queues:</strong> Side-by-side receipt inspection, 1-click approve/reject, and courier tracking assignment.</li>
+            <li><strong>No-Code Prop Firm & Reward CRUD:</strong> Add/edit prop firms, challenge tiers, reward products, and stock levels dynamically.</li>
+          </ul>
+        </div>
+        <div class="feature-box">
+          <h3>🔐 RBAC Staff Roles & Security Audit</h3>
+          <ul>
+            <li><strong>Granular Staff Roles:</strong> <code>SUPER_ADMIN</code>, <code>ADMIN</code>, <code>SUPPORT_LEAD</code>, <code>SUPPORT_AGENT</code>, and <code>FINANCE_OFFICER</code>.</li>
+            <li><strong>Manual Points Adjustments:</strong> Credit or deduct user points with mandatory audit justification.</li>
+            <li><strong>Immutable Audit Logs & DR:</strong> Tracks every admin action with before/after JSON snapshots, IP addresses, plus automated balance reconciliation scripts.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div><strong>PropFirm Rewards Platform</strong> — Complete Feature & Architecture Proposal</div>
+      <div>Generated for Client Presentation • Ready for Print / PDF Export</div>
+    </div>
+  </div>
+
+</body>
+</html>
