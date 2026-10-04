@@ -2,19 +2,27 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark';
+export type ThemeMode = 'light' | 'dark' | 'system';
 
 interface ThemeContextType {
   theme: Theme;
+  themeMode: ThemeMode;
   toggleTheme: () => void;
-  setTheme: (theme: Theme) => void;
+  setTheme: (mode: ThemeMode) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: 'light',
+  theme: 'dark',
+  themeMode: 'dark',
   toggleTheme: () => {},
   setTheme: () => {},
 });
+
+function resolveSystemTheme(): Theme {
+  if (typeof window === 'undefined') return 'dark';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
 
 function applyTheme(t: Theme) {
   if (typeof document === 'undefined') return;
@@ -39,28 +47,47 @@ function applyTheme(t: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [themeMode, setThemeModeState] = useState<ThemeMode>('dark');
   const [theme, setThemeState] = useState<Theme>('dark');
 
   useEffect(() => {
-    const saved = localStorage.getItem('propnation_theme') as Theme | null;
-    const initialTheme: Theme = saved === 'light' ? 'light' : 'dark';
-    setThemeState(initialTheme);
-    applyTheme(initialTheme);
+    const saved = localStorage.getItem('propnation_theme') as ThemeMode | null;
+    const initialMode: ThemeMode =
+      saved === 'light' || saved === 'dark' || saved === 'system' ? saved : 'dark';
+    const resolved: Theme = initialMode === 'system' ? resolveSystemTheme() : initialMode;
+    setThemeModeState(initialMode);
+    setThemeState(resolved);
+    applyTheme(resolved);
   }, []);
 
-  const setTheme = (newTheme: Theme) => {
-    setThemeState(newTheme);
-    localStorage.setItem('propnation_theme', newTheme);
-    applyTheme(newTheme);
+  // Listen to OS system theme changes when themeMode === 'system'
+  useEffect(() => {
+    if (typeof window === 'undefined' || themeMode !== 'system') return;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      const nextResolved: Theme = e.matches ? 'dark' : 'light';
+      setThemeState(nextResolved);
+      applyTheme(nextResolved);
+    };
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [themeMode]);
+
+  const setTheme = (newMode: ThemeMode) => {
+    const resolved: Theme = newMode === 'system' ? resolveSystemTheme() : newMode;
+    setThemeModeState(newMode);
+    setThemeState(resolved);
+    localStorage.setItem('propnation_theme', newMode);
+    applyTheme(resolved);
   };
 
   const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
+    const next: ThemeMode = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, themeMode, toggleTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );

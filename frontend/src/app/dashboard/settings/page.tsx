@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
+import { useTheme, type ThemeMode } from '@/context/theme-context';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -29,14 +30,22 @@ import {
   ShieldAlert,
   Laptop,
   X,
+  Moon,
+  Sun,
+  Monitor,
 } from 'lucide-react';
 
 const SETTINGS_STORAGE_KEY = 'propnation_user_settings_v1';
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
+  const { theme, themeMode, setTheme } = useTheme();
   const router = useRouter();
   const { isPinned, setPinned } = useSidebarMode();
+
+  // 0. Theme / Appearance Mode state (Night Mode, System, Light Mode)
+  const [draftThemeMode, setDraftThemeMode] = useState<ThemeMode>(themeMode);
+  const [themeSaved, setThemeSaved] = useState(false);
 
   // 1. Sidebar & Workspace Layout state
   const [draftPinned, setDraftPinned] = useState<boolean>(isPinned);
@@ -84,6 +93,10 @@ export default function SettingsPage() {
     setDraftPinned(isPinned);
   }, [isPinned]);
 
+  useEffect(() => {
+    setDraftThemeMode(themeMode);
+  }, [themeMode]);
+
   // Load saved preferences on mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -116,6 +129,13 @@ export default function SettingsPage() {
   };
 
   // Handlers with Confirm feedback
+  const handleConfirmTheme = () => {
+    setTheme(draftThemeMode);
+    persistSettings({ themeMode: draftThemeMode });
+    setThemeSaved(true);
+    setTimeout(() => setThemeSaved(false), 3000);
+  };
+
   const handleConfirmLayout = () => {
     setPinned(draftPinned);
     persistSettings({ sidebarPinned: draftPinned });
@@ -277,6 +297,148 @@ export default function SettingsPage() {
           Sign Out
         </Button>
       </div>
+
+      {/* 0. Appearance & Theme Mode (Night Mode, System & Light Mode) */}
+      <Card className="p-6 bg-white dark:bg-[#070e20] border-slate-200/90 dark:border-[#14234b]/60 space-y-5 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-[#14234b]/60">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center shrink-0">
+              {theme === 'dark' ? (
+                <Moon className="h-5 w-5 text-amber-500 dark:text-amber-400" />
+              ) : (
+                <Sun className="h-5 w-5 text-amber-500" />
+              )}
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Appearance &amp; Theme Mode
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Choose between Night Mode, System Default, or Light Mode across PROP NATION.
+              </p>
+            </div>
+          </div>
+          <Badge variant={theme === 'dark' ? 'purple' : 'info'}>
+            Active: {themeMode === 'system' ? `System (${theme === 'dark' ? 'Night' : 'Light'})` : themeMode === 'dark' ? 'Night Mode' : 'Light Mode'}
+          </Badge>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+          {/* Option 1: Night Mode */}
+          <div
+            onClick={() => {
+              setDraftThemeMode('dark');
+              setTheme('dark');
+            }}
+            className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+              draftThemeMode === 'dark'
+                ? 'border-blue-600 bg-blue-50/50 dark:border-blue-500 dark:bg-blue-950/30 shadow-xs'
+                : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-900/40'
+            }`}
+          >
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <Moon className="h-4 w-4 text-indigo-500 dark:text-indigo-400" />
+                  Night Mode
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950 px-2 py-0.5 rounded-full">
+                  Pro Default
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                Deep institutional midnight &amp; emerald interface engineered for extended trading sessions with zero eye strain.
+              </p>
+            </div>
+            <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1">
+              {draftThemeMode === 'dark' ? '✓ Selected (Night Mode)' : 'Select Night Mode'}
+            </div>
+          </div>
+
+          {/* Option 2: System Mode */}
+          <div
+            onClick={() => {
+              setDraftThemeMode('system');
+              setTheme('system');
+            }}
+            className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+              draftThemeMode === 'system'
+                ? 'border-blue-600 bg-blue-50/50 dark:border-blue-500 dark:bg-blue-950/30 shadow-xs'
+                : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-900/40'
+            }`}
+          >
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <Monitor className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  System Mode
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-950 px-2 py-0.5 rounded-full">
+                  Auto Sync
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                Automatically matches your Windows, macOS, iOS, or Android system appearance settings in real time.
+              </p>
+            </div>
+            <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1">
+              {draftThemeMode === 'system' ? '✓ Selected (System)' : 'Select System Mode'}
+            </div>
+          </div>
+
+          {/* Option 3: Light Mode */}
+          <div
+            onClick={() => {
+              setDraftThemeMode('light');
+              setTheme('light');
+            }}
+            className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+              draftThemeMode === 'light'
+                ? 'border-blue-600 bg-blue-50/50 dark:border-blue-500 dark:bg-blue-950/30 shadow-xs'
+                : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-900/40'
+            }`}
+          >
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <Sun className="h-4 w-4 text-amber-500" />
+                  Light Mode
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                Crisp daylight surface with high-contrast typography and clean white cards for bright environments.
+              </p>
+            </div>
+            <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1">
+              {draftThemeMode === 'light' ? '✓ Selected (Light Mode)' : 'Select Light Mode'}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-[#14234b]/50">
+          {themeSaved ? (
+            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4" /> Theme preference ({draftThemeMode === 'dark' ? 'Night Mode' : draftThemeMode === 'system' ? 'System Mode' : 'Light Mode'}) confirmed &amp; saved!
+            </span>
+          ) : (
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">
+              Current theme mode:{' '}
+              <strong>
+                {themeMode === 'dark' ? 'Night Mode' : themeMode === 'system' ? 'System Default' : 'Light Mode'}
+              </strong>
+            </span>
+          )}
+          <Button
+            type="button"
+            size="sm"
+            onClick={handleConfirmTheme}
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold"
+          >
+            <Check className="h-3.5 w-3.5 mr-1.5" />
+            Confirm Theme Mode
+          </Button>
+        </div>
+      </Card>
 
       {/* 1. Workspace & Sidebar Display Preferences */}
       <Card className="p-6 bg-white dark:bg-[#070e20] border-slate-200/90 dark:border-[#14234b]/60 space-y-5 shadow-sm">
