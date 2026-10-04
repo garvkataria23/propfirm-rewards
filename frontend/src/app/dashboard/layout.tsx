@@ -77,6 +77,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         <div className="flex items-center gap-2">
+          <GoogleTranslate id="google_translate_dashboard_mobile" compact />
           <ThemeToggle />
 
           <Link

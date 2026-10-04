@@ -56,11 +56,14 @@ export default function LoginPage() {
     flag: c.flag,
   }));
 
+  const isAdminRole = (role?: string) =>
+    ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER'].includes(role || '');
+
   // If user is already logged in / remembered, directly auto-redirect to dashboard!
   useEffect(() => {
     if (!authLoading && user) {
       setAutoRedirecting(true);
-      const target = user.role === 'ADMIN' ? '/admin' : '/dashboard';
+      const target = isAdminRole(user.role) ? '/admin' : '/dashboard';
       router.replace(target);
     }
   }, [user, authLoading, router]);
@@ -74,9 +77,6 @@ export default function LoginPage() {
       }
     }
   }, []);
-
-  const isAdminRole = (role?: string) =>
-    ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER'].includes(role || '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

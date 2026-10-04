@@ -28,13 +28,22 @@ import {
 } from '@/lib/firebase';
 import { userDataStore } from '@/lib/userDataStore';
 
+export type UserRole =
+  | 'USER'
+  | 'ADMIN'
+  | 'SUPER_ADMIN'
+  | 'SUPPORT_LEAD'
+  | 'SUPPORT_AGENT'
+  | 'FINANCE_OFFICER';
+
 export interface User {
   id: string;
   email: string;
   name: string;
   phone?: string;
   country?: string;
-  role: 'USER' | 'ADMIN';
+  role: UserRole;
+  department?: string;
   status: string;
   avatarUrl?: string;
   authProvider?: string;
@@ -45,6 +54,47 @@ export interface User {
     lifetimeRedeemed: number;
   };
 }
+
+const STAFF_ACCOUNT_DIRECTORY: Record<
+  string,
+  { name: string; role: UserRole; department: string; country: string; avatarUrl: string }
+> = {
+  'admin@propfirmrewards.com': {
+    name: 'Alexander Sterling',
+    role: 'SUPER_ADMIN',
+    department: 'EXECUTIVE',
+    country: 'United States',
+    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+  },
+  'manager@propfirmrewards.com': {
+    name: 'Operations Admin',
+    role: 'ADMIN',
+    department: 'OPERATIONS',
+    country: 'United States',
+    avatarUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150',
+  },
+  'sarah.support@propfirmrewards.com': {
+    name: 'Sarah Chen',
+    role: 'SUPPORT_LEAD',
+    department: 'VIP_CONCIERGE',
+    country: 'United Kingdom',
+    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+  },
+  'marcus.support@propfirmrewards.com': {
+    name: 'Marcus Vance',
+    role: 'SUPPORT_AGENT',
+    department: 'VERIFICATION',
+    country: 'United States',
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+  },
+  'elena.finance@propfirmrewards.com': {
+    name: 'Elena Rostova',
+    role: 'FINANCE_OFFICER',
+    department: 'PAYOUTS',
+    country: 'Germany',
+    avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150',
+  },
+};
 
 interface AuthContextType {
   user: User | null;
@@ -85,7 +135,8 @@ async function syncUserProfileWithFirestore(
   }
 ): Promise<User> {
   const email = (fbUser.email || `${fbUser.uid}@phone.propnation.app`).toLowerCase();
-  const isAdmin = email === 'admin@propfirmrewards.com' || email.includes('admin@');
+  const staffMatch = STAFF_ACCOUNT_DIRECTORY[email];
+  const isGenericAdmin = email.includes('admin@');
 
   let firestoreData: Partial<User> | null = null;
   try {
@@ -105,19 +156,26 @@ async function syncUserProfileWithFirestore(
   const realEarned = userDataStore.calculateTotalEarnedPoints(resolvedEmail);
   const realRedeemed = userDataStore.calculateTotalRedeemedPoints(resolvedEmail);
 
+  const resolvedRole: UserRole =
+    staffMatch?.role ||
+    (firestoreData?.role as UserRole) ||
+    (isGenericAdmin ? 'ADMIN' : 'USER');
+
   const resolvedUser: User = {
     id: fbUser.uid,
     email: firestoreData?.email || fbUser.email || email,
     name:
       overrides?.name ||
+      staffMatch?.name ||
       firestoreData?.name ||
       fbUser.displayName ||
       (fbUser.phoneNumber ? `Trader ${fbUser.phoneNumber.slice(-4)}` : email.split('@')[0]),
     phone: overrides?.phone || firestoreData?.phone || fbUser.phoneNumber || undefined,
-    country: overrides?.country || firestoreData?.country || 'United States',
-    role: (firestoreData?.role as 'USER' | 'ADMIN') || (isAdmin ? 'ADMIN' : 'USER'),
+    country: overrides?.country || staffMatch?.country || firestoreData?.country || 'United States',
+    role: resolvedRole,
+    department: staffMatch?.department || firestoreData?.department || undefined,
     status: firestoreData?.status || 'ACTIVE',
-    avatarUrl: firestoreData?.avatarUrl || fbUser.photoURL || undefined,
+    avatarUrl: staffMatch?.avatarUrl || firestoreData?.avatarUrl || fbUser.photoURL || undefined,
     authProvider:
       overrides?.authProvider ||
       firestoreData?.authProvider ||
@@ -258,10 +316,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         userCred = await signInWithEmailAndPassword(auth, cleanEmail, password);
       } catch (signInErr: any) {
-        // For demo accounts (trader@example.com or admin@propfirmrewards.com), auto-provision in Firebase Auth if not yet created
-        const isDemoAccount =
-          cleanEmail.toLowerCase() === 'trader@example.com' ||
-          cleanEmail.toLowerCase() === 'admin@propfirmrewards.com';
+        const lowerEmail = cleanEmail.toLowerCase();
+        const staffEntry = STAFF_ACCOUNT_DIRECTORY[lowerEmail];
+        const isDemoAccount = lowerEmail === 'trader@example.com' || Boolean(staffEntry);
         if (
           isDemoAccount &&
           (signInErr?.code === 'auth/user-not-found' ||
@@ -269,10 +326,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         ) {
           userCred = await createUserWithEmailAndPassword(auth, cleanEmail, password);
           await updateProfile(userCred.user, {
-            displayName:
-              cleanEmail.toLowerCase() === 'admin@propfirmrewards.com'
-                ? 'Platform Admin'
-                : 'Demo Trader',
+            displayName: staffEntry ? staffEntry.name : 'Alex Morgan',
           });
         } else {
           throw signInErr;

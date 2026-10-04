@@ -191,6 +191,8 @@ export function Navbar() {
             <span>Live Chat</span>
           </button>
 
+          <GoogleTranslate id="google_translate_navbar" compact />
+
           <ThemeToggle />
 
           {user ? (
@@ -257,6 +259,7 @@ export function Navbar() {
 
         {/* Mobile Header Controls */}
         <div className="flex md:hidden items-center gap-2">
+          <GoogleTranslate id="google_translate_navbar_mobile" compact />
           <ThemeToggle />
           {user && (
             <Link
