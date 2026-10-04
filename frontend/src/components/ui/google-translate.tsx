@@ -370,14 +370,17 @@ export function GoogleTranslate({
   className = '',
   compact = true,
   pill = false,
+  fullLabel = false,
 }: {
   id?: string;
   className?: string;
   compact?: boolean;
   pill?: boolean;
+  fullLabel?: boolean;
 }) {
   const [currentLang, setCurrentLang] = useState('en');
   const [open, setOpen] = useState(false);
+  const [openUpward, setOpenUpward] = useState(false);
   const [query, setQuery] = useState('');
   const rootRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -437,7 +440,7 @@ export function GoogleTranslate({
       .map((entry) => entry.item);
   }, [query, currentLang]);
 
-  // Whenever query changes, scroll list to top so top matches are immediately visible
+  // Whenever query changes or dropdown opens, scroll list to top so top matches are immediately visible
   useEffect(() => {
     if (desktopListRef.current) {
       desktopListRef.current.scrollTop = 0;
@@ -445,7 +448,7 @@ export function GoogleTranslate({
     if (mobileListRef.current) {
       mobileListRef.current.scrollTop = 0;
     }
-  }, [query]);
+  }, [query, open]);
 
   // Read cookie on mount & apply direction
   useEffect(() => {
@@ -497,9 +500,15 @@ export function GoogleTranslate({
     }
   }, []);
 
-  // Handle outside click & escape key
+  // Handle outside click, escape key & auto upward/downward placement
   useEffect(() => {
     if (!open) return;
+
+    if (typeof window !== 'undefined' && rootRef.current) {
+      const rect = rootRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      setOpenUpward(fullLabel || (spaceBelow < 360 && rect.top > 300));
+    }
 
     if (typeof window !== 'undefined' && window.innerWidth < 640) {
       document.body.style.overflow = 'hidden';
@@ -522,11 +531,14 @@ export function GoogleTranslate({
 
     const t = window.setTimeout(() => {
       if (window.innerWidth < 640) {
-        mobileSearchRef.current?.focus();
+        mobileSearchRef.current?.focus({ preventScroll: true });
       } else {
-        searchInputRef.current?.focus();
+        searchInputRef.current?.focus({ preventScroll: true });
       }
-    }, 50);
+      if (desktopListRef.current) {
+        desktopListRef.current.scrollTop = 0;
+      }
+    }, 40);
 
     return () => {
       if (typeof window !== 'undefined') {
@@ -536,7 +548,7 @@ export function GoogleTranslate({
       document.removeEventListener('keydown', handleKeyDown);
       window.clearTimeout(t);
     };
-  }, [open]);
+  }, [open, fullLabel]);
 
   // Instant language change trigger
   const handleSelectLanguage = (langCode: string) => {
@@ -560,8 +572,8 @@ export function GoogleTranslate({
     currentLang === 'en' ? 'LN' : `LN·${selectedLang.code.split('-')[0].toUpperCase()}`;
 
   return (
-    <div id={id} ref={rootRef} className={`relative inline-block ${open ? 'z-[9999]' : ''} ${className}`}>
-      {/* Compact "LN" Language Dropdown Button */}
+    <div id={id} ref={rootRef} className={`relative inline-block ${open ? 'z-[10000]' : ''} ${className}`}>
+      {/* Compact "LN" Language Dropdown Button (or fullLabel on Settings page) */}
       <button
         type="button"
         translate="no"
@@ -570,14 +582,25 @@ export function GoogleTranslate({
         aria-expanded={open}
         aria-label="Select Language (195+ Languages)"
         title={`Language: ${selectedLang.label} (195+ Languages Available)`}
-        className={`notranslate group inline-flex items-center justify-center gap-1 rounded-xl border transition-all cursor-pointer font-mono font-bold select-none ${
-          compact || pill
+        className={`notranslate group inline-flex items-center justify-center gap-1.5 rounded-xl border transition-all cursor-pointer font-mono font-bold select-none ${
+          fullLabel
+            ? 'h-10 px-3.5 bg-white dark:bg-[#0b1326] border-slate-200 dark:border-slate-700 hover:border-emerald-500/60 text-slate-900 dark:text-white text-xs shadow-xs'
+            : compact || pill
             ? 'h-9 px-2.5 bg-slate-100 hover:bg-slate-200/80 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] border-slate-200 dark:border-white/10 hover:border-emerald-500/50 text-slate-800 dark:text-slate-200 text-[11px]'
             : 'h-9 px-2.5 bg-slate-100 hover:bg-slate-200/80 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] border-slate-200 dark:border-white/10 hover:border-emerald-500/50 text-slate-800 dark:text-slate-200 text-[11px]'
         }`}
       >
         <Globe2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:rotate-12 transition-transform duration-200" />
-        <span translate="no" className="notranslate tracking-tight font-extrabold">{shortDisplayCode}</span>
+        {fullLabel ? (
+          <span translate="no" className="notranslate font-sans font-bold text-xs flex items-center gap-1.5">
+            <span>{selectedLang.label}</span>
+            <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+              {shortDisplayCode}
+            </span>
+          </span>
+        ) : (
+          <span translate="no" className="notranslate tracking-tight font-extrabold">{shortDisplayCode}</span>
+        )}
         <ChevronDown
           className={`h-3 w-3 text-slate-400 transition-transform duration-200 shrink-0 ${
             open ? 'rotate-180 text-emerald-500' : ''
@@ -592,7 +615,7 @@ export function GoogleTranslate({
           {/* 1. Mobile Bottom Sheet Modal (Screens < 640px) */}
           {/* ======================================================== */}
           <div
-            className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-xs sm:hidden flex items-end justify-center animate-in fade-in-0 duration-200"
+            className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-xs sm:hidden flex items-end justify-center animate-in fade-in-0 duration-200"
             onClick={() => setOpen(false)}
           >
             <div
@@ -697,8 +720,13 @@ export function GoogleTranslate({
 
           {/* ======================================================== */}
           {/* 2. Desktop Compact Floating Dropdown (Screens >= 640px) */}
+          {/* Opens UPWARDS when placed near the bottom of a page */}
           {/* ======================================================== */}
-          <div className="hidden sm:block absolute right-0 rtl:right-auto rtl:left-0 top-full mt-2 w-68 z-[9999] rounded-2xl border border-slate-200 dark:border-white/15 bg-white dark:bg-[#090e17] p-2 shadow-2xl ring-1 ring-black/10 animate-in fade-in-0 zoom-in-95 duration-150">
+          <div
+            className={`hidden sm:block absolute right-0 rtl:right-auto rtl:left-0 ${
+              openUpward ? 'bottom-full mb-2' : 'top-full mt-2'
+            } w-72 z-[10000] rounded-2xl border border-slate-200 dark:border-white/15 bg-white dark:bg-[#090e17] p-2.5 shadow-2xl ring-1 ring-black/20 animate-in fade-in-0 zoom-in-95 duration-150`}
+          >
             {/* Header & Instant Search Box */}
             <div className="space-y-1.5 pb-2 border-b border-slate-100 dark:border-slate-800/80">
               <div className="flex items-center justify-between px-1">
@@ -736,7 +764,7 @@ export function GoogleTranslate({
             {/* Languages Scrollable List */}
             <div
               ref={desktopListRef}
-              className="max-h-64 overflow-y-auto pt-1 space-y-0.5 overscroll-contain scrollbar-thin"
+              className="max-h-60 overflow-y-auto pt-1.5 space-y-0.5 overscroll-contain scrollbar-thin"
               role="listbox"
             >
               {filteredLanguages.length === 0 ? (
@@ -753,17 +781,17 @@ export function GoogleTranslate({
                       role="option"
                       aria-selected={isActive}
                       onClick={() => handleSelectLanguage(item.code)}
-                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-left transition-colors cursor-pointer ${
+                      className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-left transition-colors cursor-pointer ${
                         isActive
                           ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-500/30'
                           : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06]'
                       }`}
                     >
                       <div className="flex flex-col min-w-0 pr-2">
-                        <span className="font-bold truncate text-xs text-slate-900 dark:text-white leading-tight">
+                        <span className="font-bold truncate text-xs text-slate-900 dark:text-white leading-snug">
                           {item.label}
                         </span>
-                        <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate">
+                        <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate leading-snug">
                           {item.nativeName} · {item.code.toUpperCase()}
                         </span>
                       </div>

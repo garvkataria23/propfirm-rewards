@@ -283,7 +283,7 @@ export default function SettingsPage() {
           <div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white">Language &amp; Regional Preferences</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Select your platform display language. Supports 100+ global languages with instant real-time translation.
+              Select your platform display language. Supports 195+ global languages with instant real-time translation.
             </p>
           </div>
         </div>
@@ -292,12 +292,12 @@ export default function SettingsPage() {
           <div className="space-y-0.5">
             <span className="text-xs font-bold text-slate-900 dark:text-white">Active Display Language</span>
             <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Type in the search box to find your native language (e.g. Hindi, Spanish, French, German, Arabic, Japanese).
+              Type any letter or language name in the search box to filter 195+ languages instantly.
             </p>
           </div>
 
           <div className="shrink-0">
-            <GoogleTranslate id="google_translate_settings" />
+            <GoogleTranslate id="google_translate_settings" fullLabel />
           </div>
         </div>
       </Card>
