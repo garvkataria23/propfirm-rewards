@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 import { useSidebarMode } from '@/hooks/use-sidebar-mode';
+import { useNotifications } from '@/hooks/use-notifications';
 import {
   LayoutGrid,
   Activity,
@@ -122,6 +123,7 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const { isPinned, togglePinned, isHovered, setHovered } = useSidebarMode();
+  const { unreadCount } = useNotifications();
 
   // Keep track of collapsed groups
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
@@ -302,6 +304,12 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
                   {group.items.map((item, idx) => {
                     const Icon = item.icon;
                     const active = isItemActive(item.href);
+                    const dynamicBadge =
+                      item.href === '/dashboard/notifications'
+                        ? unreadCount > 0
+                          ? String(unreadCount)
+                          : undefined
+                        : item.badge;
 
                     return (
                       <Link
@@ -341,10 +349,14 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
                         </div>
 
                         {/* Badge */}
-                        {item.badge && (
+                        {dynamicBadge && (
                           isExpanded ? (
                             <span className="text-[9px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 px-1.5 py-0.5 rounded-full font-bold shrink-0">
-                              {item.badge}
+                              {dynamicBadge}
+                            </span>
+                          ) : item.href === '/dashboard/notifications' ? (
+                            <span className="absolute -top-0.5 -right-0.5 min-w-[15px] h-[15px] px-0.5 rounded-full bg-blue-600 text-white text-[9px] font-black flex items-center justify-center leading-none ring-2 ring-white dark:ring-[#070e20]">
+                              {dynamicBadge}
                             </span>
                           ) : (
                             <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-blue-500 ring-2 ring-white dark:ring-[#070e20]" />

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 import { PropNationSidebar } from '@/components/layout/propnation-sidebar';
 import { useSidebarMode } from '@/hooks/use-sidebar-mode';
+import { useNotifications } from '@/hooks/use-notifications';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { GoogleTranslate } from '@/components/ui/google-translate';
 import {
@@ -25,6 +26,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const { isExpanded } = useSidebarMode();
+  const { unreadCount } = useNotifications();
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -148,10 +150,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             <Link
               href="/dashboard/notifications"
+              title={unreadCount > 0 ? `${unreadCount} unread notifications` : 'All notifications read'}
               className="relative p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               <Bell className="h-4 w-4" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-blue-600" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] px-1 rounded-full bg-blue-600 text-white text-[10px] font-black flex items-center justify-center leading-none shadow-xs ring-2 ring-white dark:ring-[#070e20]">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
             </Link>
 
             {/* Trader Wallet & Points Quick Pills */}
