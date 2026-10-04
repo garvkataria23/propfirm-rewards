@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
+import { useSidebarMode } from '@/hooks/use-sidebar-mode';
 import { api } from '@/lib/api';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import {
@@ -23,6 +24,8 @@ import {
   ArrowLeft,
   Menu,
   X,
+  Pin,
+  PinOff,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -40,6 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [pendingCount, setPendingCount] = useState<number>(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { isPinned, togglePinned, isHovered, setHovered, isExpanded } = useSidebarMode();
 
   const STAFF_ROLES = ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'FINANCE_OFFICER'];
   const isStaff = user && STAFF_ROLES.includes(user.role);
@@ -128,128 +132,210 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const roleStyle = ROLE_STYLES[user?.role] || 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
 
-  const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-white dark:bg-[#070e20] text-slate-800 dark:text-slate-200 select-none overflow-y-auto">
-      {/* Brand Header */}
-      <div className="h-14 flex items-center justify-between px-4 border-b border-slate-200 dark:border-[#14234b]/60 shrink-0">
-        <Link href="/admin" className="flex items-center gap-2.5 group" onClick={() => setSidebarOpen(false)}>
-          <div className="relative h-8 w-8 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-sm flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 transition-all">
-            <img
-              src="/pn-logo-hd.png?v=3"
-              alt="Prop Nation"
-              className="h-full w-full object-contain rounded-lg"
-            />
-          </div>
-          <div>
-            <div className="text-sm font-black tracking-tight leading-tight flex items-center">
-              <span className="text-slate-900 dark:text-white">PROP</span>
-              <span className="text-emerald-600 dark:text-emerald-400 ml-1">ADMIN</span>
-            </div>
-            <div className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              Staff Control Center
-            </div>
-          </div>
-        </Link>
-        <ThemeToggle />
-      </div>
+  const renderSidebar = (isMobile = false) => {
+    const expanded = isMobile || isPinned || isHovered;
 
-      {/* Navigation + Profile directly underneath (no huge empty gap) */}
-      <div className="px-3 py-2.5 space-y-2.5">
-        <nav className="space-y-0.5">
-          {navLinks.map((link) => {
-            const Icon = link.icon;
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={(e) => {
-                  e.currentTarget.blur();
-                  setSidebarOpen(false);
-                }}
-                className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors group outline-none focus:outline-none focus-visible:outline-none border-0 ring-0 focus:ring-0 ${
-                  isActive
-                    ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 font-bold'
-                    : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-[#0c1938]/70'
-                }`}
-              >
+    return (
+      <div
+        onMouseEnter={() => {
+          if (!isMobile) setHovered(true);
+        }}
+        onMouseLeave={() => {
+          if (!isMobile) setHovered(false);
+        }}
+        className={`flex flex-col h-full bg-white dark:bg-[#070e20] text-slate-800 dark:text-slate-200 select-none overflow-y-auto transition-[width] duration-300 ease-in-out ${
+          isMobile ? 'w-full' : expanded ? 'w-[220px]' : 'w-[60px]'
+        }`}
+      >
+        {/* Brand Header */}
+        <div
+          className={`h-14 flex items-center border-b border-slate-200 dark:border-[#14234b]/60 shrink-0 ${
+            expanded ? 'justify-between px-3.5' : 'justify-center px-2'
+          }`}
+        >
+          <Link
+            href="/admin"
+            className="flex items-center gap-2.5 group min-w-0"
+            onClick={() => {
+              setSidebarOpen(false);
+              if (typeof window !== 'undefined') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+          >
+            <div className="relative h-8 w-8 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-sm flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 transition-all">
+              <img
+                src="/pn-logo-hd.png?v=3"
+                alt="Prop Nation"
+                className="h-full w-full object-contain rounded-lg"
+              />
+            </div>
+            {expanded && (
+              <div className="min-w-0">
+                <div className="text-sm font-black tracking-tight leading-tight flex items-center whitespace-nowrap">
+                  <span className="text-slate-900 dark:text-white">PROP</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 ml-1">ADMIN</span>
+                </div>
+                <div className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider truncate">
+                  Staff Control Center
+                </div>
+              </div>
+            )}
+          </Link>
+
+          {/* Pin / Auto-Collapse Toggle Button (replaces Night Mode icon) */}
+          {expanded && !isMobile && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.currentTarget.blur();
+                togglePinned();
+              }}
+              title={isPinned ? 'Unpin sidebar (auto-collapse to hover mode)' : 'Pin sidebar (keep full time open)'}
+              className={`hidden lg:flex items-center justify-center h-7 w-7 rounded-lg transition-colors cursor-pointer shrink-0 outline-none focus:outline-none focus-visible:outline-none ${
+                isPinned
+                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300'
+                  : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-800'
+              }`}
+            >
+              {isPinned ? <Pin className="h-3.5 w-3.5 fill-current" /> : <PinOff className="h-3.5 w-3.5" />}
+            </button>
+          )}
+        </div>
+
+        {/* Navigation + Profile directly underneath */}
+        <div className={`py-2.5 space-y-2.5 flex-1 flex flex-col justify-between ${expanded ? 'px-2.5' : 'px-1.5'}`}>
+          <nav className="space-y-0.5">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  title={!expanded ? link.label : undefined}
+                  onClick={(e) => {
+                    e.currentTarget.blur();
+                    setSidebarOpen(false);
+                  }}
+                  className={`flex items-center rounded-xl transition-colors relative group outline-none focus:outline-none focus-visible:outline-none border-0 ring-0 focus:ring-0 ${
+                    expanded
+                      ? `justify-between px-2.5 py-2 text-xs font-semibold ${
+                          isActive
+                            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 font-bold'
+                            : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-[#0c1938]/70'
+                        }`
+                      : `justify-center h-9 w-9 mx-auto ${
+                          isActive
+                            ? 'bg-emerald-600 text-white dark:bg-emerald-600 dark:text-white'
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-800/80 dark:hover:text-white'
+                        }`
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <Icon
+                      className={`h-4 w-4 shrink-0 ${
+                        isActive
+                          ? expanded
+                            ? 'text-emerald-600 dark:text-emerald-400'
+                            : 'text-white'
+                          : 'text-slate-400 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200'
+                      }`}
+                    />
+                    {expanded && <span className="truncate">{link.label}</span>}
+                  </div>
+                  {link.badge && (
+                    expanded ? (
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${
+                          link.badgeClass ?? 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                        }`}
+                      >
+                        {link.badge}
+                      </span>
+                    ) : (
+                      <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#070e20]" />
+                    )
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Profile & Actions Card */}
+          <div className="pt-2.5 border-t border-slate-200 dark:border-[#14234b]/60">
+            {expanded ? (
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#0b152e] border border-slate-200/80 dark:border-slate-800/90 space-y-2">
                 <div className="flex items-center gap-2.5">
-                  <Icon
-                    className={`h-4 w-4 shrink-0 ${
-                      isActive
-                        ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-slate-400 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200'
-                    }`}
-                  />
-                  <span>{link.label}</span>
-                </div>
-                {link.badge && (
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                      link.badgeClass ?? 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
-                    }`}
+                  <div
+                    translate="no"
+                    className="notranslate h-8 w-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs"
                   >
-                    {link.badge}
+                    <span translate="no" className="notranslate leading-none select-none">
+                      {user?.name?.trim()?.[0]?.toUpperCase() ?? 'A'}
+                    </span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 leading-none">
+                      Logged in as:
+                    </div>
+                    <div className="text-xs font-bold text-slate-900 dark:text-white truncate mt-0.5">
+                      {user?.name || 'Platform Admin'}
+                    </div>
+                    <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border inline-block mt-1 ${roleStyle}`}>
+                      {user?.role}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-slate-200/70 dark:border-slate-800/80">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setSidebarOpen(false)}
+                    className="flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-[11px] font-bold transition-colors"
+                  >
+                    <ArrowLeft className="h-3 w-3 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                    <span>Trader View</span>
+                  </Link>
+                  <button
+                    onClick={logout}
+                    className="flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg border border-rose-200 dark:border-rose-500/30 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 text-[11px] font-bold transition-colors cursor-pointer"
+                  >
+                    <LogOut className="h-3 w-3 shrink-0" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-2 py-1">
+                <div
+                  translate="no"
+                  title={`${user?.name || 'Admin'} (${user?.role})`}
+                  className="notranslate h-8 w-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-black text-xs flex items-center justify-center shadow-xs"
+                >
+                  <span translate="no" className="notranslate leading-none select-none">
+                    {user?.name?.trim()?.[0]?.toUpperCase() ?? 'A'}
                   </span>
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Profile & Actions Card directly below System Settings (Zero Blank Space) */}
-        <div className="pt-2.5 border-t border-slate-200 dark:border-[#14234b]/60 space-y-2">
-          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#0b152e] border border-slate-200/80 dark:border-slate-800/90 space-y-2">
-            <div className="flex items-center gap-2.5">
-              <div
-                translate="no"
-                className="notranslate h-9 w-9 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs"
-              >
-                <span translate="no" className="notranslate leading-none select-none">
-                  {user?.name?.trim()?.[0]?.toUpperCase() ?? 'A'}
-                </span>
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 leading-none">
-                  Logged in as:
                 </div>
-                <div className="text-xs font-bold text-slate-900 dark:text-white truncate mt-0.5">
-                  {user?.name || 'Platform Admin'}
-                </div>
-                <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border inline-block mt-1 ${roleStyle}`}>
-                  {user?.role}
-                </span>
               </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-slate-200/70 dark:border-slate-800/80">
-              <Link
-                href="/dashboard"
-                onClick={() => setSidebarOpen(false)}
-                className="flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-[11px] font-bold transition-colors"
-              >
-                <ArrowLeft className="h-3 w-3 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Trader View</span>
-              </Link>
-              <button
-                onClick={logout}
-                className="flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg border border-rose-200 dark:border-rose-500/30 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 text-[11px] font-bold transition-colors cursor-pointer"
-              >
-                <LogOut className="h-3 w-3 shrink-0" />
-                <span>Sign Out</span>
-              </button>
-            </div>
+            )}
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 dark:bg-[#060b18] dark:text-slate-100 flex flex-col lg:flex-row antialiased transition-colors">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-[224px] shrink-0 border-r border-slate-200 dark:border-[#14234b]/60 sticky top-0 h-screen overflow-hidden">
-        <SidebarContent />
+      <aside
+        className={`hidden lg:flex flex-col shrink-0 border-r border-slate-200 dark:border-[#14234b]/60 sticky top-0 h-screen overflow-hidden transition-[width] duration-300 ease-in-out ${
+          isExpanded ? 'w-[220px]' : 'w-[60px]'
+        }`}
+      >
+        {renderSidebar(false)}
       </aside>
 
       {/* Mobile Sidebar Overlay */}
@@ -266,7 +352,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               <X className="h-5 w-5" />
             </button>
-            <SidebarContent />
+            {renderSidebar(true)}
           </aside>
         </div>
       )}
