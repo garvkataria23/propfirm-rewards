@@ -240,7 +240,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 dark:bg-[#060b18] dark:text-slate-100 flex flex-col lg:flex-row antialiased transition-colors">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-slate-200 dark:border-[#14234b]/60 sticky top-0 h-screen overflow-hidden">
+      <aside className="hidden lg:flex flex-col w-[224px] shrink-0 border-r border-slate-200 dark:border-[#14234b]/60 sticky top-0 h-screen overflow-hidden">
         <SidebarContent />
       </aside>
 

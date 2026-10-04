@@ -50,7 +50,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Desktop Left Sidebar: Dynamic Width Spacer (shifts right-side layout on both hover & pin, zero overlap) */}
       <div
         className={`hidden lg:block shrink-0 h-screen sticky top-0 z-30 transition-[width] duration-300 ease-in-out ${
-          isExpanded ? 'w-64' : 'w-[68px]'
+          isExpanded ? 'w-[216px]' : 'w-[60px]'
         }`}
       >
         <PropNationSidebar />

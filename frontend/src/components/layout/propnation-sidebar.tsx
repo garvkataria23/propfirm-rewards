@@ -194,13 +194,13 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
         isMobileDrawer
           ? 'w-full'
           : isExpanded
-          ? 'w-64'
-          : 'w-[68px]'
+          ? 'w-[216px]'
+          : 'w-[60px]'
       } ${className}`}
     >
       {/* Brand Header */}
       <div
-        className={`h-16 flex items-center border-b border-slate-200 dark:border-[#14234b]/50 shrink-0 px-3.5 transition-all ${
+        className={`h-14 flex items-center border-b border-slate-200 dark:border-[#14234b]/50 shrink-0 px-3 transition-all ${
           isExpanded ? 'justify-between' : 'justify-center'
         }`}
       >
@@ -213,10 +213,10 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
             }
             onClose?.();
           }}
-          className="flex items-center gap-2.5 group cursor-pointer overflow-hidden"
+          className="flex items-center gap-2 group cursor-pointer overflow-hidden"
           title="Prop Nation Home"
         >
-          <div className="relative h-10 w-10 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-md flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
+          <div className="relative h-8 w-8 shrink-0 rounded-xl bg-[#06090e] border border-slate-700/80 dark:border-slate-800 shadow-md flex items-center justify-center p-0.5 overflow-hidden group-hover:border-emerald-500/60 group-hover:scale-105 transition-all">
             <img
               src="/pn-logo-hd.png?v=3"
               alt="Prop Nation PN Logo"
@@ -224,10 +224,10 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
             />
           </div>
           {isExpanded && (
-            <span className="text-base font-black tracking-tight leading-tight flex items-center whitespace-nowrap">
+            <span className="text-sm font-black tracking-tight leading-tight flex items-center whitespace-nowrap">
               <span className="text-slate-900 dark:text-white">PROP</span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-300 ml-1.5">NATION</span>
-              <span className="text-[9px] font-semibold text-emerald-600 dark:text-emerald-400 align-super ml-0.5">®</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-300 ml-1">NATION</span>
+              <span className="text-[8px] font-semibold text-emerald-600 dark:text-emerald-400 align-super ml-0.5">®</span>
             </span>
           )}
         </Link>
@@ -242,44 +242,44 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
               togglePinned();
             }}
             title={isPinned ? 'Unpin sidebar (auto-collapse to hover mode)' : 'Pin sidebar (keep full time open)'}
-            className={`hidden lg:flex items-center justify-center h-8 w-8 rounded-lg transition-colors cursor-pointer shrink-0 ${
+            className={`hidden lg:flex items-center justify-center h-7 w-7 rounded-lg transition-colors cursor-pointer shrink-0 ${
               isPinned
                 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300'
                 : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-800'
             }`}
           >
-            {isPinned ? <Pin className="h-4 w-4 fill-current" /> : <PinOff className="h-4 w-4" />}
+            {isPinned ? <Pin className="h-3.5 w-3.5 fill-current" /> : <PinOff className="h-3.5 w-3.5" />}
           </button>
         )}
       </div>
 
       {/* Nav List */}
       <div
-        className={`flex-1 overflow-y-auto py-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-[#172a59] scrollbar-track-transparent ${
-          isExpanded ? 'px-3' : 'px-2'
+        className={`flex-1 overflow-y-auto py-3 space-y-3 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-[#172a59] scrollbar-track-transparent ${
+          isExpanded ? 'px-2.5' : 'px-1.5'
         }`}
       >
         {SIDEBAR_GROUPS.map((group) => {
           const isCollapsed = collapsedGroups[group.id];
 
           return (
-            <div key={group.id} className="space-y-1">
+            <div key={group.id} className="space-y-0.5">
               {/* Group Header (only when expanded) */}
               {isExpanded ? (
                 <button
                   type="button"
                   onClick={() => toggleGroup(group.id)}
-                  className="w-full flex items-center justify-between px-2.5 py-1 text-[11px] font-bold tracking-wider text-slate-500 dark:text-[#5f75a6] uppercase hover:text-slate-900 dark:hover:text-slate-200 transition-colors group cursor-pointer"
+                  className="w-full flex items-center justify-between px-2 py-0.5 text-[10px] font-bold tracking-wider text-slate-500 dark:text-[#5f75a6] uppercase hover:text-slate-900 dark:hover:text-slate-200 transition-colors group cursor-pointer"
                 >
                   <span className="truncate">{group.label}</span>
                   <ChevronDown
-                    className={`h-3.5 w-3.5 transition-transform duration-200 text-slate-400 group-hover:text-slate-700 dark:text-[#5f75a6] dark:group-hover:text-slate-200 ${
+                    className={`h-3 w-3 transition-transform duration-200 text-slate-400 group-hover:text-slate-700 dark:text-[#5f75a6] dark:group-hover:text-slate-200 ${
                       isCollapsed ? '-rotate-90' : 'rotate-0'
                     }`}
                   />
                 </button>
               ) : (
-                <div className="h-px bg-slate-200/80 dark:bg-[#14234b]/60 my-2 mx-1" />
+                <div className="h-px bg-slate-200/80 dark:bg-[#14234b]/60 my-1.5 mx-1" />
               )}
 
               {/* Group Items */}
@@ -297,21 +297,21 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
                         title={!isExpanded ? item.label : undefined}
                         className={`flex items-center rounded-xl transition-all relative group ${
                           isExpanded
-                            ? `justify-between px-3 py-2 text-sm font-medium ${
+                            ? `justify-between px-2.5 py-1.5 text-[13px] font-medium ${
                                 active
                                   ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-200/60 shadow-xs dark:bg-[#12224d] dark:text-blue-400 dark:border-transparent dark:shadow-inner'
                                   : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-[#0c1938]/70'
                               }`
-                            : `justify-center h-10 w-10 mx-auto ${
+                            : `justify-center h-9 w-9 mx-auto ${
                                 active
                                   ? 'bg-blue-600 text-white shadow-sm dark:bg-blue-600 dark:text-white'
                                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-800/80 dark:hover:text-white'
                               }`
                         }`}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
                           <Icon
-                            className={`h-[18px] w-[18px] shrink-0 ${
+                            className={`h-4 w-4 shrink-0 ${
                               active
                                 ? isExpanded
                                   ? 'text-blue-600 dark:text-blue-400'
@@ -325,7 +325,7 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
                         {/* Badge */}
                         {item.badge && (
                           isExpanded ? (
-                            <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 px-2 py-0.5 rounded-full font-bold shrink-0">
+                            <span className="text-[9px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 px-1.5 py-0.5 rounded-full font-bold shrink-0">
                               {item.badge}
                             </span>
                           ) : (
@@ -344,17 +344,17 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
 
       {/* Admin Panel Quick Switch (Staff only) */}
       {isStaff && (
-        <div className={`px-2.5 pb-2 transition-all ${isExpanded ? 'block' : 'flex justify-center'}`}>
+        <div className={`px-2 pb-2 transition-all ${isExpanded ? 'block' : 'flex justify-center'}`}>
           <Link
             href="/admin"
             onClick={onClose}
             title="Switch to Admin Control Panel"
-            className={`flex items-center gap-2.5 rounded-xl border border-purple-300/80 dark:border-purple-500/30 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-bold transition-all shadow-xs ${
-              isExpanded ? 'px-3 py-2 w-full text-xs' : 'p-2 justify-center'
+            className={`flex items-center gap-2 rounded-xl border border-purple-300/80 dark:border-purple-500/30 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-bold transition-all shadow-xs ${
+              isExpanded ? 'px-2.5 py-1.5 w-full text-[11px]' : 'p-2 justify-center'
             }`}
           >
-            <ShieldCheck className="h-4 w-4 text-purple-600 dark:text-purple-400 shrink-0" />
-            {isExpanded && <span>Admin Control Center</span>}
+            <ShieldCheck className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
+            {isExpanded && <span className="truncate">Admin Control Center</span>}
           </Link>
         </div>
       )}
@@ -362,25 +362,25 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
       {/* User Profile Footer */}
       <div
         className={`border-t border-slate-200 bg-slate-50/80 dark:border-[#14234b]/60 dark:bg-[#060c1d] shrink-0 transition-colors ${
-          isExpanded ? 'p-3.5' : 'p-2'
+          isExpanded ? 'p-2.5' : 'p-2'
         }`}
       >
         {isExpanded ? (
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center justify-between gap-2">
             <Link
               href="/dashboard/profile"
               onClick={onClose}
-              className="flex items-center gap-2.5 overflow-hidden flex-1 group"
+              className="flex items-center gap-2 overflow-hidden flex-1 group"
             >
-              <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">
-                <span className="text-xs font-black">{initial}</span>
+              <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">
+                <span className="text-[11px] font-black">{initial}</span>
               </div>
 
               <div className="flex flex-col min-w-0">
                 <span className="text-xs font-bold text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
                   {displayName}
                 </span>
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                <div className="flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400 truncate">
                   <span>{displayPoints.toLocaleString('en-US')} PTS</span>
                   <span className="text-slate-300 dark:text-slate-600">·</span>
                   <span className="text-emerald-600 dark:text-emerald-400 font-semibold inline-flex items-center gap-0.5">
@@ -397,7 +397,7 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
                 title="Sign Out"
                 className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-slate-200/60 dark:hover:text-rose-400 dark:hover:bg-slate-800/60 transition-colors cursor-pointer shrink-0"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-3.5 w-3.5" />
               </button>
             )}
           </div>
@@ -406,12 +406,12 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
             href="/dashboard/profile"
             onClick={onClose}
             title={`${displayName} (${displayPoints.toLocaleString('en-US')} PTS)`}
-            className="flex items-center justify-center relative group py-1"
+            className="flex items-center justify-center relative group py-0.5"
           >
-            <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 text-white font-bold flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-              <span className="text-xs font-black">{initial}</span>
+            <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 text-white font-bold flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+              <span className="text-[11px] font-black">{initial}</span>
             </div>
-            <span className="absolute bottom-1 right-2 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#060c1d]" />
+            <span className="absolute bottom-0.5 right-1.5 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#060c1d]" />
           </Link>
         )}
       </div>

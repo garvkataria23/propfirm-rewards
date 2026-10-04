@@ -47,7 +47,6 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Custom Scrollbar - Dark Fintech */
