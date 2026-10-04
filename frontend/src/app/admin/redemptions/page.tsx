@@ -276,7 +276,7 @@ export default function AdminRedemptionsPage() {
   const handleCancelAndRefund = async (rdm: Redemption) => {
     if (
       !confirm(
-        `Cancel order ${rdm.redemptionCode} and automatically refund ${rdm.pointsSpent.toLocaleString()} points back to ${rdm.user.name}?`
+        `Cancel order ${rdm.redemptionCode} and automatically refund ${rdm.pointsSpent.toLocaleString('en-US')} points back to ${rdm.user.name}?`
       )
     )
       return;
@@ -300,7 +300,7 @@ export default function AdminRedemptionsPage() {
       )
     );
 
-    alert(`Order ${rdm.redemptionCode} cancelled. ${rdm.pointsSpent.toLocaleString()} points refunded to ${rdm.user.name}.`);
+    alert(`Order ${rdm.redemptionCode} cancelled. ${rdm.pointsSpent.toLocaleString('en-US')} points refunded to ${rdm.user.name}.`);
   };
 
   const handleDeleteRedemption = async (id: string) => {
@@ -513,7 +513,7 @@ export default function AdminRedemptionsPage() {
                       </div>
                     </td>
                     <td className="px-5 py-3.5 font-mono text-purple-600 dark:text-purple-400 font-bold whitespace-nowrap">
-                      -{rdm.pointsSpent.toLocaleString()} PTS
+                      -{rdm.pointsSpent.toLocaleString('en-US')} PTS
                     </td>
                     <td className="px-5 py-3.5 whitespace-nowrap">
                       {getStatusBadge(rdm.status)}
@@ -589,7 +589,7 @@ export default function AdminRedemptionsPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Points Cost:</span>
-                <strong className="text-purple-600 dark:text-purple-400 font-mono">{selectedRdm.pointsSpent.toLocaleString()} PTS</strong>
+                <strong className="text-purple-600 dark:text-purple-400 font-mono">{selectedRdm.pointsSpent.toLocaleString('en-US')} PTS</strong>
               </div>
             </div>
 
@@ -749,7 +749,7 @@ export default function AdminRedemptionsPage() {
 
             {newStatus === 'CANCELLED' && (
               <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-700 dark:text-rose-300 text-xs">
-                ⚠️ Marking this order as CANCELLED will automatically refund {selectedRdm.pointsSpent.toLocaleString()} points back to the trader&apos;s ledger.
+                ⚠️ Marking this order as CANCELLED will automatically refund {selectedRdm.pointsSpent.toLocaleString('en-US')} points back to the trader&apos;s ledger.
               </div>
             )}
 

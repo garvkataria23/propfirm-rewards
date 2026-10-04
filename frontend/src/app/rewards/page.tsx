@@ -694,7 +694,7 @@ export default function RewardsStorePage() {
                 Your Available Balance
               </span>
               <div className="text-2xl font-black text-slate-900 dark:text-white leading-tight">
-                {userBalance.toLocaleString()}{' '}
+                {userBalance.toLocaleString('en-US')}{' '}
                 <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">Points</span>
               </div>
             </div>
@@ -839,7 +839,7 @@ export default function RewardsStorePage() {
                       <div className="flex items-center gap-1.5">
                         <Coins className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                         <span className="text-xl font-black text-emerald-600 dark:text-emerald-400">
-                          {reward.pointsRequired.toLocaleString()}
+                          {reward.pointsRequired.toLocaleString('en-US')}
                         </span>
                         <span className="text-xs text-slate-500 dark:text-slate-400">Points</span>
                       </div>
@@ -923,7 +923,7 @@ export default function RewardsStorePage() {
                     Order {redemptionSuccess.redemption.redemptionCode} Placed!
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-slate-400 max-w-sm mx-auto">
-                    We deducted {selectedReward.pointsRequired.toLocaleString()} points. Remaining balance: {redemptionSuccess.remainingBalance.toLocaleString()} points.
+                    We deducted {selectedReward.pointsRequired.toLocaleString('en-US')} points. Remaining balance: {redemptionSuccess.remainingBalance.toLocaleString('en-US')} points.
                   </p>
                 </div>
 
@@ -968,16 +968,16 @@ export default function RewardsStorePage() {
                   <div className="flex justify-between text-slate-700 dark:text-slate-300">
                     <span>Required Points:</span>
                     <strong className="text-rose-500 dark:text-rose-400 font-bold">
-                      -{selectedReward.pointsRequired.toLocaleString()} PTS
+                      -{selectedReward.pointsRequired.toLocaleString('en-US')} PTS
                     </strong>
                   </div>
                   <div className="flex justify-between text-slate-700 dark:text-slate-300">
                     <span>Current Available Balance:</span>
-                    <strong className="text-slate-900 dark:text-white">{userBalance.toLocaleString()} PTS</strong>
+                    <strong className="text-slate-900 dark:text-white">{userBalance.toLocaleString('en-US')} PTS</strong>
                   </div>
                   <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-800 text-emerald-600 dark:text-emerald-400 font-bold">
                     <span>Balance After Redemption:</span>
-                    <span>{(userBalance - selectedReward.pointsRequired).toLocaleString()} PTS</span>
+                    <span>{(userBalance - selectedReward.pointsRequired).toLocaleString('en-US')} PTS</span>
                   </div>
                 </div>
 
@@ -1120,7 +1120,7 @@ export default function RewardsStorePage() {
                     isLoading={isSubmittingRedemption}
                     onClick={handleConfirmRedemption}
                   >
-                    Confirm Redemption ({selectedReward.pointsRequired.toLocaleString()} PTS)
+                    Confirm Redemption ({selectedReward.pointsRequired.toLocaleString('en-US')} PTS)
                   </Button>
                 </div>
               </div>

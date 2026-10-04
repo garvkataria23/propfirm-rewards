@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { SupportService } from './support.service';
-import { SupportController } from './support.controller';
+import { SupportController, LiveChatSyncController } from './support.controller';
 import { ChatGateway } from './chat.gateway';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { getJwtSecret } from '../../common/config/jwt.config';
@@ -14,7 +14,7 @@ import { getJwtSecret } from '../../common/config/jwt.config';
       signOptions: { expiresIn: '7d' },
     }),
   ],
-  controllers: [SupportController],
+  controllers: [SupportController, LiveChatSyncController],
   providers: [SupportService, ChatGateway],
   exports: [SupportService, ChatGateway],
 })

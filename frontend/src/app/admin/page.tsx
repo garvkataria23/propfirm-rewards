@@ -188,7 +188,7 @@ export default function AdminDashboardPage() {
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Users</span>
             <Users className="h-4 w-4 text-blue-500 dark:text-blue-400" />
           </div>
-          <div className="text-3xl font-black text-slate-900 dark:text-white">{m?.totalUsers.toLocaleString() || '0'}</div>
+          <div className="text-3xl font-black text-slate-900 dark:text-white">{m?.totalUsers.toLocaleString('en-US') || '0'}</div>
           <div className="text-xs text-slate-500 dark:text-slate-400">
             <span className="text-emerald-600 dark:text-emerald-400 font-semibold">+{m?.newUsers || 0} new</span> in last {days} days
           </div>
@@ -200,7 +200,7 @@ export default function AdminDashboardPage() {
             <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Pending Review</span>
             <Clock className="h-4 w-4 text-amber-500 dark:text-amber-400" />
           </div>
-          <div className="text-3xl font-black text-slate-900 dark:text-white">{m?.pendingVerification.toLocaleString() || '0'}</div>
+          <div className="text-3xl font-black text-slate-900 dark:text-white">{m?.pendingVerification.toLocaleString('en-US') || '0'}</div>
           <div className="text-xs text-slate-500 dark:text-slate-400">
             {m?.approvedPurchases || 0} approved • {m?.rejectedPurchases || 0} rejected
           </div>
@@ -213,7 +213,7 @@ export default function AdminDashboardPage() {
             <Coins className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div className="text-3xl font-black text-slate-900 dark:text-white">
-            {m?.totalPointsIssued.toLocaleString() || '0'}{' '}
+            {m?.totalPointsIssued.toLocaleString('en-US') || '0'}{' '}
             <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">PTS</span>
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400">All-time awarded points</div>
@@ -226,11 +226,11 @@ export default function AdminDashboardPage() {
             <Gift className="h-4 w-4 text-purple-600 dark:text-purple-400" />
           </div>
           <div className="text-3xl font-black text-slate-900 dark:text-white">
-            {m?.totalPointsRedeemed.toLocaleString() || '0'}{' '}
+            {m?.totalPointsRedeemed.toLocaleString('en-US') || '0'}{' '}
             <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">PTS</span>
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400">
-            Net Outstanding: {m?.netPointsOutstanding.toLocaleString() || '0'} PTS
+            Net Outstanding: {m?.netPointsOutstanding.toLocaleString('en-US') || '0'} PTS
           </div>
         </Card>
       </div>

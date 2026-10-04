@@ -72,7 +72,7 @@ export function LiveActivityTicker() {
             type: d.type === 'REDEMPTION' ? 'REDEMPTION' : 'PURCHASE',
             label: d.type === 'REDEMPTION' ? 'Reward Redeemed' : 'Purchase Verified',
             detail: d.propFirmOrItem || d.title || 'Eligible Offer',
-            badge: d.points ? `+${Number(d.points).toLocaleString()} PTS` : d.badge || 'VERIFIED',
+            badge: d.points ? `+${Number(d.points).toLocaleString('en-US')} PTS` : d.badge || 'VERIFIED',
           }));
           setItems(mapped);
           setIsLiveBackend(true);

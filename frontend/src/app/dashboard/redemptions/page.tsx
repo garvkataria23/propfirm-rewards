@@ -218,7 +218,7 @@ export default function RedemptionsTrackingPage() {
             ${(totalPointsSpent / 100).toFixed(2)} <span className="text-xs font-bold text-slate-400">USD</span>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 pt-1 font-mono">
-            {totalPointsSpent.toLocaleString()} PTS redeemed
+            {totalPointsSpent.toLocaleString('en-US')} PTS redeemed
           </p>
         </div>
       </div>
@@ -309,7 +309,7 @@ export default function RedemptionsTrackingPage() {
                     </div>
                     <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex flex-wrap items-center gap-3">
                       <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                        -{rdm.pointsSpent.toLocaleString()} Points (≈ ${(rdm.pointsSpent / 100).toFixed(2)} USD)
+                        -{rdm.pointsSpent.toLocaleString('en-US')} Points (≈ ${(rdm.pointsSpent / 100).toFixed(2)} USD)
                       </span>
                       <span>• Placed on {formatDate(rdm.createdAt)}</span>
                       {rdm.estimatedDelivery && (

@@ -217,7 +217,7 @@ export function PointsAnimation({ isDone }: { isDone: boolean }) {
             AVAILABLE POINTS
           </div>
           <div className="text-2xl sm:text-3xl font-mono font-black text-white mt-0.5">
-            {walletBalance.toLocaleString()}{' '}
+            {walletBalance.toLocaleString('en-US')}{' '}
             <span className="text-xs font-bold text-emerald-400">POINTS</span>
           </div>
           <div className="text-[11px] font-mono text-emerald-300/90 mt-0.5">

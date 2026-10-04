@@ -131,3 +131,137 @@ export class SupportController {
     );
   }
 }
+
+// ============================================================================
+// PUBLIC / CROSS-DEVICE LIVE CHAT SYNC CONTROLLER (FOR VERCEL + RENDER)
+// ============================================================================
+const globalRenderChatStore = globalThis as unknown as {
+  __pnRenderLiveChatTickets?: Map<string, any>;
+  __pnRenderLiveChatMessages?: Map<string, any[]>;
+};
+
+if (!globalRenderChatStore.__pnRenderLiveChatTickets) {
+  globalRenderChatStore.__pnRenderLiveChatTickets = new Map<string, any>();
+}
+if (!globalRenderChatStore.__pnRenderLiveChatMessages) {
+  globalRenderChatStore.__pnRenderLiveChatMessages = new Map<string, any[]>();
+}
+
+const renderTicketsMap = globalRenderChatStore.__pnRenderLiveChatTickets;
+const renderMessagesMap = globalRenderChatStore.__pnRenderLiveChatMessages;
+
+@ApiTags('Support & Live Chat Sync')
+@Controller('support/live-chat-sync')
+export class LiveChatSyncController {
+  @Get()
+  @ApiOperation({ summary: 'Get real-time synced live chat tickets or messages (Vercel <-> Render)' })
+  getLiveChatSync(
+    @Query('ticketId') ticketId?: string,
+    @Query('userId') userId?: string,
+  ) {
+    if (ticketId) {
+      const ticket = renderTicketsMap.get(ticketId) || null;
+      const messages = renderMessagesMap.get(ticketId) || [];
+      return { ticket, messages };
+    }
+
+    let tickets = Array.from(renderTicketsMap.values());
+    if (userId) {
+      tickets = tickets.filter((t) => t.userId === userId);
+    }
+    tickets.sort((a, b) => (b.lastMessageAt || '').localeCompare(a.lastMessageAt || ''));
+
+    return { tickets };
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Sync live chat ticket, message, typing, or seen status on Render' })
+  postLiveChatSync(@Body() body: any) {
+    const { action, ticket, message, ticketId, updates, viewerRole } = body || {};
+
+    if (action === 'UPSERT_TICKET' && ticket?.id) {
+      const existing = renderTicketsMap.get(ticket.id);
+      const merged = { ...(existing || {}), ...ticket };
+      renderTicketsMap.set(ticket.id, merged);
+
+      if (message && message.id) {
+        const list = renderMessagesMap.get(ticket.id) || [];
+        if (!list.some((m) => m.id === message.id)) {
+          list.push(message);
+          list.sort((a, b) => (a.createdAt || '').localeCompare(b.createdAt || ''));
+          renderMessagesMap.set(ticket.id, list);
+        }
+      }
+      return { ok: true, ticket: merged };
+    }
+
+    if (action === 'SEND_MESSAGE' && message?.ticketId && message?.id) {
+      const tId = message.ticketId;
+      const list = renderMessagesMap.get(tId) || [];
+      const existingIdx = list.findIndex((m) => m.id === message.id);
+      if (existingIdx >= 0) {
+        list[existingIdx] = { ...list[existingIdx], ...message };
+      } else {
+        list.push(message);
+      }
+      list.sort((a, b) => (a.createdAt || '').localeCompare(b.createdAt || ''));
+      renderMessagesMap.set(tId, list);
+
+      if (updates && renderTicketsMap.has(tId)) {
+        const existingTicket = renderTicketsMap.get(tId)!;
+        renderTicketsMap.set(tId, { ...existingTicket, ...updates });
+      } else if (ticket && ticket.id === tId) {
+        renderTicketsMap.set(tId, {
+          ...(renderTicketsMap.get(tId) || {}),
+          ...ticket,
+          ...(updates || {}),
+        });
+      }
+
+      return { ok: true, message };
+    }
+
+    if (action === 'UPDATE_TICKET' && ticketId && updates) {
+      const existing = renderTicketsMap.get(ticketId);
+      if (existing) {
+        renderTicketsMap.set(ticketId, { ...existing, ...updates });
+      }
+      if (message && message.id) {
+        const list = renderMessagesMap.get(ticketId) || [];
+        if (!list.some((m) => m.id === message.id)) {
+          list.push(message);
+          renderMessagesMap.set(ticketId, list);
+        }
+      }
+      return { ok: true };
+    }
+
+    if (action === 'MARK_SEEN' && ticketId) {
+      const nowIso = new Date().toISOString();
+      const list = renderMessagesMap.get(ticketId) || [];
+      const updatedList = list.map((m) => {
+        const isFromTrader = m.senderRole === 'USER';
+        if (
+          (viewerRole === 'USER' && !isFromTrader && m.status !== 'SEEN') ||
+          (viewerRole === 'ADMIN' && isFromTrader && m.status !== 'SEEN')
+        ) {
+          return { ...m, status: 'SEEN', seenAt: nowIso };
+        }
+        return m;
+      });
+      renderMessagesMap.set(ticketId, updatedList);
+
+      const existing = renderTicketsMap.get(ticketId);
+      if (existing) {
+        renderTicketsMap.set(ticketId, {
+          ...existing,
+          ...(viewerRole === 'USER' ? { unreadByUser: 0 } : { unreadByAdmin: 0 }),
+        });
+      }
+      return { ok: true };
+    }
+
+    return { ok: true };
+  }
+}
+

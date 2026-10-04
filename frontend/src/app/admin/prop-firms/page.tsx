@@ -585,7 +585,7 @@ export default function AdminPropFirmsPage() {
 
                     <div className="flex items-center gap-3">
                       <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                        +{offer.rewardPoints.toLocaleString()} PTS
+                        +{offer.rewardPoints.toLocaleString('en-US')} PTS
                       </span>
                       <button
                         onClick={() => handleDeleteOffer(offer.id)}

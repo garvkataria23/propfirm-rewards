@@ -425,7 +425,7 @@ export function InteractiveEvaluationMatrix({
                 Official Challenge Cost
               </span>
               <div className="text-2xl sm:text-3xl font-[900] text-slate-900 dark:text-white tracking-tight">
-                ${challengeCost.toLocaleString()} <span className="text-xs font-bold text-slate-400">USD</span>
+                ${challengeCost.toLocaleString('en-US')} <span className="text-xs font-bold text-slate-400">USD</span>
               </div>
               <div className="text-[11px] text-slate-500">
                 For {activeTier.label} {currentModel.name}
@@ -440,7 +440,7 @@ export function InteractiveEvaluationMatrix({
               </span>
               <div className="flex flex-wrap items-baseline gap-2">
                 <span className="text-2xl sm:text-3xl font-black text-purple-700 dark:text-purple-300 tracking-tight">
-                  +{cashbackPoints.toLocaleString()}
+                  +{cashbackPoints.toLocaleString('en-US')}
                 </span>
                 <span className="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">
                   PTS

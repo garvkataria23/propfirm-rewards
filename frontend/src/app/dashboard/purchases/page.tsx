@@ -260,7 +260,7 @@ export default function PurchasesListPage() {
                   <div className="text-right">
                     <div className="text-xs text-slate-500 dark:text-slate-400">Reward Yield:</div>
                     <div className="text-sm font-black text-purple-600 dark:text-purple-400">
-                      +{purchase.pointsAwarded.toLocaleString()} PTS
+                      +{purchase.pointsAwarded.toLocaleString('en-US')} PTS
                     </div>
                   </div>
                   <div>{getStatusBadge(purchase.status)}</div>

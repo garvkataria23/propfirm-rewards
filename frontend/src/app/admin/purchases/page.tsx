@@ -771,7 +771,7 @@ export default function AdminPurchasesPage() {
                       ${sub.purchaseAmountUsd}
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap font-bold text-emerald-600 dark:text-emerald-400">
-                      +{sub.pointsAwarded.toLocaleString()} PTS
+                      +{sub.pointsAwarded.toLocaleString('en-US')} PTS
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap">
                       <Badge
@@ -975,7 +975,7 @@ export default function AdminPurchasesPage() {
                 </div>
                 <div>
                   <span className="text-slate-500 block">Points Allocation:</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-black">+{selectedSub.pointsAwarded.toLocaleString()} PTS</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-black">+{selectedSub.pointsAwarded.toLocaleString('en-US')} PTS</span>
                 </div>
               </div>
             )}

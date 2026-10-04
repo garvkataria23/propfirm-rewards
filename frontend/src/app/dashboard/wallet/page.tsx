@@ -322,7 +322,7 @@ export default function TraderWalletPage() {
               </div>
               <div className="flex items-center gap-2 mt-2 text-xs text-emerald-400 font-mono">
                 <Coins className="h-4 w-4" />
-                <span>{availablePoints.toLocaleString()} Available Points</span>
+                <span>{availablePoints.toLocaleString('en-US')} Available Points</span>
               </div>
             </div>
 
@@ -354,7 +354,7 @@ export default function TraderWalletPage() {
                 ${pendingUsd} <span className="text-xs font-bold text-slate-400">USD</span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                {pendingPoints.toLocaleString()} PTS in cooling window
+                {pendingPoints.toLocaleString('en-US')} PTS in cooling window
               </p>
             </div>
             <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
@@ -409,7 +409,7 @@ export default function TraderWalletPage() {
                 ${lifetimeUsd} <span className="text-xs font-bold text-slate-400">USD</span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                {lifetimeEarned.toLocaleString()} PTS total accumulated
+                {lifetimeEarned.toLocaleString('en-US')} PTS total accumulated
               </p>
             </div>
             <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
@@ -435,7 +435,7 @@ export default function TraderWalletPage() {
                 ${redeemedUsd} <span className="text-xs font-bold text-slate-400">USD</span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                {lifetimeRedeemed.toLocaleString()} PTS claimed in gear &amp; cash
+                {lifetimeRedeemed.toLocaleString('en-US')} PTS claimed in gear &amp; cash
               </p>
             </div>
             <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
@@ -582,13 +582,13 @@ export default function TraderWalletPage() {
                             : 'text-rose-600 dark:text-rose-400'
                         }`}
                       >
-                        {isPositive ? `+${tx.points.toLocaleString()}` : tx.points.toLocaleString()} PTS
+                        {isPositive ? `+${tx.points.toLocaleString('en-US')}` : tx.points.toLocaleString('en-US')} PTS
                       </td>
                       <td className="py-3.5 px-4 text-right text-slate-600 dark:text-slate-300 font-mono">
                         ${(Math.abs(tx.points) / 100).toFixed(2)}
                       </td>
                       <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-700 dark:text-slate-300">
-                        {tx.balanceAfter.toLocaleString()} PTS
+                        {tx.balanceAfter.toLocaleString('en-US')} PTS
                       </td>
                     </tr>
                   );
@@ -667,7 +667,7 @@ export default function TraderWalletPage() {
                   <div className="flex items-center justify-between text-xs">
                     <label className="font-bold text-slate-700 dark:text-slate-300">Withdrawal Amount (PTS) *</label>
                     <span className="text-slate-400">
-                      Available: {availablePoints.toLocaleString()} PTS (${availableUsd})
+                      Available: {availablePoints.toLocaleString('en-US')} PTS (${availableUsd})
                     </span>
                   </div>
                   <input
@@ -809,7 +809,7 @@ export default function TraderWalletPage() {
                 <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
                   Your withdrawal of{' '}
                   <span className="font-bold text-slate-900 dark:text-white">
-                    ${(payoutAmountPts / 100).toFixed(2)} USD ({payoutAmountPts.toLocaleString()} PTS)
+                    ${(payoutAmountPts / 100).toFixed(2)} USD ({payoutAmountPts.toLocaleString('en-US')} PTS)
                   </span>{' '}
                   has been verified via WhatsApp 2FA and queued for automated blockchain dispatch (&lt;15 mins).
                 </p>

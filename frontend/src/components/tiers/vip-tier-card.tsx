@@ -115,7 +115,7 @@ export function VipTierCard({ vip, totalPointsEarned = 0 }: VipTierCardProps) {
           </div>
 
           <p className="text-[11px] text-slate-400 mt-2 font-mono">
-            Earn <span className="text-emerald-300 font-bold">+{pointsToNext.toLocaleString()} more points</span> to upgrade and unlock a{' '}
+            Earn <span className="text-emerald-300 font-bold">+{pointsToNext.toLocaleString('en-US')} more points</span> to upgrade and unlock a{' '}
             <span className="text-emerald-400 font-bold">{isFunded ? '1.50x' : '1.25x'}</span> reward multiplier!
           </p>
         </div>

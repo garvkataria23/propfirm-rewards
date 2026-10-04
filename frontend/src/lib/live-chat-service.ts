@@ -245,14 +245,25 @@ export function mergeLocalTicketMessages(ticketId: string, incoming: LiveChatMes
   } catch {}
 }
 
+const DIRECT_RENDER_API = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+
 async function syncToServerApi(payload: Record<string, any>) {
   if (typeof window === 'undefined') return;
   try {
-    await fetch('/api/live-chat', {
+    const bodyStr = JSON.stringify(payload);
+    fetch('/api/live-chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+      body: bodyStr,
+    }).catch(() => {});
+
+    if (DIRECT_RENDER_API) {
+      fetch(`${DIRECT_RENDER_API}/support/live-chat-sync`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: bodyStr,
+      }).catch(() => {});
+    }
   } catch {}
 }
 

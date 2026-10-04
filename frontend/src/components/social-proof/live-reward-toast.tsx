@@ -138,7 +138,7 @@ export function LiveRewardToast() {
 
             <div className="flex items-center gap-2 mt-1.5">
               <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
-                +{current.points.toLocaleString()} PTS
+                +{current.points.toLocaleString('en-US')} PTS
               </span>
               <Link
                 href="/rewards"

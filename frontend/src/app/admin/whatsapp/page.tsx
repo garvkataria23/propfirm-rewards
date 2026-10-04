@@ -451,7 +451,7 @@ export default function AdminWhatsAppPage() {
             </div>
           </div>
           <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
-            {totalSent.toLocaleString()}
+            {totalSent.toLocaleString('en-US')}
           </div>
           <div className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold pt-1">
             <TrendingUp className="h-3.5 w-3.5" />
@@ -472,7 +472,7 @@ export default function AdminWhatsAppPage() {
           <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white flex items-baseline gap-2">
             <span>{overallDeliveryRate}%</span>
             <span className="text-xs font-medium text-slate-400 dark:text-slate-500">
-              ({totalDelivered.toLocaleString()})
+              ({totalDelivered.toLocaleString('en-US')})
             </span>
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400 pt-1 flex items-center gap-1">
@@ -494,7 +494,7 @@ export default function AdminWhatsAppPage() {
           <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white flex items-baseline gap-2">
             <span>{overallReadRate}%</span>
             <span className="text-xs font-medium text-slate-400 dark:text-slate-500">
-              ({totalRead.toLocaleString()})
+              ({totalRead.toLocaleString('en-US')})
             </span>
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400 pt-1">
@@ -724,7 +724,7 @@ export default function AdminWhatsAppPage() {
                 </div>
 
                 <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-                  <span>{cat.count.toLocaleString()} messages</span>
+                  <span>{cat.count.toLocaleString('en-US')} messages</span>
                   <span>{cat.share}% total</span>
                 </div>
 

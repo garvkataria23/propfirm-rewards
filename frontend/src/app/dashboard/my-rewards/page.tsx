@@ -161,7 +161,7 @@ export default function MyRewardsPage() {
                         <span className="font-mono text-xs font-bold text-blue-600 dark:text-blue-400">
                           {red.redemptionCode}
                         </span>
-                        <Badge variant="purple">{red.pointsSpent.toLocaleString()} PTS</Badge>
+                        <Badge variant="purple">{red.pointsSpent.toLocaleString('en-US')} PTS</Badge>
                       </div>
                       <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-1">
                         {red.reward?.name || 'Exclusive Reward Item'}

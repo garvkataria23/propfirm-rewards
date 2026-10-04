@@ -375,7 +375,7 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
                   {displayName}
                 </span>
                 <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                  <span>{displayPoints.toLocaleString()} PTS</span>
+                  <span>{displayPoints.toLocaleString('en-US')} PTS</span>
                   <span className="text-slate-300 dark:text-slate-600">·</span>
                   <span className="text-emerald-600 dark:text-emerald-400 font-semibold inline-flex items-center gap-0.5">
                     <Check className="h-2.5 w-2.5 stroke-[3]" />
@@ -399,7 +399,7 @@ export function PropNationSidebar({ onClose, className = '' }: PropNationSidebar
           <Link
             href="/dashboard/profile"
             onClick={onClose}
-            title={`${displayName} (${displayPoints.toLocaleString()} PTS)`}
+            title={`${displayName} (${displayPoints.toLocaleString('en-US')} PTS)`}
             className="flex items-center justify-center relative group py-1"
           >
             <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 text-white font-bold flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">

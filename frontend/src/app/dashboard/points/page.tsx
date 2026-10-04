@@ -231,7 +231,7 @@ export default function PointsLedgerPage() {
             Available Spendable Balance
           </div>
           <div className="text-3xl font-black text-slate-900 dark:text-white">
-            {availablePts.toLocaleString()}{' '}
+            {availablePts.toLocaleString('en-US')}{' '}
             <span className="text-xs text-slate-500 font-normal">PTS</span>
           </div>
           <div className="text-xs font-black text-emerald-600 dark:text-emerald-400">
@@ -245,7 +245,7 @@ export default function PointsLedgerPage() {
             Total Points Earned
           </div>
           <div className="text-3xl font-black text-slate-900 dark:text-white">
-            {earnedPts.toLocaleString()}{' '}
+            {earnedPts.toLocaleString('en-US')}{' '}
             <span className="text-xs text-slate-500 font-normal">PTS</span>
           </div>
           <div className="text-xs text-slate-500">
@@ -259,7 +259,7 @@ export default function PointsLedgerPage() {
             Points Redeemed
           </div>
           <div className="text-3xl font-black text-slate-900 dark:text-white">
-            {redeemedPts.toLocaleString()}{' '}
+            {redeemedPts.toLocaleString('en-US')}{' '}
             <span className="text-xs text-slate-500 font-normal">PTS</span>
           </div>
           <div className="text-xs text-purple-600 dark:text-purple-400 font-bold">
@@ -273,7 +273,7 @@ export default function PointsLedgerPage() {
             Pending Escrow Clearance
           </div>
           <div className="text-3xl font-black text-slate-900 dark:text-white">
-            {pendingPts.toLocaleString()}{' '}
+            {pendingPts.toLocaleString('en-US')}{' '}
             <span className="text-xs text-slate-500 font-normal">PTS</span>
           </div>
           <div className="text-xs text-amber-600 dark:text-amber-400 font-bold">
@@ -369,13 +369,13 @@ export default function PointsLedgerPage() {
                         isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                       }`}
                     >
-                      {isPositive ? `+${tx.points.toLocaleString()}` : tx.points.toLocaleString()} PTS
+                      {isPositive ? `+${tx.points.toLocaleString('en-US')}` : tx.points.toLocaleString('en-US')} PTS
                     </td>
                     <td className="py-3.5 px-4 text-right text-slate-600 dark:text-slate-300 font-mono whitespace-nowrap">
                       ${(Math.abs(tx.points) / 10).toFixed(2)}
                     </td>
                     <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap">
-                      {tx.balanceAfter.toLocaleString()} PTS
+                      {tx.balanceAfter.toLocaleString('en-US')} PTS
                     </td>
                   </tr>
                 );

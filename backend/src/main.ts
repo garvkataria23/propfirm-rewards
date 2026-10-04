@@ -79,10 +79,10 @@ async function bootstrap() {
   app.use('/redemptions', rateLimiterMiddleware(15, 60 * 1000)); // max 15 redemption calls / min
   app.use('/webhooks', rateLimiterMiddleware(60, 60 * 1000)); // max 60 webhook events / min
 
-  // Enable CORS with secure origin checks
+  // Enable CORS with secure origin checks (supports Vercel + Render out of the box)
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+      // Allow requests with no origin (like mobile apps, curl, or Next.js server-to-server)
       if (!origin) return callback(null, true);
 
       const isProd = process.env.NODE_ENV === 'production';
@@ -90,9 +90,11 @@ async function bootstrap() {
       const allowedSet = new Set(
         configured
           .split(',')
-          .map((o) => o.trim())
+          .map((o) => o.trim().replace(/\/$/, ''))
           .filter(Boolean),
       );
+
+      const cleanOrigin = origin.replace(/\/$/, '');
 
       // In development only, allow standard local dev origins
       if (!isProd) {
@@ -101,7 +103,12 @@ async function bootstrap() {
         allowedSet.add('http://localhost:3001');
       }
 
-      if (allowedSet.has(origin)) {
+      if (
+        allowedSet.has(cleanOrigin) ||
+        allowedSet.has('*') ||
+        cleanOrigin.endsWith('.vercel.app') ||
+        cleanOrigin.endsWith('.onrender.com')
+      ) {
         return callback(null, true);
       }
 

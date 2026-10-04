@@ -57,10 +57,59 @@ if (!globalChatStore.__pnLiveChatMessages) {
 const ticketsMap = globalChatStore.__pnLiveChatTickets;
 const messagesMap = globalChatStore.__pnLiveChatMessages;
 
+const RENDER_API_BASE = (
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.BACKEND_URL ||
+  'http://localhost:4000'
+).replace(/\/$/, '');
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const ticketId = searchParams.get('ticketId');
   const userId = searchParams.get('userId');
+
+  // 1. Fetch from persistent Render backend if reachable and merge into local cache
+  try {
+    const queryStr = searchParams.toString();
+    const renderUrl = `${RENDER_API_BASE}/support/live-chat-sync${queryStr ? `?${queryStr}` : ''}`;
+    const res = await fetch(renderUrl, {
+      method: 'GET',
+      cache: 'no-store',
+      signal: AbortSignal.timeout(2500),
+    });
+    if (res.ok) {
+      const remoteData = await res.json();
+      if (remoteData?.ticket?.id) {
+        const existing = ticketsMap.get(remoteData.ticket.id);
+        ticketsMap.set(remoteData.ticket.id, { ...(existing || {}), ...remoteData.ticket });
+      }
+      if (Array.isArray(remoteData?.messages) && ticketId) {
+        const list = messagesMap.get(ticketId) || [];
+        const byId = new Map<string, StoredMessage>();
+        list.forEach((m) => byId.set(m.id, m));
+        remoteData.messages.forEach((m: StoredMessage) => {
+          if (m?.id) {
+            const prev = byId.get(m.id);
+            byId.set(m.id, prev ? { ...prev, ...m } : m);
+          }
+        });
+        const mergedMsgs = Array.from(byId.values()).sort((a, b) =>
+          (a.createdAt || '').localeCompare(b.createdAt || '')
+        );
+        messagesMap.set(ticketId, mergedMsgs);
+      }
+      if (Array.isArray(remoteData?.tickets)) {
+        remoteData.tickets.forEach((t: StoredTicket) => {
+          if (t?.id) {
+            const existing = ticketsMap.get(t.id);
+            ticketsMap.set(t.id, { ...(existing || {}), ...t });
+          }
+        });
+      }
+    }
+  } catch {
+    // Render backend offline or sleeping — fall back to local cache gracefully
+  }
 
   if (ticketId) {
     const ticket = ticketsMap.get(ticketId) || null;
@@ -81,6 +130,14 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { action, ticket, message, ticketId, updates } = body;
+
+    // Mirror write to persistent Render backend in parallel
+    fetch(`${RENDER_API_BASE}/support/live-chat-sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(3000),
+    }).catch(() => {});
 
     if (action === 'UPSERT_TICKET' && ticket?.id) {
       const existing = ticketsMap.get(ticket.id);

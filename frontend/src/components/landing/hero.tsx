@@ -28,7 +28,7 @@ export function Hero() {
       {/* Layers 1, 2 & 3: Atmospheric Lighting, Masked Grid, Floating Candlesticks & Price Line */}
       <TradingVisualBackground variant="hero" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* TOP INSTANT REFERRAL CODE BANNER — Immediately visible when landing page opens */}
         <div
           className="mb-8 lg:mb-10 flex justify-center"
@@ -68,9 +68,9 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           {/* Left Column: Brand Message, Value Proposition & CTAs */}
-          <div className="lg:col-span-6 space-y-6 relative z-20">
+          <div className="lg:col-span-5 space-y-6 relative z-20">
             {/* 0.0-0.3s: PN Logo Badge */}
             <div
               className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-[#0B1015]/90 border border-emerald-500/30 text-xs font-mono text-slate-700 dark:text-slate-200 shadow-sm backdrop-blur-xs"
@@ -86,19 +86,21 @@ export function Hero() {
               <span className="text-emerald-600 dark:text-emerald-400 font-semibold">USE CODE: NATION</span>
             </div>
 
-            {/* Staggered Headline: TRADE. (0.3s) / EARN. (0.5s) / GET REWARDED. (0.7s) */}
-            <h1 className="text-5xl sm:text-6xl lg:text-[68px] font-extrabold tracking-tight leading-[1.03] text-slate-900 dark:text-white">
-              <span
-                className="block"
-                style={{ animation: 'heroReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both' }}
-              >
-                TRADE.
-              </span>
-              <span
-                className="block"
-                style={{ animation: 'heroReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both' }}
-              >
-                EARN.
+            {/* Staggered Headline: TRADE. EARN. (single line) / GET REWARDED. */}
+            <h1 className="text-5xl sm:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.05] text-slate-900 dark:text-white">
+              <span className="block whitespace-nowrap">
+                <span
+                  className="inline-block"
+                  style={{ animation: 'heroReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both' }}
+                >
+                  TRADE.
+                </span>{' '}
+                <span
+                  className="inline-block"
+                  style={{ animation: 'heroReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both' }}
+                >
+                  EARN.
+                </span>
               </span>
               <span
                 className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 dark:from-white dark:via-emerald-200 dark:to-emerald-400"
@@ -230,7 +232,7 @@ export function Hero() {
 
           {/* Layer 4: Illuminated HeroDashboard (#12, #13) */}
           <div
-            className="lg:col-span-6 relative z-20"
+            className="lg:col-span-7 relative z-20"
             style={{ animation: 'heroReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.9s both' }}
           >
             <HeroDashboard />

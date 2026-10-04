@@ -259,7 +259,7 @@ export default function DashboardOverviewPage() {
             <div className="pt-1 space-y-1.5 max-w-md">
               <div className="flex justify-between text-[11px] font-semibold text-slate-600 dark:text-slate-400">
                 <span>Gold Tier Progress ({tierProgress}%)</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold">{pointsToGold.toLocaleString()} PTS to 1.5x Multiplier</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold">{pointsToGold.toLocaleString('en-US')} PTS to 1.5x Multiplier</span>
               </div>
               <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                 <div
@@ -315,7 +315,7 @@ export default function DashboardOverviewPage() {
           </div>
           <div>
             <div className="text-3xl sm:text-4xl font-[900] font-mono text-slate-900 dark:text-white tracking-tight">
-              {availablePoints.toLocaleString()}
+              {availablePoints.toLocaleString('en-US')}
             </div>
             <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
               <span>≈ ${(availablePoints / 100).toFixed(2)} USD Cash Value</span>
@@ -342,7 +342,7 @@ export default function DashboardOverviewPage() {
           </div>
           <div>
             <div className="text-3xl sm:text-4xl font-[900] font-mono text-slate-900 dark:text-white tracking-tight">
-              {pendingPoints.toLocaleString()}
+              {pendingPoints.toLocaleString('en-US')}
             </div>
             <div className="text-xs font-bold text-amber-700 dark:text-amber-400 mt-1 flex items-center gap-1">
               <span>≈ ${(pendingPoints / 100).toFixed(2)} USD In Clearance</span>
@@ -368,7 +368,7 @@ export default function DashboardOverviewPage() {
           </div>
           <div>
             <div className="text-3xl sm:text-4xl font-[900] font-mono text-slate-900 dark:text-white tracking-tight">
-              {totalEarned.toLocaleString()}
+              {totalEarned.toLocaleString('en-US')}
             </div>
             <div className="text-xs font-bold text-sky-700 dark:text-sky-400 mt-1 flex items-center gap-1">
               <span>≈ ${(totalEarned / 100).toFixed(2)} USD Lifetime Value</span>
@@ -394,7 +394,7 @@ export default function DashboardOverviewPage() {
           </div>
           <div>
             <div className="text-3xl sm:text-4xl font-[900] font-mono text-slate-900 dark:text-white tracking-tight">
-              {totalRedeemed.toLocaleString()}
+              {totalRedeemed.toLocaleString('en-US')}
             </div>
             <div className="text-xs font-bold text-purple-700 dark:text-purple-400 mt-1 flex items-center gap-1">
               <span>≈ ${(totalRedeemed / 100).toFixed(2)} USD Liquidated</span>
@@ -496,7 +496,7 @@ export default function DashboardOverviewPage() {
                   <div className="text-right space-y-1">
                     <div>{getStatusBadge(sub.status)}</div>
                     <div className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                      +{sub.pointsAwarded.toLocaleString()} PTS
+                      +{sub.pointsAwarded.toLocaleString('en-US')} PTS
                     </div>
                   </div>
                 </div>
@@ -546,10 +546,10 @@ export default function DashboardOverviewPage() {
                         tx.points > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                       }`}
                     >
-                      {tx.points > 0 ? `+${tx.points.toLocaleString()}` : tx.points.toLocaleString()} PTS
+                      {tx.points > 0 ? `+${tx.points.toLocaleString('en-US')}` : tx.points.toLocaleString('en-US')} PTS
                     </span>
                     <div className="text-[10px] text-slate-400 font-mono font-medium">
-                      Bal: {tx.balanceAfter.toLocaleString()} PTS
+                      Bal: {tx.balanceAfter.toLocaleString('en-US')} PTS
                     </div>
                   </div>
                 </div>

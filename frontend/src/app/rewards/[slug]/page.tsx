@@ -316,7 +316,7 @@ export default function RewardDetailPage() {
             <div className="flex items-center gap-2">
               <Coins className="h-7 w-7 text-emerald-600 dark:text-emerald-400" />
               <span className="text-3xl font-black text-slate-900 dark:text-white">
-                {reward.pointsRequired.toLocaleString()}
+                {reward.pointsRequired.toLocaleString('en-US')}
               </span>
               <span className="text-sm text-slate-500 dark:text-slate-400">Points</span>
             </div>
@@ -325,7 +325,7 @@ export default function RewardDetailPage() {
               <div className="text-xs text-slate-600 dark:text-slate-300 pt-2 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between">
                 <span>Your Balance:</span>
                 <span className={canAfford ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-rose-600 dark:text-rose-400 font-bold'}>
-                  {userBalance.toLocaleString()} PTS ({canAfford ? 'Eligible' : 'Insufficient Points'})
+                  {userBalance.toLocaleString('en-US')} PTS ({canAfford ? 'Eligible' : 'Insufficient Points'})
                 </span>
               </div>
             )}
@@ -354,7 +354,7 @@ export default function RewardDetailPage() {
                 {isOutOfStock
                   ? 'Out of Stock'
                   : !canAfford
-                  ? `Need ${(reward.pointsRequired - userBalance).toLocaleString()} More Points`
+                  ? `Need ${(reward.pointsRequired - userBalance).toLocaleString('en-US')} More Points`
                   : 'Redeem This Reward Now'}
               </Button>
             ) : (
@@ -399,7 +399,7 @@ export default function RewardDetailPage() {
                 Order {redemptionSuccess.redemption.redemptionCode} Placed!
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Remaining points balance: {redemptionSuccess.remainingBalance.toLocaleString()} PTS
+                Remaining points balance: {redemptionSuccess.remainingBalance.toLocaleString('en-US')} PTS
               </p>
             </div>
             <Link href="/dashboard/redemptions">
@@ -435,7 +435,7 @@ export default function RewardDetailPage() {
                 isLoading={isRedeeming}
                 onClick={handleConfirmRedeem}
               >
-                Confirm ({reward.pointsRequired.toLocaleString()} PTS)
+                Confirm ({reward.pointsRequired.toLocaleString('en-US')} PTS)
               </Button>
             </div>
           </div>

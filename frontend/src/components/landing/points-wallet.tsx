@@ -185,7 +185,7 @@ export function PointsWallet() {
                     </div>
                     <div className="mt-2 flex items-baseline gap-3">
                       <span className="text-4xl sm:text-5xl font-extrabold font-mono text-slate-900 dark:text-white tracking-tight">
-                        {balance.toLocaleString()}
+                        {balance.toLocaleString('en-US')}
                       </span>
                       <span className="text-sm font-mono font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
                         POINTS

@@ -386,7 +386,7 @@ export default function SubmitPurchasePage() {
     value: o.id,
     label: o.accountTierName,
     subtitle: `$${o.purchasePriceUsd}`,
-    badge: `+${o.rewardPoints.toLocaleString()} PTS`,
+    badge: `+${o.rewardPoints.toLocaleString('en-US')} PTS`,
   }));
 
   const PLATFORM_OPTIONS: ComboboxOption[] = [
@@ -706,7 +706,7 @@ export default function SubmitPurchasePage() {
               <p className="text-xs text-slate-300 mt-0.5">
                 Pre-selected <strong>{activeIntent.firmName}</strong> with code <strong className="font-mono text-emerald-400">{activeIntent.affiliateCode}</strong>
                 {activeIntent.expectedPoints && (
-                  <span> &bull; Awaiting claim: <strong className="text-emerald-400 font-mono">+{activeIntent.expectedPoints.toLocaleString()} PTS</strong></span>
+                  <span> &bull; Awaiting claim: <strong className="text-emerald-400 font-mono">+{activeIntent.expectedPoints.toLocaleString('en-US')} PTS</strong></span>
                 )}
               </p>
             </div>
@@ -1123,7 +1123,7 @@ export default function SubmitPurchasePage() {
                 <div>
                   <span className="text-xs text-slate-500 dark:text-slate-400">Verified Reward Yield:</span>
                   <div className="text-base font-bold text-slate-900 dark:text-white">
-                    +{activeOffer.rewardPoints.toLocaleString()} Reward Points
+                    +{activeOffer.rewardPoints.toLocaleString('en-US')} Reward Points
                   </div>
                 </div>
               </div>
@@ -1138,7 +1138,7 @@ export default function SubmitPurchasePage() {
                 <div>
                   <span className="text-xs text-slate-500 dark:text-slate-400">Estimated Reward Yield:</span>
                   <div className="text-base font-bold text-slate-900 dark:text-white">
-                    +{Math.round(Number(purchaseAmountUsd) * 10).toLocaleString()} Reward Points
+                    +{Math.round(Number(purchaseAmountUsd) * 10).toLocaleString('en-US')} Reward Points
                   </div>
                 </div>
               </div>
@@ -1387,7 +1387,7 @@ export default function SubmitPurchasePage() {
               </div>
               <div>
                 <span className="text-slate-400 block">Estimated Rewards:</span>
-                <span className="font-bold text-purple-600 dark:text-purple-400">+{submittedResult.pointsAwarded.toLocaleString()} Points</span>
+                <span className="font-bold text-purple-600 dark:text-purple-400">+{submittedResult.pointsAwarded.toLocaleString('en-US')} Points</span>
               </div>
               <div>
                 <span className="text-slate-400 block">Status:</span>

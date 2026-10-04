@@ -187,7 +187,7 @@ export function RewardCard({
                   featured ? 'text-xl' : 'text-base'
                 }`}
               >
-                {item.pointsRequired.toLocaleString()}
+                {item.pointsRequired.toLocaleString('en-US')}
               </span>
               <span className="text-xs text-slate-500 dark:text-slate-400">Points</span>
             </div>

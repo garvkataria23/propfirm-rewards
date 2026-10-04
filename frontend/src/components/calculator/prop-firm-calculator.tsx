@@ -252,7 +252,7 @@ export function PropFirmCalculator() {
                     Account Size
                   </label>
                   <span className="text-lg font-mono font-extrabold text-white">
-                    ${accountSize.toLocaleString()}
+                    ${accountSize.toLocaleString('en-US')}
                   </span>
                 </div>
 
@@ -387,7 +387,7 @@ export function PropFirmCalculator() {
                     Calculated Risk Parameters
                   </span>
                   <div className="text-xl font-bold text-white mt-0.5 font-mono">
-                    Account: ${animatedAccountSize.toLocaleString()}
+                    Account: ${animatedAccountSize.toLocaleString('en-US')}
                   </div>
                 </div>
                 <span className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono text-xs font-bold">
@@ -404,10 +404,10 @@ export function PropFirmCalculator() {
                     <span className="text-rose-400 font-bold">{maxDrawdown}%</span>
                   </div>
                   <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white tracking-tight">
-                    ${animatedMaxLoss.toLocaleString()}
+                    ${animatedMaxLoss.toLocaleString('en-US')}
                   </div>
                   <div className="text-xs text-slate-300 font-mono pt-1 border-t border-white/[0.07]">
-                    Min Equity Floor: <span className="text-white font-semibold">${animatedMaxBreach.toLocaleString()}</span>
+                    Min Equity Floor: <span className="text-white font-semibold">${animatedMaxBreach.toLocaleString('en-US')}</span>
                   </div>
                 </div>
 
@@ -418,10 +418,10 @@ export function PropFirmCalculator() {
                     <span className="text-amber-400 font-bold">{dailyDrawdown}%</span>
                   </div>
                   <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white tracking-tight">
-                    ${animatedDailyLoss.toLocaleString()}
+                    ${animatedDailyLoss.toLocaleString('en-US')}
                   </div>
                   <div className="text-xs text-slate-300 font-mono pt-1 border-t border-white/[0.07]">
-                    Daily Stop Floor: <span className="text-white font-semibold">${animatedDailyBreach.toLocaleString()}</span>
+                    Daily Stop Floor: <span className="text-white font-semibold">${animatedDailyBreach.toLocaleString('en-US')}</span>
                   </div>
                 </div>
               </div>

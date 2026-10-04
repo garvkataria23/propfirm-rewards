@@ -257,7 +257,7 @@ export default function VerificationPage() {
                   <div>
                     <span className="text-slate-500 uppercase tracking-wider font-semibold block">Points Awarded</span>
                     <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                      {sub.pointsAwarded ? `+${sub.pointsAwarded.toLocaleString()} PTS` : 'Pending calculation'}
+                      {sub.pointsAwarded ? `+${sub.pointsAwarded.toLocaleString('en-US')} PTS` : 'Pending calculation'}
                     </span>
                   </div>
                 </div>

@@ -184,7 +184,7 @@ export function Navbar() {
                 className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/25 text-emerald-700 dark:text-emerald-300 px-3 py-1.5 rounded-full text-xs font-mono font-bold transition-all hover:bg-emerald-500/15 hover:border-emerald-500/40"
               >
                 <Coins className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>{(user.points?.available || 0).toLocaleString()} PTS</span>
+                <span>{(user.points?.available || 0).toLocaleString('en-US')} PTS</span>
               </Link>
 
               {user.role === 'ADMIN' && (
@@ -247,7 +247,7 @@ export function Navbar() {
               className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/25 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold"
             >
               <Coins className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
-              <span>{(user.points?.available || 0).toLocaleString()}</span>
+              <span>{(user.points?.available || 0).toLocaleString('en-US')}</span>
             </Link>
           )}
 

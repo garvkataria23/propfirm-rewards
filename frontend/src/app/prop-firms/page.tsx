@@ -483,7 +483,7 @@ function PropFirmsContent() {
                     </div>
 
                     <Badge variant="purple" className="shrink-0 bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800">
-                      Up to {maxPoints.toLocaleString()} PTS
+                      Up to {maxPoints.toLocaleString('en-US')} PTS
                     </Badge>
                   </div>
 
@@ -555,10 +555,10 @@ function PropFirmsContent() {
                             {offer.accountTierName}
                           </div>
                           <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                            ${offer.purchasePriceUsd.toLocaleString()} USD
+                            ${offer.purchasePriceUsd.toLocaleString('en-US')} USD
                           </div>
                           <div className="text-xs font-black text-purple-600 dark:text-purple-400">
-                            +{offer.rewardPoints.toLocaleString()} PTS
+                            +{offer.rewardPoints.toLocaleString('en-US')} PTS
                           </div>
                         </div>
                       ))}

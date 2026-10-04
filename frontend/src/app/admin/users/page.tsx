@@ -402,7 +402,7 @@ export default function AdminUsersPage() {
     }
     if (adjustType === 'DEDUCT' && ptsNum > adjustingUser.availablePoints) {
       setAdjustError(
-        `Cannot deduct ${ptsNum.toLocaleString()} PTS. Trader only has ${adjustingUser.availablePoints.toLocaleString()} PTS available.`
+        `Cannot deduct ${ptsNum.toLocaleString('en-US')} PTS. Trader only has ${adjustingUser.availablePoints.toLocaleString('en-US')} PTS available.`
       );
       return;
     }
@@ -423,7 +423,7 @@ export default function AdminUsersPage() {
         reason: adjustReason.trim(),
         description:
           adjustDescription.trim() ||
-          `Manual admin adjustment (${delta > 0 ? '+' : ''}${delta.toLocaleString()} PTS)`,
+          `Manual admin adjustment (${delta > 0 ? '+' : ''}${delta.toLocaleString('en-US')} PTS)`,
       });
     } catch {
       // Backend error fallback
@@ -436,7 +436,7 @@ export default function AdminUsersPage() {
       balanceAfter: newBal,
       description:
         adjustDescription.trim() ||
-        `Manual adjustment (${delta > 0 ? '+' : ''}${delta.toLocaleString()} PTS)`,
+        `Manual adjustment (${delta > 0 ? '+' : ''}${delta.toLocaleString('en-US')} PTS)`,
       reason: adjustReason.trim(),
       createdAt: new Date().toISOString(),
     };
@@ -456,7 +456,7 @@ export default function AdminUsersPage() {
     setIsAdjusting(false);
     setAdjustingUser(null);
     triggerSuccess(
-      `Successfully ${delta > 0 ? 'added +' : 'deducted -'}${Math.abs(delta).toLocaleString()} PTS for ${adjustingUser.name}. New Balance: ${newBal.toLocaleString()} PTS.`
+      `Successfully ${delta > 0 ? 'added +' : 'deducted -'}${Math.abs(delta).toLocaleString('en-US')} PTS for ${adjustingUser.name}. New Balance: ${newBal.toLocaleString('en-US')} PTS.`
     );
   };
 
@@ -547,7 +547,7 @@ export default function AdminUsersPage() {
     saveAndSyncUsers(updated);
     setIsCreating(false);
     setIsCreateModalOpen(false);
-    triggerSuccess(`Trader account for ${newUser.name} created successfully with ${initPoints.toLocaleString()} PTS!`);
+    triggerSuccess(`Trader account for ${newUser.name} created successfully with ${initPoints.toLocaleString('en-US')} PTS!`);
   };
 
   // 3. EDIT USER PROFILE
@@ -827,7 +827,7 @@ export default function AdminUsersPage() {
           </div>
           <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
             <Coins className="h-3.5 w-3.5 text-amber-500" />
-            <span>Total Points In Circulation: <strong className="text-slate-900 dark:text-white font-mono">{users.reduce((acc, u) => acc + (u.availablePoints || 0), 0).toLocaleString()}</strong></span>
+            <span>Total Points In Circulation: <strong className="text-slate-900 dark:text-white font-mono">{users.reduce((acc, u) => acc + (u.availablePoints || 0), 0).toLocaleString('en-US')}</strong></span>
           </div>
           <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
             <ShoppingBag className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
@@ -905,7 +905,7 @@ export default function AdminUsersPage() {
                     <td className="px-5 py-3.5 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <span className="font-bold font-mono text-sm text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-0.5 rounded-lg border border-emerald-200 dark:border-emerald-500/20">
-                          {u.availablePoints.toLocaleString()} PTS
+                          {u.availablePoints.toLocaleString('en-US')} PTS
                         </span>
                         <div className="flex items-center gap-1">
                           <button
@@ -1055,7 +1055,7 @@ export default function AdminUsersPage() {
               <div className="flex justify-between items-center pt-1 border-t border-slate-200 dark:border-slate-800">
                 <span className="text-slate-500 dark:text-slate-400">Current Balance:</span>
                 <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-sm">
-                  {adjustingUser.availablePoints.toLocaleString()} PTS
+                  {adjustingUser.availablePoints.toLocaleString('en-US')} PTS
                 </span>
               </div>
             </div>
@@ -1111,7 +1111,7 @@ export default function AdminUsersPage() {
                         : 'bg-slate-100 dark:bg-slate-950 border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400 dark:hover:border-slate-700'
                     }`}
                   >
-                    {adjustType === 'ADD' ? `+${amt.toLocaleString()}` : `-${amt.toLocaleString()}`}
+                    {adjustType === 'ADD' ? `+${amt.toLocaleString('en-US')}` : `-${amt.toLocaleString('en-US')}`}
                   </button>
                 ))}
               </div>
@@ -1139,8 +1139,8 @@ export default function AdminUsersPage() {
                 <span className="text-slate-600 dark:text-slate-400">Projected New Balance:</span>
                 <span className="font-mono font-bold text-slate-900 dark:text-white">
                   {adjustType === 'ADD'
-                    ? (adjustingUser.availablePoints + Number(adjustPoints)).toLocaleString()
-                    : (adjustingUser.availablePoints - Number(adjustPoints)).toLocaleString()}{' '}
+                    ? (adjustingUser.availablePoints + Number(adjustPoints)).toLocaleString('en-US')
+                    : (adjustingUser.availablePoints - Number(adjustPoints)).toLocaleString('en-US')}{' '}
                   PTS
                 </span>
               </div>
@@ -1576,7 +1576,7 @@ export default function AdminUsersPage() {
             <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs space-y-1">
               <div className="font-bold text-rose-600 dark:text-rose-400">Warning: Irreversible Action</div>
               <p>
-                Deleting <strong>{deletingUser.name}</strong> ({deletingUser.email}) will remove their points balance ({deletingUser.availablePoints.toLocaleString()} PTS), submission history, and redemption orders.
+                Deleting <strong>{deletingUser.name}</strong> ({deletingUser.email}) will remove their points balance ({deletingUser.availablePoints.toLocaleString('en-US')} PTS), submission history, and redemption orders.
               </p>
             </div>
 
@@ -1668,7 +1668,7 @@ export default function AdminUsersPage() {
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-center">
                 <div className="text-[11px] text-slate-500 dark:text-slate-400">Available Points</div>
                 <div className="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-0.5">
-                  {inspectUser.availablePoints.toLocaleString()} PTS
+                  {inspectUser.availablePoints.toLocaleString('en-US')} PTS
                 </div>
               </div>
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-center">
@@ -1736,10 +1736,10 @@ export default function AdminUsersPage() {
                             tx.points > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                           }`}
                         >
-                          {tx.points > 0 ? `+${tx.points.toLocaleString()}` : tx.points.toLocaleString()} PTS
+                          {tx.points > 0 ? `+${tx.points.toLocaleString('en-US')}` : tx.points.toLocaleString('en-US')} PTS
                         </div>
                         <div className="text-[10px] text-slate-500 font-mono">
-                          Bal: {tx.balanceAfter?.toLocaleString()}
+                          Bal: {tx.balanceAfter?.toLocaleString('en-US')}
                         </div>
                       </div>
                     </div>

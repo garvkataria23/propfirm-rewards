@@ -63,7 +63,7 @@ export function RewardUnlock({
             POINT BALANCE
           </div>
           <div className="text-3xl sm:text-4xl font-mono font-extrabold text-slate-900 dark:text-white mt-1">
-            {points.toLocaleString()}{' '}
+            {points.toLocaleString('en-US')}{' '}
             <span className="text-base text-slate-500 dark:text-slate-300 font-normal">/ 20,000</span>
           </div>
         </div>
@@ -115,7 +115,7 @@ export function RewardUnlock({
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-white/[0.05] border border-slate-200 dark:border-white/[0.1] text-slate-700 dark:text-slate-200 font-mono text-xs font-bold">
-              {remaining.toLocaleString()} points away
+              {remaining.toLocaleString('en-US')} points away
             </span>
           )}
         </div>
@@ -125,7 +125,7 @@ export function RewardUnlock({
       <div className="relative z-10 space-y-3">
         <div className="flex items-center justify-between text-xs font-mono">
           <span className="text-slate-700 dark:text-slate-200 font-semibold">
-            Current: {points.toLocaleString()} / 20,000
+            Current: {points.toLocaleString('en-US')} / 20,000
           </span>
           <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">{progressPercent}%</span>
         </div>
@@ -154,7 +154,7 @@ export function RewardUnlock({
             </span>
           ) : (
             <span className="text-slate-600 dark:text-slate-200 font-mono">
-              {remaining.toLocaleString()} points away
+              {remaining.toLocaleString('en-US')} points away
             </span>
           )}
 
@@ -292,7 +292,7 @@ export function RewardProgress() {
               </div>
               <div className="flex items-center justify-between text-slate-600 dark:text-slate-200">
                 <span>3. Progress</span>
-                <span className="text-slate-900 dark:text-white font-bold">15,000 → {points.toLocaleString()} POINTS</span>
+                <span className="text-slate-900 dark:text-white font-bold">15,000 → {points.toLocaleString('en-US')} POINTS</span>
               </div>
               <div className="flex justify-center text-emerald-600 dark:text-emerald-400">
                 <ArrowDown className="h-3.5 w-3.5" />

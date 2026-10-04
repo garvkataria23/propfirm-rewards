@@ -36,9 +36,11 @@ const STAFF_ROLES = ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'F
       const allowedSet = new Set(
         configured
           .split(',')
-          .map((s) => s.trim())
+          .map((s) => s.trim().replace(/\/$/, ''))
           .filter(Boolean),
       );
+
+      const cleanOrigin = origin.replace(/\/$/, '');
 
       if (!isProd) {
         allowedSet.add('http://localhost:3000');
@@ -46,7 +48,12 @@ const STAFF_ROLES = ['ADMIN', 'SUPER_ADMIN', 'SUPPORT_LEAD', 'SUPPORT_AGENT', 'F
         allowedSet.add('http://localhost:3001');
       }
 
-      if (allowedSet.has(origin)) {
+      if (
+        allowedSet.has(cleanOrigin) ||
+        allowedSet.has('*') ||
+        cleanOrigin.endsWith('.vercel.app') ||
+        cleanOrigin.endsWith('.onrender.com')
+      ) {
         return callback(null, true);
       }
       return callback(new Error(`Origin ${origin} not allowed by WebSocket CORS policy`));

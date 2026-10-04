@@ -120,7 +120,7 @@ export function PropFirmCard({
               >
                 <span className="text-slate-800 dark:text-slate-100 font-semibold">{offer.accountTierName}</span>
                 <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
-                  {offer.rewardPoints.toLocaleString()} Points
+                  {offer.rewardPoints.toLocaleString('en-US')} Points
                 </span>
               </div>
             ))}
