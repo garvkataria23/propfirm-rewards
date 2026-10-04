@@ -39,8 +39,8 @@ export function PurchaseAnimation({ isDone }: { isDone: boolean }) {
         aria-hidden="true"
       />
 
-      <div className="relative z-10 flex items-center justify-between border-b border-slate-800 pb-2.5">
-        <span className="text-xs font-mono font-bold text-slate-300 uppercase">
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+        <span className="text-[11px] sm:text-xs font-mono font-bold text-slate-300 uppercase truncate">
           propnation.app/prop-firms · Offer Selection
         </span>
         <Badge variant="success">Eligible Purchase</Badge>
@@ -48,41 +48,41 @@ export function PurchaseAnimation({ isDone }: { isDone: boolean }) {
 
       {/* Actual Application Prop Firm Offer Card */}
       <div
-        className={`relative z-10 p-4 rounded-2xl bg-[#080f1e] border transition-all duration-500 space-y-3 ${
+        className={`relative z-10 p-3.5 sm:p-4 rounded-2xl bg-[#080f1e] border transition-all duration-500 space-y-3 ${
           isDone
             ? '-translate-y-0.5 border-emerald-500/45 shadow-[0_14px_30px_-10px_rgba(16,185,129,0.28)]'
             : 'border-slate-800'
         }`}
       >
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
           <div>
-            <div className="text-[11px] font-mono text-slate-400">PARTICIPATING PROP FIRM</div>
-            <div className="text-lg font-black text-white">Eligible Partner Offer</div>
+            <div className="text-[10px] sm:text-[11px] font-mono text-slate-400">PARTICIPATING PROP FIRM</div>
+            <div className="text-base sm:text-lg font-black text-white">Eligible Partner Offer</div>
           </div>
-          <div className="text-right">
-            <div className="text-[11px] font-mono text-slate-400">REFERRAL CODE</div>
+          <div className="text-left sm:text-right">
+            <div className="text-[10px] sm:text-[11px] font-mono text-slate-400">REFERRAL CODE</div>
             <span className="inline-block px-2.5 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/35 font-mono text-xs font-bold text-emerald-300">
               Partner Code Applied
             </span>
           </div>
         </div>
 
-        <div className="p-3 rounded-xl bg-[#060b18] border border-slate-800 flex items-center justify-between">
+        <div className="p-3 rounded-xl bg-[#060b18] border border-slate-800 flex items-center justify-between gap-2">
           <div>
-            <div className="text-[11px] font-mono text-slate-400">Account / Challenge</div>
-            <div className="text-base font-extrabold text-white">$100 Challenge</div>
+            <div className="text-[10px] sm:text-[11px] font-mono text-slate-400">Account / Challenge</div>
+            <div className="text-sm sm:text-base font-extrabold text-white">$100 Challenge</div>
           </div>
           <div className="text-right">
-            <div className="text-[11px] font-mono text-slate-400">Reward Value</div>
-            <div className="text-base font-mono font-black text-emerald-400">2,500 Points</div>
+            <div className="text-[10px] sm:text-[11px] font-mono text-slate-400">Reward Value</div>
+            <div className="text-sm sm:text-base font-mono font-black text-emerald-400">2,500 Points</div>
           </div>
         </div>
       </div>
 
       {/* Animated Green Line Connecting to SUBMIT */}
-      <div className="relative z-10 flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[#080f1e] border border-emerald-500/30 text-xs font-mono">
+      <div className="relative z-10 flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 rounded-xl bg-[#080f1e] border border-emerald-500/30 text-[11px] sm:text-xs font-mono">
         <span className="text-white font-semibold shrink-0">View Offer → Checkout</span>
-        <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
+        <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden min-w-[24px]">
           <div
             className="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 transition-all duration-700"
             style={{ width: isDone ? '100%' : '30%' }}
@@ -108,8 +108,8 @@ export function VerificationAnimation({ isDone }: { isDone: boolean }) {
 
   return (
     <div className="space-y-3.5">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-        <span className="text-xs font-mono font-bold text-slate-300 uppercase">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+        <span className="text-[11px] sm:text-xs font-mono font-bold text-slate-300 uppercase truncate">
           propnation.app/dashboard/verification
         </span>
         {isDone ? (
@@ -124,7 +124,7 @@ export function VerificationAnimation({ isDone }: { isDone: boolean }) {
       </div>
 
       <div
-        className={`relative overflow-hidden p-4 rounded-2xl border space-y-3 transition-all duration-500 ${
+        className={`relative overflow-hidden p-3.5 sm:p-4 rounded-2xl border space-y-3 transition-all duration-500 ${
           isDone
             ? 'bg-[#08151f] border-emerald-500/45 shadow-[0_0_28px_-8px_rgba(16,185,129,0.28)]'
             : 'bg-[#080f1e] border-slate-800'
@@ -165,7 +165,7 @@ export function VerificationAnimation({ isDone }: { isDone: boolean }) {
           ))}
         </div>
 
-        <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono">
+        <div className="pt-2 border-t border-slate-800/80 flex flex-col xs:flex-row sm:flex-row xs:items-center justify-between gap-1 text-[11px] sm:text-xs font-mono">
           <span className="text-slate-300">Order #ORD-84920 · $100 Challenge</span>
           <span className="text-emerald-400 font-bold">
             {isDone ? '✓ Verified · +2,500 Points Credited' : 'Verifying Invoice Proof...'}
@@ -185,8 +185,8 @@ export function PointsAnimation({ isDone }: { isDone: boolean }) {
 
   return (
     <div className="space-y-3.5">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-        <span className="text-xs font-mono font-bold text-slate-300 uppercase">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+        <span className="text-[11px] sm:text-xs font-mono font-bold text-slate-300 uppercase truncate">
           propnation.app/dashboard/points · Ledger Credit
         </span>
         <span className="font-mono text-xs text-emerald-400 font-bold">10,000 → 12,500 PTS</span>
@@ -194,24 +194,24 @@ export function PointsAnimation({ isDone }: { isDone: boolean }) {
 
       {/* Actual Points Ledger Transaction Row */}
       <div className="p-3.5 rounded-xl bg-[#080f1e] border border-emerald-500/35 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 min-w-0">
           <div className="h-8 w-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
             <CheckCircle2 className="h-4 w-4" />
           </div>
-          <div>
-            <div className="text-xs sm:text-sm font-bold text-white">Purchase Verified</div>
-            <div className="text-[11px] font-mono text-slate-400">
+          <div className="min-w-0">
+            <div className="text-xs sm:text-sm font-bold text-white truncate">Purchase Verified</div>
+            <div className="text-[11px] font-mono text-slate-400 truncate">
               Eligible Challenge Account · System Credit
             </div>
           </div>
         </div>
-        <span className="px-3 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/35 font-mono text-xs sm:text-sm font-black text-emerald-400">
+        <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/35 font-mono text-xs sm:text-sm font-black text-emerald-400 shrink-0">
           +2,500 Points
         </span>
       </div>
 
       {/* Actual Available Points Balance Card Updating 10,000 -> 12,500 */}
-      <div className="p-4 rounded-2xl bg-gradient-to-br from-[#08151f] to-[#031d17] border border-emerald-500/35 flex items-center justify-between gap-4 relative overflow-hidden">
+      <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-[#08151f] to-[#031d17] border border-emerald-500/35 flex items-center justify-between gap-3 sm:gap-4 relative overflow-hidden">
         <div>
           <div className="text-[11px] font-mono font-black uppercase tracking-wider text-emerald-400">
             AVAILABLE POINTS
@@ -225,7 +225,7 @@ export function PointsAnimation({ isDone }: { isDone: boolean }) {
           </div>
         </div>
 
-        <div className="text-right font-mono text-xs space-y-1">
+        <div className="text-right font-mono text-[11px] sm:text-xs space-y-1 shrink-0">
           <div className="text-slate-400">Previous: 10,000</div>
           <div className="text-emerald-400 font-bold">Updated: 12,500</div>
         </div>
@@ -377,7 +377,9 @@ export function HowItWorks() {
                   key={step.id}
                   type="button"
                   onClick={() => setActiveStep(idx)}
-                  className={`p-4 rounded-2xl text-left border transition-all duration-200 cursor-pointer relative overflow-hidden ${
+                  className={`p-3.5 sm:p-4 rounded-2xl text-left border transition-all duration-200 cursor-pointer relative overflow-hidden ${
+                    idx === 4 ? 'col-span-2 sm:col-span-1' : ''
+                  } ${
                     isActive
                       ? 'bg-emerald-50/70 dark:bg-[#0F1922] border-emerald-500/60 shadow-[0_14px_34px_-12px_rgba(16,185,129,0.28)] -translate-y-1'
                       : isCompleted
@@ -433,7 +435,7 @@ export function HowItWorks() {
         </div>
 
         {/* Active Step Real Product UI Panel */}
-        <div className="rounded-2xl bg-slate-50 dark:bg-[#0B1218] border border-slate-200 dark:border-white/[0.11] p-6 sm:p-9 shadow-xl dark:shadow-2xl">
+        <div className="rounded-2xl bg-slate-50 dark:bg-[#0B1218] border border-slate-200 dark:border-white/[0.11] p-4 sm:p-9 shadow-xl dark:shadow-2xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             {/* Left Copy */}
             <div className="lg:col-span-5 space-y-4">
@@ -473,15 +475,15 @@ export function HowItWorks() {
 
             {/* Right Interactive Real Product UI (#19–#23) */}
             <div className="lg:col-span-7">
-              <div className="p-5 sm:p-6 rounded-2xl bg-[#060b18] border border-slate-800/90 min-h-[260px] flex flex-col justify-center">
+              <div className="p-3.5 sm:p-6 rounded-2xl bg-[#060b18] border border-slate-800/90 min-h-[260px] flex flex-col justify-center">
                 {/* STEP 01: BUY */}
                 {activeStep === 0 && <PurchaseAnimation isDone={subState === 'done'} />}
 
                 {/* STEP 02: SUBMIT (#20: Actual Purchase Submission Form Fields) */}
                 {activeStep === 1 && (
                   <div className="space-y-3.5">
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-                      <span className="text-xs font-mono font-bold text-slate-300 uppercase">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                      <span className="text-[11px] sm:text-xs font-mono font-bold text-slate-300 uppercase truncate">
                         propnation.app/dashboard/purchases/new
                       </span>
                       <span className="font-mono text-xs text-emerald-400 font-bold">
@@ -525,12 +527,12 @@ export function HowItWorks() {
 
                     {/* Upload Proof Field + Progress Bar */}
                     <div className="p-3 rounded-xl bg-[#080f1e] border border-slate-800 space-y-2">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="flex items-center gap-2 font-mono font-bold text-white">
-                          <FileImage className="h-4 w-4 text-emerald-400" />
-                          Upload Proof: purchase-proof.png
+                      <div className="flex items-center justify-between gap-2 text-xs">
+                        <span className="flex items-center gap-2 font-mono font-bold text-white truncate">
+                          <FileImage className="h-4 w-4 text-emerald-400 shrink-0" />
+                          <span className="truncate">Upload Proof: purchase-proof.png</span>
                         </span>
-                        <span className="font-mono text-emerald-400 font-bold">{uploadPct}%</span>
+                        <span className="font-mono text-emerald-400 font-bold shrink-0">{uploadPct}%</span>
                       </div>
                       <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
                         <div
@@ -540,7 +542,7 @@ export function HowItWorks() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-1">
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                       <span className="text-[11px] font-mono text-slate-400">
                         Estimated Reward: <strong className="text-emerald-400">+2,500 PTS</strong>
                       </span>
@@ -562,8 +564,8 @@ export function HowItWorks() {
                 {/* STEP 05: REDEEM (#23: Actual Reward Redemption Flow) */}
                 {activeStep === 4 && (
                   <div className="space-y-3.5">
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-                      <span className="text-xs font-mono font-bold text-slate-300 uppercase">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                      <span className="text-[11px] sm:text-xs font-mono font-bold text-slate-300 uppercase truncate">
                         propnation.app/rewards · Confirm Redemption
                       </span>
                       <Badge variant="success">
@@ -571,7 +573,7 @@ export function HowItWorks() {
                       </Badge>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-[#080f1e] border border-slate-800 flex items-center justify-between gap-4">
+                    <div className="p-3.5 sm:p-4 rounded-2xl bg-[#080f1e] border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4">
                       <div className="flex items-center gap-3.5">
                         <div className="h-12 w-12 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
                           <Headphones className="h-6 w-6" />
@@ -584,8 +586,8 @@ export function HowItWorks() {
                         </div>
                       </div>
 
-                      <Link href="/rewards">
-                        <Button size="sm" variant="primary" className="text-xs">
+                      <Link href="/rewards" className="w-full sm:w-auto">
+                        <Button size="sm" variant="primary" className="w-full sm:w-auto text-xs">
                           Confirm Redemption
                         </Button>
                       </Link>

@@ -376,7 +376,7 @@ export default function RegisterPage() {
                   </label>
                   <span className="text-[10px] text-purple-600 dark:text-purple-400 font-bold">Auto Alerts</span>
                 </div>
-                <div className="grid grid-cols-[140px_1fr] gap-2">
+                <div className="grid grid-cols-[118px_1fr] sm:grid-cols-[140px_1fr] gap-2">
                   <SearchableCombobox
                     options={dialCodeOptions}
                     value={countryCode}
@@ -510,7 +510,7 @@ export default function RegisterPage() {
                   <Phone className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
                   <span>Phone Number (SMS OTP Registration) *</span>
                 </label>
-                <div className="grid grid-cols-[140px_1fr] gap-2">
+                <div className="grid grid-cols-[118px_1fr] sm:grid-cols-[140px_1fr] gap-2">
                   <SearchableCombobox
                     options={dialCodeOptions}
                     value={countryCode}

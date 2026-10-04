@@ -39,34 +39,34 @@ export function DashboardPreview({ mode = 'full' }: DashboardPreviewProps) {
           />
 
           {/* Browser Header Bar */}
-          <div className="px-5 py-3.5 bg-[#050914] border-b border-slate-800/90 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="h-3 w-3 rounded-full bg-rose-500/85" />
-                <span className="h-3 w-3 rounded-full bg-amber-500/85" />
-                <span className="h-3 w-3 rounded-full bg-emerald-500/85" />
+          <div className="px-3.5 sm:px-5 py-3 sm:py-3.5 bg-[#050914] border-b border-slate-800/90 flex items-center justify-between gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-rose-500/85" />
+                <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-amber-500/85" />
+                <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-emerald-500/85" />
               </div>
-              <div className="ml-2 px-3.5 py-1 rounded-lg bg-[#070e20] border border-slate-800 font-mono text-xs text-slate-200 truncate flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>propnation.app/dashboard</span>
+              <div className="ml-1 sm:ml-2 px-2.5 sm:px-3.5 py-1 rounded-lg bg-[#070e20] border border-slate-800 font-mono text-[11px] sm:text-xs text-slate-200 truncate flex items-center gap-1.5 sm:gap-2">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                <span className="truncate">propnation.app/dashboard</span>
               </div>
             </div>
 
             <Link
               href="/dashboard"
-              className="px-3.5 py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/35 font-mono text-xs font-bold text-emerald-300 transition-colors shrink-0 flex items-center gap-1.5"
+              className="px-2.5 sm:px-3.5 py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/35 font-mono text-[11px] sm:text-xs font-bold text-emerald-300 transition-colors shrink-0 flex items-center gap-1 sm:gap-1.5"
             >
               <span>LIVE PORTAL</span>
               <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
-          {/* Actual High-Resolution Dashboard Screenshot — Expanded Height & Width */}
-          <Link href="/dashboard" className="block relative overflow-hidden bg-[#060b18] min-h-[360px] sm:min-h-[450px] lg:min-h-[510px]">
+          {/* Actual High-Resolution Dashboard Screenshot — Uncropped on Mobile, Expanded Height & Width on Desktop */}
+          <Link href="/dashboard" className="block relative overflow-hidden bg-[#060b18] min-h-0 sm:min-h-[450px] lg:min-h-[510px]">
             <img
               src="/dashboard-preview.png"
               alt="Prop Nation Actual Trader Dashboard"
-              className="w-full h-full min-h-[360px] sm:min-h-[450px] lg:min-h-[510px] object-cover object-top block transition-transform duration-700 group-hover:scale-[1.015]"
+              className="w-full h-auto sm:h-full min-h-0 sm:min-h-[450px] lg:min-h-[510px] object-contain sm:object-cover object-top block transition-transform duration-700 group-hover:scale-[1.015]"
             />
             {/* Subtle bottom vignette blend */}
             <div
@@ -76,10 +76,10 @@ export function DashboardPreview({ mode = 'full' }: DashboardPreviewProps) {
           </Link>
 
           {/* Bottom Browser Status Bar for added height & polish */}
-          <div className="px-5 py-3 bg-[#050914] border-t border-slate-800/90 flex items-center justify-between gap-3 text-xs font-mono text-slate-300">
-            <span className="inline-flex items-center gap-2 text-emerald-400 font-bold">
-              <Coins className="h-3.5 w-3.5" />
-              <span>Code: NATION Active · 100% Points Tracked</span>
+          <div className="px-3.5 sm:px-5 py-2.5 sm:py-3 bg-[#050914] border-t border-slate-800/90 flex items-center justify-between gap-3 text-[11px] sm:text-xs font-mono text-slate-300">
+            <span className="inline-flex items-center gap-2 text-emerald-400 font-bold truncate">
+              <Coins className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">Code: NATION Active · 100% Points Tracked</span>
             </span>
             <span className="hidden sm:inline text-slate-400">
               Real-Time Verification &amp; Rewards Portal
@@ -134,14 +134,14 @@ export function DashboardPreview({ mode = 'full' }: DashboardPreviewProps) {
         />
 
         {/* Decorative Browser Frame */}
-        <div className="px-4 sm:px-6 py-3.5 bg-[#050914] border-b border-slate-800/90 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="h-3 w-3 rounded-full bg-rose-500/85 shrink-0" />
-            <span className="h-3 w-3 rounded-full bg-amber-500/85 shrink-0" />
-            <span className="h-3 w-3 rounded-full bg-emerald-500/85 shrink-0" />
-            <div className="ml-2 sm:ml-3 px-3.5 py-1 rounded-lg bg-[#070e20] border border-slate-800 font-mono text-xs text-slate-200 flex items-center gap-2 truncate">
+        <div className="px-3.5 sm:px-6 py-3 sm:py-3.5 bg-[#050914] border-b border-slate-800/90 flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+            <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-rose-500/85 shrink-0" />
+            <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-amber-500/85 shrink-0" />
+            <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-emerald-500/85 shrink-0" />
+            <div className="ml-1.5 sm:ml-3 px-2.5 sm:px-3.5 py-1 rounded-lg bg-[#070e20] border border-slate-800 font-mono text-[11px] sm:text-xs text-slate-200 flex items-center gap-1.5 sm:gap-2 truncate">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-              <span className="text-emerald-400">https://</span>
+              <span className="hidden xs:inline sm:inline text-emerald-400">https://</span>
               <span className="truncate">propnation.app/dashboard</span>
             </div>
           </div>
@@ -154,7 +154,7 @@ export function DashboardPreview({ mode = 'full' }: DashboardPreviewProps) {
 
             <Link
               href="/dashboard"
-              className="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono text-xs font-extrabold transition-all flex items-center gap-1"
+              className="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono text-[11px] sm:text-xs font-extrabold transition-all flex items-center gap-1"
             >
               <span>OPEN DASHBOARD</span>
               <ArrowUpRight className="h-3.5 w-3.5" />
@@ -173,7 +173,7 @@ export function DashboardPreview({ mode = 'full' }: DashboardPreviewProps) {
 
         {/* Bottom Quick Action Bar */}
         <div className="px-4 sm:px-6 py-3.5 bg-[#050914] border-t border-slate-800/90 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-4 text-xs text-slate-300 font-medium">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-300 font-medium">
             <span className="inline-flex items-center gap-1.5">
               <Coins className="h-3.5 w-3.5 text-emerald-400" />
               <span>Real-Time Points Ledger</span>
@@ -188,20 +188,20 @@ export function DashboardPreview({ mode = 'full' }: DashboardPreviewProps) {
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="w-full sm:w-auto grid grid-cols-2 sm:flex items-center gap-2">
             <Link
               href="/dashboard/purchases/new"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2 sm:py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors"
             >
-              <PlusCircle className="h-3.5 w-3.5" />
-              <span>Submit Purchase Proof</span>
+              <PlusCircle className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">Submit Purchase Proof</span>
             </Link>
             <Link
               href="/dashboard/wallet"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2 sm:py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold transition-colors"
             >
-              <Wallet className="h-3.5 w-3.5 text-emerald-400" />
-              <span>Trader Wallet</span>
+              <Wallet className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+              <span className="truncate">Trader Wallet</span>
             </Link>
           </div>
         </div>

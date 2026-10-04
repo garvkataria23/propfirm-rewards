@@ -418,7 +418,7 @@ export default function LoginPage() {
                   <Phone className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                   <span>Phone Number (SMS Verification)</span>
                 </label>
-                <div className="grid grid-cols-[135px_1fr] gap-2">
+                <div className="grid grid-cols-[118px_1fr] sm:grid-cols-[135px_1fr] gap-2">
                   <SearchableCombobox
                     options={dialCodeOptions}
                     value={countryCode}

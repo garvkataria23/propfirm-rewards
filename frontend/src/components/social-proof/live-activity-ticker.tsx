@@ -89,18 +89,28 @@ export function LiveActivityTicker() {
   const marqueeItems = [...items, ...items];
 
   return (
-    <div className="relative w-full overflow-hidden border-y border-slate-200 dark:border-white/[0.06] bg-white/95 dark:bg-[#06090f]/95 backdrop-blur-md py-2.5 z-20 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-4">
+    <div className="relative w-full overflow-hidden border-y border-slate-200 dark:border-white/[0.06] bg-white/95 dark:bg-[#06090f]/95 backdrop-blur-md py-2 sm:py-2.5 z-20 transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center gap-2.5 sm:gap-4">
         {/* Fixed Label */}
-        <div className="shrink-0 flex items-center gap-2 pr-4 border-r border-slate-200 dark:border-white/10">
+        <div className="shrink-0 flex items-center gap-1.5 sm:gap-2 pr-2.5 sm:pr-4 border-r border-slate-200 dark:border-white/10">
           <span className="relative flex h-2 w-2">
             {isLiveBackend && (
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             )}
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
           </span>
-          <span className="text-[11px] font-mono font-semibold tracking-widest text-slate-700 dark:text-slate-200 uppercase">
-            {isLiveBackend ? 'LIVE PLATFORM ACTIVITY' : 'EXAMPLE ACTIVITY'}
+          <span className="text-[10px] sm:text-[11px] font-mono font-semibold tracking-wider sm:tracking-widest text-slate-700 dark:text-slate-200 uppercase">
+            {isLiveBackend ? (
+              <>
+                <span className="sm:hidden">LIVE FEED</span>
+                <span className="hidden sm:inline">LIVE PLATFORM ACTIVITY</span>
+              </>
+            ) : (
+              <>
+                <span className="sm:hidden">LIVE FEED</span>
+                <span className="hidden sm:inline">EXAMPLE ACTIVITY</span>
+              </>
+            )}
           </span>
         </div>
 

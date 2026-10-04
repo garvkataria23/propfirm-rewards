@@ -594,7 +594,7 @@ export function YouTubeVideoHub() {
 
           {/* Category Filter Pills */}
           <Reveal delay={150}>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-nowrap sm:flex-wrap items-center gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
               {[
                 { key: 'all', label: `All Videos (${PROP_FIRM_VIDEOS.length})` },
                 { key: 'howto', label: 'How to Use & Basics' },
@@ -608,7 +608,7 @@ export function YouTubeVideoHub() {
                     key={tab.key}
                     type="button"
                     onClick={() => setActiveCategory(tab.key as any)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                    className={`shrink-0 px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
                       active
                         ? 'bg-emerald-500 text-slate-950 shadow-sm shadow-emerald-500/30'
                         : 'bg-white dark:bg-[#0B1015] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/[0.1] hover:border-emerald-500/40'
@@ -682,7 +682,7 @@ export function YouTubeVideoHub() {
               </div>
 
               {/* Custom Synchronized Media Control Bar (Play, Pause, Seek Time, Volume, Speed, Fullscreen) */}
-              <div className="p-4 sm:px-6 bg-slate-900 dark:bg-[#060A0F] text-white border-t border-white/[0.08] space-y-3">
+              <div className="p-3.5 sm:p-4 sm:px-6 bg-slate-900 dark:bg-[#060A0F] text-white border-t border-white/[0.08] space-y-3">
                 {/* Timeline Scrubber + Live Current Time / Total Duration */}
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-mono font-bold text-emerald-400 w-11 text-right shrink-0">
@@ -714,13 +714,13 @@ export function YouTubeVideoHub() {
                 </div>
 
                 {/* Transport Buttons Row */}
-                <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
                   <div className="flex items-center gap-1.5 sm:gap-2">
                     {/* Play / Pause */}
                     <button
                       type="button"
                       onClick={togglePlayPause}
-                      className="h-9 px-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs font-mono inline-flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                      className="h-9 px-3 sm:px-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs font-mono inline-flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
                       title={isPlaying ? 'Pause Video' : 'Play Video'}
                     >
                       {isPlaying ? (
@@ -758,7 +758,7 @@ export function YouTubeVideoHub() {
                     <button
                       type="button"
                       onClick={() => skipSeconds(-10)}
-                      className="h-9 px-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.08] inline-flex items-center gap-1 text-xs font-mono text-slate-200 transition-colors cursor-pointer"
+                      className="h-9 px-2 sm:px-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.08] inline-flex items-center gap-1 text-xs font-mono text-slate-200 transition-colors cursor-pointer"
                       title="Rewind 10 seconds"
                     >
                       <RotateCcw className="h-3.5 w-3.5" />
@@ -767,7 +767,7 @@ export function YouTubeVideoHub() {
                     <button
                       type="button"
                       onClick={() => skipSeconds(10)}
-                      className="h-9 px-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.08] inline-flex items-center gap-1 text-xs font-mono text-slate-200 transition-colors cursor-pointer"
+                      className="h-9 px-2 sm:px-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.08] inline-flex items-center gap-1 text-xs font-mono text-slate-200 transition-colors cursor-pointer"
                       title="Forward 10 seconds"
                     >
                       <RotateCw className="h-3.5 w-3.5" />
@@ -836,11 +836,11 @@ export function YouTubeVideoHub() {
               </div>
 
               {/* Active Video Details & Key Takeaways */}
-              <div className="p-5 sm:p-6 bg-white dark:bg-[#0B1015] space-y-4 flex-1 flex flex-col justify-between">
+              <div className="p-4 sm:p-6 bg-white dark:bg-[#0B1015] space-y-4 flex-1 flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                      <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">
                         <span>{activeVideo.categoryBadge}</span>
                         <span>•</span>
                         <span>{activeVideo.channel}</span>
@@ -877,8 +877,8 @@ export function YouTubeVideoHub() {
           </div>
 
           {/* Right 4 Columns: Interactive Up-Next Queue (Matches Exact Height of Left Column on Desktop) */}
-          <div className="lg:col-span-4 relative min-h-[540px] lg:min-h-0">
-            <div className="h-[540px] lg:h-auto lg:absolute lg:inset-0 rounded-3xl bg-white dark:bg-[#0B1015] border border-slate-200 dark:border-white/[0.12] shadow-xl dark:shadow-[0_28px_70px_-15px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col">
+          <div className="lg:col-span-4 relative min-h-[420px] sm:min-h-[540px] lg:min-h-0">
+            <div className="h-[420px] sm:h-[540px] lg:h-auto lg:absolute lg:inset-0 rounded-3xl bg-white dark:bg-[#0B1015] border border-slate-200 dark:border-white/[0.12] shadow-xl dark:shadow-[0_28px_70px_-15px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col">
               <div className="p-4 sm:px-5 bg-slate-100/80 dark:bg-[#080D13] border-b border-slate-200 dark:border-white/[0.08] flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-2">
                   <Film className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />

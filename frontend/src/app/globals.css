@@ -479,3 +479,13 @@ nav button:focus-visible {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Strict Mobile-Only (< 640px) Layout & Touch Polish */
+@media (max-width: 639px) {
+  html,
+  body {
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+

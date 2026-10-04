@@ -469,7 +469,7 @@ export default function TraderWalletPage() {
       </div>
 
       {/* Interactive Ledger Activity Table */}
-      <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs overflow-hidden space-y-4 p-6 transition-colors">
+      <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs overflow-hidden space-y-4 p-4 sm:p-6 transition-colors">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
           <div>
             <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
@@ -516,14 +516,14 @@ export default function TraderWalletPage() {
             </div>
 
             {/* Search Input */}
-            <div className="relative">
+            <div className="relative w-full sm:w-auto">
               <Search className="h-4 w-4 absolute left-3 top-2.5 text-slate-400" />
               <input
                 type="text"
                 placeholder="Search ledger..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 w-44"
+                className="pl-9 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 w-full sm:w-44"
               />
             </div>
           </div>

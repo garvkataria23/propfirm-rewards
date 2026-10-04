@@ -658,14 +658,14 @@ export function FloatingLiveChat() {
               Notification.requestPermission().catch(() => {});
             }
           }}
-          className={`fixed bottom-6 right-6 z-[9998] group flex items-center gap-3 rounded-full p-3.5 sm:px-5 sm:py-3.5 text-white shadow-2xl hover:scale-105 transition-all cursor-pointer border border-white/20 ${
+          className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[9998] group flex items-center gap-2.5 sm:gap-3 rounded-full px-3.5 py-2.5 sm:px-5 sm:py-3.5 text-white shadow-2xl hover:scale-105 transition-all cursor-pointer border border-white/20 ${
             widgetMode === 'ADMIN'
               ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-emerald-600 shadow-purple-600/30 hover:shadow-purple-500/40'
               : 'bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 shadow-emerald-600/30 hover:shadow-emerald-500/40'
           }`}
         >
           <div className="relative flex items-center justify-center">
-            <MessageSquare className="h-5 w-5" />
+            <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5" />
             <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-emerald-300 animate-ping" />
             <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-emerald-400" />
           </div>
@@ -673,13 +673,13 @@ export function FloatingLiveChat() {
           <div className="flex flex-col text-left leading-tight">
             {widgetMode === 'ADMIN' ? (
               <>
-                <span className="text-xs font-black tracking-tight flex items-center gap-1.5">
+                <span className="text-[11px] sm:text-xs font-black tracking-tight flex items-center gap-1.5">
                   Admin Live Chat
                   <span className="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full">
                     {adminTickets.length} Chats
                   </span>
                 </span>
-                <span className="text-[10px] text-purple-100 font-medium">
+                <span className="text-[9px] sm:text-[10px] text-purple-100 font-medium">
                   {anyTraderTypingInQueue
                     ? `✍️ ${anyTraderTypingInQueue.userName} is typing...`
                     : adminTotalUnreadCount > 0
@@ -689,7 +689,7 @@ export function FloatingLiveChat() {
               </>
             ) : (
               <>
-                <span className="text-xs font-black tracking-tight flex items-center gap-1.5">
+                <span className="text-[11px] sm:text-xs font-black tracking-tight flex items-center gap-1.5">
                   Live Support Chat
                   {assignedStaff && (
                     <span className="hidden sm:inline-block text-[10px] font-semibold bg-white/20 px-2 py-0.5 rounded-full">
@@ -697,7 +697,7 @@ export function FloatingLiveChat() {
                     </span>
                   )}
                 </span>
-                <span className="text-[10px] text-emerald-100 font-medium">
+                <span className="text-[9px] sm:text-[10px] text-emerald-100 font-medium">
                   {isAdminTypingToUser
                     ? `${isAdminTypingToUser.name} is typing...`
                     : '24/7 Online • Instant Reply'}
@@ -721,8 +721,8 @@ export function FloatingLiveChat() {
         <div
           className={`fixed z-[9999] flex flex-col overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#080f20] shadow-2xl transition-all duration-200 ${
             isExpanded
-              ? 'bottom-4 right-4 w-[calc(100vw-2rem)] sm:w-[680px] h-[85vh] max-h-[800px]'
-              : 'bottom-5 right-5 w-[calc(100vw-2rem)] sm:w-[420px] h-[620px] max-h-[85vh]'
+              ? 'bottom-3 left-3 right-3 sm:left-auto sm:bottom-4 sm:right-4 w-auto sm:w-[680px] h-[85dvh] sm:h-[85vh] max-h-[800px]'
+              : 'bottom-3 left-3 right-3 sm:left-auto sm:bottom-5 sm:right-5 w-auto sm:w-[420px] h-[calc(100dvh-5rem)] max-h-[560px] sm:h-[620px] sm:max-h-[85vh]'
           }`}
         >
           {/* ================================================================ */}

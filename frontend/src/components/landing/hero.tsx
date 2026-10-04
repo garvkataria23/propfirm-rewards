@@ -37,9 +37,9 @@ export function Hero() {
           className="mb-8 lg:mb-10 flex justify-center"
           style={{ animation: 'heroReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both' }}
         >
-          <div className="inline-flex flex-wrap items-center justify-center gap-3 sm:gap-5 px-4 py-2.5 sm:px-6 sm:py-3 rounded-2xl bg-emerald-500/10 dark:bg-emerald-950/60 border-2 border-emerald-500/40 dark:border-emerald-400/40 shadow-[0_8px_30px_-6px_rgba(16,185,129,0.28)] backdrop-blur-md">
-            <span className="text-xs sm:text-sm font-black tracking-wide uppercase text-slate-900 dark:text-white flex items-center gap-2">
-              <span className="text-base leading-none">🎁</span>
+          <div className="inline-flex flex-wrap items-center justify-center gap-2.5 sm:gap-5 px-3.5 py-2.5 sm:px-6 sm:py-3 rounded-2xl bg-emerald-500/10 dark:bg-emerald-950/60 border-2 border-emerald-500/40 dark:border-emerald-400/40 shadow-[0_8px_30px_-6px_rgba(16,185,129,0.28)] backdrop-blur-md text-center sm:text-left">
+            <span className="text-[11px] sm:text-sm font-black tracking-wide uppercase text-slate-900 dark:text-white flex items-center justify-center gap-1.5 sm:gap-2">
+              <span className="text-base leading-none shrink-0">🎁</span>
               <span>
                 BUY WITH CODE{' '}
                 <span className="font-mono font-black text-emerald-700 dark:text-emerald-300 underline decoration-emerald-500/60 underline-offset-4">
@@ -99,7 +99,7 @@ export function Hero() {
             </button>
 
             {/* Staggered Headline: TRADE. EARN. (single line) / GET REWARDED. */}
-            <h1 className="text-5xl sm:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.05] text-slate-900 dark:text-white">
+            <h1 className="text-[38px] xs:text-[44px] sm:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.05] text-slate-900 dark:text-white">
               <span className="block whitespace-nowrap">
                 <span
                   className="inline-block"

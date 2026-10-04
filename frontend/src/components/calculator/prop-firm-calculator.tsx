@@ -211,28 +211,28 @@ export function PropFirmCalculator() {
         </div>
 
         {/* Mode Switcher */}
-        <div className="inline-flex p-1 rounded-xl bg-[#101614] border border-white/[0.1] self-start md:self-auto">
+        <div className="grid grid-cols-2 sm:inline-flex w-full sm:w-auto p-1 rounded-xl bg-[#101614] border border-white/[0.1] self-start md:self-auto">
           <button
             onClick={() => setActiveTab('calculator')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
               activeTab === 'calculator'
                 ? 'bg-emerald-500 text-slate-950 shadow-sm'
                 : 'text-slate-200 hover:text-white'
             }`}
           >
-            <Sliders className="w-3.5 h-3.5" />
-            Drawdown Calculator
+            <Sliders className="w-3.5 h-3.5 shrink-0" />
+            <span>Drawdown Calculator</span>
           </button>
           <button
             onClick={() => setActiveTab('matrix')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
               activeTab === 'matrix'
                 ? 'bg-emerald-500 text-slate-950 shadow-sm'
                 : 'text-slate-200 hover:text-white'
             }`}
           >
-            <Layers className="w-3.5 h-3.5" />
-            Rule Comparison
+            <Layers className="w-3.5 h-3.5 shrink-0" />
+            <span>Rule Comparison</span>
           </button>
         </div>
       </div>
@@ -240,7 +240,7 @@ export function PropFirmCalculator() {
       {activeTab === 'calculator' ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* Left Column: Calculator Inputs */}
-          <div className="lg:col-span-6 rounded-2xl bg-[#101614] border border-white/[0.09] p-6 sm:p-8 shadow-xl flex flex-col justify-between space-y-6">
+          <div className="lg:col-span-6 rounded-2xl bg-[#101614] border border-white/[0.09] p-5 sm:p-8 shadow-xl flex flex-col justify-between space-y-6">
             <div className="space-y-6">
               {/* Input 1: Account Size */}
               <div className="space-y-3">
@@ -256,13 +256,13 @@ export function PropFirmCalculator() {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-5 gap-2">
+                <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
                   {ACCOUNT_SIZES.map((size) => (
                     <button
                       key={size}
                       type="button"
                       onClick={() => setAccountSize(size)}
-                      className={`py-2.5 px-2 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${
+                      className={`py-2.5 px-1 sm:px-2 rounded-xl text-[11px] sm:text-xs font-mono font-bold transition-all border cursor-pointer ${
                         accountSize === size
                           ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-xs'
                           : 'bg-[#080c0b] border-white/[0.09] text-slate-200 hover:border-emerald-500/40'

@@ -225,7 +225,7 @@ export default function RedemptionsTrackingPage() {
 
       {/* Tabs Filter Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
-        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold">
+        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold overflow-x-auto no-scrollbar max-w-full">
           {[
             { key: 'ALL', label: 'All Orders' },
             { key: 'IN_TRANSIT', label: 'In Transit' },
@@ -236,7 +236,7 @@ export default function RedemptionsTrackingPage() {
               key={tab.key}
               type="button"
               onClick={() => setSelectedTab(tab.key as any)}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 selectedTab === tab.key
                   ? 'bg-white dark:bg-slate-700 text-slate-950 dark:text-white shadow-xs font-black'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -255,7 +255,7 @@ export default function RedemptionsTrackingPage() {
       {/* Redemptions Cards Feed */}
       <div className="space-y-6">
         {filteredRedemptions.length === 0 ? (
-          <Card className="p-12 text-center border-dashed border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 space-y-4">
+          <Card className="p-8 sm:p-12 text-center border-dashed border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 space-y-4">
             <div className="h-14 w-14 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mx-auto">
               <Package className="h-7 w-7" />
             </div>
@@ -288,7 +288,7 @@ export default function RedemptionsTrackingPage() {
           return (
             <Card
               key={rdm.id}
-              className="p-6 space-y-6 border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all hover:border-purple-500/40"
+              className="p-4 sm:p-6 space-y-6 border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all hover:border-purple-500/40"
             >
               {/* Header: Product Photo, Title, Price, Status */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -363,7 +363,7 @@ export default function RedemptionsTrackingPage() {
                             {isCompleted ? <CheckCircle2 className="h-4 w-4" /> : item.step + 1}
                           </div>
                           <span
-                            className={`text-[11px] font-semibold ${
+                            className={`text-[9px] xs:text-[10px] sm:text-[11px] leading-tight font-semibold ${
                               isCompleted ? 'text-slate-900 dark:text-slate-200 font-bold' : 'text-slate-400 dark:text-slate-500'
                             }`}
                           >
