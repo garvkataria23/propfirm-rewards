@@ -25,7 +25,7 @@ services:
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: CORS_ORIGIN
-        sync: false
+        value: https://frontend-eta-beryl-ezh34u4upe.vercel.app,http://localhost:3000
       - key: WEBHOOK_SECRET
         sync: false
       - key: GOOGLE_CLIENT_ID

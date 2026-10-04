@@ -8,7 +8,7 @@ const https = require('https');
 const http = require('http');
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://frontend-eta-beryl-ezh34u4upe.vercel.app';
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:4000';
+const BACKEND_URL = process.env.BACKEND_URL || 'https://propnation-backend.onrender.com';
 const INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 
 function pingUrl(targetUrl) {

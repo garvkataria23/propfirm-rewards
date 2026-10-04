@@ -1,4 +1,8 @@
 {
+  "env": {
+    "NEXT_PUBLIC_API_URL": "https://propnation-backend.onrender.com",
+    "BACKEND_URL": "https://propnation-backend.onrender.com"
+  },
   "crons": [
     {
       "path": "/api/cron/keep-alive",

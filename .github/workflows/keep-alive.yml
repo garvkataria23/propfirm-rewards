@@ -25,7 +25,7 @@ jobs:
         run: |
           BACKEND_URL="${{ secrets.BACKEND_URL }}"
           if [ -z "$BACKEND_URL" ]; then
-            BACKEND_URL="https://propfirm-backend.onrender.com"
+            BACKEND_URL="https://propnation-backend.onrender.com"
           fi
           echo "Pinging Backend at: ${BACKEND_URL}/health"
           curl -s -o /dev/null -w "Backend Health HTTP Status: %{http_code}\n" "${BACKEND_URL}/health" || true

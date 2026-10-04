@@ -1,4 +1,20 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const PROD_RENDER_API_URL = 'https://propnation-backend.onrender.com';
+
+function resolveApiBaseUrl(): string {
+  const envUrl = (process.env.NEXT_PUBLIC_API_URL || '').trim().replace(/\/$/, '');
+  if (typeof window !== 'undefined') {
+    const isLocalHost =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (!isLocalHost && (!envUrl || envUrl.includes('localhost'))) {
+      return PROD_RENDER_API_URL;
+    }
+  } else if (process.env.NODE_ENV === 'production' && (!envUrl || envUrl.includes('localhost'))) {
+    return PROD_RENDER_API_URL;
+  }
+  return envUrl || 'http://localhost:4000';
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 interface CacheItem<T> {
   data: T;

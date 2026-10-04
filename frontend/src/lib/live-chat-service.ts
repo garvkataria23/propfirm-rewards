@@ -245,7 +245,19 @@ export function mergeLocalTicketMessages(ticketId: string, incoming: LiveChatMes
   } catch {}
 }
 
-const DIRECT_RENDER_API = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+const PROD_RENDER_BACKEND_URL = 'https://propnation-backend.onrender.com';
+
+function getRenderBackendUrl(): string {
+  const envUrl = (process.env.NEXT_PUBLIC_API_URL || '').trim().replace(/\/$/, '');
+  if (typeof window !== 'undefined') {
+    const isLocal =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (!isLocal && (!envUrl || envUrl.includes('localhost'))) {
+      return PROD_RENDER_BACKEND_URL;
+    }
+  }
+  return envUrl || 'http://localhost:4000';
+}
 
 async function syncToServerApi(payload: Record<string, any>) {
   if (typeof window === 'undefined') return;
@@ -257,8 +269,9 @@ async function syncToServerApi(payload: Record<string, any>) {
       body: bodyStr,
     }).catch(() => {});
 
-    if (DIRECT_RENDER_API) {
-      fetch(`${DIRECT_RENDER_API}/support/live-chat-sync`, {
+    const renderBase = getRenderBackendUrl();
+    if (renderBase) {
+      fetch(`${renderBase}/support/live-chat-sync`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: bodyStr,
@@ -1117,18 +1130,22 @@ export function subscribeToTicketLive(
     window.addEventListener(EVENT_BUS_NAME, handleLocalEvent);
   }
 
-  // Poll server API gently to sync cross-device updates
+  // Poll server API & Render Backend gently to sync cross-device updates
   const pollInterval = setInterval(async () => {
-    try {
-      const res = await fetch(`/api/live-chat?ticketId=${encodeURIComponent(ticketId)}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data?.ticket?.id) {
-          saveLocalTicket(data.ticket);
-          onUpdate(data.ticket);
+    const qStr = `?ticketId=${encodeURIComponent(ticketId)}`;
+    const endpoints = [`/api/live-chat${qStr}`, `${getRenderBackendUrl()}/support/live-chat-sync${qStr}`];
+    for (const ep of endpoints) {
+      try {
+        const res = await fetch(ep);
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.ticket?.id) {
+            saveLocalTicket(data.ticket);
+            onUpdate(data.ticket);
+          }
         }
-      }
-    } catch {}
+      } catch {}
+    }
   }, 3000);
 
   // Also attach Firestore listener with safe error callback
@@ -1177,18 +1194,22 @@ export function subscribeToTicketMessagesLive(
     window.addEventListener(EVENT_BUS_NAME, handleLocalEvent);
   }
 
-  // Poll server API every 2.5s for cross-session messages
+  // Poll server API & Render Backend every 2.5s for cross-session messages
   const pollInterval = setInterval(async () => {
-    try {
-      const res = await fetch(`/api/live-chat?ticketId=${encodeURIComponent(ticketId)}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data?.messages) && data.messages.length > 0) {
-          mergeLocalTicketMessages(ticketId, data.messages);
-          emitLatest();
+    const qStr = `?ticketId=${encodeURIComponent(ticketId)}`;
+    const endpoints = [`/api/live-chat${qStr}`, `${getRenderBackendUrl()}/support/live-chat-sync${qStr}`];
+    for (const ep of endpoints) {
+      try {
+        const res = await fetch(ep);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data?.messages) && data.messages.length > 0) {
+            mergeLocalTicketMessages(ticketId, data.messages);
+            emitLatest();
+          }
         }
-      }
-    } catch {}
+      } catch {}
+    }
   }, 2500);
 
   // Also attach Firestore listener with safe error callback
@@ -1247,25 +1268,26 @@ export function subscribeToAllTicketsLive(
   }
 
   const pollInterval = setInterval(async () => {
-    try {
-      const url = filterUserId
-        ? `/api/live-chat?userId=${encodeURIComponent(filterUserId)}`
-        : '/api/live-chat';
-      const res = await fetch(url);
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data?.tickets) && data.tickets.length > 0) {
-          const map = getLocalTicketsMap();
-          data.tickets.forEach((t: LiveChatTicket) => {
-            if (t?.id) {
-              map[t.id] = { ...(map[t.id] || {}), ...t };
-            }
-          });
-          localStorage.setItem(LOCAL_TICKETS_KEY, JSON.stringify(map));
-          emitLatest();
+    const qStr = filterUserId ? `?userId=${encodeURIComponent(filterUserId)}` : '';
+    const endpoints = [`/api/live-chat${qStr}`, `${getRenderBackendUrl()}/support/live-chat-sync${qStr}`];
+    for (const ep of endpoints) {
+      try {
+        const res = await fetch(ep);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data?.tickets) && data.tickets.length > 0) {
+            const map = getLocalTicketsMap();
+            data.tickets.forEach((t: LiveChatTicket) => {
+              if (t?.id) {
+                map[t.id] = { ...(map[t.id] || {}), ...t };
+              }
+            });
+            localStorage.setItem(LOCAL_TICKETS_KEY, JSON.stringify(map));
+            emitLatest();
+          }
         }
-      }
-    } catch {}
+      } catch {}
+    }
   }, 3000);
 
   let unsubFirestore: (() => void) | null = null;

@@ -57,11 +57,24 @@ if (!globalChatStore.__pnLiveChatMessages) {
 const ticketsMap = globalChatStore.__pnLiveChatTickets;
 const messagesMap = globalChatStore.__pnLiveChatMessages;
 
-const RENDER_API_BASE = (
-  process.env.NEXT_PUBLIC_API_URL ||
-  process.env.BACKEND_URL ||
-  'http://localhost:4000'
-).replace(/\/$/, '');
+const PROD_RENDER_API = 'https://propnation-backend.onrender.com';
+
+const RENDER_API_BASE = (() => {
+  const configured = (
+    process.env.NEXT_PUBLIC_API_URL ||
+    process.env.BACKEND_URL ||
+    ''
+  )
+    .trim()
+    .replace(/\/$/, '');
+  if (
+    (process.env.NODE_ENV === 'production' || process.env.VERCEL) &&
+    (!configured || configured.includes('localhost'))
+  ) {
+    return PROD_RENDER_API;
+  }
+  return configured || 'http://localhost:4000';
+})();
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
